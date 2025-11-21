@@ -11652,7 +11652,7 @@ dependencies = [
  "alacritty_terminal",
  "anyhow",
  "collections",
- "fancy-regex 0.14.0",
+ "fancy-regex",
  "futures 0.3.31",
  "gpui",
  "itertools 0.14.0",
