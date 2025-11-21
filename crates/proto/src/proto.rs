@@ -41,6 +41,7 @@ messages!(
     (CancelLanguageServerWork, Foreground),
     (CloseBuffer, Foreground),
     (Commit, Background),
+    (RunGitHook, Background),
     (CopyProjectEntry, Foreground),
     (CreateBufferForPeer, Foreground),
     (CreateImageForPeer, Foreground),
@@ -285,6 +286,7 @@ request_messages!(
         ApplyCompletionAdditionalEditsResponse
     ),
     (Commit, Ack),
+    (RunGitHook, Ack),
     (CopyProjectEntry, ProjectEntryResponse),
     (CreateProjectEntry, ProjectEntryResponse),
     (CreateRoom, CreateRoomResponse),
@@ -454,6 +456,7 @@ entity_messages!(
     BufferSaved,
     CloseBuffer,
     Commit,
+    RunGitHook,
     GetColorPresentation,
     CopyProjectEntry,
     CreateBufferForPeer,
