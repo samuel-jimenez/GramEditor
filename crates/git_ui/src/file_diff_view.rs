@@ -254,10 +254,6 @@ impl Item for FileDiffView {
         Editor::to_item_events(event, f)
     }
 
-    fn telemetry_event_text(&self) -> Option<&'static str> {
-        Some("Diff View Opened")
-    }
-
     fn deactivated(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         self.editor
             .update(cx, |editor, cx| editor.deactivated(window, cx));

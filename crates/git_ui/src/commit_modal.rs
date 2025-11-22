@@ -436,7 +436,6 @@ impl CommitModal {
                                 .mr_0p5(),
                         )
                         .on_click(cx.listener(move |this, _: &ClickEvent, window, cx| {
-                            telemetry::event!("Git Committed", source = "Git Modal");
                             this.git_panel.update(cx, |git_panel, cx| {
                                 git_panel.commit_changes(
                                     CommitOptions {
@@ -496,7 +495,6 @@ impl CommitModal {
         if self.git_panel.read(cx).amend_pending() {
             return;
         }
-        telemetry::event!("Git Committed", source = "Git Modal");
         self.git_panel.update(cx, |git_panel, cx| {
             git_panel.commit_changes(
                 CommitOptions {
@@ -527,7 +525,6 @@ impl CommitModal {
                 git_panel.load_last_commit_message_if_empty(cx);
             });
         } else {
-            telemetry::event!("Git Amended", source = "Git Modal");
             self.git_panel.update(cx, |git_panel, cx| {
                 git_panel.set_amend_pending(false, cx);
                 git_panel.commit_changes(
