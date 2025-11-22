@@ -477,10 +477,6 @@ impl Item for MarkdownPreviewView {
             .unwrap_or_else(|| SharedString::from("Markdown Preview"))
     }
 
-    fn telemetry_event_text(&self) -> Option<&'static str> {
-        Some("Markdown Preview Opened")
-    }
-
     fn to_item_events(_event: &Self::Event, _f: impl FnMut(workspace::item::ItemEvent)) {}
 }
 
