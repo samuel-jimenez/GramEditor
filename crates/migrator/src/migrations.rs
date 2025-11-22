@@ -38,38 +38,6 @@ pub(crate) mod m_2025_03_29 {
     pub(crate) use settings::SETTINGS_PATTERNS;
 }
 
-pub(crate) mod m_2025_04_15 {
-    mod keymap;
-    mod settings;
-
-    pub(crate) use keymap::KEYMAP_PATTERNS;
-    pub(crate) use settings::SETTINGS_PATTERNS;
-}
-
-pub(crate) mod m_2025_04_21 {
-    mod settings;
-
-    pub(crate) use settings::SETTINGS_PATTERNS;
-}
-
-pub(crate) mod m_2025_04_23 {
-    mod settings;
-
-    pub(crate) use settings::SETTINGS_PATTERNS;
-}
-
-pub(crate) mod m_2025_05_05 {
-    mod settings;
-
-    pub(crate) use settings::SETTINGS_PATTERNS;
-}
-
-pub(crate) mod m_2025_05_08 {
-    mod settings;
-
-    pub(crate) use settings::SETTINGS_PATTERNS;
-}
-
 pub(crate) mod m_2025_05_29 {
     mod settings;
 
@@ -77,12 +45,6 @@ pub(crate) mod m_2025_05_29 {
 }
 
 pub(crate) mod m_2025_06_16 {
-    mod settings;
-
-    pub(crate) use settings::SETTINGS_PATTERNS;
-}
-
-pub(crate) mod m_2025_06_25 {
     mod settings;
 
     pub(crate) use settings::SETTINGS_PATTERNS;
