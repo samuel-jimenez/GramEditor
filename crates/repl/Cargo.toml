@@ -18,7 +18,6 @@ anyhow.workspace = true
 async-dispatcher.workspace = true
 async-tungstenite = { workspace = true, features = ["tokio", "tokio-rustls-manual-roots", "tokio-runtime"] }
 base64.workspace = true
-client.workspace = true
 collections.workspace = true
 command_palette_hooks.workspace = true
 editor.workspace = true
@@ -42,7 +41,6 @@ serde.workspace = true
 serde_json.workspace = true
 settings.workspace = true
 smol.workspace = true
-telemetry.workspace = true
 terminal.workspace = true
 terminal_view.workspace = true
 theme.workspace = true
