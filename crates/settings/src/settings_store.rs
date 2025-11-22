@@ -1353,19 +1353,6 @@ mod tests {
     use util::rel_path::rel_path;
 
     #[derive(Debug, PartialEq)]
-    struct AutoUpdateSetting {
-        auto_update: bool,
-    }
-
-    impl Settings for AutoUpdateSetting {
-        fn from_settings(content: &SettingsContent) -> Self {
-            AutoUpdateSetting {
-                auto_update: content.auto_update.unwrap(),
-            }
-        }
-    }
-
-    #[derive(Debug, PartialEq)]
     struct ItemSettings {
         close_position: ClosePosition,
         git_status: bool,
@@ -1416,14 +1403,9 @@ mod tests {
     #[gpui::test]
     fn test_settings_store_basic(cx: &mut App) {
         let mut store = SettingsStore::new(cx, &default_settings());
-        store.register_setting::<AutoUpdateSetting>();
         store.register_setting::<ItemSettings>();
         store.register_setting::<DefaultLanguageSettings>();
 
-        assert_eq!(
-            store.get::<AutoUpdateSetting>(None),
-            &AutoUpdateSetting { auto_update: true }
-        );
         assert_eq!(
             store.get::<ItemSettings>(None).close_position,
             ClosePosition::Right
@@ -1432,7 +1414,6 @@ mod tests {
         store
             .set_user_settings(
                 r#"{
-                    "auto_update": false,
                     "tabs": {
                       "close_position": "left"
                     }
@@ -1441,10 +1422,6 @@ mod tests {
             )
             .unwrap();
 
-        assert_eq!(
-            store.get::<AutoUpdateSetting>(None),
-            &AutoUpdateSetting { auto_update: false }
-        );
         assert_eq!(
             store.get::<ItemSettings>(None).close_position,
             ClosePosition::Left

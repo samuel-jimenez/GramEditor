@@ -16,8 +16,6 @@ pub struct ExtensionSettingsContent {
     /// Default: { "html": true }
     #[serde(default)]
     pub auto_install_extensions: HashMap<Arc<str>, bool>,
-    #[serde(default)]
-    pub auto_update_extensions: HashMap<Arc<str>, bool>,
     /// The capabilities granted to extensions.
     pub granted_extension_capabilities: Option<Vec<ExtensionCapabilityContent>>,
 }

@@ -37,15 +37,8 @@ pub struct ProjectSettingsContent {
     #[serde(default)]
     pub dap: HashMap<Arc<str>, DapSettingsContent>,
 
-    /// Settings for context servers used for AI-related features.
-    #[serde(default)]
-    pub context_servers: HashMap<Arc<str>, ContextServerSettingsContent>,
-
     /// Configuration for how direnv configuration should be loaded
     pub load_direnv: Option<DirenvSettings>,
-
-    /// Settings for slash commands.
-    pub slash_commands: Option<SlashCommandSettings>,
 
     /// The list of custom Git hosting providers.
     pub git_hosting_providers: Option<ExtendingVec<GitHostingProviderConfig>>,
