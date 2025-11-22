@@ -141,14 +141,6 @@ fn extension_provides(manifest: &ExtensionManifest) -> BTreeSet<ExtensionProvide
         provides.insert(ExtensionProvides::LanguageServers);
     }
 
-    if !manifest.context_servers.is_empty() {
-        provides.insert(ExtensionProvides::ContextServers);
-    }
-
-    if !manifest.agent_servers.is_empty() {
-        provides.insert(ExtensionProvides::AgentServers);
-    }
-
     if manifest.snippets.is_some() {
         provides.insert(ExtensionProvides::Snippets);
     }
