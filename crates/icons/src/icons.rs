@@ -8,23 +8,6 @@ use strum::{EnumIter, EnumString, IntoStaticStr};
 )]
 #[strum(serialize_all = "snake_case")]
 pub enum IconName {
-    Ai,
-    AiAnthropic,
-    AiBedrock,
-    AiClaude,
-    AiDeepSeek,
-    AiEdit,
-    AiGemini,
-    AiGoogle,
-    AiLmStudio,
-    AiMistral,
-    AiOllama,
-    AiOpenAi,
-    AiOpenAiCompat,
-    AiOpenRouter,
-    AiVZero,
-    AiXAi,
-    AiZed,
     ArrowCircle,
     ArrowDown,
     ArrowDown10,
