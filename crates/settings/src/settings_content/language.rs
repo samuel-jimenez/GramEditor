@@ -3,7 +3,7 @@ use std::num::NonZeroU32;
 use collections::{HashMap, HashSet};
 use gpui::{Modifiers, SharedString};
 use schemars::JsonSchema;
-use serde::{Deserialize, Serialize, de::Error as _};
+use serde::{Deserialize, Serialize};
 use settings_macros::{MergeFrom, with_fallible_options};
 use std::sync::Arc;
 
@@ -14,8 +14,6 @@ use crate::{ExtendingVec, merge_from};
 pub struct AllLanguageSettingsContent {
     /// The settings for enabling/disabling features.
     pub features: Option<FeaturesContent>,
-    /// The edit prediction settings.
-    pub edit_predictions: Option<EditPredictionSettingsContent>,
     /// The default language settings.
     #[serde(flatten)]
     pub defaults: LanguageSettingsContent,
@@ -31,7 +29,6 @@ impl merge_from::MergeFrom for AllLanguageSettingsContent {
     fn merge_from(&mut self, other: &Self) {
         self.file_types.merge_from(&other.file_types);
         self.features.merge_from(&other.features);
-        self.edit_predictions.merge_from(&other.edit_predictions);
 
         // A user's global settings override the default global settings and
         // all default language-specific settings.
@@ -59,159 +56,7 @@ impl merge_from::MergeFrom for AllLanguageSettingsContent {
 #[with_fallible_options]
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize, JsonSchema, MergeFrom)]
 #[serde(rename_all = "snake_case")]
-pub struct FeaturesContent {
-    /// Determines which edit prediction provider to use.
-    pub edit_prediction_provider: Option<EditPredictionProvider>,
-}
-
-/// The provider that supplies edit predictions.
-#[derive(Copy, Clone, Debug, Default, Eq, PartialEq, Serialize, JsonSchema, MergeFrom)]
-#[serde(rename_all = "snake_case")]
-pub enum EditPredictionProvider {
-    None,
-    #[default]
-    Copilot,
-    Supermaven,
-    Zed,
-    Codestral,
-    Experimental(&'static str),
-}
-
-pub const EXPERIMENTAL_SWEEP_EDIT_PREDICTION_PROVIDER_NAME: &str = "sweep";
-
-impl<'de> Deserialize<'de> for EditPredictionProvider {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        #[derive(Deserialize)]
-        #[serde(rename_all = "snake_case")]
-        pub enum Content {
-            None,
-            Copilot,
-            Supermaven,
-            Zed,
-            Codestral,
-            Experimental(String),
-        }
-
-        Ok(match Content::deserialize(deserializer)? {
-            Content::None => EditPredictionProvider::None,
-            Content::Copilot => EditPredictionProvider::Copilot,
-            Content::Supermaven => EditPredictionProvider::Supermaven,
-            Content::Zed => EditPredictionProvider::Zed,
-            Content::Codestral => EditPredictionProvider::Codestral,
-            Content::Experimental(name) => {
-                if name == EXPERIMENTAL_SWEEP_EDIT_PREDICTION_PROVIDER_NAME {
-                    EditPredictionProvider::Experimental(
-                        EXPERIMENTAL_SWEEP_EDIT_PREDICTION_PROVIDER_NAME,
-                    )
-                } else {
-                    return Err(D::Error::custom(format!(
-                        "Unknown experimental edit prediction provider: {}",
-                        name
-                    )));
-                }
-            }
-        })
-    }
-}
-
-impl EditPredictionProvider {
-    pub fn is_zed(&self) -> bool {
-        match self {
-            EditPredictionProvider::Zed => true,
-            EditPredictionProvider::None
-            | EditPredictionProvider::Copilot
-            | EditPredictionProvider::Supermaven
-            | EditPredictionProvider::Codestral
-            | EditPredictionProvider::Experimental(_) => false,
-        }
-    }
-}
-
-/// The contents of the edit prediction settings.
-#[with_fallible_options]
-#[derive(Clone, Debug, Default, Serialize, Deserialize, JsonSchema, MergeFrom, PartialEq)]
-pub struct EditPredictionSettingsContent {
-    /// A list of globs representing files that edit predictions should be disabled for.
-    /// This list adds to a pre-existing, sensible default set of globs.
-    /// Any additional ones you add are combined with them.
-    pub disabled_globs: Option<Vec<String>>,
-    /// The mode used to display edit predictions in the buffer.
-    /// Provider support required.
-    pub mode: Option<EditPredictionsMode>,
-    /// Settings specific to GitHub Copilot.
-    pub copilot: Option<CopilotSettingsContent>,
-    /// Settings specific to Codestral.
-    pub codestral: Option<CodestralSettingsContent>,
-    /// Whether edit predictions are enabled in the assistant prompt editor.
-    /// This has no effect if globally disabled.
-    pub enabled_in_text_threads: Option<bool>,
-}
-
-#[with_fallible_options]
-#[derive(Clone, Debug, Default, Serialize, Deserialize, JsonSchema, MergeFrom, PartialEq)]
-pub struct CopilotSettingsContent {
-    /// HTTP/HTTPS proxy to use for Copilot.
-    ///
-    /// Default: none
-    pub proxy: Option<String>,
-    /// Disable certificate verification for the proxy (not recommended).
-    ///
-    /// Default: false
-    pub proxy_no_verify: Option<bool>,
-    /// Enterprise URI for Copilot.
-    ///
-    /// Default: none
-    pub enterprise_uri: Option<String>,
-}
-
-#[derive(Clone, Debug, Default, Serialize, Deserialize, JsonSchema, MergeFrom, PartialEq)]
-pub struct CodestralSettingsContent {
-    /// Model to use for completions.
-    ///
-    /// Default: "codestral-latest"
-    #[serde(default)]
-    pub model: Option<String>,
-    /// Maximum tokens to generate.
-    ///
-    /// Default: 150
-    #[serde(default)]
-    pub max_tokens: Option<u32>,
-    /// Api URL to use for completions.
-    ///
-    /// Default: "https://codestral.mistral.ai"
-    #[serde(default)]
-    pub api_url: Option<String>,
-}
-
-/// The mode in which edit predictions should be displayed.
-#[derive(
-    Copy,
-    Clone,
-    Debug,
-    Default,
-    Eq,
-    PartialEq,
-    Serialize,
-    Deserialize,
-    JsonSchema,
-    MergeFrom,
-    strum::VariantArray,
-    strum::VariantNames,
-)]
-#[serde(rename_all = "snake_case")]
-pub enum EditPredictionsMode {
-    /// If provider supports it, display inline when holding modifier key (e.g., alt).
-    /// Otherwise, eager preview is used.
-    #[serde(alias = "auto")]
-    Subtle,
-    /// Display inline when there are no language server completions available.
-    #[default]
-    #[serde(alias = "eager_preview")]
-    Eager,
-}
+pub struct FeaturesContent {}
 
 /// Controls the soft-wrapping behavior in the editor.
 #[derive(
@@ -324,18 +169,6 @@ pub struct LanguageSettingsContent {
     ///
     /// Default: "in_comments"
     pub allow_rewrap: Option<RewrapBehavior>,
-    /// Controls whether edit predictions are shown immediately (true)
-    /// or manually by triggering `editor::ShowEditPrediction` (false).
-    ///
-    /// Default: true
-    pub show_edit_predictions: Option<bool>,
-    /// Controls whether edit predictions are shown in the given language
-    /// scopes.
-    ///
-    /// Example: ["string", "comment"]
-    ///
-    /// Default: []
-    pub edit_predictions_disabled_in: Option<Vec<String>>,
     /// Whether to show tabs and spaces in the editor.
     pub show_whitespaces: Option<ShowWhitespaceSetting>,
     /// Visible characters used to render whitespace when show_whitespaces is enabled.

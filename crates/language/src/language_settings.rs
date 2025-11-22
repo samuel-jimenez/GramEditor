@@ -11,9 +11,9 @@ use gpui::{App, Modifiers, SharedString};
 use itertools::{Either, Itertools};
 
 pub use settings::{
-    CompletionSettingsContent, EditPredictionProvider, EditPredictionsMode, FormatOnSave,
-    Formatter, FormatterList, InlayHintKind, LanguageSettingsContent, LspInsertMode,
-    RewrapBehavior, ShowWhitespaceSetting, SoftWrap, WordsCompletionMode,
+    CompletionSettingsContent, FormatOnSave, Formatter, FormatterList, InlayHintKind,
+    LanguageSettingsContent, LspInsertMode, RewrapBehavior, ShowWhitespaceSetting, SoftWrap,
+    WordsCompletionMode,
 };
 use settings::{RegisterSetting, Settings, SettingsLocation, SettingsStore};
 use shellexpand;
@@ -47,8 +47,6 @@ pub fn all_language_settings<'a>(
 /// The settings for all languages.
 #[derive(Debug, Clone, RegisterSetting)]
 pub struct AllLanguageSettings {
-    /// The edit prediction settings.
-    pub edit_predictions: EditPredictionSettings,
     pub defaults: LanguageSettings,
     languages: HashMap<LanguageName, LanguageSettings>,
     pub(crate) file_types: FxHashMap<Arc<str>, GlobSet>,
@@ -110,12 +108,6 @@ pub struct LanguageSettings {
     /// Note: This setting has no effect in Vim mode, as rewrap is already
     /// allowed everywhere.
     pub allow_rewrap: RewrapBehavior,
-    /// Controls whether edit predictions are shown immediately (true)
-    /// or manually by triggering `editor::ShowEditPrediction` (false).
-    pub show_edit_predictions: bool,
-    /// Controls whether edit predictions are shown in the given language
-    /// scopes.
-    pub edit_predictions_disabled_in: Vec<String>,
     /// Whether to show tabs and spaces in the editor.
     pub show_whitespaces: settings::ShowWhitespaceSetting,
     /// Visible characters used to render whitespace when show_whitespaces is enabled.
@@ -536,13 +528,6 @@ impl settings::Settings for AllLanguageSettings {
                 load_from_content(language_settings),
             );
         }
-
-        let disabled_globs: HashSet<&String> = edit_predictions
-            .disabled_globs
-            .as_ref()
-            .unwrap()
-            .iter()
-            .collect();
 
         let mut file_types: FxHashMap<Arc<str>, GlobSet> = FxHashMap::default();
 

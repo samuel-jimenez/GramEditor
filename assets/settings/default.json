@@ -28,8 +28,6 @@
   "base_keymap": "VSCode",
   // Features that can be globally enabled or disabled
   "features": {
-    // Which edit prediction provider to use.
-    "edit_prediction_provider": "zed"
   },
   // The name of a font to use for rendering text in the editor
   // ".ZedMono" currently aliases to Lilex

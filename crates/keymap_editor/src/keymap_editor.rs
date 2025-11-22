@@ -2767,7 +2767,6 @@ impl ActionArgumentsEditor {
                     );
                     editor.set_searchable(false);
                     editor.disable_scrollbars_and_minimap(window, cx);
-                    editor.set_show_edit_predictions(Some(false), window, cx);
                     editor.set_show_gutter(false, cx);
                     Self::set_editor_text(&mut editor, arguments, window, cx);
                     editor
