@@ -6,8 +6,6 @@
 - [Installation](./installation.md)
   - [Update](./update.md)
   - [Uninstall](./uninstall.md)
-- [Authenticate](./authentication.md)
-- [Telemetry](./telemetry.md)
 - [Troubleshooting](./troubleshooting.md)
 
 # Configuration
@@ -34,8 +32,6 @@
 - [Command-line Interface](./command-line-interface.md)
 - [Outline Panel](./outline-panel.md)
 - [Code Completions](./completions.md)
-- [Channels](./channels.md)
-- [Collaboration](./collaboration.md)
 - [Git](./git.md)
 - [Debugger](./debugger.md)
 - [Diagnostics](./diagnostics.md)
@@ -49,27 +45,6 @@
 - [Windows](./windows.md)
 - [Linux](./linux.md)
 
-# AI
-
-- [Overview](./ai/overview.md)
-- [Agent Panel](./ai/agent-panel.md)
-  - [Tools](./ai/tools.md)
-  - [External Agents](./ai/external-agents.md)
-- [Inline Assistant](./ai/inline-assistant.md)
-- [Edit Prediction](./ai/edit-prediction.md)
-- [Text Threads](./ai/text-threads.md)
-- [Rules](./ai/rules.md)
-- [Model Context Protocol](./ai/mcp.md)
-- [Configuration](./ai/configuration.md)
-  - [LLM Providers](./ai/llm-providers.md)
-  - [Agent Settings](./ai/agent-settings.md)
-- [Subscription](./ai/subscription.md)
-  - [Models](./ai/models.md)
-  - [Plans and Usage](./ai/plans-and-usage.md)
-  - [Billing](./ai/billing.md)
-- [Privacy and Security](./ai/privacy-and-security.md)
-  - [AI Improvement](./ai/ai-improvement.md)
-
 # Extensions
 
 - [Overview](./extensions.md)
@@ -80,9 +55,6 @@
 - [Debugger Extensions](./extensions/debugger-extensions.md)
 - [Theme Extensions](./extensions/themes.md)
 - [Icon Theme Extensions](./extensions/icon-themes.md)
-- [Slash Command Extensions](./extensions/slash-commands.md)
-- [Agent Server Extensions](./extensions/agent-servers.md)
-- [MCP Server Extensions](./extensions/mcp-extensions.md)
 
 # Language Support
 
@@ -165,7 +137,6 @@
   - [Linux](./development/linux.md)
   - [Windows](./development/windows.md)
   - [FreeBSD](./development/freebsd.md)
-  - [Local Collaboration](./development/local-collaboration.md)
   - [Using Debuggers](./development/debuggers.md)
   - [Glossary](./development/glossary.md)
 - [Release Notes](./development/release-notes.md)

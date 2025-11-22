@@ -60,13 +60,6 @@ If you would like to use distinct themes for light mode/dark mode that can be se
     // Terminal line height: comfortable (1.618), standard(1.3) or `{ "custom": 2 }`
     "line_height": "standard",
   },
-
-  // Controls the font size for agent responses in the agent panel.
-  // If not specified, it falls back to the UI font size.
-  "agent_ui_font_size": 15,
-  // Controls the font size for the agent panel's message editor, user message,
-  // and any other snippet of code.
-  "agent_buffer_font_size": 12
 ```
 
 ### Font ligatures
@@ -98,10 +91,8 @@ To disable this behavior use:
   // Individual status bar icons can be hidden:
   // "project_panel": {"button": false },
   // "outline_panel": {"button": false },
-  // "collaboration_panel": {"button": false },
   // "git_panel": {"button": false },
   // "notification_panel": {"button": false },
-  // "agent": {"button": false },
   // "debugger": {"button": false },
   // "diagnostics": {"button": false },
   // "search": {"button": false },
@@ -248,7 +239,6 @@ TBD: Centered layout related settings
     "breadcrumbs": true, // Whether to show breadcrumbs.
     "quick_actions": true, // Whether to show quick action buttons.
     "selections_menu": true, // Whether to show the Selections menu
-    "agent_review": true, // Whether to show agent review buttons
     "code_actions": false // Whether to show code action buttons
   }
 ```
@@ -378,16 +368,6 @@ TBD: Centered layout related settings
   "colorize_brackets": true,
 ```
 
-### Edit Predictions {#editor-ai}
-
-```json [settings]
-  "edit_predictions": {
-    "mode": "eager",                // Automatically show (eager) or hold-alt (subtle)
-    "enabled_in_text_threads": true // Show/hide predictions in agent text threads
-  },
-  "show_edit_predictions": true     // Show/hide predictions in editor
-```
-
 ### Editor Inlay Hints
 
 ```json [settings]
@@ -468,27 +448,6 @@ Project panel can be shown/hidden with {#action project_panel::ToggleFocus} ({#k
   }
 ```
 
-## Agent Panel
-
-```json [settings]
-  "agent": {
-    "version": "2",
-    "enabled": true,        // Enable/disable the agent
-    "button": true,         // Show/hide the icon in the status bar
-    "dock": "right",        // Where to dock: left, right, bottom
-    "default_width": 640,   // Default width (left/right docked)
-    "default_height": 320,  // Default height (bottom docked)
-  },
-  // Controls the font size for agent responses in the agent panel.
-  // If not specified, it falls back to the UI font size.
-  "agent_ui_font_size": 15,
-  // Controls the font size for the agent panel's message editor, user message,
-  // and any other snippet of code.
-  "agent_buffer_font_size": 12
-```
-
-See [Zed AI Documentation](./ai/overview.md) for additional non-visual AI settings.
-
 ## Terminal Panel
 
 ```json [settings]
@@ -565,28 +524,4 @@ See [Terminal settings](./configuring-zed.md#terminal) for additional non-visual
       "show": null                // Show/hide: (auto, system, always, never)
     }
   }
-```
-
-## Collaboration Panels
-
-```json [settings]
-{
-  // Collaboration Panel
-  "collaboration_panel": {
-    "button": true, // Show/hide status bar icon
-    "dock": "left", // Where to dock: left, right
-    "default_width": 240 // Default width of the collaboration panel.
-  },
-  "show_call_status_icon": true, // Shown call status in the OS status bar.
-
-  // Notification Panel
-  "notification_panel": {
-    // Whether to show the notification panel button in the status bar.
-    "button": true,
-    // Where to dock the notification panel. Can be 'left' or 'right'.
-    "dock": "right",
-    // Default width of the notification panel.
-    "default_width": 380
-  }
-}
 ```

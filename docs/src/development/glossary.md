@@ -99,12 +99,6 @@ h_flex()
 - `Buffer`: The in-memory representation of a 'file' together with relevant data such as syntax trees, git status and diagnostics.
 - `pending selection`: You have mouse down and you're dragging but you have not yet released.
 
-## Collab
-
-- `Collab session`: Multiple users working in a shared `Project`
-- `Upstream client`: The zed client which has shared their workspace
-- `Downstream client`: The zed client joining a shared workspace
-
 ## Debugger
 
 - `DapStore`: Is an entity that manages debugger sessions

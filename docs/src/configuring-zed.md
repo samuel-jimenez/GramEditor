@@ -146,16 +146,6 @@ Non-negative `float` values
 }
 ```
 
-## Agent Font Size
-
-- Description: The font size for text in the agent panel. Inherits the UI font size if unset.
-- Setting: `agent_font_size`
-- Default: `null`
-
-**Options**
-
-`integer` values from `6` to `100` pixels (inclusive)
-
 ## Allow Rewrap
 
 - Description: Controls where the {#action editor::Rewrap} action is allowed in the current language scope
@@ -315,16 +305,6 @@ Note that a save will be triggered when an unsaved tab is closed, even if this i
 - Description: Whether to show the signature help after completion or a bracket pair inserted. If `auto_signature_help` is enabled, this setting will be treated as enabled also.
 - Setting: `show_signature_help_after_edits`
 - Default: `false`
-
-**Options**
-
-`boolean` values
-
-## Auto Update
-
-- Description: Whether or not to automatically check for updates.
-- Setting: `auto_update`
-- Default: `true`
 
 **Options**
 
@@ -923,18 +903,6 @@ List of `string` values
 }
 ```
 
-### Cursor Indicators
-
-- Description: Whether to show cursor positions in the scrollbar.
-- Setting: `cursors`
-- Default: `true`
-
-Cursor indicators appear as small marks on the scrollbar showing where other collaborators' cursors are positioned in the file.
-
-**Options**
-
-`boolean` values
-
 ### Git Diff Indicators
 
 - Description: Whether to show git diff indicators in the scrollbar.
@@ -1474,7 +1442,6 @@ or
   "breadcrumbs": true,
   "quick_actions": true,
   "selections_menu": true,
-  "agent_review": true,
   "code_actions": false
 },
 ```
@@ -2616,35 +2583,6 @@ The following settings can be overridden for each specific language:
 
 These values take in the same options as the root-level settings with the same name.
 
-## Language Models
-
-- Description: Configuration for language model providers
-- Setting: `language_models`
-- Default:
-
-```json [settings]
-{
-  "language_models": {
-    "anthropic": {
-      "api_url": "https://api.anthropic.com"
-    },
-    "google": {
-      "api_url": "https://generativelanguage.googleapis.com"
-    },
-    "ollama": {
-      "api_url": "http://localhost:11434"
-    },
-    "openai": {
-      "api_url": "https://api.openai.com/v1"
-    }
-  }
-}
-```
-
-**Options**
-
-Configuration for various AI model providers including API URLs and authentication settings.
-
 ## Line Indicator Format
 
 - Description: Format for line indicator in the status bar
@@ -3520,35 +3458,10 @@ List of `integer` column numbers
 - `enabled`: Whether tasks are enabled
 - `prefer_lsp`: Whether to prefer LSP-provided tasks over Zed language extension ones
 
-## Telemetry
-
-- Description: Control what info is collected by Zed.
-- Setting: `telemetry`
-- Default:
-
-```json [settings]
-"telemetry": {
-  "diagnostics": true,
-  "metrics": true
-},
-```
-
-**Options**
-
 ### Diagnostics
 
 - Description: Setting for sending debug-related data, such as crash reports.
 - Setting: `diagnostics`
-- Default: `true`
-
-**Options**
-
-`boolean` values
-
-### Metrics
-
-- Description: Setting for sending anonymized usage data, such what languages you're using Zed with.
-- Setting: `metrics`
 - Default: `true`
 
 **Options**
@@ -4567,32 +4480,6 @@ Run the {#action theme_selector::Toggle} action in the command palette to see a 
 - `on_paste`: Whether to automatically open files after pasting or duplicating them.
 - `on_drop`: Whether to automatically open files dropped from external sources.
 
-## Agent
-
-Visit [the Configuration page](./ai/configuration.md) under the AI section to learn more about all the agent-related settings.
-
-## Collaboration Panel
-
-- Description: Customizations for the collaboration panel.
-- Setting: `collaboration_panel`
-- Default:
-
-```json [settings]
-{
-  "collaboration_panel": {
-    "button": true,
-    "dock": "left",
-    "default_width": 240
-  }
-}
-```
-
-**Options**
-
-- `button`: Whether to show the collaboration panel button in the status bar
-- `dock`: Where to dock the collaboration panel. Can be `left` or `right`
-- `default_width`: Default width of the collaboration panel
-
 ## Debugger
 
 - Description: Configuration for debugger panel and settings
@@ -4819,19 +4706,16 @@ Example:
 ```json [settings]
 "profiles": {
   "Presenting (Dark)": {
-    "agent_buffer_font_size": 18.0,
     "buffer_font_size": 18.0,
     "theme": "One Dark",
     "ui_font_size": 18.0
   },
   "Presenting (Light)": {
-    "agent_buffer_font_size": 18.0,
     "buffer_font_size": 18.0,
     "theme": "One Light",
     "ui_font_size": 18.0
   },
   "Writing": {
-    "agent_buffer_font_size": 15.0,
     "buffer_font_size": 15.0,
     "theme": "Catppuccin Frappé - No Italics",
     "ui_font_size": 15.0,

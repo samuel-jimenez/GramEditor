@@ -309,25 +309,6 @@ For example:
 (comment)+ @comment.around
 ```
 
-### Text redactions
-
-The `redactions.scm` file defines text redaction rules. When collaborating and sharing your screen, it makes sure that certain syntax nodes are rendered in a redacted mode to avoid them from leaking.
-
-Here's an example from a `redactions.scm` file for JSON:
-
-```scheme
-(pair value: (number) @redact)
-(pair value: (string) @redact)
-(array (number) @redact)
-(array (string) @redact)
-```
-
-This query marks number and string values in key-value pairs and arrays for redaction.
-
-| Capture | Description                    |
-| ------- | ------------------------------ |
-| @redact | Captures values to be redacted |
-
 ### Runnable code detection
 
 The `runnables.scm` file defines rules for detecting runnable code.

@@ -9,7 +9,6 @@ Extensions are able to provide the following features to Zed:
 - [Themes](./themes.md)
 - [Icon Themes](./icon-themes.md)
 - [Slash Commands](./slash-commands.md)
-- [MCP Servers](./mcp-extensions.md)
 
 ## Developing an Extension Locally
 
