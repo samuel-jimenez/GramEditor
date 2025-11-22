@@ -21,26 +21,6 @@ impl LspSettings {
     }
 }
 
-impl ContextServerSettings {
-    /// Returns the [`ContextServerSettings`] for the given context server.
-    pub fn for_project(context_server_id: &str, project: &Project) -> Result<Self> {
-        let global_setting: Self = get_settings("context_servers", Some(context_server_id), None)?;
-
-        for worktree_id in project.worktree_ids() {
-            let settings = get_settings(
-                "context_servers",
-                Some(context_server_id),
-                Some(worktree_id),
-            )?;
-            if settings != global_setting {
-                return Ok(settings);
-            }
-        }
-
-        Ok(global_setting)
-    }
-}
-
 fn get_settings<T: serde::de::DeserializeOwned>(
     settings_type: &str,
     settings_name: Option<&str>,
