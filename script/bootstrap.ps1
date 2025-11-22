@@ -18,4 +18,3 @@ Set-Location ../..
 
 Write-Output "creating databases..."
 sqlx database create --database-url "$env:DATABASE_URL"
-sqlx database create --database-url "$env:LLM_DATABASE_URL"

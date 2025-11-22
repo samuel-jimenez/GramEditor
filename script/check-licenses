@@ -2,7 +2,6 @@
 
 set -euo pipefail
 
-AGPL_CRATES=("collab")
 RELEASE_CRATES=("cli" "remote_server" "zed")
 
 check_license () {

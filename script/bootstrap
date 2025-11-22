@@ -50,4 +50,3 @@ eval "$(cargo run --bin dotenv)"
 
 echo "creating databases..."
 sqlx database create --database-url "$DATABASE_URL"
-sqlx database create --database-url "$LLM_DATABASE_URL"
