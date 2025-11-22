@@ -1,32 +1,31 @@
-# Zed
+# Ludd
 
-[![Zed](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/zed-industries/zed/main/assets/badge/v0.json)](https://zed.dev)
-[![CI](https://github.com/zed-industries/zed/actions/workflows/run_tests.yml/badge.svg)](https://github.com/zed-industries/zed/actions/workflows/run_tests.yml)
+[![CI](https://github.com/krig/zod/actions/workflows/run_tests.yml/badge.svg)](https://github.com/krig/zod/actions/workflows/run_tests.yml)
 
-Welcome to Zed, a high-performance, multiplayer code editor from the creators of [Atom](https://github.com/atom/atom) and [Tree-sitter](https://github.com/tree-sitter/tree-sitter).
+Welcome to Ludd, an attempt to unfuck Ludd and turn it into a _good_ code editor.
+
+- NO AI
+- NO TELEMETRY
+- NO PROPRIETARY "COLLABORATION"
+- NO CLA
+- NO TERMS OF USE
+- NO THIRD PARTY INTEGRATIONS
 
 ---
 
 ### Installation
 
-On macOS, Linux, and Windows you can [download Zed directly](https://zed.dev/download) or [install Zed via your local package manager](https://zed.dev/docs/linux#installing-via-a-package-manager).
+Build it from source. It's a text editor for source code. You can figure it out.
 
-Other platforms are not yet available:
+### Developing Ludd
 
-- Web ([tracking issue](https://github.com/zed-industries/zed/issues/5396))
-
-### Developing Zed
-
-- [Building Zed for macOS](./docs/src/development/macos.md)
-- [Building Zed for Linux](./docs/src/development/linux.md)
-- [Building Zed for Windows](./docs/src/development/windows.md)
-- [Running Collaboration Locally](./docs/src/development/local-collaboration.md)
+- [Building Ludd for macOS](./docs/src/development/macos.md)
+- [Building Ludd for Linux](./docs/src/development/linux.md)
+- [Building Ludd for Windows](./docs/src/development/windows.md)
 
 ### Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for ways you can contribute to Zed.
-
-Also... we're hiring! Check out our [jobs](https://zed.dev/jobs) page for open roles.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for ways you can contribute to Ludd.
 
 ### Licensing
 
