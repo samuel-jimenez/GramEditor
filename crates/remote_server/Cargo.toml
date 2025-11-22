@@ -25,7 +25,6 @@ test-support = ["fs/test-support"]
 anyhow.workspace = true
 askpass.workspace = true
 clap.workspace = true
-client.workspace = true
 dap_adapters.workspace = true
 debug_adapter_extension.workspace = true
 env_logger.workspace = true
@@ -77,8 +76,6 @@ minidumper.workspace = true
 
 [dev-dependencies]
 action_log.workspace = true
-agent = { workspace = true, features = ["test-support"] }
-client = { workspace = true, features = ["test-support"] }
 clock = { workspace = true, features = ["test-support"] }
 collections.workspace = true
 dap = { workspace = true, features = ["test-support"] }
@@ -93,9 +90,7 @@ pretty_assertions.workspace = true
 project = { workspace = true, features = ["test-support"] }
 remote = { workspace = true, features = ["test-support"] }
 theme = { workspace = true, features = ["test-support"] }
-language_model = { workspace = true, features = ["test-support"] }
 lsp = { workspace = true, features = ["test-support"] }
-prompt_store.workspace = true
 unindent.workspace = true
 serde_json.workspace = true
 zlog.workspace = true
