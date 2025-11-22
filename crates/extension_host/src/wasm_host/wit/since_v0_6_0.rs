@@ -877,12 +877,6 @@ impl process::Host for WasmState {
     }
 }
 
-#[async_trait]
-impl slash_command::Host for WasmState {}
-
-#[async_trait]
-impl context_server::Host for WasmState {}
-
 impl dap::Host for WasmState {
     async fn resolve_tcp_template(
         &mut self,
@@ -957,43 +951,6 @@ impl ExtensionImports for WasmState {
                             settings: settings.settings,
                             initialization_options: settings.initialization_options,
                         })?)
-                    }
-                    "context_servers" => {
-                        let settings = key
-                            .and_then(|key| {
-                                ProjectSettings::get(location, cx)
-                                    .context_servers
-                                    .get(key.as_str())
-                            })
-                            .cloned()
-                            .unwrap_or_else(|| {
-                                project::project_settings::ContextServerSettings::default_extension(
-                                )
-                            });
-
-                        match settings {
-                            project::project_settings::ContextServerSettings::Custom {
-                                enabled: _,
-                                command,
-                            } => Ok(serde_json::to_string(&settings::ContextServerSettings {
-                                command: Some(settings::CommandSettings {
-                                    path: command.path.to_str().map(|path| path.to_string()),
-                                    arguments: Some(command.args),
-                                    env: command.env.map(|env| env.into_iter().collect()),
-                                }),
-                                settings: None,
-                            })?),
-                            project::project_settings::ContextServerSettings::Extension {
-                                enabled: _,
-                                settings,
-                            } => Ok(serde_json::to_string(&settings::ContextServerSettings {
-                                command: None,
-                                settings: Some(settings),
-                            })?),
-                            project::project_settings::ContextServerSettings::Http { .. } => {
-                                bail!("remote context server settings not supported in 0.6.0")
-                            }
-                        }
                     }
                     _ => {
                         bail!("Unknown settings category: {}", category);

@@ -10,7 +10,7 @@ use anyhow::{Context as _, Result, anyhow, bail};
 use async_compression::futures::bufread::GzipDecoder;
 use async_tar::Archive;
 use client::ExtensionProvides;
-use client::{Client, ExtensionMetadata, GetExtensionsResponse, proto, telemetry::Telemetry};
+use client::{Client, ExtensionMetadata, GetExtensionsResponse, proto};
 use collections::{BTreeMap, BTreeSet, HashSet, btree_map};
 pub use extension::ExtensionManifest;
 use extension::extension_builder::{CompileExtensionOptions, ExtensionBuilder};
@@ -113,7 +113,6 @@ pub struct ExtensionStore {
     pub extension_index: ExtensionIndex,
     pub fs: Arc<dyn Fs>,
     pub http_client: Arc<HttpClientWithUrl>,
-    pub telemetry: Option<Arc<Telemetry>>,
     pub reload_tx: UnboundedSender<Option<Arc<str>>>,
     pub reload_complete_senders: Vec<oneshot::Sender<()>>,
     pub installed_dir: PathBuf,
@@ -208,7 +207,6 @@ pub fn init(
             fs,
             client.http_client(),
             client.http_client(),
-            Some(client.telemetry().clone()),
             node_runtime,
             cx,
         )
@@ -239,7 +237,6 @@ impl ExtensionStore {
         fs: Arc<dyn Fs>,
         http_client: Arc<HttpClientWithUrl>,
         builder_client: Arc<dyn HttpClient>,
-        telemetry: Option<Arc<Telemetry>>,
         node_runtime: NodeRuntime,
         cx: &mut Context<Self>,
     ) -> Self {
@@ -270,7 +267,6 @@ impl ExtensionStore {
             wasm_extensions: Vec::new(),
             fs,
             http_client,
-            telemetry,
             reload_tx,
             tasks: Vec::new(),
 
@@ -542,7 +538,7 @@ impl ExtensionStore {
             .extension_index
             .extensions
             .iter()
-            .filter(|(id, entry)| !entry.dev && extension_settings.should_auto_update(id))
+            .filter(|(id, entry)| !entry.dev)
             .map(|(id, _)| id.as_ref())
             .collect::<Vec<_>>()
             .join(",");
@@ -1154,8 +1150,6 @@ impl ExtensionStore {
             })
             .collect::<Vec<_>>();
 
-        telemetry::event!("Extensions Loaded", id_and_versions = extension_ids);
-
         let themes_to_remove = old_index
             .themes
             .iter()
@@ -1206,17 +1200,11 @@ impl ExtensionStore {
                 }
             }
 
-            for server_id in extension.manifest.context_servers.keys() {
-                self.proxy.unregister_context_server(server_id.clone(), cx);
-            }
             for adapter in extension.manifest.debug_adapters.keys() {
                 self.proxy.unregister_debug_adapter(adapter.clone());
             }
             for locator in extension.manifest.debug_locators.keys() {
                 self.proxy.unregister_debug_locator(locator.clone());
-            }
-            for command_name in extension.manifest.slash_commands.keys() {
-                self.proxy.unregister_slash_command(command_name.clone());
             }
         }
 
@@ -1400,26 +1388,6 @@ impl ExtensionStore {
                                 language.clone(),
                             );
                         }
-                    }
-
-                    for (slash_command_name, slash_command) in &manifest.slash_commands {
-                        this.proxy.register_slash_command(
-                            extension.clone(),
-                            extension::SlashCommand {
-                                name: slash_command_name.to_string(),
-                                description: slash_command.description.to_string(),
-                                // We don't currently expose this as a configurable option, as it currently drives
-                                // the `menu_text` on the `SlashCommand` trait, which is not used for slash commands
-                                // defined in extensions, as they are not able to be added to the menu.
-                                tooltip_text: String::new(),
-                                requires_argument: slash_command.requires_argument,
-                            },
-                        );
-                    }
-
-                    for id in manifest.context_servers.keys() {
-                        this.proxy
-                            .register_context_server(extension.clone(), id.clone(), cx);
                     }
 
                     for (debug_adapter, meta) in &manifest.debug_adapters {
