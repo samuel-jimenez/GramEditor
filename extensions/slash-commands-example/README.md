@@ -57,10 +57,6 @@ zed $_
 2. Launch `zed: install dev extension`
 3. Select the extension folder created above
 
-## Test
-
-Open the assistant and type `/echo` and `/pick-one` at the beginning of a line.
-
 ## Customization
 
 Open the `extensions.toml` file and set the `id`, `name`, `description`, `authors` and `repository` fields.
