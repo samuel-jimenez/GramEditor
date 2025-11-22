@@ -20,8 +20,6 @@ use std::{cmp::Reverse, ops::Range, sync::LazyLock};
 use streaming_iterator::StreamingIterator;
 use tree_sitter::{Query, QueryMatch};
 
-use patterns::SETTINGS_NESTED_KEY_VALUE_PATTERN;
-
 mod migrations;
 mod patterns;
 
@@ -120,10 +118,6 @@ fn run_migrations(text: &str, migrations: &[MigrationType]) -> Result<Option<Str
 pub fn migrate_keymap(text: &str) -> Result<Option<String>> {
     let migrations: &[MigrationType] = &[
         MigrationType::TreeSitter(
-            migrations::m_2025_01_29::KEYMAP_PATTERNS,
-            &KEYMAP_QUERY_2025_01_29,
-        ),
-        MigrationType::TreeSitter(
             migrations::m_2025_01_30::KEYMAP_PATTERNS,
             &KEYMAP_QUERY_2025_01_30,
         ),
@@ -151,10 +145,6 @@ pub fn migrate_settings(text: &str) -> Result<Option<String>> {
             &SETTINGS_QUERY_2025_01_02,
         ),
         MigrationType::TreeSitter(
-            migrations::m_2025_01_29::SETTINGS_PATTERNS,
-            &SETTINGS_QUERY_2025_01_29,
-        ),
-        MigrationType::TreeSitter(
             migrations::m_2025_01_30::SETTINGS_PATTERNS,
             &SETTINGS_QUERY_2025_01_30,
         ),
@@ -165,14 +155,6 @@ pub fn migrate_settings(text: &str) -> Result<Option<String>> {
         MigrationType::TreeSitter(
             migrations::m_2025_05_29::SETTINGS_PATTERNS,
             &SETTINGS_QUERY_2025_05_29,
-        ),
-        MigrationType::TreeSitter(
-            migrations::m_2025_06_16::SETTINGS_PATTERNS,
-            &SETTINGS_QUERY_2025_06_16,
-        ),
-        MigrationType::TreeSitter(
-            migrations::m_2025_06_27::SETTINGS_PATTERNS,
-            &SETTINGS_QUERY_2025_06_27,
         ),
         MigrationType::TreeSitter(
             migrations::m_2025_07_08::SETTINGS_PATTERNS,
@@ -199,17 +181,6 @@ pub fn migrate_settings(text: &str) -> Result<Option<String>> {
     run_migrations(text, migrations)
 }
 
-pub fn migrate_edit_prediction_provider_settings(text: &str) -> Result<Option<String>> {
-    migrate(
-        text,
-        &[(
-            SETTINGS_NESTED_KEY_VALUE_PATTERN,
-            migrations::m_2025_01_29::replace_edit_prediction_provider_setting,
-        )],
-        &EDIT_PREDICTION_SETTINGS_MIGRATION_QUERY,
-    )
-}
-
 pub type MigrationPatterns = &'static [(
     &'static str,
     fn(&str, &QueryMatch, &Query) -> Option<(Range<usize>, String)>,
@@ -232,10 +203,6 @@ macro_rules! define_query {
 
 // keymap
 define_query!(
-    KEYMAP_QUERY_2025_01_29,
-    migrations::m_2025_01_29::KEYMAP_PATTERNS
-);
-define_query!(
     KEYMAP_QUERY_2025_01_30,
     migrations::m_2025_01_30::KEYMAP_PATTERNS
 );
@@ -254,10 +221,6 @@ define_query!(
     migrations::m_2025_01_02::SETTINGS_PATTERNS
 );
 define_query!(
-    SETTINGS_QUERY_2025_01_29,
-    migrations::m_2025_01_29::SETTINGS_PATTERNS
-);
-define_query!(
     SETTINGS_QUERY_2025_01_30,
     migrations::m_2025_01_30::SETTINGS_PATTERNS
 );
@@ -268,14 +231,6 @@ define_query!(
 define_query!(
     SETTINGS_QUERY_2025_05_29,
     migrations::m_2025_05_29::SETTINGS_PATTERNS
-);
-define_query!(
-    SETTINGS_QUERY_2025_06_16,
-    migrations::m_2025_06_16::SETTINGS_PATTERNS
-);
-define_query!(
-    SETTINGS_QUERY_2025_06_27,
-    migrations::m_2025_06_27::SETTINGS_PATTERNS
 );
 define_query!(
     SETTINGS_QUERY_2025_07_08,
@@ -293,15 +248,6 @@ define_query!(
     SETTINGS_QUERY_2025_11_20,
     migrations::m_2025_11_20::SETTINGS_PATTERNS
 );
-
-// custom query
-static EDIT_PREDICTION_SETTINGS_MIGRATION_QUERY: LazyLock<Query> = LazyLock::new(|| {
-    Query::new(
-        &tree_sitter_json::LANGUAGE.into(),
-        SETTINGS_NESTED_KEY_VALUE_PATTERN,
-    )
-    .unwrap()
-});
 
 #[cfg(test)]
 mod tests {
@@ -545,78 +491,6 @@ mod tests {
                     }
                 }
             ]
-            "#,
-            ),
-        )
-    }
-
-    #[test]
-    fn test_replace_setting_name() {
-        assert_migrate_settings(
-            r#"
-                {
-                    "show_inline_completions_in_menu": true,
-                    "show_inline_completions": true,
-                    "inline_completions_disabled_in": ["string"],
-                    "inline_completions": { "some" : "value" }
-                }
-            "#,
-            Some(
-                r#"
-                {
-                    "show_edit_predictions_in_menu": true,
-                    "show_edit_predictions": true,
-                    "edit_predictions_disabled_in": ["string"],
-                    "edit_predictions": { "some" : "value" }
-                }
-            "#,
-            ),
-        )
-    }
-
-    #[test]
-    fn test_nested_string_replace_for_settings() {
-        assert_migrate_settings(
-            r#"
-                {
-                    "features": {
-                        "inline_completion_provider": "zed"
-                    },
-                }
-            "#,
-            Some(
-                r#"
-                {
-                    "features": {
-                        "edit_prediction_provider": "zed"
-                    },
-                }
-            "#,
-            ),
-        )
-    }
-
-    #[test]
-    fn test_replace_settings_in_languages() {
-        assert_migrate_settings(
-            r#"
-                {
-                    "languages": {
-                        "Astro": {
-                            "show_inline_completions": true
-                        }
-                    }
-                }
-            "#,
-            Some(
-                r#"
-                {
-                    "languages": {
-                        "Astro": {
-                            "show_edit_predictions": true
-                        }
-                    }
-                }
             "#,
             ),
         )

@@ -4,14 +4,6 @@ pub(crate) mod m_2025_01_02 {
     pub(crate) use settings::SETTINGS_PATTERNS;
 }
 
-pub(crate) mod m_2025_01_29 {
-    mod keymap;
-    mod settings;
-
-    pub(crate) use keymap::KEYMAP_PATTERNS;
-    pub(crate) use settings::{SETTINGS_PATTERNS, replace_edit_prediction_provider_setting};
-}
-
 pub(crate) mod m_2025_01_30 {
     mod keymap;
     mod settings;
@@ -39,18 +31,6 @@ pub(crate) mod m_2025_03_29 {
 }
 
 pub(crate) mod m_2025_05_29 {
-    mod settings;
-
-    pub(crate) use settings::SETTINGS_PATTERNS;
-}
-
-pub(crate) mod m_2025_06_16 {
-    mod settings;
-
-    pub(crate) use settings::SETTINGS_PATTERNS;
-}
-
-pub(crate) mod m_2025_06_27 {
     mod settings;
 
     pub(crate) use settings::SETTINGS_PATTERNS;
