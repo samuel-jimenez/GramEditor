@@ -7,7 +7,6 @@ edition.workspace = true
 [dependencies]
 anyhow.workspace = true
 clap.workspace = true
-client.workspace = true
 futures.workspace = true
 gpui = { workspace = true, features = ["windows-manifest"] }
 http_client = { workspace = true, features = ["test-support"]}
