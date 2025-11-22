@@ -1939,9 +1939,6 @@ impl Vim {
             editor
                 .selections
                 .set_line_mode(matches!(vim.mode, Mode::VisualLine));
-
-            let hide_edit_predictions = !matches!(vim.mode, Mode::Insert | Mode::Replace);
-            editor.set_edit_predictions_hidden_for_vim_mode(hide_edit_predictions, window, cx);
         });
         cx.notify()
     }
