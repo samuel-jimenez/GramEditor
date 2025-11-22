@@ -84,12 +84,6 @@ impl Component for SettingsGroup {
                             v_flex()
                                 .gap_4()
                                 .child(
-                                    SettingsGroup::new("General").child(
-                                        Checkbox::new("auto_update", ToggleState::Selected)
-                                            .label("Auto Update"),
-                                    ),
-                                )
-                                .child(
                                     SettingsGroup::new("Editor")
                                         .child(
                                             Checkbox::new("line_numbers", ToggleState::Selected)

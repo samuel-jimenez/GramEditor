@@ -14,8 +14,6 @@ doctest = false
 
 [features]
 test-support = [
-    "call/test-support",
-    "client/test-support",
     "http_client/test-support",
     "db/test-support",
     "project/test-support",
@@ -29,8 +27,6 @@ test-support = [
 any_vec.workspace = true
 anyhow.workspace = true
 async-recursion.workspace = true
-call.workspace = true
-client.workspace = true
 clock.workspace = true
 collections.workspace = true
 component.workspace = true
@@ -57,7 +53,6 @@ smallvec.workspace = true
 sqlez.workspace = true
 strum.workspace = true
 task.workspace = true
-telemetry.workspace = true
 theme.workspace = true
 ui.workspace = true
 util.workspace = true
@@ -68,8 +63,6 @@ zed_actions.workspace = true
 windows.workspace = true
 
 [dev-dependencies]
-call = { workspace = true, features = ["test-support"] }
-client = { workspace = true, features = ["test-support"] }
 dap = { workspace = true, features = ["test-support"] }
 db = { workspace = true, features = ["test-support"] }
 fs = { workspace = true, features = ["test-support"] }
