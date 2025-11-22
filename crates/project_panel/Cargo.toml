@@ -39,15 +39,12 @@ theme.workspace = true
 rayon.workspace = true
 ui.workspace = true
 util.workspace = true
-client.workspace = true
 worktree.workspace = true
 workspace.workspace = true
 language.workspace = true
 zed_actions.workspace = true
-telemetry.workspace = true
 
 [dev-dependencies]
-client = { workspace = true, features = ["test-support"] }
 criterion.workspace = true
 editor = { workspace = true, features = ["test-support"] }
 gpui = { workspace = true, features = ["test-support"] }
