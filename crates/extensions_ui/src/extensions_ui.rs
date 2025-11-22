@@ -601,8 +601,6 @@ impl ExtensionsPage {
 
         let repository_url = extension.repository.clone();
 
-        let can_configure = !extension.context_servers.is_empty();
-
         ExtensionCard::new()
             .child(
                 h_flex()
@@ -645,38 +643,13 @@ impl ExtensionsPage {
                                         let extension_id = extension.id.clone();
                                         move |_, _, cx| {
                                             ExtensionStore::global(cx).update(cx, |store, cx| {
-                                                store.uninstall_extension(extension_id.clone(), cx).detach_and_log_err(cx);
+                                                store
+                                                    .uninstall_extension(extension_id.clone(), cx)
+                                                    .detach_and_log_err(cx);
                                             });
                                         }
                                     }),
-                            )
-                            .when(can_configure, |this| {
-                                this.child(
-                                    Button::new(
-                                        SharedString::from(format!("configure-{}", extension.id)),
-                                        "Configure",
-                                    )
-                                    .color(Color::Accent)
-                                    .disabled(matches!(status, ExtensionStatus::Installing))
-                                    .on_click({
-                                        let manifest = Arc::new(extension.clone());
-                                        move |_, _, cx| {
-                                            if let Some(events) =
-                                                extension::ExtensionEvents::try_global(cx)
-                                            {
-                                                events.update(cx, |this, cx| {
-                                                    this.emit(
-                                                        extension::Event::ConfigureExtensionRequested(
-                                                            manifest.clone(),
-                                                        ),
-                                                        cx,
-                                                    )
-                                                });
-                                            }
-                                        }
-                                    }),
-                                )
-                            }),
+                            ),
                     ),
             )
             .child(
@@ -1010,7 +983,6 @@ impl ExtensionsPage {
                 .on_click({
                     let extension_id = extension.id.clone();
                     move |_, _, cx| {
-                        telemetry::event!("Extension Installed");
                         ExtensionStore::global(cx).update(cx, |store, cx| {
                             store.install_latest_extension(extension_id.clone(), cx)
                         });
@@ -1060,7 +1032,6 @@ impl ExtensionsPage {
                 .on_click({
                     let extension_id = extension.id.clone();
                     move |_, _, cx| {
-                        telemetry::event!("Extension Uninstalled", extension_id);
                         ExtensionStore::global(cx).update(cx, |store, cx| {
                             store
                                 .uninstall_extension(extension_id.clone(), cx)
@@ -1117,7 +1088,6 @@ impl ExtensionsPage {
                                 let extension_id = extension.id.clone();
                                 let version = extension.manifest.version.clone();
                                 move |_, _, cx| {
-                                    telemetry::event!("Extension Installed", extension_id, version);
                                     ExtensionStore::global(cx).update(cx, |store, cx| {
                                         store
                                             .upgrade_extension(
@@ -1393,16 +1363,7 @@ impl ExtensionsPage {
             .icon(IconName::ArrowUpRight)
             .icon_size(IconSize::Small)
             .icon_position(IconPosition::End)
-            .on_click({
-                move |_event, _window, cx| {
-                    telemetry::event!(
-                        "Documentation Viewed",
-                        source = "Feature Upsell",
-                        url = docs_url,
-                    );
-                    cx.open_url(&docs_url)
-                }
-            });
+            .on_click({ move |_event, _window, cx| cx.open_url(&docs_url) });
 
         div()
             .pt_4()
@@ -1434,10 +1395,6 @@ impl ExtensionsPage {
                                                 )
                                                 .on_click(cx.listener(
                                                     move |this, selection, _, cx| {
-                                                        telemetry::event!(
-                                                            "Vim Mode Toggled",
-                                                            source = "Feature Upsell"
-                                                        );
                                                         this.update_settings(
                                                             selection,
                                                             cx,
@@ -1731,10 +1688,6 @@ impl Item for ExtensionsPage {
 
     fn tab_content_text(&self, _detail: usize, _cx: &App) -> SharedString {
         "Extensions".into()
-    }
-
-    fn telemetry_event_text(&self) -> Option<&'static str> {
-        Some("Extensions Page Opened")
     }
 
     fn show_toolbar(&self) -> bool {
