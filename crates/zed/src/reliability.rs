@@ -1,5 +1,5 @@
 use anyhow::{Context as _, Result};
-use client::{Client, telemetry::MINIDUMP_ENDPOINT};
+use client::Client;
 use futures::AsyncReadExt;
 use gpui::{App, AppContext as _, SerializedThreadTaskTimings};
 use http_client::{self, HttpClient};
@@ -15,52 +15,6 @@ use crate::STARTUP_TIME;
 
 pub fn init(client: Arc<Client>, cx: &mut App) {
     monitor_hangs(cx);
-
-    if client.telemetry().diagnostics_enabled() {
-        let client = client.clone();
-        cx.background_spawn(async move {
-            upload_previous_minidumps(client).await.warn_on_err();
-        })
-        .detach()
-    }
-
-    cx.observe_new(move |project: &mut Project, _, cx| {
-        let client = client.clone();
-
-        let Some(remote_client) = project.remote_client() else {
-            return;
-        };
-        remote_client.update(cx, |remote_client, cx| {
-            if !client.telemetry().diagnostics_enabled() {
-                return;
-            }
-            let request = remote_client
-                .proto_client()
-                .request(proto::GetCrashFiles {});
-            cx.background_spawn(async move {
-                let GetCrashFilesResponse { crashes } = request.await?;
-
-                let Some(endpoint) = MINIDUMP_ENDPOINT.as_ref() else {
-                    return Ok(());
-                };
-                for CrashReport {
-                    metadata,
-                    minidump_contents,
-                } in crashes
-                {
-                    if let Some(metadata) = serde_json::from_str(&metadata).log_err() {
-                        upload_minidump(client.clone(), endpoint, minidump_contents, &metadata)
-                            .await
-                            .log_err();
-                    }
-                }
-
-                anyhow::Ok(())
-            })
-            .detach_and_log_err(cx);
-        })
-    })
-    .detach();
 }
 
 fn monitor_hangs(cx: &App) {
@@ -217,27 +171,6 @@ async fn upload_minidump(
     if let Some(minidump_error) = metadata.minidump_error.clone() {
         form = form.text("minidump_error", minidump_error);
     }
-
-    if let Some(id) = client.telemetry().metrics_id() {
-        form = form.text("sentry[user][id]", id.to_string());
-        form = form.text(
-            "sentry[user][is_staff]",
-            if client.telemetry().is_staff().unwrap_or_default() {
-                "true"
-            } else {
-                "false"
-            },
-        );
-    } else if let Some(id) = client.telemetry().installation_id() {
-        form = form.text("sentry[user][id]", format!("installation-{}", id))
-    }
-
-    ::telemetry::event!(
-        "Minidump Uploaded",
-        panic_message = panic_message,
-        crashed_version = metadata.init.zed_version.clone(),
-        commit_sha = metadata.init.commit_sha.clone(),
-    );
 
     let gpu_count = metadata.gpus.len();
     for (index, gpu) in metadata.gpus.iter().cloned().enumerate() {

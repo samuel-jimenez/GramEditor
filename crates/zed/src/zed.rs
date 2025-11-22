@@ -50,7 +50,6 @@ use paths::{
 };
 use project::{DirectoryLister, DisableAiSettings, ProjectItem};
 use project_panel::ProjectPanel;
-use prompt_store::PromptBuilder;
 use quick_action_bar::QuickActionBar;
 use recent_projects::open_remote_project;
 use release_channel::{AppCommitSha, ReleaseChannel};
@@ -130,16 +129,6 @@ actions!(
     ]
 );
 
-actions!(
-    dev,
-    [
-        /// Stores last 30s of audio from zed staff using the experimental rodio
-        /// audio system (including yourself) on the current call in a tar file
-        /// in the current working directory.
-        CaptureRecentAudio,
-    ]
-);
-
 pub fn init(cx: &mut App) {
     #[cfg(target_os = "macos")]
     cx.on_action(|_: &Hide, cx| cx.hide());
@@ -190,11 +179,6 @@ pub fn init(cx: &mut App) {
                 window,
                 cx,
             );
-        });
-    });
-    cx.on_action(|_: &zed_actions::OpenTelemetryLog, cx| {
-        with_active_or_new_workspace(cx, |workspace, window, cx| {
-            open_telemetry_log_file(workspace, window, cx);
         });
     });
     cx.on_action(|&zed_actions::OpenKeymapFile, cx| {
@@ -634,22 +618,12 @@ fn show_software_emulation_warning_if_needed(
     }
 }
 
-fn initialize_panels(
-    prompt_builder: Arc<PromptBuilder>,
-    window: &mut Window,
-    cx: &mut Context<Workspace>,
-) {
+fn initialize_panels(window: &mut Window, cx: &mut Context<Workspace>) {
     cx.spawn_in(window, async move |workspace_handle, cx| {
         let project_panel = ProjectPanel::load(workspace_handle.clone(), cx.clone());
         let outline_panel = OutlinePanel::load(workspace_handle.clone(), cx.clone());
         let terminal_panel = TerminalPanel::load(workspace_handle.clone(), cx.clone());
         let git_panel = GitPanel::load(workspace_handle.clone(), cx.clone());
-        let channels_panel =
-            collab_ui::collab_panel::CollabPanel::load(workspace_handle.clone(), cx.clone());
-        let notification_panel = collab_ui::notification_panel::NotificationPanel::load(
-            workspace_handle.clone(),
-            cx.clone(),
-        );
         let debug_panel = DebugPanel::load(workspace_handle.clone(), cx);
 
         let (
@@ -657,16 +631,12 @@ fn initialize_panels(
             outline_panel,
             terminal_panel,
             git_panel,
-            channels_panel,
-            notification_panel,
             debug_panel,
         ) = futures::try_join!(
             project_panel,
             outline_panel,
             git_panel,
             terminal_panel,
-            channels_panel,
-            notification_panel,
             debug_panel,
         )?;
 
@@ -675,77 +645,7 @@ fn initialize_panels(
             workspace.add_panel(outline_panel, window, cx);
             workspace.add_panel(terminal_panel, window, cx);
             workspace.add_panel(git_panel, window, cx);
-            workspace.add_panel(channels_panel, window, cx);
-            workspace.add_panel(notification_panel, window, cx);
             workspace.add_panel(debug_panel, window, cx);
-        })?;
-
-        fn setup_or_teardown_agent_panel(
-            workspace: &mut Workspace,
-            prompt_builder: Arc<PromptBuilder>,
-            window: &mut Window,
-            cx: &mut Context<Workspace>,
-        ) -> Task<anyhow::Result<()>> {
-            let disable_ai = SettingsStore::global(cx)
-                .get::<DisableAiSettings>(None)
-                .disable_ai
-                || cfg!(test);
-            let existing_panel = workspace.panel::<agent_ui::AgentPanel>(cx);
-            match (disable_ai, existing_panel) {
-                (false, None) => cx.spawn_in(window, async move |workspace, cx| {
-                    let panel =
-                        agent_ui::AgentPanel::load(workspace.clone(), prompt_builder, cx.clone())
-                            .await?;
-                    workspace.update_in(cx, |workspace, window, cx| {
-                        let disable_ai = SettingsStore::global(cx)
-                            .get::<DisableAiSettings>(None)
-                            .disable_ai;
-                        let have_panel = workspace.panel::<agent_ui::AgentPanel>(cx).is_some();
-                        if !disable_ai && !have_panel {
-                            workspace.add_panel(panel, window, cx);
-                        }
-                    })
-                }),
-                (true, Some(existing_panel)) => {
-                    workspace.remove_panel::<agent_ui::AgentPanel>(&existing_panel, window, cx);
-                    Task::ready(Ok(()))
-                }
-                _ => Task::ready(Ok(())),
-            }
-        }
-
-        workspace_handle
-            .update_in(cx, |workspace, window, cx| {
-                setup_or_teardown_agent_panel(workspace, prompt_builder.clone(), window, cx)
-            })?
-            .await?;
-
-        workspace_handle.update_in(cx, |workspace, window, cx| {
-            cx.observe_global_in::<SettingsStore>(window, {
-                let prompt_builder = prompt_builder.clone();
-                move |workspace, window, cx| {
-                    setup_or_teardown_agent_panel(workspace, prompt_builder.clone(), window, cx)
-                        .detach_and_log_err(cx);
-                }
-            })
-            .detach();
-
-            // Register the actions that are shared between `assistant` and `assistant2`.
-            //
-            // We need to do this here instead of within the individual `init`
-            // functions so that we only register the actions once.
-            //
-            // Once we ship `assistant2` we can push this back down into `agent::agent_panel::init`.
-            if !cfg!(test) {
-                <dyn AgentPanelDelegate>::set_global(
-                    Arc::new(agent_ui::ConcreteAssistantPanelDelegate),
-                    cx,
-                );
-
-                workspace
-                    .register_action(agent_ui::AgentPanel::toggle_focus)
-                    .register_action(agent_ui::InlineAssistant::inline_assist);
-            }
         })?;
 
         anyhow::Ok(())
@@ -795,7 +695,6 @@ fn register_actions(
             }
         })
         .register_action(|workspace, _: &workspace::Open, window, cx| {
-            telemetry::event!("Project Opened");
             let paths = workspace.prompt_for_open_path(
                 PathPromptOptions {
                     files: true,
@@ -836,7 +735,6 @@ fn register_actions(
             if workspace.project().read(cx).is_local() {
                 return;
             }
-            telemetry::event!("Project Opened");
             let paths = workspace.prompt_for_open_path(
                 PathPromptOptions {
                     files: true,
@@ -960,14 +858,10 @@ fn register_actions(
                     update_settings_file(fs.clone(), cx, move |settings, _| {
                         settings.theme.ui_font_size = None;
                         settings.theme.buffer_font_size = None;
-                        settings.theme.agent_ui_font_size = None;
-                        settings.theme.agent_buffer_font_size = None;
                     });
                 } else {
                     theme::reset_ui_font_size(cx);
                     theme::reset_buffer_font_size(cx);
-                    theme::reset_agent_ui_font_size(cx);
-                    theme::reset_agent_buffer_font_size(cx);
                 }
             }
         })
@@ -1014,24 +908,6 @@ fn register_actions(
              window: &mut Window,
              cx: &mut Context<Workspace>| {
                 workspace.toggle_panel_focus::<OutlinePanel>(window, cx);
-            },
-        )
-        .register_action(
-            |workspace: &mut Workspace,
-             _: &collab_ui::collab_panel::ToggleFocus,
-             window: &mut Window,
-             cx: &mut Context<Workspace>| {
-                workspace.toggle_panel_focus::<collab_ui::collab_panel::CollabPanel>(window, cx);
-            },
-        )
-        .register_action(
-            |workspace: &mut Workspace,
-             _: &collab_ui::notification_panel::ToggleFocus,
-             window: &mut Window,
-             cx: &mut Context<Workspace>| {
-                workspace.toggle_panel_focus::<collab_ui::notification_panel::NotificationPanel>(
-                    window, cx,
-                );
             },
         )
         .register_action(
@@ -1900,74 +1776,6 @@ fn open_local_file(
     }
 }
 
-fn open_telemetry_log_file(
-    workspace: &mut Workspace,
-    window: &mut Window,
-    cx: &mut Context<Workspace>,
-) {
-    const HEADER: &str = concat!(
-        "// Zed collects anonymous usage data to help us understand how people are using the app.\n",
-        "// Telemetry can be disabled via the `settings.json` file.\n",
-        "// Here is the data that has been reported for the current session:\n",
-    );
-    workspace
-        .with_local_workspace(window, cx, move |workspace, window, cx| {
-            let app_state = workspace.app_state().clone();
-            cx.spawn_in(window, async move |workspace, cx| {
-                async fn fetch_log_string(app_state: &Arc<AppState>) -> Option<String> {
-                    let path = client::telemetry::Telemetry::log_file_path();
-                    app_state.fs.load(&path).await.log_err()
-                }
-
-                let log = fetch_log_string(&app_state)
-                    .await
-                    .unwrap_or_else(|| "// No data has been collected yet".to_string());
-
-                const MAX_TELEMETRY_LOG_LEN: usize = 5 * 1024 * 1024;
-                let mut start_offset = log.len().saturating_sub(MAX_TELEMETRY_LOG_LEN);
-                if let Some(newline_offset) = log[start_offset..].find('\n') {
-                    start_offset += newline_offset + 1;
-                }
-                let log_suffix = &log[start_offset..];
-                let content = format!("{}\n{}", HEADER, log_suffix);
-                let json = app_state
-                    .languages
-                    .language_for_name("JSON")
-                    .await
-                    .log_err();
-
-                workspace
-                    .update_in(cx, |workspace, window, cx| {
-                        let project = workspace.project().clone();
-                        let buffer = project.update(cx, |project, cx| {
-                            project.create_local_buffer(&content, json, false, cx)
-                        });
-                        let buffer = cx.new(|cx| {
-                            MultiBuffer::singleton(buffer, cx).with_title("Telemetry Log".into())
-                        });
-                        workspace.add_item_to_active_pane(
-                            Box::new(cx.new(|cx| {
-                                let mut editor =
-                                    Editor::for_multibuffer(buffer, Some(project), window, cx);
-                                editor.set_read_only(true);
-                                editor.set_breadcrumb_header("Telemetry Log".into());
-                                editor
-                            })),
-                            None,
-                            true,
-                            window,
-                            cx,
-                        );
-                    })
-                    .log_err()?;
-
-                Some(())
-            })
-            .detach();
-        })
-        .detach();
-}
-
 fn open_bundled_file(
     workspace: &Workspace,
     text: Cow<'static, str>,
@@ -2047,84 +1855,6 @@ fn open_settings_file(
         anyhow::Ok(())
     })
     .detach_and_log_err(cx);
-}
-
-fn capture_recent_audio(workspace: &mut Workspace, _: &mut Window, cx: &mut Context<Workspace>) {
-    struct CaptureRecentAudioNotification {
-        focus_handle: gpui::FocusHandle,
-        save_result: Option<Result<(PathBuf, Duration), anyhow::Error>>,
-        _save_task: Task<anyhow::Result<()>>,
-    }
-
-    impl gpui::EventEmitter<DismissEvent> for CaptureRecentAudioNotification {}
-    impl gpui::EventEmitter<SuppressEvent> for CaptureRecentAudioNotification {}
-    impl gpui::Focusable for CaptureRecentAudioNotification {
-        fn focus_handle(&self, _cx: &App) -> gpui::FocusHandle {
-            self.focus_handle.clone()
-        }
-    }
-    impl workspace::notifications::Notification for CaptureRecentAudioNotification {}
-
-    impl Render for CaptureRecentAudioNotification {
-        fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-            let message = match &self.save_result {
-                None => format!(
-                    "Saving up to {} seconds of recent audio",
-                    REPLAY_DURATION.as_secs(),
-                ),
-                Some(Ok((path, duration))) => format!(
-                    "Saved {} seconds of all audio to {}",
-                    duration.as_secs(),
-                    path.display(),
-                ),
-                Some(Err(e)) => format!("Error saving audio replays: {e:?}"),
-            };
-
-            NotificationFrame::new()
-                .with_title(Some("Saved Audio"))
-                .show_suppress_button(false)
-                .on_close(cx.listener(|_, _, _, cx| {
-                    cx.emit(DismissEvent);
-                }))
-                .with_content(message)
-        }
-    }
-
-    impl CaptureRecentAudioNotification {
-        fn new(cx: &mut Context<Self>) -> Self {
-            if AudioSettings::get_global(cx).rodio_audio {
-                let executor = cx.background_executor().clone();
-                let save_task = cx.default_global::<audio::Audio>().save_replays(executor);
-                let _save_task = cx.spawn(async move |this, cx| {
-                    let res = save_task.await;
-                    this.update(cx, |this, cx| {
-                        this.save_result = Some(res);
-                        cx.notify();
-                    })
-                });
-
-                Self {
-                    focus_handle: cx.focus_handle(),
-                    _save_task,
-                    save_result: None,
-                }
-            } else {
-                Self {
-                    focus_handle: cx.focus_handle(),
-                    _save_task: Task::ready(Ok(())),
-                    save_result: Some(Err(anyhow::anyhow!(
-                        "Capturing recent audio is only supported on the experimental rodio audio pipeline"
-                    ))),
-                }
-            }
-        }
-    }
-
-    workspace.show_notification(
-        NotificationId::unique::<CaptureRecentAudioNotification>(),
-        cx,
-        |cx| cx.new(CaptureRecentAudioNotification::new),
-    );
 }
 
 /// Eagerly loads the active theme and icon theme based on the selections in the
@@ -4769,39 +4499,17 @@ mod tests {
 
             gpui_tokio::init(cx);
             theme::init(theme::LoadThemes::JustBase, cx);
-            audio::init(cx);
             channel::init(&app_state.client, app_state.user_store.clone(), cx);
-            call::init(app_state.client.clone(), app_state.user_store.clone(), cx);
             notifications::init(app_state.client.clone(), app_state.user_store.clone(), cx);
             workspace::init(app_state.clone(), cx);
             release_channel::init(SemanticVersion::default(), cx);
             command_palette::init(cx);
             editor::init(cx);
-            collab_ui::init(&app_state, cx);
             git_ui::init(cx);
             project_panel::init(cx);
             outline_panel::init(cx);
             terminal_view::init(cx);
-            copilot::copilot_chat::init(
-                app_state.fs.clone(),
-                app_state.client.http_client(),
-                copilot::copilot_chat::CopilotChatConfiguration::default(),
-                cx,
-            );
             image_viewer::init(cx);
-            language_model::init(app_state.client.clone(), cx);
-            language_models::init(app_state.user_store.clone(), app_state.client.clone(), cx);
-            web_search::init(cx);
-            web_search_providers::init(app_state.client.clone(), cx);
-            let prompt_builder = PromptBuilder::load(app_state.fs.clone(), false, cx);
-            agent_ui::init(
-                app_state.fs.clone(),
-                app_state.client.clone(),
-                prompt_builder.clone(),
-                app_state.languages.clone(),
-                false,
-                cx,
-            );
             repl::init(app_state.fs.clone(), cx);
             repl::notebook::init(cx);
             tasks_ui::init(cx);
@@ -4810,7 +4518,7 @@ mod tests {
             );
             project::debugger::dap_store::DapStore::init(&app_state.client.clone().into(), cx);
             debugger_ui::init(cx);
-            initialize_workspace(app_state.clone(), prompt_builder, cx);
+            initialize_workspace(app_state.clone(), cx);
             search::init(cx);
             app_state
         })

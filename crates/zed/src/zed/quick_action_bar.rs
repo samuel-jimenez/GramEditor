@@ -27,7 +27,7 @@ use workspace::item::ItemBufferKind;
 use workspace::{
     ToolbarItemEvent, ToolbarItemLocation, ToolbarItemView, Workspace, item::ItemHandle,
 };
-use zed_actions::{agent::AddSelectionToThread, assistant::InlineAssist, outline::ToggleOutline};
+use zed_actions::{agent::AddSelectionToThread, outline::ToggleOutline};
 
 const MAX_CODE_ACTION_MENU_LINES: u32 = 16;
 
@@ -123,9 +123,6 @@ impl Render for QuickActionBar {
         let auto_signature_help_enabled = editor_value.auto_signature_help_enabled(cx);
         let show_line_numbers = editor_value.line_numbers_enabled(cx);
         let has_edit_prediction_provider = editor_value.edit_prediction_provider().is_some();
-        let show_edit_predictions = editor_value.edit_predictions_enabled();
-        let edit_predictions_enabled_at_cursor =
-            editor_value.edit_predictions_enabled_at_cursor(cx);
         let supports_minimap = editor_value.supports_minimap(cx);
         let minimap_enabled = supports_minimap && editor_value.minimap().is_some();
         let has_available_code_actions = editor_value.has_available_code_actions();
@@ -150,18 +147,6 @@ impl Render for QuickActionBar {
                 },
             )
         });
-
-        let assistant_button = QuickActionBarButton::new(
-            "toggle inline assistant",
-            IconName::ZedAssistant,
-            false,
-            Box::new(InlineAssist::default()),
-            focus_handle,
-            "Inline Assist",
-            move |_, window, cx| {
-                window.dispatch_action(Box::new(InlineAssist::default()), cx);
-            },
-        );
 
         let code_actions_dropdown = code_action_enabled.then(|| {
             let focus = editor.focus_handle(cx);
@@ -399,35 +384,6 @@ impl Render for QuickActionBar {
                                 },)
                             }
 
-                            if has_edit_prediction_provider {
-                                let mut edit_prediction_entry = ContextMenuEntry::new("Edit Predictions")
-                                    .toggleable(IconPosition::Start, edit_predictions_enabled_at_cursor && show_edit_predictions)
-                                    .disabled(!edit_predictions_enabled_at_cursor)
-                                    .action(
-                                        editor::actions::ToggleEditPrediction.boxed_clone(),
-                                    ).handler({
-                                        let editor = editor.clone();
-                                        move |window, cx| {
-                                            editor
-                                                .update(cx, |editor, cx| {
-                                                    editor.toggle_edit_predictions(
-                                                        &editor::actions::ToggleEditPrediction,
-                                                        window,
-                                                        cx,
-                                                    );
-                                                })
-                                                .ok();
-                                        }
-                                    });
-                                if !edit_predictions_enabled_at_cursor {
-                                    edit_prediction_entry = edit_prediction_entry.documentation_aside(DocumentationSide::Left, DocumentationEdge::Top, |_| {
-                                        Label::new("You can't toggle edit predictions for this file as it is within the excluded files list.").into_any_element()
-                                    });
-                                }
-
-                                menu = menu.item(edit_prediction_entry);
-                            }
-
                             menu = menu.separator();
 
                             if supports_diagnostics {
@@ -630,10 +586,6 @@ impl Render for QuickActionBar {
             .children(self.render_repl_menu(cx))
             .children(self.render_preview_button(self.workspace.clone(), cx))
             .children(search_button)
-            .when(
-                AgentSettings::get_global(cx).enabled(cx) && AgentSettings::get_global(cx).button,
-                |bar| bar.child(assistant_button),
-            )
             .children(code_actions_dropdown)
             .children(editor_selections_dropdown)
             .child(editor_settings_dropdown)
