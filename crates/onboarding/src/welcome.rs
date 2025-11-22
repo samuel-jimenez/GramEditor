@@ -56,11 +56,6 @@ const CONTENT: (Section<4>, Section<3>) = (
                 action: &OpenSettings,
             },
             SectionEntry {
-                icon: IconName::ZedAssistant,
-                title: "View AI Settings",
-                action: &agent::OpenSettings,
-            },
-            SectionEntry {
                 icon: IconName::Blocks,
                 title: "Explore Extensions",
                 action: &Extensions {
@@ -314,10 +309,6 @@ impl Item for WelcomePage {
 
     fn tab_content_text(&self, _detail: usize, _cx: &App) -> SharedString {
         "Welcome".into()
-    }
-
-    fn telemetry_event_text(&self) -> Option<&'static str> {
-        Some("New Welcome Page Opened")
     }
 
     fn show_toolbar(&self) -> bool {

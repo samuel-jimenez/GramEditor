@@ -16,7 +16,6 @@ default = []
 
 [dependencies]
 anyhow.workspace = true
-client.workspace = true
 component.workspace = true
 db.workspace = true
 documented.workspace = true
@@ -31,7 +30,6 @@ project.workspace = true
 schemars.workspace = true
 serde.workspace = true
 settings.workspace = true
-telemetry.workspace = true
 theme.workspace = true
 ui.workspace = true
 util.workspace = true
