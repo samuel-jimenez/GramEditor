@@ -88,7 +88,6 @@ use code_context_menus::{
 };
 use collections::{BTreeMap, HashMap, HashSet, VecDeque};
 use convert_case::{Case, Casing};
-use dap::TelemetrySpawnLocation;
 use display_map::*;
 use edit_prediction::{EditPredictionProvider, EditPredictionProviderHandle};
 use editor_settings::{GoToDefinitionFallback, Minimap as MinimapSettings};
@@ -6437,7 +6436,6 @@ impl Editor {
                 let context = actions_menu.actions.context;
 
                 workspace.update(cx, |workspace, cx| {
-                    dap::send_telemetry(&scenario, TelemetrySpawnLocation::Gutter, cx);
                     workspace.start_debug_session(
                         scenario,
                         context,
@@ -7668,37 +7666,6 @@ impl Editor {
         self.take_active_edit_prediction(cx)
     }
 
-    fn report_edit_prediction_event(&self, id: Option<SharedString>, accepted: bool, cx: &App) {
-        let Some(provider) = self.edit_prediction_provider() else {
-            return;
-        };
-
-        let Some((_, buffer, _)) = self
-            .buffer
-            .read(cx)
-            .excerpt_containing(self.selections.newest_anchor().head(), cx)
-        else {
-            return;
-        };
-
-        let extension = buffer
-            .read(cx)
-            .file()
-            .and_then(|file| Some(file.path().extension()?.to_string()));
-
-        let event_type = match accepted {
-            true => "Edit Prediction Accepted",
-            false => "Edit Prediction Discarded",
-        };
-        telemetry::event!(
-            event_type,
-            provider = provider.name(),
-            prediction_id = id,
-            suggestion_accepted = accepted,
-            file_extension = extension,
-        );
-    }
-
     fn open_editor_at_anchor(
         snapshot: &language::BufferSnapshot,
         target: language::Anchor,
@@ -7729,39 +7696,6 @@ impl Editor {
         })
     }
 
-    pub fn has_active_edit_prediction(&self) -> bool {
-        self.active_edit_prediction.is_some()
-    }
-
-    fn take_active_edit_prediction(&mut self, cx: &mut Context<Self>) -> bool {
-        let Some(active_edit_prediction) = self.active_edit_prediction.take() else {
-            return false;
-        };
-
-        self.splice_inlays(&active_edit_prediction.inlay_ids, Default::default(), cx);
-        self.clear_highlights::<EditPredictionHighlight>(cx);
-        self.stale_edit_prediction_in_menu = Some(active_edit_prediction);
-        true
-    }
-
-    /// Returns true when we're displaying the edit prediction popover below the cursor
-    /// like we are not previewing and the LSP autocomplete menu is visible
-    /// or we are in `when_holding_modifier` mode.
-    pub fn edit_prediction_visible_in_cursor_popover(&self, has_completion: bool) -> bool {
-        if self.edit_prediction_preview_is_active()
-            || !self.show_edit_predictions_in_menu()
-            || !self.edit_predictions_enabled()
-        {
-            return false;
-        }
-
-        if self.has_visible_completions_menu() {
-            return true;
-        }
-
-        has_completion && self.edit_prediction_requires_modifier()
-    }
-
     fn handle_modifiers_changed(
         &mut self,
         modifiers: Modifiers,
@@ -7769,17 +7703,6 @@ impl Editor {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) {
-        // Ensure that the edit prediction preview is updated, even when not
-        // enabled, if there's an active edit prediction preview.
-        if self.show_edit_predictions_in_menu()
-            || matches!(
-                self.edit_prediction_preview,
-                EditPredictionPreview::Active { .. }
-            )
-        {
-            self.update_edit_prediction_preview(&modifiers, window, cx);
-        }
-
         self.update_selection_mode(&modifiers, position_map, window, cx);
 
         let mouse_position = window.mouse_position();
@@ -21351,15 +21274,6 @@ impl Editor {
 
                 cx.emit(EditorEvent::BufferEdited);
                 cx.emit(SearchEvent::MatchesInvalidated);
-
-                let Some(project) = &self.project else { return };
-                let (telemetry, is_via_ssh) = {
-                    let project = project.read(cx);
-                    let telemetry = project.client().telemetry().clone();
-                    let is_via_ssh = project.is_via_remote_server();
-                    (telemetry, is_via_ssh)
-                };
-                telemetry.log_edit_event("editor", is_via_ssh);
             }
             multi_buffer::Event::ExcerptsAdded {
                 buffer,
@@ -21882,70 +21796,6 @@ impl Editor {
                     ..snapshot.clip_offset_utf16(selection.end, Bias::Right)
             })
             .collect()
-    }
-
-    fn report_editor_event(
-        &self,
-        reported_event: ReportEditorEvent,
-        file_extension: Option<String>,
-        cx: &App,
-    ) {
-        if cfg!(any(test, feature = "test-support")) {
-            return;
-        }
-
-        let Some(project) = &self.project else { return };
-
-        // If None, we are in a file without an extension
-        let file = self
-            .buffer
-            .read(cx)
-            .as_singleton()
-            .and_then(|b| b.read(cx).file());
-        let file_extension = file_extension.or(file
-            .as_ref()
-            .and_then(|file| Path::new(file.file_name(cx)).extension())
-            .and_then(|e| e.to_str())
-            .map(|a| a.to_string()));
-
-        let vim_mode = vim_mode_setting::VimModeSetting::try_get(cx)
-            .map(|vim_mode| vim_mode.0)
-            .unwrap_or(false);
-
-        let edit_predictions_provider = all_language_settings(file, cx).edit_predictions.provider;
-        let copilot_enabled = edit_predictions_provider
-            == language::language_settings::EditPredictionProvider::Copilot;
-        let copilot_enabled_for_language = self
-            .buffer
-            .read(cx)
-            .language_settings(cx)
-            .show_edit_predictions;
-
-        let project = project.read(cx);
-        let event_type = reported_event.event_type();
-
-        if let ReportEditorEvent::Saved { auto_saved } = reported_event {
-            telemetry::event!(
-                event_type,
-                type = if auto_saved {"autosave"} else {"manual"},
-                file_extension,
-                vim_mode,
-                copilot_enabled,
-                copilot_enabled_for_language,
-                edit_predictions_provider,
-                is_via_ssh = project.is_via_remote_server(),
-            );
-        } else {
-            telemetry::event!(
-                event_type,
-                file_extension,
-                vim_mode,
-                copilot_enabled,
-                copilot_enabled_for_language,
-                edit_predictions_provider,
-                is_via_ssh = project.is_via_remote_server(),
-            );
-        };
     }
 
     /// Copy the highlighted chunks to the clipboard as JSON. The format is an array of lines,
