@@ -5,7 +5,6 @@ use std::{
 
 use anyhow::{Context as _, Result};
 use askpass::EncryptedPassword;
-use auto_update::AutoUpdater;
 use editor::Editor;
 use extension_host::ExtensionStore;
 use futures::channel::oneshot;
@@ -474,56 +473,6 @@ impl remote::RemoteClientDelegate for RemoteClientDelegate {
 
     fn set_status(&self, status: Option<&str>, cx: &mut AsyncApp) {
         self.update_status(status, cx)
-    }
-
-    fn download_server_binary_locally(
-        &self,
-        platform: RemotePlatform,
-        release_channel: ReleaseChannel,
-        version: Option<SemanticVersion>,
-        cx: &mut AsyncApp,
-    ) -> Task<anyhow::Result<PathBuf>> {
-        let this = self.clone();
-        cx.spawn(async move |cx| {
-            AutoUpdater::download_remote_server_release(
-                release_channel,
-                version,
-                platform.os,
-                platform.arch,
-                move |status, cx| this.set_status(Some(status), cx),
-                cx,
-            )
-            .await
-            .with_context(|| {
-                format!(
-                    "Downloading remote server binary (version: {}, os: {}, arch: {})",
-                    version
-                        .map(|v| format!("{}", v))
-                        .unwrap_or("unknown".to_string()),
-                    platform.os,
-                    platform.arch,
-                )
-            })
-        })
-    }
-
-    fn get_download_url(
-        &self,
-        platform: RemotePlatform,
-        release_channel: ReleaseChannel,
-        version: Option<SemanticVersion>,
-        cx: &mut AsyncApp,
-    ) -> Task<Result<Option<String>>> {
-        cx.spawn(async move |cx| {
-            AutoUpdater::get_remote_server_release_url(
-                release_channel,
-                version,
-                platform.os,
-                platform.arch,
-                cx,
-            )
-            .await
-        })
     }
 }
 
