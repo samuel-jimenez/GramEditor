@@ -1210,10 +1210,6 @@ impl Item for TerminalView {
         terminal.title(detail == 0).into()
     }
 
-    fn telemetry_event_text(&self) -> Option<&'static str> {
-        None
-    }
-
     fn buffer_kind(&self, _: &App) -> workspace::item::ItemBufferKind {
         workspace::item::ItemBufferKind::Singleton
     }

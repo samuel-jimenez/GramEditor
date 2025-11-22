@@ -3,16 +3,10 @@ use std::sync::atomic::AtomicBool;
 
 use crate::{TerminalView, terminal_panel::TerminalPanel};
 use anyhow::Result;
-use assistant_slash_command::{
-    ArgumentCompletion, SlashCommand, SlashCommandOutput, SlashCommandOutputSection,
-    SlashCommandResult,
-};
 use gpui::{App, Entity, Task, WeakEntity};
 use language::{BufferSnapshot, CodeLabel, LspAdapterDelegate};
 use ui::prelude::*;
 use workspace::{Workspace, dock::Panel};
-
-use assistant_slash_command::create_label_for_command;
 
 pub struct TerminalSlashCommand;
 
