@@ -1,6 +1,5 @@
 //! # system_specs
 
-use client::telemetry;
 pub use gpui::GpuSpecs;
 use gpui::{App, AppContext as _, SemanticVersion, Task, Window, actions};
 use human_bytes::human_bytes;
@@ -21,8 +20,6 @@ actions!(
 pub struct SystemSpecs {
     app_version: String,
     release_channel: &'static str,
-    os_name: String,
-    os_version: String,
     memory: u64,
     architecture: &'static str,
     commit_sha: Option<String>,
@@ -34,7 +31,6 @@ impl SystemSpecs {
     pub fn new(window: &mut Window, cx: &mut App) -> Task<Self> {
         let app_version = AppVersion::global(cx).to_string();
         let release_channel = ReleaseChannel::global(cx);
-        let os_name = telemetry::os_name();
         let system = System::new_with_specifics(
             RefreshKind::nothing().with_memory(MemoryRefreshKind::everything()),
         );
@@ -56,13 +52,10 @@ impl SystemSpecs {
         });
 
         cx.background_spawn(async move {
-            let os_version = telemetry::os_version();
             SystemSpecs {
                 app_version,
                 release_channel: release_channel.display_name(),
                 bundle_type,
-                os_name,
-                os_version,
                 memory,
                 architecture,
                 commit_sha,
@@ -76,8 +69,6 @@ impl SystemSpecs {
         app_commit_sha: Option<AppCommitSha>,
         release_channel: ReleaseChannel,
     ) -> Self {
-        let os_name = telemetry::os_name();
-        let os_version = telemetry::os_version();
         let system = System::new_with_specifics(
             RefreshKind::nothing().with_memory(MemoryRefreshKind::everything()),
         );
@@ -92,8 +83,6 @@ impl SystemSpecs {
         Self {
             app_version: app_version.to_string(),
             release_channel: release_channel.display_name(),
-            os_name,
-            os_version,
             memory,
             architecture,
             commit_sha,
@@ -105,7 +94,6 @@ impl SystemSpecs {
 
 impl Display for SystemSpecs {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let os_information = format!("OS: {} {}", self.os_name, self.os_version);
         let app_version_information = format!(
             "Zed: v{} ({}) {}{}",
             self.app_version,
@@ -126,7 +114,6 @@ impl Display for SystemSpecs {
         );
         let system_specs = [
             app_version_information,
-            os_information,
             format!("Memory: {}", human_bytes(self.memory as f64)),
             format!("Architecture: {}", self.architecture),
         ]
