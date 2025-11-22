@@ -605,72 +605,6 @@ For the case of "open", regular selection behavior can be achieved by holding `a
 
 `float` values between `0` and `0.5`
 
-## Edit Predictions
-
-- Description: Settings for edit predictions.
-- Setting: `edit_predictions`
-- Default:
-
-```json [settings]
-  "edit_predictions": {
-    "disabled_globs": [
-      "**/.env*",
-      "**/*.pem",
-      "**/*.key",
-      "**/*.cert",
-      "**/*.crt",
-      "**/.dev.vars",
-      "**/secrets.yml"
-    ]
-  }
-```
-
-**Options**
-
-### Disabled Globs
-
-- Description: A list of globs for which edit predictions should be disabled for. This list adds to a pre-existing, sensible default set of globs. Any additional ones you add are combined with them.
-- Setting: `disabled_globs`
-- Default: `["**/.env*", "**/*.pem", "**/*.key", "**/*.cert", "**/*.crt", "**/.dev.vars", "**/secrets.yml"]`
-
-**Options**
-
-List of `string` values.
-
-## Edit Predictions Disabled in
-
-- Description: A list of language scopes in which edit predictions should be disabled.
-- Setting: `edit_predictions_disabled_in`
-- Default: `[]`
-
-**Options**
-
-List of `string` values
-
-1. Don't show edit predictions in comments:
-
-```json [settings]
-"disabled_in": ["comment"]
-```
-
-2. Don't show edit predictions in strings and comments:
-
-```json [settings]
-"disabled_in": ["comment", "string"]
-```
-
-3. Only in Go, don't show edit predictions in strings and comments:
-
-```json [settings]
-{
-  "languages": {
-    "Go": {
-      "edit_predictions_disabled_in": ["comment", "string"]
-    }
-  }
-}
-```
-
 ## Current Line Highlight
 
 - Description: How to highlight the current line in the editor.
@@ -1614,55 +1548,6 @@ While other options may be changed at a runtime and should be placed under `sett
 ```json [settings]
 {
   "features": {
-    "edit_prediction_provider": "zed"
-  }
-}
-```
-
-### Edit Prediction Provider
-
-- Description: Which edit prediction provider to use
-- Setting: `edit_prediction_provider`
-- Default: `"zed"`
-
-**Options**
-
-1. Use Zeta as the edit prediction provider:
-
-```json [settings]
-{
-  "features": {
-    "edit_prediction_provider": "zed"
-  }
-}
-```
-
-2. Use Copilot as the edit prediction provider:
-
-```json [settings]
-{
-  "features": {
-    "edit_prediction_provider": "copilot"
-  }
-}
-```
-
-3. Use Supermaven as the edit prediction provider:
-
-```json [settings]
-{
-  "features": {
-    "edit_prediction_provider": "supermaven"
-  }
-}
-```
-
-4. Turn off edit predictions across all providers
-
-```json [settings]
-{
-  "features": {
-    "edit_prediction_provider": "none"
   }
 }
 ```
@@ -2573,7 +2458,6 @@ The following settings can be overridden for each specific language:
 - [`hard_tabs`](#hard-tabs)
 - [`preferred_line_length`](#preferred-line-length)
 - [`remove_trailing_whitespace_on_save`](#remove-trailing-whitespace-on-save)
-- [`show_edit_predictions`](#show-edit-predictions)
 - [`show_whitespaces`](#show-whitespaces)
 - [`whitespace_map`](#whitespace-map)
 - [`soft_wrap`](#soft-wrap)
@@ -3308,16 +3192,6 @@ Positive integer values
 
 - Description: Whether to display inline and alongside documentation for items in the completions menu.
 - Setting: `show_completion_documentation`
-- Default: `true`
-
-**Options**
-
-`boolean` values
-
-## Show Edit Predictions
-
-- Description: Whether to show edit predictions as you type or manually by triggering `editor::ShowEditPrediction`.
-- Setting: `show_edit_predictions`
 - Default: `true`
 
 **Options**
