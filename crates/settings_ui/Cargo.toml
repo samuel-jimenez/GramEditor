@@ -35,7 +35,6 @@ search.workspace = true
 serde.workspace = true
 settings.workspace = true
 strum.workspace = true
-telemetry.workspace = true
 theme.workspace = true
 title_bar.workspace = true
 ui.workspace = true
@@ -46,7 +45,6 @@ zed_actions.workspace = true
 
 [dev-dependencies]
 assets.workspace = true
-client.workspace = true
 futures.workspace = true
 gpui = { workspace = true, features = ["test-support"] }
 language.workspace = true
