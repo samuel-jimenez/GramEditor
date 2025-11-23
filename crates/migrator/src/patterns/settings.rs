@@ -21,25 +21,6 @@ pub const SETTINGS_NESTED_KEY_VALUE_PATTERN: &str = r#"(document
     )
 )"#;
 
-pub const SETTINGS_LANGUAGES_PATTERN: &str = r#"(document
-    (object
-        (pair
-            key: (string (string_content) @languages)
-            value: (object
-            (pair
-                key: (string)
-                value: (object
-                    (pair
-                        key: (string (string_content) @setting_name)
-                        value: (_) @value
-                    )
-                )
-            ))
-        )
-    )
-    (#eq? @languages "languages")
-)"#;
-
 /// Migrate language settings,
 /// calls `migrate_fn` with the top level object as well as all language settings under the "languages" key
 /// Fails early if `migrate_fn` returns an error at any point
