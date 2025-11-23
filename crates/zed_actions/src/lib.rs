@@ -79,9 +79,6 @@ pub enum ExtensionCategoryFilter {
     Languages,
     Grammars,
     LanguageServers,
-    ContextServers,
-    AgentServers,
-    SlashCommands,
     IndexedDocsProviders,
     Snippets,
     DebugAdapters,
@@ -163,7 +160,7 @@ pub struct ResetUiFontSize {
     pub persist: bool,
 }
 
-/// Resets all zoom levels (UI and buffer font sizes, including in the agent panel) to their default values.
+/// Resets all zoom levels (UI and buffer font sizes) to their default values.
 #[derive(PartialEq, Clone, Default, Debug, Deserialize, JsonSchema, Action)]
 #[action(namespace = zed)]
 #[serde(deny_unknown_fields)]
@@ -315,79 +312,6 @@ pub mod settings_profile_selector {
     pub struct Toggle;
 }
 
-pub mod agent {
-    use gpui::actions;
-
-    actions!(
-        agent,
-        [
-            /// Opens the agent settings panel.
-            #[action(deprecated_aliases = ["agent::OpenConfiguration"])]
-            OpenSettings,
-            /// Opens the agent onboarding modal.
-            OpenOnboardingModal,
-            /// Opens the ACP onboarding modal.
-            OpenAcpOnboardingModal,
-            /// Opens the Claude Code onboarding modal.
-            OpenClaudeCodeOnboardingModal,
-            /// Resets the agent onboarding state.
-            ResetOnboarding,
-            /// Starts a chat conversation with the agent.
-            Chat,
-            /// Toggles the language model selector dropdown.
-            #[action(deprecated_aliases = ["assistant::ToggleModelSelector", "assistant2::ToggleModelSelector"])]
-            ToggleModelSelector,
-            /// Triggers re-authentication on Gemini
-            ReauthenticateAgent,
-            /// Add the current selection as context for threads in the agent panel.
-            #[action(deprecated_aliases = ["assistant::QuoteSelection", "agent::QuoteSelection"])]
-            AddSelectionToThread,
-            /// Resets the agent panel zoom levels (agent UI and buffer font sizes).
-            ResetAgentZoom,
-        ]
-    );
-}
-
-pub mod assistant {
-    use gpui::{Action, actions};
-    use schemars::JsonSchema;
-    use serde::Deserialize;
-    use uuid::Uuid;
-
-    actions!(
-        agent,
-        [
-            #[action(deprecated_aliases = ["assistant::ToggleFocus"])]
-            ToggleFocus
-        ]
-    );
-
-    actions!(
-        assistant,
-        [
-            /// Shows the assistant configuration panel.
-            ShowConfiguration
-        ]
-    );
-
-    /// Opens the rules library for managing agent rules and prompts.
-    #[derive(PartialEq, Clone, Default, Debug, Deserialize, JsonSchema, Action)]
-    #[action(namespace = agent, deprecated_aliases = ["assistant::OpenRulesLibrary", "assistant::DeployPromptLibrary"])]
-    #[serde(deny_unknown_fields)]
-    pub struct OpenRulesLibrary {
-        #[serde(skip)]
-        pub prompt_to_select: Option<Uuid>,
-    }
-
-    /// Deploys the assistant interface with the specified configuration.
-    #[derive(Clone, Default, Deserialize, PartialEq, JsonSchema, Action)]
-    #[action(namespace = assistant)]
-    #[serde(deny_unknown_fields)]
-    pub struct InlineAssist {
-        pub prompt: Option<String>,
-    }
-}
-
 pub mod debugger {
     use gpui::actions;
 
@@ -507,13 +431,6 @@ pub mod outline {
     pub static TOGGLE_OUTLINE: OnceLock<fn(AnyView, &mut Window, &mut App)> = OnceLock::new();
 }
 
-actions!(
-    zed_predict_onboarding,
-    [
-        /// Opens the Zed Predict onboarding modal.
-        OpenZedPredictOnboarding
-    ]
-);
 actions!(
     git_onboarding,
     [

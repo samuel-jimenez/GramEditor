@@ -8,7 +8,6 @@ Extensions are able to provide the following features to Zed:
 - [Debuggers](./debugger-extensions.md)
 - [Themes](./themes.md)
 - [Icon Themes](./icon-themes.md)
-- [Slash Commands](./slash-commands.md)
 
 ## Developing an Extension Locally
 

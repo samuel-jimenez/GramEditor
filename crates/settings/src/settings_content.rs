@@ -342,37 +342,6 @@ pub enum DockPosition {
     Right,
 }
 
-/// Settings for slash commands.
-#[with_fallible_options]
-#[derive(Deserialize, Serialize, Debug, Default, Clone, JsonSchema, MergeFrom, PartialEq, Eq)]
-pub struct SlashCommandSettings {
-    /// Settings for the `/cargo-workspace` slash command.
-    pub cargo_workspace: Option<CargoWorkspaceCommandSettings>,
-}
-
-/// Settings for the `/cargo-workspace` slash command.
-#[with_fallible_options]
-#[derive(Deserialize, Serialize, Debug, Default, Clone, JsonSchema, MergeFrom, PartialEq, Eq)]
-pub struct CargoWorkspaceCommandSettings {
-    /// Whether `/cargo-workspace` is enabled.
-    pub enabled: Option<bool>,
-}
-
-/// Configuration of voice calls in Zed.
-#[with_fallible_options]
-#[derive(Clone, PartialEq, Default, Serialize, Deserialize, JsonSchema, MergeFrom, Debug)]
-pub struct CallSettingsContent {
-    /// Whether the microphone should be muted when joining a channel or a call.
-    ///
-    /// Default: false
-    pub mute_on_join: Option<bool>,
-
-    /// Whether your current project should be shared when joining an empty channel.
-    ///
-    /// Default: false
-    pub share_on_join: Option<bool>,
-}
-
 #[with_fallible_options]
 #[derive(Clone, PartialEq, Default, Serialize, Deserialize, JsonSchema, MergeFrom, Debug)]
 pub struct GitPanelSettingsContent {

@@ -15,9 +15,8 @@ use collections::{BTreeMap, BTreeSet, HashSet, btree_map};
 pub use extension::ExtensionManifest;
 use extension::extension_builder::{CompileExtensionOptions, ExtensionBuilder};
 use extension::{
-    ExtensionContextServerProxy, ExtensionDebugAdapterProviderProxy, ExtensionEvents,
-    ExtensionGrammarProxy, ExtensionHostProxy, ExtensionLanguageProxy,
-    ExtensionLanguageServerProxy, ExtensionSlashCommandProxy, ExtensionSnippetProxy,
+    ExtensionDebugAdapterProviderProxy, ExtensionEvents, ExtensionGrammarProxy, ExtensionHostProxy,
+    ExtensionLanguageProxy, ExtensionLanguageServerProxy, ExtensionSnippetProxy,
     ExtensionThemeProxy,
 };
 use fs::{Fs, RemoveOptions};

@@ -64,11 +64,6 @@ pub fn init(cx: &mut App) {
                         ExtensionCategoryFilter::LanguageServers => {
                             ExtensionProvides::LanguageServers
                         }
-                        ExtensionCategoryFilter::ContextServers => {
-                            ExtensionProvides::ContextServers
-                        }
-                        ExtensionCategoryFilter::AgentServers => ExtensionProvides::AgentServers,
-                        ExtensionCategoryFilter::SlashCommands => ExtensionProvides::SlashCommands,
                         ExtensionCategoryFilter::IndexedDocsProviders => {
                             ExtensionProvides::IndexedDocsProviders
                         }
@@ -190,9 +185,6 @@ fn extension_provides_label(provides: ExtensionProvides) -> &'static str {
         ExtensionProvides::Languages => "Languages",
         ExtensionProvides::Grammars => "Grammars",
         ExtensionProvides::LanguageServers => "Language Servers",
-        ExtensionProvides::ContextServers => "MCP Servers",
-        ExtensionProvides::AgentServers => "Agent Servers",
-        ExtensionProvides::SlashCommands => "Slash Commands",
         ExtensionProvides::IndexedDocsProviders => "Indexed Docs Providers",
         ExtensionProvides::Snippets => "Snippets",
         ExtensionProvides::DebugAdapters => "Debug Adapters",
@@ -226,9 +218,6 @@ impl ExtensionFilter {
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
 enum Feature {
-    AgentClaude,
-    AgentCodex,
-    AgentGemini,
     ExtensionRuff,
     ExtensionTailwind,
     Git,
@@ -248,9 +237,6 @@ fn keywords_by_feature() -> &'static BTreeMap<Feature, Vec<&'static str>> {
     static KEYWORDS_BY_FEATURE: OnceLock<BTreeMap<Feature, Vec<&'static str>>> = OnceLock::new();
     KEYWORDS_BY_FEATURE.get_or_init(|| {
         BTreeMap::from_iter([
-            (Feature::AgentClaude, vec!["claude", "claude code"]),
-            (Feature::AgentCodex, vec!["codex", "codex cli"]),
-            (Feature::AgentGemini, vec!["gemini", "gemini cli"]),
             (Feature::ExtensionRuff, vec!["ruff"]),
             (Feature::ExtensionTailwind, vec!["tail", "tailwind"]),
             (Feature::Git, vec!["git"]),
@@ -754,8 +740,7 @@ impl ExtensionsPage {
                                             .iter()
                                             .filter_map(|provides| {
                                                 match provides {
-                                                    ExtensionProvides::SlashCommands
-                                                    | ExtensionProvides::IndexedDocsProviders => {
+                                                    ExtensionProvides::IndexedDocsProviders => {
                                                         return None;
                                                     }
                                                     _ => {}
@@ -1421,24 +1406,6 @@ impl ExtensionsPage {
 
         for feature in &self.upsells {
             let banner = match feature {
-                Feature::AgentClaude => self.render_feature_upsell_banner(
-                    "Claude Code support is built-in to Zed!".into(),
-                    "https://zed.dev/docs/ai/external-agents#claude-code".into(),
-                    false,
-                    cx,
-                ),
-                Feature::AgentCodex => self.render_feature_upsell_banner(
-                    "Codex CLI support is built-in to Zed!".into(),
-                    "https://zed.dev/docs/ai/external-agents#codex-cli".into(),
-                    false,
-                    cx,
-                ),
-                Feature::AgentGemini => self.render_feature_upsell_banner(
-                    "Gemini CLI support is built-in to Zed!".into(),
-                    "https://zed.dev/docs/ai/external-agents#gemini-cli".into(),
-                    false,
-                    cx,
-                ),
                 Feature::ExtensionRuff => self.render_feature_upsell_banner(
                     "Ruff (linter for Python) support is built-in to Zed!".into(),
                     "https://zed.dev/docs/languages/python#code-formatting--linting".into(),
@@ -1627,8 +1594,7 @@ impl Render for ExtensionsPage {
                     )
                     .children(ExtensionProvides::iter().filter_map(|provides| {
                         match provides {
-                            ExtensionProvides::SlashCommands
-                            | ExtensionProvides::IndexedDocsProviders => return None,
+                            ExtensionProvides::IndexedDocsProviders => return None,
                             _ => {}
                         }
 

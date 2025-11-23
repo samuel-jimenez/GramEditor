@@ -181,15 +181,6 @@ impl LanguageServerManifestEntry {
 }
 
 #[derive(Clone, PartialEq, Eq, Debug, Deserialize, Serialize)]
-pub struct ContextServerManifestEntry {}
-
-#[derive(Clone, PartialEq, Eq, Debug, Deserialize, Serialize)]
-pub struct SlashCommandManifestEntry {
-    pub description: String,
-    pub requires_argument: bool,
-}
-
-#[derive(Clone, PartialEq, Eq, Debug, Deserialize, Serialize)]
 pub struct DebugAdapterManifestEntry {
     pub schema_path: Option<PathBuf>,
 }

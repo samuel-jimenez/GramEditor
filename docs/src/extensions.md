@@ -9,4 +9,3 @@ Zed lets you add new functionality using user-defined extensions.
   - [Developing Debugger Extensions](./extensions/debugger-extensions.md)
   - [Developing Themes](./extensions/themes.md)
   - [Developing Icon Themes](./extensions/icon-themes.md)
-  - [Developing Slash Commands](./extensions/slash-commands.md)

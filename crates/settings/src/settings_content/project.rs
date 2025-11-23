@@ -6,10 +6,7 @@ use serde::{Deserialize, Serialize};
 use settings_macros::{MergeFrom, with_fallible_options};
 use util::serde::default_true;
 
-use crate::{
-    AllLanguageSettingsContent, DelayMs, ExtendingVec, ProjectTerminalSettingsContent,
-    SlashCommandSettings,
-};
+use crate::{AllLanguageSettingsContent, DelayMs, ExtendingVec, ProjectTerminalSettingsContent};
 
 #[with_fallible_options]
 #[derive(Debug, PartialEq, Clone, Default, Serialize, Deserialize, JsonSchema, MergeFrom)]

@@ -106,19 +106,6 @@ pub trait Extension: Send + Sync + 'static {
         symbols: Vec<Symbol>,
     ) -> Result<Vec<Option<CodeLabel>>>;
 
-    async fn complete_slash_command_argument(
-        &self,
-        command: SlashCommand,
-        arguments: Vec<String>,
-    ) -> Result<Vec<SlashCommandArgumentCompletion>>;
-
-    async fn run_slash_command(
-        &self,
-        command: SlashCommand,
-        arguments: Vec<String>,
-        worktree: Option<Arc<dyn WorktreeDelegate>>,
-    ) -> Result<SlashCommandOutput>;
-
     async fn suggest_docs_packages(&self, provider: Arc<str>) -> Result<Vec<String>>;
 
     async fn index_docs(

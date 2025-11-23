@@ -165,73 +165,16 @@ impl Component for ThreadItem {
                 .bg(cx.theme().colors().panel_background)
         };
 
-        let thread_item_examples = vec![
-            single_example(
-                "Default",
-                container()
-                    .child(
-                        ThreadItem::new("ti-1", "Linking to the Agent Panel Depending on Settings")
-                            .icon(IconName::AiOpenAi)
-                            .timestamp("1:33 AM"),
-                    )
-                    .into_any_element(),
-            ),
-            single_example(
-                "Generation Done",
-                container()
-                    .child(
-                        ThreadItem::new("ti-2", "Refine thread view scrolling behavior")
-                            .timestamp("12:12 AM")
-                            .generation_done(true),
-                    )
-                    .into_any_element(),
-            ),
-            single_example(
-                "Running Agent",
-                container()
-                    .child(
-                        ThreadItem::new("ti-3", "Add line numbers option to FileEditBlock")
-                            .icon(IconName::AiClaude)
-                            .timestamp("7:30 PM")
-                            .running(true),
-                    )
-                    .into_any_element(),
-            ),
-            single_example(
-                "In Worktree",
-                container()
-                    .child(
-                        ThreadItem::new("ti-4", "Add line numbers option to FileEditBlock")
-                            .icon(IconName::AiClaude)
-                            .timestamp("7:37 PM")
-                            .worktree("link-agent-panel"),
-                    )
-                    .into_any_element(),
-            ),
-            single_example(
-                "With Changes",
-                container()
-                    .child(
-                        ThreadItem::new("ti-5", "Managing user and project settings interactions")
-                            .icon(IconName::AiClaude)
-                            .timestamp("7:37 PM")
-                            .added(10)
-                            .removed(3),
-                    )
-                    .into_any_element(),
-            ),
-            single_example(
-                "Selected Item",
-                container()
-                    .child(
-                        ThreadItem::new("ti-6", "Refine textarea interaction behavior")
-                            .icon(IconName::AiGemini)
-                            .timestamp("3:00 PM")
-                            .selected(true),
-                    )
-                    .into_any_element(),
-            ),
-        ];
+        let thread_item_examples = vec![single_example(
+            "Generation Done",
+            container()
+                .child(
+                    ThreadItem::new("ti-2", "Refine thread view scrolling behavior")
+                        .timestamp("12:12 AM")
+                        .generation_done(true),
+                )
+                .into_any_element(),
+        )];
 
         Some(
             example_group(thread_item_examples)

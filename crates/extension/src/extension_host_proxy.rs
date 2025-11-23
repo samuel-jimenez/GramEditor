@@ -8,7 +8,7 @@ use language::{BinaryStatus, LanguageMatcher, LanguageName, LoadedLanguage};
 use lsp::LanguageServerName;
 use parking_lot::RwLock;
 
-use crate::{Extension, SlashCommand};
+use crate::Extension;
 
 #[derive(Default)]
 struct GlobalExtensionHostProxy(Arc<ExtensionHostProxy>);
