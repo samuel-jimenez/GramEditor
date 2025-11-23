@@ -6,9 +6,8 @@ use anyhow::{Context as _, Result, anyhow, bail};
 use async_trait::async_trait;
 use dap::{DebugRequest, StartDebuggingRequestArgumentsRequest};
 use extension::{
-    CodeLabel, Command, Completion, ContextServerConfiguration, DebugAdapterBinary,
-    DebugTaskDefinition, ExtensionCapability, ExtensionHostProxy, KeyValueStoreDelegate,
-    ProjectDelegate, Symbol, WorktreeDelegate,
+    CodeLabel, Command, Completion, DebugAdapterBinary, DebugTaskDefinition, ExtensionCapability,
+    ExtensionHostProxy, KeyValueStoreDelegate, Symbol, WorktreeDelegate,
 };
 use fs::{Fs, normalize_path};
 use futures::future::LocalBoxFuture;

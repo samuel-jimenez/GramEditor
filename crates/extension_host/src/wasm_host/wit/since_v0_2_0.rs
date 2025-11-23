@@ -23,7 +23,6 @@ wasmtime::component::bindgen!({
          "zed:extension/lsp": latest::zed::extension::lsp,
          "zed:extension/nodejs": latest::zed::extension::nodejs,
          "zed:extension/platform": latest::zed::extension::platform,
-         "zed:extension/slash-command": latest::zed::extension::slash_command,
     },
 });
 
