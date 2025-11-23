@@ -1,5 +1,4 @@
 use anyhow::{Context as _, Result};
-use client::Client;
 use futures::AsyncReadExt;
 use gpui::{App, AppContext as _, SerializedThreadTaskTimings};
 use http_client::{self, HttpClient};
@@ -13,7 +12,7 @@ use util::ResultExt;
 
 use crate::STARTUP_TIME;
 
-pub fn init(client: Arc<Client>, cx: &mut App) {
+pub fn init(cx: &mut App) {
     monitor_hangs(cx);
 }
 

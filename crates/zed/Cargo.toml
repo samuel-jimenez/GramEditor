@@ -27,6 +27,7 @@ bincode.workspace = true
 breadcrumbs.workspace = true
 clap.workspace = true
 cli.workspace = true
+client.workspace = true
 collections.workspace = true
 command_palette.workspace = true
 component.workspace = true
