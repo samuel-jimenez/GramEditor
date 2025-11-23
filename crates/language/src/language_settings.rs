@@ -1,12 +1,12 @@
 //! Provides `language`-related settings.
 
-use crate::{File, Language, LanguageName, LanguageServerName};
+use crate::{File, LanguageName, LanguageServerName};
 use collections::{FxHashMap, HashMap, HashSet};
 use ec4rs::{
     Properties as EditorconfigProperties,
     property::{FinalNewline, IndentSize, IndentStyle, MaxLineLen, TabWidth, TrimTrailingWs},
 };
-use globset::{Glob, GlobMatcher, GlobSet, GlobSetBuilder};
+use globset::{Glob, GlobSet, GlobSetBuilder};
 use gpui::{App, Modifiers, SharedString};
 use itertools::{Either, Itertools};
 
@@ -16,8 +16,7 @@ pub use settings::{
     WordsCompletionMode,
 };
 use settings::{RegisterSetting, Settings, SettingsLocation, SettingsStore};
-use shellexpand;
-use std::{borrow::Cow, num::NonZeroU32, path::Path, sync::Arc};
+use std::{borrow::Cow, num::NonZeroU32, sync::Arc};
 
 /// Returns the settings for the specified language from the provided file.
 pub fn language_settings<'a>(
@@ -352,12 +351,6 @@ impl InlayHintSettings {
     }
 }
 
-#[derive(Clone, Debug)]
-pub struct DisabledGlob {
-    matcher: GlobMatcher,
-    is_absolute: bool,
-}
-
 impl AllLanguageSettings {
     /// Returns the [`LanguageSettings`] for the language with the specified name.
     pub fn language<'a>(
@@ -558,8 +551,6 @@ pub struct JsxTagAutoCloseSettings {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use gpui::TestAppContext;
-    use util::rel_path::rel_path;
 
     #[test]
     fn test_resolve_language_servers() {
