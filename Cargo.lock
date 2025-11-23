@@ -2689,6 +2689,7 @@ dependencies = [
  "tree-sitter-go",
  "tree-sitter-json",
  "ui",
+ "ui_input",
  "unindent",
  "util",
  "workspace",
