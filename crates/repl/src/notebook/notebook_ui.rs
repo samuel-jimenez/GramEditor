@@ -3,7 +3,6 @@ use std::future::Future;
 use std::{path::PathBuf, sync::Arc};
 
 use anyhow::{Context as _, Result};
-use client::proto::ViewId;
 use collections::HashMap;
 use feature_flags::{FeatureFlagAppExt as _, NotebookFeatureFlag};
 use futures::FutureExt;
@@ -14,6 +13,7 @@ use gpui::{
 };
 use language::{Language, LanguageRegistry};
 use project::{Project, ProjectEntryId, ProjectPath};
+use proto::ViewId;
 use ui::{Tooltip, prelude::*};
 use workspace::item::{ItemEvent, SaveOptions, TabContentParams};
 use workspace::searchable::SearchableItemHandle;
