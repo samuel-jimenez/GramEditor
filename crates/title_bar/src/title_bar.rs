@@ -539,11 +539,6 @@ impl TitleBar {
                 .update(cx, |call, cx| call.set_location(None, cx))
                 .detach_and_log_err(cx);
         }
-        self.workspace
-            .update(cx, |workspace, cx| {
-                workspace.update_active_view_for_followers(window, cx);
-            })
-            .ok();
     }
 
     fn active_call_changed(&mut self, cx: &mut Context<Self>) {

@@ -435,7 +435,7 @@ Here's a template with useful vim mode contexts to help you customize your vim m
     }
   },
   {
-    "context": "EmptyPane || SharedScreen",
+    "context": "EmptyPane",
     "bindings": {
       // Put key bindings here (in addition to the context above) if you want them to
       // work when no editor exists.

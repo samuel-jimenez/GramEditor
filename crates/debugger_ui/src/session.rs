@@ -11,7 +11,7 @@ use running::RunningState;
 use std::cell::OnceCell;
 use ui::prelude::*;
 use workspace::{
-    CollaboratorId, FollowableItem, ViewId, Workspace,
+    FollowableItem, ViewId, Workspace,
     item::{self, Item},
 };
 
@@ -175,14 +175,6 @@ impl FollowableItem for DebugSession {
         _cx: &mut Context<Self>,
     ) -> gpui::Task<anyhow::Result<()>> {
         Task::ready(Ok(()))
-    }
-
-    fn set_leader_id(
-        &mut self,
-        _leader_id: Option<CollaboratorId>,
-        _window: &mut Window,
-        _cx: &mut Context<Self>,
-    ) {
     }
 
     fn to_follow_event(_event: &Self::Event) -> Option<workspace::item::FollowEvent> {

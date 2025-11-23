@@ -1,6 +1,6 @@
 use crate::{
-    CollaboratorId, DelayedDebouncedEditAction, FollowableViewRegistry, ItemNavHistory,
-    SerializableItemRegistry, ToolbarItemLocation, ViewId, Workspace, WorkspaceId,
+    DelayedDebouncedEditAction, ItemNavHistory, SerializableItemRegistry, ToolbarItemLocation,
+    ViewId, Workspace, WorkspaceId,
     invalid_item_view::InvalidItemView,
     pane::{self, Pane},
     persistence::model::ItemId,
@@ -9,7 +9,6 @@ use crate::{
 };
 use anyhow::Result;
 use client::{Client, proto};
-use futures::{StreamExt, channel::mpsc};
 use gpui::{
     Action, AnyElement, AnyEntity, AnyView, App, AppContext, Context, Entity, EntityId,
     EventEmitter, FocusHandle, Focusable, Font, HighlightStyle, Pixels, Point, Render,
@@ -23,10 +22,8 @@ pub use settings::{
 use smallvec::SmallVec;
 use std::{
     any::{Any, TypeId},
-    cell::RefCell,
     ops::Range,
     path::Path,
-    rc::Rc,
     sync::Arc,
     time::Duration,
 };
@@ -476,7 +473,6 @@ pub trait ItemHandle: 'static + Send {
         cx: &mut App,
     ) -> Task<Result<()>>;
     fn act_as_type(&self, type_id: TypeId, cx: &App) -> Option<AnyEntity>;
-    fn to_followable_item_handle(&self, cx: &App) -> Option<Box<dyn FollowableItemHandle>>;
     fn to_serializable_item_handle(&self, cx: &App) -> Option<Box<dyn SerializableItemHandle>>;
     fn on_release(
         &self,
@@ -684,45 +680,6 @@ impl<T: Item> ItemHandle for Entity<T> {
             .is_none()
         {
             let mut pending_autosave = DelayedDebouncedEditAction::new();
-            let (pending_update_tx, mut pending_update_rx) = mpsc::unbounded();
-            let pending_update = Rc::new(RefCell::new(None));
-
-            let mut send_follower_updates = None;
-            if let Some(item) = self.to_followable_item_handle(cx) {
-                let is_project_item = item.is_project_item(window, cx);
-                let item = item.downgrade();
-
-                send_follower_updates = Some(cx.spawn_in(window, {
-                    let pending_update = pending_update.clone();
-                    async move |workspace, cx| {
-                        while let Some(mut leader_id) = pending_update_rx.next().await {
-                            while let Ok(Some(id)) = pending_update_rx.try_next() {
-                                leader_id = id;
-                            }
-
-                            workspace.update_in(cx, |workspace, window, cx| {
-                                let Some(item) = item.upgrade() else { return };
-                                workspace.update_followers(
-                                    is_project_item,
-                                    proto::update_followers::Variant::UpdateView(
-                                        proto::UpdateView {
-                                            id: item
-                                                .remote_id(workspace.client(), window, cx)
-                                                .and_then(|id| id.to_proto()),
-                                            variant: pending_update.borrow_mut().take(),
-                                            leader_id,
-                                        },
-                                    ),
-                                    window,
-                                    cx,
-                                );
-                            })?;
-                            cx.background_executor().timer(LEADER_UPDATE_THROTTLE).await;
-                        }
-                        anyhow::Ok(())
-                    }
-                }));
-            }
 
             let mut event_subscription = Some(cx.subscribe_in(
                 self,
@@ -737,40 +694,6 @@ impl<T: Item> ItemHandle for Entity<T> {
                     } else {
                         return;
                     };
-
-                    if let Some(item) = item.to_followable_item_handle(cx) {
-                        let leader_id = workspace.leader_for_pane(&pane);
-
-                        if let Some(leader_id) = leader_id
-                            && let Some(FollowEvent::Unfollow) = item.to_follow_event(event)
-                        {
-                            workspace.unfollow(leader_id, window, cx);
-                        }
-
-                        if item.item_focus_handle(cx).contains_focused(window, cx) {
-                            match leader_id {
-                                Some(CollaboratorId::Agent) => {}
-                                Some(CollaboratorId::PeerId(leader_peer_id)) => {
-                                    item.add_event_to_update_proto(
-                                        event,
-                                        &mut pending_update.borrow_mut(),
-                                        window,
-                                        cx,
-                                    );
-                                    pending_update_tx.unbounded_send(Some(leader_peer_id)).ok();
-                                }
-                                None => {
-                                    item.add_event_to_update_proto(
-                                        event,
-                                        &mut pending_update.borrow_mut(),
-                                        window,
-                                        cx,
-                                    );
-                                    pending_update_tx.unbounded_send(None).ok();
-                                }
-                            }
-                        }
-                    }
 
                     if let Some(item) = item.to_serializable_item_handle(cx)
                         && item.should_serialize(event, cx)
@@ -872,7 +795,6 @@ impl<T: Item> ItemHandle for Entity<T> {
             cx.observe_release_in(self, window, move |workspace, _, _, _| {
                 workspace.panes_by_item.remove(&item_id);
                 event_subscription.take();
-                send_follower_updates.take();
             })
             .detach();
         }
@@ -957,10 +879,6 @@ impl<T: Item> ItemHandle for Entity<T> {
 
     fn act_as_type<'a>(&'a self, type_id: TypeId, cx: &'a App) -> Option<AnyEntity> {
         self.read(cx).act_as_type(type_id, self, cx)
-    }
-
-    fn to_followable_item_handle(&self, cx: &App) -> Option<Box<dyn FollowableItemHandle>> {
-        FollowableViewRegistry::to_followable_view(self.clone(), cx)
     }
 
     fn on_release(
@@ -1124,31 +1042,12 @@ pub trait FollowableItem: Item {
         cx: &mut Context<Self>,
     ) -> Task<Result<()>>;
     fn is_project_item(&self, window: &Window, cx: &App) -> bool;
-    fn set_leader_id(
-        &mut self,
-        leader_peer_id: Option<CollaboratorId>,
-        window: &mut Window,
-        cx: &mut Context<Self>,
-    );
     fn dedup(&self, existing: &Self, window: &Window, cx: &App) -> Option<Dedup>;
-    fn update_agent_location(
-        &mut self,
-        _location: language::Anchor,
-        _window: &mut Window,
-        _cx: &mut Context<Self>,
-    ) {
-    }
 }
 
 pub trait FollowableItemHandle: ItemHandle {
     fn remote_id(&self, client: &Arc<Client>, window: &mut Window, cx: &mut App) -> Option<ViewId>;
     fn downgrade(&self) -> Box<dyn WeakFollowableItemHandle>;
-    fn set_leader_id(
-        &self,
-        leader_peer_id: Option<CollaboratorId>,
-        window: &mut Window,
-        cx: &mut App,
-    );
     fn to_state_proto(&self, window: &mut Window, cx: &mut App) -> Option<proto::view::Variant>;
     fn add_event_to_update_proto(
         &self,
@@ -1172,14 +1071,12 @@ pub trait FollowableItemHandle: ItemHandle {
         window: &mut Window,
         cx: &mut App,
     ) -> Option<Dedup>;
-    fn update_agent_location(&self, location: language::Anchor, window: &mut Window, cx: &mut App);
 }
 
 impl<T: FollowableItem> FollowableItemHandle for Entity<T> {
     fn remote_id(&self, client: &Arc<Client>, _: &mut Window, cx: &mut App) -> Option<ViewId> {
         self.read(cx).remote_id().or_else(|| {
-            client.peer_id().map(|creator| ViewId {
-                creator: CollaboratorId::PeerId(creator),
+            client.peer_id().map(|_creator| ViewId {
                 id: self.item_id().as_u64(),
             })
         })
@@ -1187,10 +1084,6 @@ impl<T: FollowableItem> FollowableItemHandle for Entity<T> {
 
     fn downgrade(&self) -> Box<dyn WeakFollowableItemHandle> {
         Box::new(self.downgrade())
-    }
-
-    fn set_leader_id(&self, leader_id: Option<CollaboratorId>, window: &mut Window, cx: &mut App) {
-        self.update(cx, |this, cx| this.set_leader_id(leader_id, window, cx))
     }
 
     fn to_state_proto(&self, window: &mut Window, cx: &mut App) -> Option<proto::view::Variant> {
@@ -1240,12 +1133,6 @@ impl<T: FollowableItem> FollowableItemHandle for Entity<T> {
     ) -> Option<Dedup> {
         let existing = existing.to_any_view().downcast::<T>().ok()?;
         self.read(cx).dedup(existing.read(cx), window, cx)
-    }
-
-    fn update_agent_location(&self, location: language::Anchor, window: &mut Window, cx: &mut App) {
-        self.update(cx, |this, cx| {
-            this.update_agent_location(location, window, cx)
-        })
     }
 }
 

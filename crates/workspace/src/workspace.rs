@@ -9,7 +9,6 @@ pub mod pane_group;
 mod path_list;
 mod persistence;
 pub mod searchable;
-pub mod shared_screen;
 mod status_bar;
 pub mod tasks;
 mod theme_preview;
@@ -23,10 +22,9 @@ pub use path_list::PathList;
 pub use toast_layer::{ToastAction, ToastLayer, ToastView};
 
 use anyhow::{Context as _, Result, anyhow};
-use call::{ActiveCall, call_settings::CallSettings};
 use client::{
-    ChannelId, Client, ErrorExt, Status, TypedEnvelope, UserStore,
-    proto::{self, ErrorCode, PanelId, PeerId},
+    Client, ErrorExt, TypedEnvelope, UserStore,
+    proto::{self, ErrorCode, PanelId},
 };
 use collections::{HashMap, HashSet, hash_map};
 use dock::{Dock, DockPosition, PanelButtons, PanelHandle, RESIZE_HANDLE_SIZE};
@@ -36,7 +34,7 @@ use futures::{
         mpsc::{self, UnboundedReceiver, UnboundedSender},
         oneshot,
     },
-    future::{Shared, try_join_all},
+    future::Shared,
 };
 use gpui::{
     Action, AnyEntity, AnyView, AnyWeakView, App, AsyncApp, AsyncWindowContext, Bounds, Context,
@@ -52,7 +50,7 @@ pub use item::{
     ProjectItem, SerializableItem, SerializableItemHandle, WeakItemHandle,
 };
 use itertools::Itertools;
-use language::{Buffer, LanguageRegistry, Rope, language_settings::all_language_settings};
+use language::{Buffer, LanguageRegistry, Rope};
 pub use modal_layer::*;
 use node_runtime::NodeRuntime;
 use notifications::{
@@ -83,8 +81,7 @@ use remote::{
 use schemars::JsonSchema;
 use serde::Deserialize;
 use session::AppSession;
-use settings::{CenteredPaddingSettings, Settings, SettingsLocation, update_settings_file};
-use shared_screen::SharedScreen;
+use settings::{CenteredPaddingSettings, Settings, SettingsLocation};
 use sqlez::{
     bindable::{Bind, Column, StaticColumnCount},
     statement::Statement,
@@ -1055,18 +1052,13 @@ pub struct Workspace {
     notifications: Notifications,
     suppressed_notifications: HashSet<NotificationId>,
     project: Entity<Project>,
-    follower_states: HashMap<CollaboratorId, FollowerState>,
-    last_leaders_by_pane: HashMap<WeakEntity<Pane>, CollaboratorId>,
     window_edited: bool,
     last_window_title: Option<String>,
     dirty_items: HashMap<EntityId, Subscription>,
-    active_call: Option<(Entity<ActiveCall>, Vec<Subscription>)>,
-    leader_updates_tx: mpsc::UnboundedSender<(PeerId, proto::UpdateFollowers)>,
     database_id: Option<WorkspaceId>,
     app_state: Arc<AppState>,
     dispatching_keystrokes: Rc<RefCell<DispatchingKeystrokes>>,
     _subscriptions: Vec<Subscription>,
-    _apply_leader_updates: Task<Result<()>>,
     _observe_current_user: Task<Result<()>>,
     _schedule_serialize_workspace: Option<Task<()>>,
     _schedule_serialize_ssh_paths: Option<Task<()>>,
@@ -1090,7 +1082,6 @@ impl EventEmitter<Event> for Workspace {}
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct ViewId {
-    pub creator: CollaboratorId,
     pub id: u64,
 }
 
@@ -1120,10 +1111,6 @@ impl Workspace {
                     this.update_window_title(window, cx);
                 }
 
-                project::Event::CollaboratorLeft(peer_id) => {
-                    this.collaborator_left(*peer_id, window, cx);
-                }
-
                 project::Event::WorktreeRemoved(_) | project::Event::WorktreeAdded(_) => {
                     this.update_window_title(window, cx);
                     this.serialize_workspace(window, cx);
@@ -1133,11 +1120,6 @@ impl Workspace {
 
                 project::Event::DisconnectedFromHost => {
                     this.update_window_edited(window, cx);
-                    let leaders_to_unfollow =
-                        this.follower_states.keys().copied().collect::<Vec<_>>();
-                    for leader_id in leaders_to_unfollow {
-                        this.unfollow(leader_id, window, cx);
-                    }
                 }
 
                 project::Event::DisconnectedFromSshRemote => {
@@ -1185,10 +1167,6 @@ impl Workspace {
                             })
                         },
                     );
-                }
-
-                project::Event::AgentLocationChanged => {
-                    this.handle_agent_location_changed(window, cx)
                 }
 
                 _ => {}
@@ -1272,20 +1250,6 @@ impl Workspace {
             anyhow::Ok(())
         });
 
-        // All leader updates are enqueued and then processed in a single task, so
-        // that each asynchronous operation can be run in order.
-        let (leader_updates_tx, mut leader_updates_rx) =
-            mpsc::unbounded::<(PeerId, proto::UpdateFollowers)>();
-        let _apply_leader_updates = cx.spawn_in(window, async move |this, cx| {
-            while let Some((leader_id, update)) = leader_updates_rx.next().await {
-                Self::process_leader_update(&this, leader_id, update, cx)
-                    .await
-                    .log_err();
-            }
-
-            Ok(())
-        });
-
         cx.emit(Event::WorkspaceCreated(weak_handle.clone()));
         let modal_layer = cx.new(|_| ModalLayer::new());
         let toast_layer = cx.new(|_| ToastLayer::new());
@@ -1312,12 +1276,6 @@ impl Workspace {
         });
 
         let session_id = app_state.session.read(cx).id().to_owned();
-
-        let mut active_call = None;
-        if let Some(call) = ActiveCall::try_global(cx) {
-            let subscriptions = vec![cx.subscribe_in(&call, window, Self::on_active_call_event)];
-            active_call = Some((call, subscriptions));
-        }
 
         let (serializable_items_tx, serializable_items_rx) =
             mpsc::unbounded::<Box<dyn SerializableItemHandle>>();
@@ -1396,20 +1354,15 @@ impl Workspace {
             bottom_dock,
             right_dock,
             project: project.clone(),
-            follower_states: Default::default(),
-            last_leaders_by_pane: Default::default(),
             dispatching_keystrokes: Default::default(),
             window_edited: false,
             last_window_title: None,
             dirty_items: Default::default(),
-            active_call,
             database_id: workspace_id,
             app_state,
             _observe_current_user,
-            _apply_leader_updates,
             _schedule_serialize_workspace: None,
             _schedule_serialize_ssh_paths: None,
-            leader_updates_tx,
             _subscriptions: subscriptions,
             pane_history_timestamp,
             workspace_actions: Default::default(),
@@ -2245,8 +2198,6 @@ impl Workspace {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) -> Task<Result<bool>> {
-        let active_call = self.active_call().cloned();
-
         cx.spawn_in(window, async move |this, cx| {
             this.update(cx, |this, _| {
                 if close_intent == CloseIntent::CloseWindow {
@@ -2254,7 +2205,7 @@ impl Workspace {
                 }
             })?;
 
-            let workspace_count = cx.update(|_window, cx| {
+            let _workspace_count = cx.update(|_window, cx| {
                 cx.windows()
                     .iter()
                     .filter(|window| window.downcast::<Workspace>().is_some())
@@ -2282,47 +2233,6 @@ impl Workspace {
 
                 close_intent != CloseIntent::ReplaceWindow && remaining_workspaces == 0
             };
-
-            if let Some(active_call) = active_call
-                && workspace_count == 1
-                && active_call.read_with(cx, |call, _| call.room().is_some())?
-            {
-                if close_intent == CloseIntent::CloseWindow {
-                    let answer = cx.update(|window, cx| {
-                        window.prompt(
-                            PromptLevel::Warning,
-                            "Do you want to leave the current call?",
-                            None,
-                            &["Close window and hang up", "Cancel"],
-                            cx,
-                        )
-                    })?;
-
-                    if answer.await.log_err() == Some(1) {
-                        return anyhow::Ok(false);
-                    } else {
-                        active_call
-                            .update(cx, |call, cx| call.hang_up(cx))?
-                            .await
-                            .log_err();
-                    }
-                }
-                if close_intent == CloseIntent::ReplaceWindow {
-                    _ = active_call.update(cx, |this, cx| {
-                        let workspace = cx
-                            .windows()
-                            .iter()
-                            .filter_map(|window| window.downcast::<Workspace>())
-                            .next()
-                            .unwrap();
-                        let project = workspace.read(cx)?.project.clone();
-                        if project.read(cx).is_shared() {
-                            this.unshare_project(project, cx)?;
-                        }
-                        Ok::<_, anyhow::Error>(())
-                    })?;
-                }
-            }
 
             let save_result = this
                 .update_in(cx, |this, window, cx| {
@@ -3586,21 +3496,6 @@ impl Workspace {
         item
     }
 
-    pub fn open_shared_screen(
-        &mut self,
-        peer_id: PeerId,
-        window: &mut Window,
-        cx: &mut Context<Self>,
-    ) {
-        if let Some(shared_screen) =
-            self.shared_screen_for_peer(peer_id, &self.active_pane, window, cx)
-        {
-            self.active_pane.update(cx, |pane, cx| {
-                pane.add_item(Box::new(shared_screen), false, true, None, window, cx)
-            });
-        }
-    }
-
     pub fn activate_item(
         &mut self,
         item: &dyn ItemHandle,
@@ -3973,7 +3868,6 @@ impl Workspace {
         }
         self.zoomed_position = None;
         cx.emit(Event::ZoomChanged);
-        self.update_active_view_for_followers(window, cx);
         pane.update(cx, |pane, _| {
             pane.track_alternate_file_items();
         });
@@ -3992,9 +3886,7 @@ impl Workspace {
         self.last_active_center_pane = Some(pane.downgrade());
     }
 
-    fn handle_panel_focused(&mut self, window: &mut Window, cx: &mut Context<Self>) {
-        self.update_active_view_for_followers(window, cx);
-    }
+    fn handle_panel_focused(&mut self, _window: &mut Window, _cx: &mut Context<Self>) {}
 
     fn handle_pane_event(
         &mut self,
@@ -4040,13 +3932,9 @@ impl Workspace {
                 pane.update(cx, |pane, _| {
                     pane.track_alternate_file_items();
                 });
-                if *local {
-                    self.unfollow_in_pane(pane, window, cx);
-                }
                 serialize_workspace = *focus_changed || pane != self.active_pane();
                 if pane == self.active_pane() {
                     self.active_item_path_changed(window, cx);
-                    self.update_active_view_for_followers(window, cx);
                 } else if *local {
                     self.set_active_pane(pane, window, cx);
                 }
@@ -4106,17 +3994,6 @@ impl Workspace {
         if serialize_workspace {
             self.serialize_workspace(window, cx);
         }
-    }
-
-    pub fn unfollow_in_pane(
-        &mut self,
-        pane: &Entity<Pane>,
-        window: &mut Window,
-        cx: &mut Context<Workspace>,
-    ) -> Option<CollaboratorId> {
-        let leader_id = self.leader_for_pane(pane)?;
-        self.unfollow(leader_id, window, cx);
-        Some(leader_id)
     }
 
     pub fn split_pane(
@@ -4222,8 +4099,6 @@ impl Workspace {
     ) {
         if self.center.remove(&pane).unwrap() {
             self.force_remove_pane(&pane, &focus_on, window, cx);
-            self.unfollow_in_pane(&pane, window, cx);
-            self.last_leaders_by_pane.remove(&pane.downgrade());
             for removed_item in pane.read(cx).items() {
                 self.panes_by_item.remove(&removed_item.item_id());
             }
@@ -4903,10 +4778,6 @@ impl Workspace {
             .on_action(cx.listener(Self::activate_pane_at_index))
             .on_action(cx.listener(Self::move_item_to_pane_at_index))
             .on_action(cx.listener(Self::move_focused_panel_to_next_position))
-            .on_action(cx.listener(|workspace, _: &Unfollow, window, cx| {
-                let pane = workspace.active_pane().clone();
-                workspace.unfollow_in_pane(&pane, window, cx);
-            }))
             .on_action(cx.listener(|workspace, action: &Save, window, cx| {
                 workspace
                     .save_active_item(action.save_intent.unwrap_or(SaveIntent::Save), window, cx)
@@ -5217,18 +5088,13 @@ impl Workspace {
         &self,
         position: DockPosition,
         dock: &Entity<Dock>,
-        window: &mut Window,
         cx: &mut App,
     ) -> Option<Div> {
         if self.zoomed_position == Some(position) {
             return None;
         }
 
-        let leader_border = dock.read(cx).active_panel().and_then(|panel| {
-            let pane = panel.pane(cx)?;
-            let follower_states = &self.follower_states;
-            leader_border_for_pane(follower_states, &pane, window, cx)
-        });
+        let leader_border: Option<Div> = dock.read(cx).active_panel().and_then(|_| None);
 
         Some(
             div()
@@ -5369,44 +5235,6 @@ impl Workspace {
             }
         });
     }
-}
-
-fn leader_border_for_pane(
-    follower_states: &HashMap<CollaboratorId, FollowerState>,
-    pane: &Entity<Pane>,
-    _: &Window,
-    cx: &App,
-) -> Option<Div> {
-    let (leader_id, _follower_state) = follower_states.iter().find_map(|(leader_id, state)| {
-        if state.pane() == pane {
-            Some((*leader_id, state))
-        } else {
-            None
-        }
-    })?;
-
-    let mut leader_color = match leader_id {
-        CollaboratorId::PeerId(leader_peer_id) => {
-            let room = ActiveCall::try_global(cx)?.read(cx).room()?.read(cx);
-            let leader = room.remote_participant_for_peer_id(leader_peer_id)?;
-
-            cx.theme()
-                .players()
-                .color_for_participant(leader.participant_index.0)
-                .cursor
-        }
-        CollaboratorId::Agent => cx.theme().players().agent().cursor,
-    };
-    leader_color.fade_out(0.3);
-    Some(
-        div()
-            .absolute()
-            .size_full()
-            .left_0()
-            .top_0()
-            .border_2()
-            .border_color(leader_color),
-    )
 }
 
 fn window_bounds_env_override() -> Option<Bounds<Pixels>> {
@@ -5838,7 +5666,6 @@ impl Render for Workspace {
                                                     .children(self.render_dock(
                                                         DockPosition::Left,
                                                         &self.left_dock,
-                                                        window,
                                                         cx,
                                                     ))
                                                     .child(
@@ -5861,9 +5688,6 @@ impl Render for Workspace {
                                                                     .child(self.center.render(
                                                                         self.zoomed.as_ref(),
                                                                         &PaneRenderContext {
-                                                                            follower_states:
-                                                                                &self.follower_states,
-                                                                            active_call: self.active_call(),
                                                                             active_pane: &self.active_pane,
                                                                             app_state: &self.app_state,
                                                                             project: &self.project,
@@ -5885,14 +5709,12 @@ impl Render for Workspace {
                                                     .children(self.render_dock(
                                                         DockPosition::Right,
                                                         &self.right_dock,
-                                                        window,
                                                         cx,
                                                     )),
                                             )
                                             .child(div().w_full().children(self.render_dock(
                                                 DockPosition::Bottom,
                                                 &self.bottom_dock,
-                                                window,
                                                 cx
                                             ))),
 
@@ -5911,7 +5733,7 @@ impl Render for Workspace {
                                                             .flex()
                                                             .flex_row()
                                                             .flex_1()
-                                                            .children(self.render_dock(DockPosition::Left, &self.left_dock, window, cx))
+                                                            .children(self.render_dock(DockPosition::Left, &self.left_dock, cx))
                                                             .child(
                                                                 div()
                                                                     .flex()
@@ -5925,9 +5747,6 @@ impl Render for Workspace {
                                                                             .child(self.center.render(
                                                                                 self.zoomed.as_ref(),
                                                                                 &PaneRenderContext {
-                                                                                    follower_states:
-                                                                                        &self.follower_states,
-                                                                                    active_call: self.active_call(),
                                                                                     active_pane: &self.active_pane,
                                                                                     app_state: &self.app_state,
                                                                                     project: &self.project,
@@ -5943,13 +5762,12 @@ impl Render for Workspace {
                                                     .child(
                                                         div()
                                                             .w_full()
-                                                            .children(self.render_dock(DockPosition::Bottom, &self.bottom_dock, window, cx))
+                                                            .children(self.render_dock(DockPosition::Bottom, &self.bottom_dock, cx))
                                                     ),
                                             )
                                             .children(self.render_dock(
                                                 DockPosition::Right,
                                                 &self.right_dock,
-                                                window,
                                                 cx,
                                             )),
 
@@ -5960,7 +5778,6 @@ impl Render for Workspace {
                                             .children(self.render_dock(
                                                 DockPosition::Left,
                                                 &self.left_dock,
-                                                window,
                                                 cx,
                                             ))
                                             .child(
@@ -5987,9 +5804,6 @@ impl Render for Workspace {
                                                                             .child(self.center.render(
                                                                                 self.zoomed.as_ref(),
                                                                                 &PaneRenderContext {
-                                                                                    follower_states:
-                                                                                        &self.follower_states,
-                                                                                    active_call: self.active_call(),
                                                                                     active_pane: &self.active_pane,
                                                                                     app_state: &self.app_state,
                                                                                     project: &self.project,
@@ -6001,12 +5815,12 @@ impl Render for Workspace {
                                                                             .when_some(paddings.1, |this, p| this.child(p.border_l_1())),
                                                                     )
                                                             )
-                                                            .children(self.render_dock(DockPosition::Right, &self.right_dock, window, cx))
+                                                            .children(self.render_dock(DockPosition::Right, &self.right_dock, cx))
                                                     )
                                                     .child(
                                                         div()
                                                             .w_full()
-                                                            .children(self.render_dock(DockPosition::Bottom, &self.bottom_dock, window, cx))
+                                                            .children(self.render_dock(DockPosition::Bottom, &self.bottom_dock, cx))
                                                     ),
                                             ),
 
@@ -6017,7 +5831,6 @@ impl Render for Workspace {
                                             .children(self.render_dock(
                                                 DockPosition::Left,
                                                 &self.left_dock,
-                                                window,
                                                 cx,
                                             ))
                                             .child(
@@ -6035,9 +5848,6 @@ impl Render for Workspace {
                                                             .child(self.center.render(
                                                                 self.zoomed.as_ref(),
                                                                 &PaneRenderContext {
-                                                                    follower_states:
-                                                                        &self.follower_states,
-                                                                    active_call: self.active_call(),
                                                                     active_pane: &self.active_pane,
                                                                     app_state: &self.app_state,
                                                                     project: &self.project,
@@ -6053,14 +5863,12 @@ impl Render for Workspace {
                                                     .children(self.render_dock(
                                                         DockPosition::Bottom,
                                                         &self.bottom_dock,
-                                                        window,
                                                         cx,
                                                     )),
                                             )
                                             .children(self.render_dock(
                                                 DockPosition::Right,
                                                 &self.right_dock,
-                                                window,
                                                 cx,
                                             )),
                                     }
@@ -6108,82 +5916,19 @@ impl WorkspaceStore {
     pub fn new(client: Arc<Client>, cx: &mut Context<Self>) -> Self {
         Self {
             workspaces: Default::default(),
-            _subscriptions: vec![
-                client.add_request_handler(cx.weak_entity(), Self::handle_follow),
-                client.add_message_handler(cx.weak_entity(), Self::handle_update_followers),
-            ],
+            _subscriptions: vec![client.add_request_handler(cx.weak_entity(), Self::handle_follow)],
             client,
         }
     }
 
-    pub fn update_followers(
-        &self,
-        project_id: Option<u64>,
-        update: proto::update_followers::Variant,
-        cx: &App,
-    ) -> Option<()> {
-        let active_call = ActiveCall::try_global(cx)?;
-        let room_id = active_call.read(cx).room()?.read(cx).id();
-        self.client
-            .send(proto::UpdateFollowers {
-                room_id,
-                project_id,
-                variant: Some(update),
-            })
-            .log_err()
-    }
-
     pub async fn handle_follow(
         this: Entity<Self>,
-        envelope: TypedEnvelope<proto::Follow>,
+        _envelope: TypedEnvelope<proto::Follow>,
         mut cx: AsyncApp,
     ) -> Result<proto::FollowResponse> {
-        this.update(&mut cx, |this, cx| {
-            let follower = Follower {
-                project_id: envelope.payload.project_id,
-                peer_id: envelope.original_sender_id()?,
-            };
-
-            let mut response = proto::FollowResponse::default();
-            this.workspaces.retain(|workspace| {
-                workspace
-                    .update(cx, |workspace, window, cx| {
-                        let handler_response =
-                            workspace.handle_follow(follower.project_id, window, cx);
-                        if let Some(active_view) = handler_response.active_view
-                            && workspace.project.read(cx).remote_id() == follower.project_id
-                        {
-                            response.active_view = Some(active_view)
-                        }
-                    })
-                    .is_ok()
-            });
-
+        this.update(&mut cx, |_, _| {
+            let response = proto::FollowResponse::default();
             Ok(response)
-        })?
-    }
-
-    async fn handle_update_followers(
-        this: Entity<Self>,
-        envelope: TypedEnvelope<proto::UpdateFollowers>,
-        mut cx: AsyncApp,
-    ) -> Result<()> {
-        let leader_id = envelope.original_sender_id()?;
-        let update = envelope.payload;
-
-        this.update(&mut cx, |this, cx| {
-            this.workspaces.retain(|workspace| {
-                workspace
-                    .update(cx, |workspace, window, cx| {
-                        let project_id = workspace.project.read(cx).remote_id();
-                        if update.project_id != project_id && update.project_id.is_some() {
-                            return;
-                        }
-                        workspace.handle_update_followers(leader_id, update.clone(), window, cx);
-                    })
-                    .is_ok()
-            });
-            Ok(())
         })?
     }
 
@@ -6194,24 +5939,11 @@ impl WorkspaceStore {
 
 impl ViewId {
     pub(crate) fn from_proto(message: proto::ViewId) -> Result<Self> {
-        Ok(Self {
-            creator: message
-                .creator
-                .map(CollaboratorId::PeerId)
-                .context("creator is missing")?,
-            id: message.id,
-        })
+        Ok(Self { id: message.id })
     }
 
     pub(crate) fn to_proto(self) -> Option<proto::ViewId> {
-        if let CollaboratorId::PeerId(peer_id) = self.creator {
-            Some(proto::ViewId {
-                creator: Some(peer_id),
-                id: self.id,
-            })
-        } else {
-            None
-        }
+        None
     }
 }
 

@@ -127,7 +127,6 @@ message Envelope {
 
         Follow follow = 98;
         FollowResponse follow_response = 99;
-        UpdateFollowers update_followers = 100;
         Unfollow unfollow = 101;
         UpdateDiffBases update_diff_bases = 104;
 

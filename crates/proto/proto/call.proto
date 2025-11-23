@@ -273,18 +273,6 @@ message FollowResponse {
     repeated View views = 2;
 }
 
-message UpdateFollowers {
-    uint64 room_id = 1;
-    optional uint64 project_id = 2;
-    reserved 3;
-    oneof variant {
-        View create_view = 5;
-        // TODO: Remove after version 0.145.x stabilizes.
-        UpdateActiveView update_active_view = 4;
-        UpdateView update_view = 6;
-    }
-}
-
 message Unfollow {
     uint64 room_id = 1;
     optional uint64 project_id = 2;

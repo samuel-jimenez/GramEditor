@@ -1605,7 +1605,7 @@ impl Project {
             })
             .ok();
 
-        subscriptions.into_iter().map(|s| match s {
+        let _ignored = subscriptions.into_iter().map(|s| match s {
             EntitySubscription::BufferStore(subscription) => {
                 subscription.set_entity(&buffer_store, &cx)
             }

@@ -221,7 +221,6 @@ messages!(
     (UpdateContacts, Foreground),
     (UpdateDiagnosticSummary, Foreground),
     (UpdateDiffBases, Foreground),
-    (UpdateFollowers, Foreground),
     (UpdateGitBranch, Background),
     (UpdateInviteInfo, Foreground),
     (UpdateLanguageServer, Foreground),

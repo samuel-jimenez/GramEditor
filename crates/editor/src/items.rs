@@ -176,30 +176,6 @@ impl FollowableItem for Editor {
         }))
     }
 
-    fn set_leader_id(
-        &mut self,
-        leader_id: Option<CollaboratorId>,
-        window: &mut Window,
-        cx: &mut Context<Self>,
-    ) {
-        self.leader_id = leader_id;
-        if self.leader_id.is_some() {
-            self.buffer.update(cx, |buffer, cx| {
-                buffer.remove_active_selections(cx);
-            });
-        } else if self.focus_handle.is_focused(window) {
-            self.buffer.update(cx, |buffer, cx| {
-                buffer.set_active_selections(
-                    &self.selections.disjoint_anchors_arc(),
-                    self.selections.line_mode(),
-                    self.cursor_shape,
-                    cx,
-                );
-            });
-        }
-        cx.notify();
-    }
-
     fn to_state_proto(&self, _: &Window, cx: &App) -> Option<proto::view::Variant> {
         let buffer = self.buffer.read(cx);
         if buffer
@@ -355,29 +331,6 @@ impl FollowableItem for Editor {
         } else {
             None
         }
-    }
-
-    fn update_agent_location(
-        &mut self,
-        location: language::Anchor,
-        window: &mut Window,
-        cx: &mut Context<Self>,
-    ) {
-        let buffer = self.buffer.read(cx);
-        let buffer = buffer.read(cx);
-        let Some(position) = buffer.as_singleton_anchor(location) else {
-            return;
-        };
-        let selection = Selection {
-            id: 0,
-            reversed: false,
-            start: position,
-            end: position,
-            goal: SelectionGoal::None,
-        };
-        drop(buffer);
-        self.set_selections_from_remote(vec![selection], None, window, cx);
-        self.request_autoscroll_remotely(Autoscroll::fit(), cx);
     }
 }
 
