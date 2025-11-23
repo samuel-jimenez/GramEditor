@@ -8,6 +8,7 @@ members = [
     "crates/breadcrumbs",
     "crates/buffer_diff",
     "crates/cli",
+    "crates/client",
     "crates/clock",
     "crates/collections",
     "crates/command_palette",
@@ -183,6 +184,7 @@ breadcrumbs = { path = "crates/breadcrumbs" }
 buffer_diff = { path = "crates/buffer_diff" }
 cli = { path = "crates/cli" }
 clock = { path = "crates/clock" }
+client = { path = "crates/client" }
 collections = { path = "crates/collections", version = "0.1.0" }
 command_palette = { path = "crates/command_palette" }
 command_palette_hooks = { path = "crates/command_palette_hooks" }
