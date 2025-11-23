@@ -102,8 +102,6 @@ impl RenderOnce for Avatar {
     }
 }
 
-use gpui::AnyView;
-
 // View this component preview using `workspace: open component-preview`
 impl Component for Avatar {
     fn scope() -> ComponentScope {
