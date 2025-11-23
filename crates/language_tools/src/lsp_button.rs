@@ -5,7 +5,6 @@ use std::{
     time::Duration,
 };
 
-use client::proto;
 use collections::HashSet;
 use editor::{Editor, EditorEvent};
 use gpui::{Corner, Entity, Subscription, Task, WeakEntity, actions};
@@ -15,6 +14,7 @@ use project::{
     LspStore, LspStoreEvent, Worktree, lsp_store::log_store::GlobalLogStore,
     project_settings::ProjectSettings,
 };
+use proto;
 use settings::{Settings as _, SettingsStore};
 use ui::{
     Context, ContextMenu, ContextMenuEntry, ContextMenuItem, DocumentationAside, DocumentationEdge,
