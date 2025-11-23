@@ -13,7 +13,6 @@ use futures::{
     future::{self, BoxFuture},
 };
 use parking_lot::Mutex;
-use serde::Serialize;
 use std::sync::Arc;
 #[cfg(feature = "test-support")]
 use std::{any::type_name, fmt};
