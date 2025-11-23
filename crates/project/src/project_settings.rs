@@ -24,7 +24,7 @@ use settings::{
 };
 use std::{path::PathBuf, sync::Arc, time::Duration};
 use task::{DebugTaskFile, TaskTemplates, VsCodeDebugTaskFile, VsCodeTaskFile};
-use util::{ResultExt, rel_path::RelPath, serde::default_true};
+use util::{ResultExt, rel_path::RelPath};
 use worktree::{PathChange, UpdatedEntriesSet, Worktree, WorktreeId};
 
 use crate::{

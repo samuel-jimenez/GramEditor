@@ -87,10 +87,7 @@ use workspace::{
     CloseIntent, CloseWindow, NotificationFrame, RestoreBanner, with_active_or_new_workspace,
 };
 use workspace::{Pane, notifications::DetachAndPromptErr};
-use zed_actions::{
-    OpenAccountSettings, OpenBrowser, OpenDocs, OpenServerSettings, OpenSettingsFile, OpenZedUrl,
-    Quit,
-};
+use zed_actions::{OpenBrowser, OpenDocs, OpenServerSettings, OpenSettingsFile, OpenZedUrl, Quit};
 
 actions!(
     zed,
@@ -198,11 +195,6 @@ pub fn init(cx: &mut App) {
                 window,
                 cx,
             );
-        });
-    });
-    cx.on_action(|_: &OpenAccountSettings, cx| {
-        with_active_or_new_workspace(cx, |_, _, cx| {
-            cx.open_url(&zed_urls::account_url(cx));
         });
     });
     cx.on_action(|_: &OpenTasks, cx| {

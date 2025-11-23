@@ -791,12 +791,6 @@
     }
   },
   {
-    "context": "ChannelModal",
-    "bindings": {
-      "tab": "channel_modal::ToggleMode"
-    }
-  },
-  {
     "context": "Picker > Editor",
     "bindings": {
       "escape": "menu::Cancel",
@@ -804,12 +798,6 @@
       "down": "menu::SelectNext",
       "tab": "picker::ConfirmCompletion",
       "alt-enter": ["picker::ConfirmInput", { "secondary": false }]
-    }
-  },
-  {
-    "context": "ChannelModal > Picker > Editor",
-    "bindings": {
-      "tab": "channel_modal::ToggleMode"
     }
   },
   {
@@ -1003,9 +991,7 @@
       "ctrl-+": ["zed::IncreaseUiFontSize", { "persist": false }],
       "ctrl--": ["zed::DecreaseUiFontSize", { "persist": false }],
       "ctrl-0": ["zed::ResetUiFontSize", { "persist": false }],
-      "ctrl-enter": "onboarding::Finish",
-      "alt-shift-l": "onboarding::SignIn",
-      "alt-shift-a": "onboarding::OpenAccount"
+      "ctrl-enter": "onboarding::Finish"
     }
   },
   {

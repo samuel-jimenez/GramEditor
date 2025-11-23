@@ -544,16 +544,6 @@ Note: Dirty files (files with unsaved changes) will not be automatically closed 
 }
 ```
 
-## Disable AI
-
-- Description: Whether to disable all AI features in Zed
-- Setting: `disable_ai`
-- Default: `false`
-
-**Options**
-
-`boolean` values
-
 ## Direnv Integration
 
 - Description: Settings for [direnv](https://direnv.net/) integration. Requires `direnv` to be installed.

@@ -22,7 +22,6 @@ base64.workspace = true
 chrono = { workspace = true, features = ["serde"] }
 clock.workspace = true
 collections.workspace = true
-credentials_provider.workspace = true
 derive_more.workspace = true
 feature_flags.workspace = true
 futures.workspace = true

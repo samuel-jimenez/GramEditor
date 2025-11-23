@@ -40,15 +40,6 @@ pub struct ImportVsCodeSettings {
     pub skip_prompt: bool,
 }
 
-/// Imports settings from Cursor editor.
-#[derive(Copy, Clone, Debug, Default, PartialEq, Deserialize, JsonSchema, Action)]
-#[action(namespace = zed)]
-#[serde(deny_unknown_fields)]
-pub struct ImportCursorSettings {
-    #[serde(default)]
-    pub skip_prompt: bool,
-}
-
 pub const FIRST_OPEN: &str = "first_open";
 pub const DOCS_URL: &str = "https://zed.dev/docs/";
 
@@ -65,10 +56,6 @@ actions!(
     [
         /// Finish the onboarding process.
         Finish,
-        /// Sign in while in the onboarding flow.
-        SignIn,
-        /// Open the user account in zed.dev while in the onboarding flow.
-        OpenAccount,
         /// Resets the welcome screen hints to their initial state.
         ResetHints
     ]
@@ -155,26 +142,6 @@ pub fn init(cx: &mut App) {
                 })
                 .detach();
         });
-
-        workspace.register_action(|_workspace, action: &ImportCursorSettings, window, cx| {
-            let fs = <dyn Fs>::global(cx);
-            let action = *action;
-
-            let workspace = cx.weak_entity();
-
-            window
-                .spawn(cx, async move |cx: &mut AsyncWindowContext| {
-                    handle_import_vscode_settings(
-                        workspace,
-                        VsCodeSettingsSource::Cursor,
-                        action.skip_prompt,
-                        fs,
-                        cx,
-                    )
-                    .await
-                })
-                .detach();
-        });
     })
     .detach();
 
@@ -242,23 +209,6 @@ impl Onboarding {
         go_to_welcome_page(cx);
     }
 
-    fn handle_sign_in(_: &SignIn, window: &mut Window, cx: &mut App) {
-        let client = Client::global(cx);
-
-        window
-            .spawn(cx, async move |cx| {
-                client
-                    .sign_in_with_optional_connect(true, cx)
-                    .await
-                    .notify_async_err(cx);
-            })
-            .detach();
-    }
-
-    fn handle_open_account(_: &OpenAccount, _: &mut Window, cx: &mut App) {
-        cx.open_url(&zed_urls::account_url(cx))
-    }
-
     fn render_page(&mut self, cx: &mut Context<Self>) -> AnyElement {
         crate::basics_page::render_basics_page(cx).into_any_element()
     }
@@ -278,8 +228,6 @@ impl Render for Onboarding {
             .size_full()
             .bg(cx.theme().colors().editor_background)
             .on_action(Self::on_finish)
-            .on_action(Self::handle_sign_in)
-            .on_action(Self::handle_open_account)
             .on_action(cx.listener(|_, _: &menu::SelectNext, window, cx| {
                 window.focus_next();
                 cx.notify();

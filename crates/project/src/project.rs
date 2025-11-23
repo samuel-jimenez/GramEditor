@@ -45,7 +45,7 @@ pub use project_search::Search;
 
 use anyhow::{Context as _, Result, anyhow};
 use buffer_store::{BufferStore, BufferStoreEvent};
-use client::{Client, Collaborator, PendingEntitySubscription, TypedEnvelope, UserStore, proto};
+use client::{Client, PendingEntitySubscription, TypedEnvelope, UserStore, proto};
 use clock::ReplicaId;
 
 use dap::client::DebugAdapterClient;
@@ -75,10 +75,9 @@ use gpui::{
     Task, WeakEntity, Window,
 };
 use language::{
-    Buffer, BufferEvent, Capability, CodeLabel, CursorShape, Language, LanguageName,
-    LanguageRegistry, PointUtf16, ToOffset, ToPointUtf16, Toolchain, ToolchainMetadata,
-    ToolchainScope, Transaction, Unclipped, language_settings::InlayHintKind,
-    proto::split_operations,
+    Buffer, BufferEvent, Capability, CodeLabel, Language, LanguageName, LanguageRegistry,
+    PointUtf16, ToOffset, ToPointUtf16, Toolchain, ToolchainMetadata, ToolchainScope, Transaction,
+    Unclipped, language_settings::InlayHintKind, proto::split_operations,
 };
 use lsp::{
     CodeActionKind, CompletionContext, CompletionItemKind, DocumentHighlightKind, InsertTextMode,
@@ -98,7 +97,7 @@ use rpc::{
 };
 use search::{SearchInputKind, SearchQuery, SearchResult};
 use search_history::SearchHistory;
-use settings::{InvalidSettingsError, RegisterSetting, Settings, SettingsLocation, SettingsStore};
+use settings::{InvalidSettingsError, Settings, SettingsLocation, SettingsStore};
 use smol::channel::Receiver;
 use snippet::Snippet;
 pub use snippet_provider;
@@ -313,12 +312,6 @@ pub enum Event {
     DisconnectedFromSshRemote,
     Closed,
     DeletedEntry(WorktreeId, ProjectEntryId),
-    CollaboratorUpdated {
-        old_peer_id: proto::PeerId,
-        new_peer_id: proto::PeerId,
-    },
-    CollaboratorJoined(proto::PeerId),
-    CollaboratorLeft(proto::PeerId),
     HostReshared,
     Reshared,
     Rejoined,
@@ -980,22 +973,6 @@ pub enum PulledDiagnostics {
     },
 }
 
-/// Whether to disable all AI features in Zed.
-///
-/// Default: false
-#[derive(Copy, Clone, Debug, RegisterSetting)]
-pub struct DisableAiSettings {
-    pub disable_ai: bool,
-}
-
-impl settings::Settings for DisableAiSettings {
-    fn from_settings(content: &settings::SettingsContent) -> Self {
-        Self {
-            disable_ai: content.disable_ai.unwrap().0,
-        }
-    }
-}
-
 impl Project {
     pub fn init(client: &Arc<Client>, cx: &mut App) {
         connection_manager::init(client.clone(), cx);
@@ -1043,8 +1020,6 @@ impl Project {
             let worktree_store = cx.new(|_| WorktreeStore::local(false, fs.clone()));
             cx.subscribe(&worktree_store, Self::on_worktree_store_event)
                 .detach();
-
-            let weak_self = cx.weak_entity();
 
             let environment = cx.new(|cx| {
                 ProjectEnvironment::new(env, worktree_store.downgrade(), None, false, cx)
@@ -1219,8 +1194,6 @@ impl Project {
             });
             cx.subscribe(&worktree_store, Self::on_worktree_store_event)
                 .detach();
-
-            let weak_self = cx.weak_entity();
 
             let buffer_store = cx.new(|cx| {
                 BufferStore::remote(
@@ -1409,7 +1382,7 @@ impl Project {
         fs: Arc<dyn Fs>,
         cx: AsyncApp,
     ) -> Result<Entity<Self>> {
-        client.connect(true, &cx).await.into_response()?;
+        client.connect(&cx).await.into_response()?;
 
         let subscriptions = [
             EntitySubscription::Project(client.subscribe_to_entity::<Self>(remote_id)?),
@@ -1456,7 +1429,6 @@ impl Project {
         mut cx: AsyncApp,
     ) -> Result<Entity<Self>> {
         let remote_id = response.payload.project_id;
-        let role = response.payload.role();
 
         let path_style = if response.payload.windows_paths {
             PathStyle::Windows
@@ -1546,8 +1518,6 @@ impl Project {
         let project = cx.new(|cx| {
             let snippets = SnippetProvider::new(fs.clone(), BTreeSet::from_iter([]), cx);
 
-            let weak_self = cx.weak_entity();
-
             let mut worktrees = Vec::new();
             for worktree in response.payload.worktrees {
                 let worktree = Worktree::remote(
@@ -1616,7 +1586,7 @@ impl Project {
                 remotely_created_models: Arc::new(Mutex::new(RemotelyCreatedModels::default())),
                 toolchain_store: None,
             };
-            project.set_role(role, cx);
+            project.set_role(cx);
             for worktree in worktrees {
                 project.add_worktree(&worktree, cx);
             }
@@ -1635,46 +1605,21 @@ impl Project {
             })
             .ok();
 
-        let subscriptions = subscriptions
-            .into_iter()
-            .map(|s| match s {
-                EntitySubscription::BufferStore(subscription) => {
-                    subscription.set_entity(&buffer_store, &cx)
-                }
-                EntitySubscription::WorktreeStore(subscription) => {
-                    subscription.set_entity(&worktree_store, &cx)
-                }
-                EntitySubscription::GitStore(subscription) => {
-                    subscription.set_entity(&git_store, &cx)
-                }
-                EntitySubscription::SettingsObserver(subscription) => {
-                    subscription.set_entity(&settings_observer, &cx)
-                }
-                EntitySubscription::Project(subscription) => subscription.set_entity(&project, &cx),
-                EntitySubscription::LspStore(subscription) => {
-                    subscription.set_entity(&lsp_store, &cx)
-                }
-                EntitySubscription::DapStore(subscription) => {
-                    subscription.set_entity(&dap_store, &cx)
-                }
-            })
-            .collect::<Vec<_>>();
-
-        let user_ids = response
-            .payload
-            .collaborators
-            .iter()
-            .map(|peer| peer.user_id)
-            .collect();
-        user_store
-            .update(&mut cx, |user_store, cx| user_store.get_users(user_ids, cx))?
-            .await?;
-
-        project.update(&mut cx, |this, cx| {
-            this.set_collaborators_from_proto(response.payload.collaborators, cx)?;
-            this.client_subscriptions.extend(subscriptions);
-            anyhow::Ok(())
-        })??;
+        subscriptions.into_iter().map(|s| match s {
+            EntitySubscription::BufferStore(subscription) => {
+                subscription.set_entity(&buffer_store, &cx)
+            }
+            EntitySubscription::WorktreeStore(subscription) => {
+                subscription.set_entity(&worktree_store, &cx)
+            }
+            EntitySubscription::GitStore(subscription) => subscription.set_entity(&git_store, &cx),
+            EntitySubscription::SettingsObserver(subscription) => {
+                subscription.set_entity(&settings_observer, &cx)
+            }
+            EntitySubscription::Project(subscription) => subscription.set_entity(&project, &cx),
+            EntitySubscription::LspStore(subscription) => subscription.set_entity(&lsp_store, &cx),
+            EntitySubscription::DapStore(subscription) => subscription.set_entity(&dap_store, &cx),
+        });
 
         Ok(project)
     }
@@ -1722,14 +1667,11 @@ impl Project {
         root_paths: impl IntoIterator<Item = &Path>,
         cx: &mut AsyncApp,
     ) -> Entity<Project> {
-        use clock::FakeSystemClock;
-
         let fs = Arc::new(RealFs::new(None, cx.background_executor().clone()));
         let languages = LanguageRegistry::test(cx.background_executor().clone());
-        let clock = Arc::new(FakeSystemClock::new());
         let http_client = http_client::FakeHttpClient::with_404_response();
         let client = cx
-            .update(|cx| client::Client::new(clock, http_client.clone(), cx))
+            .update(|cx| client::Client::new(http_client.clone(), cx))
             .unwrap();
         let user_store = cx.new(|cx| UserStore::new(client.clone(), cx)).unwrap();
         let project = cx
@@ -1766,12 +1708,9 @@ impl Project {
         root_paths: impl IntoIterator<Item = &Path>,
         cx: &mut gpui::TestAppContext,
     ) -> Entity<Project> {
-        use clock::FakeSystemClock;
-
         let languages = LanguageRegistry::test(cx.executor());
-        let clock = Arc::new(FakeSystemClock::new());
         let http_client = http_client::FakeHttpClient::with_404_response();
-        let client = cx.update(|cx| client::Client::new(clock, http_client.clone(), cx));
+        let client = cx.update(|cx| client::Client::new(http_client.clone(), cx));
         let user_store = cx.new(|cx| UserStore::new(client.clone(), cx));
         let project = cx.update(|cx| {
             Project::local(
@@ -1973,16 +1912,6 @@ impl Project {
             SearchInputKind::Include => &mut self.search_included_history,
             SearchInputKind::Exclude => &mut self.search_excluded_history,
         }
-    }
-
-    #[inline]
-    pub fn collaborators(&self) -> &HashMap<proto::PeerId, Collaborator> {
-        &self.collaborators
-    }
-
-    #[inline]
-    pub fn host(&self) -> Option<&Collaborator> {
-        self.collaborators.values().find(|c| c.is_host)
     }
 
     #[inline]
@@ -2323,27 +2252,6 @@ impl Project {
         Ok(())
     }
 
-    pub fn reshared(
-        &mut self,
-        message: proto::ResharedProject,
-        cx: &mut Context<Self>,
-    ) -> Result<()> {
-        self.buffer_store
-            .update(cx, |buffer_store, _| buffer_store.forget_shared_buffers());
-        self.set_collaborators_from_proto(message.collaborators, cx)?;
-
-        self.worktree_store.update(cx, |worktree_store, cx| {
-            worktree_store.send_project_updates(cx);
-        });
-        if let Some(remote_id) = self.remote_id() {
-            self.git_store.update(cx, |git_store, cx| {
-                git_store.shared(remote_id, self.collab_client.clone().into(), cx)
-            });
-        }
-        cx.emit(Event::Reshared);
-        Ok(())
-    }
-
     pub fn rejoined(
         &mut self,
         message: proto::RejoinedProject,
@@ -2362,7 +2270,6 @@ impl Project {
 
         self.join_project_response_message_id = message_id;
         self.set_worktrees_from_proto(message.worktrees, cx)?;
-        self.set_collaborators_from_proto(message.collaborators, cx)?;
 
         let project = cx.weak_entity();
         self.lsp_store.update(cx, |lsp_store, cx| {
@@ -2394,7 +2301,6 @@ impl Project {
 
         if let ProjectClientState::Shared { remote_id, .. } = self.client_state {
             self.client_state = ProjectClientState::Local;
-            self.collaborators.clear();
             self.client_subscriptions.clear();
             self.worktree_store.update(cx, |store, cx| {
                 store.unshared(cx);
@@ -2438,13 +2344,8 @@ impl Project {
         cx.emit(Event::DisconnectedFromHost);
     }
 
-    pub fn set_role(&mut self, role: proto::ChannelRole, cx: &mut Context<Self>) {
-        let new_capability =
-            if role == proto::ChannelRole::Member || role == proto::ChannelRole::Admin {
-                Capability::ReadWrite
-            } else {
-                Capability::ReadOnly
-            };
+    pub fn set_role(&mut self, cx: &mut Context<Self>) {
+        let new_capability = Capability::ReadWrite;
         if let ProjectClientState::Remote { capability, .. } = &mut self.client_state {
             if *capability == new_capability {
                 return;
@@ -2464,7 +2365,6 @@ impl Project {
         } = &mut self.client_state
         {
             *sharing_has_stopped = true;
-            self.collaborators.clear();
             self.worktree_store.update(cx, |store, cx| {
                 store.disconnected_from_host(cx);
             });
@@ -4457,100 +4357,6 @@ impl Project {
         })?
     }
 
-    async fn handle_add_collaborator(
-        this: Entity<Self>,
-        mut envelope: TypedEnvelope<proto::AddProjectCollaborator>,
-        mut cx: AsyncApp,
-    ) -> Result<()> {
-        let collaborator = envelope
-            .payload
-            .collaborator
-            .take()
-            .context("empty collaborator")?;
-
-        let collaborator = Collaborator::from_proto(collaborator)?;
-        this.update(&mut cx, |this, cx| {
-            this.buffer_store.update(cx, |buffer_store, _| {
-                buffer_store.forget_shared_buffers_for(&collaborator.peer_id);
-            });
-            this.breakpoint_store.read(cx).broadcast();
-            cx.emit(Event::CollaboratorJoined(collaborator.peer_id));
-            this.collaborators
-                .insert(collaborator.peer_id, collaborator);
-        })?;
-
-        Ok(())
-    }
-
-    async fn handle_update_project_collaborator(
-        this: Entity<Self>,
-        envelope: TypedEnvelope<proto::UpdateProjectCollaborator>,
-        mut cx: AsyncApp,
-    ) -> Result<()> {
-        let old_peer_id = envelope
-            .payload
-            .old_peer_id
-            .context("missing old peer id")?;
-        let new_peer_id = envelope
-            .payload
-            .new_peer_id
-            .context("missing new peer id")?;
-        this.update(&mut cx, |this, cx| {
-            let collaborator = this
-                .collaborators
-                .remove(&old_peer_id)
-                .context("received UpdateProjectCollaborator for unknown peer")?;
-            let is_host = collaborator.is_host;
-            this.collaborators.insert(new_peer_id, collaborator);
-
-            log::info!("peer {} became {}", old_peer_id, new_peer_id,);
-            this.buffer_store.update(cx, |buffer_store, _| {
-                buffer_store.update_peer_id(&old_peer_id, new_peer_id)
-            });
-
-            if is_host {
-                this.buffer_store
-                    .update(cx, |buffer_store, _| buffer_store.discard_incomplete());
-                this.enqueue_buffer_ordered_message(BufferOrderedMessage::Resync)
-                    .unwrap();
-                cx.emit(Event::HostReshared);
-            }
-
-            cx.emit(Event::CollaboratorUpdated {
-                old_peer_id,
-                new_peer_id,
-            });
-            Ok(())
-        })?
-    }
-
-    async fn handle_remove_collaborator(
-        this: Entity<Self>,
-        envelope: TypedEnvelope<proto::RemoveProjectCollaborator>,
-        mut cx: AsyncApp,
-    ) -> Result<()> {
-        this.update(&mut cx, |this, cx| {
-            let peer_id = envelope.payload.peer_id.context("invalid peer id")?;
-            let replica_id = this
-                .collaborators
-                .remove(&peer_id)
-                .with_context(|| format!("unknown peer {peer_id:?}"))?
-                .replica_id;
-            this.buffer_store.update(cx, |buffer_store, cx| {
-                buffer_store.forget_shared_buffers_for(&peer_id);
-                for buffer in buffer_store.buffers() {
-                    buffer.update(cx, |buffer, cx| buffer.remove_peer(replica_id, cx));
-                }
-            });
-            this.git_store.update(cx, |git_store, _| {
-                git_store.forget_shared_diffs_for(&peer_id);
-            });
-
-            cx.emit(Event::CollaboratorLeft(peer_id));
-            Ok(())
-        })?
-    }
-
     async fn handle_update_project(
         this: Entity<Self>,
         envelope: TypedEnvelope<proto::UpdateProject>,
@@ -5005,25 +4811,6 @@ impl Project {
         self.worktree_store.update(cx, |worktree_store, cx| {
             worktree_store.set_worktrees_from_proto(worktrees, self.replica_id(), cx)
         })
-    }
-
-    fn set_collaborators_from_proto(
-        &mut self,
-        messages: Vec<proto::Collaborator>,
-        cx: &mut Context<Self>,
-    ) -> Result<()> {
-        let mut collaborators = HashMap::default();
-        for message in messages {
-            let collaborator = Collaborator::from_proto(message)?;
-            collaborators.insert(collaborator.peer_id, collaborator);
-        }
-        for old_peer_id in self.collaborators.keys() {
-            if !collaborators.contains_key(old_peer_id) {
-                cx.emit(Event::CollaboratorLeft(*old_peer_id));
-            }
-        }
-        self.collaborators = collaborators;
-        Ok(())
     }
 
     pub fn supplementary_language_servers<'a>(
@@ -5522,56 +5309,4 @@ fn provide_inline_values(
     }
 
     variables
-}
-
-#[cfg(test)]
-mod disable_ai_settings_tests {
-    use super::*;
-    use gpui::TestAppContext;
-    use settings::Settings;
-
-    #[gpui::test]
-    async fn test_disable_ai_settings_security(cx: &mut TestAppContext) {
-        cx.update(|cx| {
-            settings::init(cx);
-
-            // Test 1: Default is false (AI enabled)
-            assert!(
-                !DisableAiSettings::get_global(cx).disable_ai,
-                "Default should allow AI"
-            );
-        });
-
-        let disable_true = serde_json::json!({
-            "disable_ai": true
-        })
-        .to_string();
-        let disable_false = serde_json::json!({
-            "disable_ai": false
-        })
-        .to_string();
-
-        cx.update_global::<SettingsStore, _>(|store, cx| {
-            store.set_user_settings(&disable_false, cx).unwrap();
-            store.set_global_settings(&disable_true, cx).unwrap();
-        });
-        cx.update(|cx| {
-            assert!(
-                DisableAiSettings::get_global(cx).disable_ai,
-                "Local false cannot override global true"
-            );
-        });
-
-        cx.update_global::<SettingsStore, _>(|store, cx| {
-            store.set_global_settings(&disable_false, cx).unwrap();
-            store.set_user_settings(&disable_true, cx).unwrap();
-        });
-
-        cx.update(|cx| {
-            assert!(
-                DisableAiSettings::get_global(cx).disable_ai,
-                "Local false cannot override global true"
-            );
-        });
-    }
 }

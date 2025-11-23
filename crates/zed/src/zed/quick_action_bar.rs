@@ -231,8 +231,6 @@ impl Render for QuickActionBar {
 
             let focus = editor.focus_handle(cx);
 
-            let disable_ai = DisableAiSettings::get_global(cx).disable_ai;
-
             PopoverMenu::new("editor-selections-dropdown")
                 .trigger_with_tooltip(
                     IconButton::new("toggle_editor_selections_icon", IconName::CursorIBeam)
@@ -268,13 +266,6 @@ impl Render for QuickActionBar {
                                     skip_soft_wrap: true,
                                 }),
                             )
-                            .when(!disable_ai, |this| {
-                                this.separator().action_disabled_when(
-                                    !has_selection,
-                                    "Add to Agent Thread",
-                                    Box::new(AddSelectionToThread),
-                                )
-                            })
                             .separator()
                             .action("Go to Symbol", Box::new(ToggleOutline))
                             .action("Go to Line/Column", Box::new(ToggleGoToLine))

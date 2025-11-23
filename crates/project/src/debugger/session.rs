@@ -1184,6 +1184,7 @@ impl Session {
                             id: request.seq,
                             format: error.to_string(),
                             variables: None,
+                            send_telemetry: None,
                             show_user: None,
                             url: None,
                             url_label: None,
@@ -1240,6 +1241,7 @@ impl Session {
                             id: seq,
                             format: error.to_string(),
                             variables: None,
+                            send_telemetry: None,
                             show_user: None,
                             url: None,
                             url_label: None,
@@ -1507,6 +1509,14 @@ impl Session {
                 cx.notify();
             }
             Events::Output(event) => {
+                if event
+                    .category
+                    .as_ref()
+                    .is_some_and(|category| *category == OutputEventCategory::Telemetry)
+                {
+                    return;
+                }
+
                 self.push_output(event);
                 cx.notify();
             }

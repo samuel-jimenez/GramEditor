@@ -1,7 +1,5 @@
 use crate::{Client, Connection, Credentials, EstablishConnectionError, UserStore};
 use anyhow::{Context as _, Result, anyhow};
-use cloud_api_client::{AuthenticatedUser, GetAuthenticatedUserResponse, PlanInfo};
-use cloud_llm_client::{CurrentUsage, PlanV1, UsageData, UsageLimit};
 use futures::{StreamExt, stream::BoxStream};
 use gpui::{AppContext as _, BackgroundExecutor, Entity, TestAppContext};
 use http_client::{AsyncBody, Method, Request, http};
@@ -61,14 +59,7 @@ impl FakeServer {
 
                             Ok(http_client::Response::builder()
                                 .status(200)
-                                .body(
-                                    serde_json::to_string(&make_get_authenticated_user_response(
-                                        client_user_id as i32,
-                                        format!("user-{client_user_id}"),
-                                    ))
-                                    .unwrap()
-                                    .into(),
-                                )
+                                .body("{}".into())
                                 .unwrap())
                         }
                         _ => old_handler(req).await,
@@ -142,7 +133,7 @@ impl FakeServer {
             });
 
         client
-            .connect(false, &cx.to_async())
+            .connect(&cx.to_async())
             .await
             .into_response()
             .unwrap();
@@ -251,41 +242,4 @@ pub fn parse_authorization_header(req: &Request<AsyncBody>) -> Option<Credential
         user_id,
         access_token: access_token.to_string(),
     })
-}
-
-pub fn make_get_authenticated_user_response(
-    user_id: i32,
-    github_login: String,
-) -> GetAuthenticatedUserResponse {
-    GetAuthenticatedUserResponse {
-        user: AuthenticatedUser {
-            id: user_id,
-            metrics_id: format!("metrics-id-{user_id}"),
-            avatar_url: "".to_string(),
-            github_login,
-            name: None,
-            is_staff: false,
-            accepted_tos_at: None,
-        },
-        feature_flags: vec![],
-        plan: PlanInfo {
-            plan: PlanV1::ZedPro,
-            plan_v2: None,
-            subscription_period: None,
-            usage: CurrentUsage {
-                model_requests: UsageData {
-                    used: 0,
-                    limit: UsageLimit::Limited(500),
-                },
-                edit_predictions: UsageData {
-                    used: 250,
-                    limit: UsageLimit::Unlimited,
-                },
-            },
-            trial_started_at: None,
-            is_usage_based_billing_enabled: false,
-            is_account_too_young: false,
-            has_overdue_invoices: false,
-        },
-    }
 }

@@ -1,6 +1,4 @@
 mod application_menu;
-mod collab;
-mod onboarding_banner;
 pub mod platform_title_bar;
 mod platforms;
 mod system_window_tabs;
@@ -27,7 +25,6 @@ use gpui::{
     IntoElement, MouseButton, ParentElement, Render, StatefulInteractiveElement, Styled,
     Subscription, WeakEntity, Window, actions, div,
 };
-use onboarding_banner::OnboardingBanner;
 use project::{Project, WorktreeSettings, git_store::GitStoreEvent};
 use remote::RemoteConnectionOptions;
 use settings::{Settings, SettingsLocation};
@@ -41,8 +38,6 @@ use ui::{
 use util::{ResultExt, rel_path::RelPath};
 use workspace::{Workspace, notifications::NotifyResultExt};
 use zed_actions::{OpenRecent, OpenRemote};
-
-pub use onboarding_banner::restore_banner;
 
 #[cfg(feature = "stories")]
 pub use stories::*;
@@ -130,7 +125,6 @@ pub struct TitleBar {
     workspace: WeakEntity<Workspace>,
     application_menu: Option<Entity<ApplicationMenu>>,
     _subscriptions: Vec<Subscription>,
-    banner: Entity<OnboardingBanner>,
     screen_share_popover_handle: PopoverMenuHandle<ContextMenu>,
 }
 
@@ -175,10 +169,6 @@ impl Render for TitleBar {
 
         children.push(self.render_collaborator_list(window, cx).into_any_element());
 
-        if title_bar_settings.show_onboarding_banner {
-            children.push(self.banner.clone().into_any_element())
-        }
-
         let status = self.client.status();
         let status = &*status.borrow();
         let user = self.user_store.read(cx).current_user();
@@ -198,10 +188,6 @@ impl Render for TitleBar {
                 .on_mouse_down(MouseButton::Left, |_, _, cx| cx.stop_propagation())
                 .children(self.render_call_controls(window, cx))
                 .children(self.render_connection_status(status, cx))
-                .when(
-                    user.is_none() && TitleBarSettings::get_global(cx).show_sign_in,
-                    |el| el.child(self.render_sign_in_button(cx)),
-                )
                 .child(self.render_app_menu_button(cx))
                 .into_any_element(),
         );
@@ -289,19 +275,6 @@ impl TitleBar {
         );
         subscriptions.push(cx.observe(&user_store, |_, _, cx| cx.notify()));
 
-        let banner = cx.new(|cx| {
-            OnboardingBanner::new(
-                "ACP Claude Code Onboarding",
-                IconName::AiClaude,
-                "Claude Code",
-                Some("Introducing:".into()),
-                zed_actions::agent::OpenClaudeCodeOnboardingModal.boxed_clone(),
-                cx,
-            )
-            // When updating this to a non-AI feature release, remove this line.
-            .visible_when(|cx| !project::DisableAiSettings::get_global(cx).disable_ai)
-        });
-
         let platform_titlebar = cx.new(|cx| PlatformTitleBar::new(id, cx));
 
         Self {
@@ -312,7 +285,6 @@ impl TitleBar {
             user_store,
             client,
             _subscriptions: subscriptions,
-            banner,
             screen_share_popover_handle: Default::default(),
         }
     }
@@ -613,23 +585,6 @@ impl TitleBar {
             ),
             _ => None,
         }
-    }
-
-    pub fn render_sign_in_button(&mut self, _: &mut Context<Self>) -> Button {
-        let client = self.client.clone();
-        Button::new("sign_in", "Sign in")
-            .label_size(LabelSize::Small)
-            .on_click(move |_, window, cx| {
-                let client = client.clone();
-                window
-                    .spawn(cx, async move |cx| {
-                        client
-                            .sign_in_with_optional_connect(true, cx)
-                            .await
-                            .notify_async_err(cx);
-                    })
-                    .detach();
-            })
     }
 
     pub fn render_app_menu_button(&mut self, cx: &mut Context<Self>) -> impl Element {

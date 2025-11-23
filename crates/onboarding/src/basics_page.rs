@@ -15,7 +15,7 @@ use ui::{
 use vim_mode_setting::VimModeSetting;
 
 use crate::{
-    ImportCursorSettings, ImportVsCodeSettings, SettingsImportState,
+    ImportVsCodeSettings, SettingsImportState,
     theme_preview::{ThemePreviewStyle, ThemePreviewTile},
 };
 
@@ -329,18 +329,11 @@ fn render_setting_import_button(
 
 fn render_import_settings_section(tab_index: &mut isize, cx: &mut App) -> impl IntoElement {
     let import_state = SettingsImportState::global(cx);
-    let imports: [(SharedString, &dyn Action, bool); 2] = [
-        (
-            "VS Code".into(),
-            &ImportVsCodeSettings { skip_prompt: false },
-            import_state.vscode,
-        ),
-        (
-            "Cursor".into(),
-            &ImportCursorSettings { skip_prompt: false },
-            import_state.cursor,
-        ),
-    ];
+    let imports: [(SharedString, &dyn Action, bool); 2] = [(
+        "VS Code".into(),
+        &ImportVsCodeSettings { skip_prompt: false },
+        import_state.vscode,
+    )];
 
     let [vscode, cursor] = imports.map(|(label, action, imported)| {
         *tab_index += 1;

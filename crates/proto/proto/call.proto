@@ -5,14 +5,12 @@ import "core.proto";
 import "worktree.proto";
 import "buffer.proto";
 import "lsp.proto";
-import "channel.proto";
 import "git.proto";
 
 message CreateRoom {}
 
 message CreateRoomResponse {
     Room room = 1;
-    optional LiveKitConnectionInfo live_kit_connection_info = 2;
 }
 
 message JoinRoom {
@@ -22,7 +20,6 @@ message JoinRoom {
 message JoinRoomResponse {
     Room room = 1;
     optional uint64 channel_id = 2;
-    optional LiveKitConnectionInfo live_kit_connection_info = 3;
 }
 
 message RejoinRoom {
@@ -90,8 +87,7 @@ message Participant {
     repeated ParticipantProject projects = 3;
     ParticipantLocation location = 4;
     uint32 participant_index = 5;
-    ChannelRole role = 6;
-    reserved 7;
+    reserved 6;
 }
 
 message PendingParticipant {
@@ -127,32 +123,6 @@ message ParticipantLocation {
     message External {}
 }
 
-message Call {
-    uint64 room_id = 1;
-    uint64 called_user_id = 2;
-    optional uint64 initial_project_id = 3;
-}
-
-message IncomingCall {
-    uint64 room_id = 1;
-    uint64 calling_user_id = 2;
-    repeated uint64 participant_user_ids = 3;
-    optional ParticipantProject initial_project = 4;
-}
-
-message CallCanceled {
-    uint64 room_id = 1;
-}
-
-message CancelCall {
-    uint64 room_id = 1;
-    uint64 called_user_id = 2;
-}
-
-message DeclineCall {
-    uint64 room_id = 1;
-}
-
 message UpdateParticipantLocation {
     uint64 room_id = 1;
     ParticipantLocation location = 2;
@@ -160,12 +130,6 @@ message UpdateParticipantLocation {
 
 message RoomUpdated {
     Room room = 1;
-}
-
-message LiveKitConnectionInfo {
-    string server_url = 1;
-    string token = 2;
-    bool can_publish = 3;
 }
 
 message ShareProject {
@@ -202,7 +166,6 @@ message JoinProjectResponse {
     repeated Collaborator collaborators = 3;
     repeated LanguageServer language_servers = 4;
     repeated string language_server_capabilities = 8;
-    ChannelRole role = 6;
     bool windows_paths = 9;
     reserved 7;
 }
@@ -372,7 +335,6 @@ message View {
 
     oneof variant {
         Editor editor = 3;
-        ChannelView channel_view = 4;
         ContextEditor context_editor = 5;
     }
 
@@ -387,11 +349,6 @@ message View {
         reserved 8;
         double scroll_x = 9;
         double scroll_y = 10;
-    }
-
-    message ChannelView {
-        uint64 channel_id = 1;
-        Editor editor = 2;
     }
 
     message ContextEditor {
@@ -418,10 +375,4 @@ message Contact {
     uint64 user_id = 1;
     bool online = 2;
     bool busy = 3;
-}
-
-message SetRoomParticipantRole {
-    uint64 room_id = 1;
-    uint64 user_id = 2;
-    ChannelRole role = 3;
 }
