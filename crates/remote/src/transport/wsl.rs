@@ -214,26 +214,6 @@ impl WslRemoteConnection {
             return Ok(dst_path);
         }
 
-        let wanted_version = match release_channel {
-            ReleaseChannel::Nightly | ReleaseChannel::Dev => None,
-            _ => Some(cx.update(|cx| AppVersion::global(cx))?),
-        };
-
-        let src_path = delegate
-            .download_server_binary_locally(self.platform, release_channel, wanted_version, cx)
-            .await?;
-
-        let tmp_path = format!(
-            "{}.{}.gz",
-            dst_path.display(PathStyle::Posix),
-            std::process::id()
-        );
-        let tmp_path = RelPath::unix(&tmp_path).unwrap();
-
-        self.upload_file(&src_path, &tmp_path, delegate, cx).await?;
-        self.extract_and_install(&tmp_path, &dst_path, delegate, cx)
-            .await?;
-
         Ok(dst_path)
     }
 

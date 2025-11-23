@@ -202,11 +202,7 @@ Note: This setting has no effect in Vim mode, as rewrap is already allowed every
 
 ## Auto Install extensions
 
-- Description: Define extensions to be autoinstalled or never be installed.
-- Setting: `auto_install_extensions`
-- Default: `{ "html": true }`
-
-**Options**
+Extensions have to be manually installed in Ludd.
 
 You can find the names of your currently installed extensions by listing the subfolders under the [extension installation location](./extensions/installing-extensions.md#installation-location):
 
@@ -220,18 +216,6 @@ On Linux:
 
 ```sh
 ls ~/.local/share/zed/extensions/installed
-```
-
-Define extensions which should be installed (`true`) or never installed (`false`).
-
-```json [settings]
-{
-  "auto_install_extensions": {
-    "html": true,
-    "dockerfile": true,
-    "docker-compose": false
-  }
-}
 ```
 
 ## Autosave

@@ -2,14 +2,12 @@ use std::str::FromStr;
 use std::sync::Arc;
 
 use client::ExtensionMetadata;
-use extension_host::ExtensionStore;
 use fs::Fs;
 use fuzzy::{StringMatch, StringMatchCandidate, match_strings};
 use gpui::{App, DismissEvent, Entity, EventEmitter, Focusable, Task, WeakEntity, prelude::*};
 use picker::{Picker, PickerDelegate};
 use release_channel::ReleaseChannel;
 use semantic_version::SemanticVersion;
-use settings::update_settings_file;
 use ui::{HighlightedLabel, ListItem, ListItemSpacing, prelude::*};
 use util::ResultExt;
 use workspace::ModalView;
@@ -177,24 +175,6 @@ impl PickerDelegate for ExtensionVersionSelectorDelegate {
         if !extension_host::is_version_compatible(ReleaseChannel::global(cx), extension_version) {
             return;
         }
-
-        let extension_store = ExtensionStore::global(cx);
-        extension_store.update(cx, |store, cx| {
-            let extension_id = extension_version.id.clone();
-            let version = extension_version.manifest.version.clone();
-
-            update_settings_file(self.fs.clone(), cx, {
-                let extension_id = extension_id.clone();
-                move |settings, _| {
-                    settings
-                        .extension
-                        .auto_update_extensions
-                        .insert(extension_id, false);
-                }
-            });
-
-            store.install_extension(extension_id, version, cx);
-        });
     }
 
     fn dismissed(&mut self, _: &mut Window, cx: &mut Context<Picker<Self>>) {

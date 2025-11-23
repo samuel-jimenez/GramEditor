@@ -20,7 +20,7 @@ impl ThreadItem {
     pub fn new(id: impl Into<ElementId>, title: impl Into<SharedString>) -> Self {
         Self {
             id: id.into(),
-            icon: IconName::ZedAgent,
+            icon: IconName::Flame,
             title: title.into(),
             timestamp: "".into(),
             running: false,

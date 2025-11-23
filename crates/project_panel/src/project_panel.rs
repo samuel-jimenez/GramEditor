@@ -42,7 +42,7 @@ use settings::{
     update_settings_file,
 };
 use smallvec::SmallVec;
-use std::{any::TypeId, time::Instant};
+use std::any::TypeId;
 use std::{
     cell::OnceCell,
     cmp,
@@ -135,7 +135,6 @@ pub struct ProjectPanel {
     hover_expand_task: Option<Task<()>>,
     previous_drag_position: Option<Point<Pixels>>,
     sticky_items_count: usize,
-    last_reported_update: Instant,
     update_visible_entries_task: UpdateVisibleEntriesTask,
     state: State,
 }
@@ -739,7 +738,6 @@ impl ProjectPanel {
                 hover_expand_task: None,
                 previous_drag_position: None,
                 sticky_items_count: 0,
-                last_reported_update: Instant::now(),
                 state: State {
                     max_width_item_index: None,
                     edit_state: None,
@@ -3247,7 +3245,6 @@ impl ProjectPanel {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) {
-        let now = Instant::now();
         let settings = ProjectPanelSettings::get_global(cx);
         let auto_collapse_dirs = settings.auto_fold_dirs;
         let hide_gitignore = settings.hide_gitignore;

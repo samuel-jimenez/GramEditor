@@ -1,10 +1,8 @@
 use crate::branch_picker::{self, BranchList};
 use crate::git_panel::{GitPanel, commit_message_editor};
 use git::repository::CommitOptions;
-use git::{Amend, Commit, GenerateCommitMessage, Signoff};
+use git::{Amend, Commit, Signoff};
 use panel::{panel_button, panel_editor_style};
-use project::DisableAiSettings;
-use settings::Settings;
 use ui::{
     ContextMenu, KeybindingHint, PopoverMenu, PopoverMenuHandle, SplitButton, Tooltip, prelude::*,
 };
@@ -328,31 +326,22 @@ impl CommitModal {
     }
 
     pub fn render_footer(&self, _: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-        let (
-            can_commit,
-            tooltip,
-            commit_label,
-            co_authors,
-            active_repo,
-            is_amend_pending,
-            is_signoff_enabled,
-        ) = self.git_panel.update(cx, |git_panel, cx| {
-            let (can_commit, tooltip) = git_panel.configure_commit_button(cx);
-            let title = git_panel.commit_button_title();
-            let co_authors = git_panel.render_co_authors(cx);
-            let active_repo = git_panel.active_repository.clone();
-            let is_amend_pending = git_panel.amend_pending();
-            let is_signoff_enabled = git_panel.signoff_enabled();
-            (
-                can_commit,
-                tooltip,
-                title,
-                co_authors,
-                active_repo,
-                is_amend_pending,
-                is_signoff_enabled,
-            )
-        });
+        let (can_commit, tooltip, commit_label, active_repo, is_amend_pending, is_signoff_enabled) =
+            self.git_panel.update(cx, |git_panel, cx| {
+                let (can_commit, tooltip) = git_panel.configure_commit_button(cx);
+                let title = git_panel.commit_button_title();
+                let active_repo = git_panel.active_repository.clone();
+                let is_amend_pending = git_panel.amend_pending();
+                let is_signoff_enabled = git_panel.signoff_enabled();
+                (
+                    can_commit,
+                    tooltip,
+                    title,
+                    active_repo,
+                    is_amend_pending,
+                    is_signoff_enabled,
+                )
+            });
 
         let branch = active_repo
             .as_ref()
@@ -399,17 +388,12 @@ impl CommitModal {
             .h(px(self.properties.footer_height))
             .gap_1()
             .child(
-                h_flex()
-                    .gap_1()
-                    .flex_shrink()
-                    .overflow_x_hidden()
-                    .child(
-                        h_flex()
-                            .flex_shrink()
-                            .overflow_x_hidden()
-                            .child(branch_picker),
-                    )
-                    .children(co_authors),
+                h_flex().gap_1().flex_shrink().overflow_x_hidden().child(
+                    h_flex()
+                        .flex_shrink()
+                        .overflow_x_hidden()
+                        .child(branch_picker),
+                ),
             )
             .child(div().flex_1())
             .child(

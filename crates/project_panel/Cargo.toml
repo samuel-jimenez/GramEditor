@@ -18,6 +18,7 @@ doctest = false
 
 [dependencies]
 anyhow.workspace = true
+client.workspace = true
 collections.workspace = true
 command_palette_hooks.workspace = true
 db.workspace = true

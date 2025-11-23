@@ -40,7 +40,6 @@ impl EventEmitter<Event> for LogStore {}
 pub struct LogStore {
     on_headless_host: bool,
     projects: HashMap<WeakEntity<Project>, ProjectState>,
-    pub copilot_log_subscription: Option<lsp::Subscription>,
     pub language_servers: HashMap<LanguageServerId, LanguageServerState>,
     io_tx: mpsc::UnboundedSender<(LanguageServerId, IoKind, String)>,
 }
@@ -220,7 +219,6 @@ impl LogStore {
         let log_store = Self {
             projects: HashMap::default(),
             language_servers: HashMap::default(),
-            copilot_log_subscription: None,
             on_headless_host,
             io_tx,
         };

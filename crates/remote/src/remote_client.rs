@@ -22,7 +22,7 @@ use futures::{
 };
 use gpui::{
     App, AppContext as _, AsyncApp, BackgroundExecutor, BorrowAppContext, Context, Entity,
-    EventEmitter, FutureExt, Global, SemanticVersion, Task, WeakEntity,
+    EventEmitter, FutureExt, Global, Task, WeakEntity,
 };
 use parking_lot::Mutex;
 
@@ -67,20 +67,6 @@ pub trait RemoteClientDelegate: Send + Sync {
         tx: oneshot::Sender<EncryptedPassword>,
         cx: &mut AsyncApp,
     );
-    fn get_download_url(
-        &self,
-        platform: RemotePlatform,
-        release_channel: ReleaseChannel,
-        version: Option<SemanticVersion>,
-        cx: &mut AsyncApp,
-    ) -> Task<Result<Option<String>>>;
-    fn download_server_binary_locally(
-        &self,
-        platform: RemotePlatform,
-        release_channel: ReleaseChannel,
-        version: Option<SemanticVersion>,
-        cx: &mut AsyncApp,
-    ) -> Task<Result<PathBuf>>;
     fn set_status(&self, status: Option<&str>, cx: &mut AsyncApp);
 }
 
@@ -1656,26 +1642,6 @@ mod fake {
 
     impl RemoteClientDelegate for Delegate {
         fn ask_password(&self, _: String, _: oneshot::Sender<EncryptedPassword>, _: &mut AsyncApp) {
-            unreachable!()
-        }
-
-        fn download_server_binary_locally(
-            &self,
-            _: RemotePlatform,
-            _: ReleaseChannel,
-            _: Option<SemanticVersion>,
-            _: &mut AsyncApp,
-        ) -> Task<Result<PathBuf>> {
-            unreachable!()
-        }
-
-        fn get_download_url(
-            &self,
-            _platform: RemotePlatform,
-            _release_channel: ReleaseChannel,
-            _version: Option<SemanticVersion>,
-            _cx: &mut AsyncApp,
-        ) -> Task<Result<Option<String>>> {
             unreachable!()
         }
 

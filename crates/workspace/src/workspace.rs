@@ -709,20 +709,6 @@ impl ProjectItemRegistry {
         };
         open_project_item
     }
-
-    fn build_item<T: project::ProjectItem>(
-        &self,
-        item: Entity<T>,
-        project: Entity<Project>,
-        pane: Option<&Pane>,
-        window: &mut Window,
-        cx: &mut App,
-    ) -> Option<Box<dyn ItemHandle>> {
-        let build = self
-            .build_project_item_fns_by_type
-            .get(&TypeId::of::<T>())?;
-        Some(build(item.into_any(), project, pane, window, cx))
-    }
 }
 
 type WorkspaceItemBuilder =
@@ -851,7 +837,6 @@ impl Global for GlobalAppState {}
 
 pub struct WorkspaceStore {
     workspaces: HashSet<WindowHandle<Workspace>>,
-    client: Arc<Client>,
     _subscriptions: Vec<client::Subscription>,
 }
 
@@ -1044,7 +1029,6 @@ pub struct Workspace {
     panes_by_item: HashMap<EntityId, WeakEntity<Pane>>,
     active_pane: Entity<Pane>,
     last_active_center_pane: Option<WeakEntity<Pane>>,
-    last_active_view_id: Option<proto::ViewId>,
     status_bar: Entity<StatusBar>,
     modal_layer: Entity<ModalLayer>,
     toast_layer: Entity<ToastLayer>,
@@ -1083,18 +1067,6 @@ impl EventEmitter<Event> for Workspace {}
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct ViewId {
     pub id: u64,
-}
-
-pub struct FollowerState {
-    center_pane: Entity<Pane>,
-    dock_pane: Option<Entity<Pane>>,
-    active_view_id: Option<ViewId>,
-    items_by_leader_view_id: HashMap<ViewId, FollowerView>,
-}
-
-struct FollowerView {
-    view: Box<dyn FollowableItemHandle>,
-    location: Option<proto::PanelId>,
 }
 
 impl Workspace {
@@ -1343,7 +1315,6 @@ impl Workspace {
             panes_by_item: Default::default(),
             active_pane: center_pane.clone(),
             last_active_center_pane: Some(center_pane.downgrade()),
-            last_active_view_id: None,
             status_bar,
             modal_layer,
             toast_layer,
@@ -5917,7 +5888,6 @@ impl WorkspaceStore {
         Self {
             workspaces: Default::default(),
             _subscriptions: vec![client.add_request_handler(cx.weak_entity(), Self::handle_follow)],
-            client,
         }
     }
 
@@ -5934,22 +5904,6 @@ impl WorkspaceStore {
 
     pub fn workspaces(&self) -> &HashSet<WindowHandle<Workspace>> {
         &self.workspaces
-    }
-}
-
-impl ViewId {
-    pub(crate) fn from_proto(message: proto::ViewId) -> Result<Self> {
-        Ok(Self { id: message.id })
-    }
-
-    pub(crate) fn to_proto(self) -> Option<proto::ViewId> {
-        None
-    }
-}
-
-impl FollowerState {
-    fn pane(&self) -> &Entity<Pane> {
-        self.dock_pane.as_ref().unwrap_or(&self.center_pane)
     }
 }
 

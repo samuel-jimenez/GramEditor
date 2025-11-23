@@ -3,11 +3,9 @@ use buffer_diff::BufferDiff;
 use clock;
 use collections::BTreeMap;
 use futures::{FutureExt, StreamExt, channel::mpsc};
-use gpui::{
-    App, AppContext, AsyncApp, Context, Entity, SharedString, Subscription, Task, WeakEntity,
-};
+use gpui::{App, AppContext, AsyncApp, Context, Entity, Subscription, Task, WeakEntity};
 use language::{Anchor, Buffer, BufferEvent, DiskState, Point, ToPoint};
-use project::{Project, ProjectItem, lsp_store::OpenLspBufferHandle};
+use project::{Project, lsp_store::OpenLspBufferHandle};
 use std::{cmp, ops::Range, sync::Arc};
 use text::{Edit, Patch, Rope};
 use util::{RangeExt, ResultExt as _};
@@ -577,38 +575,7 @@ impl ActionLog {
                     self.project
                         .update(cx, |project, cx| project.save_buffer(buffer.clone(), cx))
                 } else {
-                    // For a file created by AI with no pre-existing content,
-                    // only delete the file if we're certain it contains only AI content
-                    // with no edits from the user.
-
-                    let initial_version = tracked_buffer.version.clone();
-                    let current_version = buffer.read(cx).version();
-
-                    let current_content = buffer.read(cx).text();
-                    let tracked_content = tracked_buffer.snapshot.text();
-
-                    let is_ai_only_content =
-                        initial_version == current_version && current_content == tracked_content;
-
-                    if is_ai_only_content {
-                        buffer
-                            .read(cx)
-                            .entry_id(cx)
-                            .and_then(|entry_id| {
-                                self.project.update(cx, |project, cx| {
-                                    project.delete_entry(entry_id, false, cx)
-                                })
-                            })
-                            .unwrap_or(Task::ready(Ok(())))
-                    } else {
-                        // Not sure how to disentangle edits made by the user
-                        // from edits made by the AI at this point.
-                        // For now, preserve both to avoid data loss.
-                        //
-                        // TODO: Better solution (disable "Reject" after user makes some
-                        // edit or find a way to differentiate between AI and user edits)
-                        Task::ready(Ok(()))
-                    }
+                    Task::ready(Ok(()))
                 };
 
                 metrics.add_edits(tracked_buffer.unreviewed_edits.edits());
@@ -754,13 +721,11 @@ impl ActionLog {
 struct ActionLogMetrics {
     lines_removed: u32,
     lines_added: u32,
-    language: Option<SharedString>,
 }
 
 impl ActionLogMetrics {
-    fn for_buffer(buffer: &Buffer) -> Self {
+    fn for_buffer(_buffer: &Buffer) -> Self {
         Self {
-            language: buffer.language().map(|l| l.name().0),
             lines_removed: 0,
             lines_added: 0,
         }
@@ -1020,7 +985,7 @@ mod tests {
         );
 
         action_log.update(cx, |log, cx| {
-            log.keep_edits_in_range(buffer.clone(), Point::new(3, 0)..Point::new(4, 3), None, cx)
+            log.keep_edits_in_range(buffer.clone(), Point::new(3, 0)..Point::new(4, 3), cx)
         });
         cx.run_until_parked();
         assert_eq!(
@@ -1036,7 +1001,7 @@ mod tests {
         );
 
         action_log.update(cx, |log, cx| {
-            log.keep_edits_in_range(buffer.clone(), Point::new(0, 0)..Point::new(4, 3), None, cx)
+            log.keep_edits_in_range(buffer.clone(), Point::new(0, 0)..Point::new(4, 3), cx)
         });
         cx.run_until_parked();
         assert_eq!(unreviewed_hunks(&action_log, cx), vec![]);
@@ -1121,7 +1086,7 @@ mod tests {
         );
 
         action_log.update(cx, |log, cx| {
-            log.keep_edits_in_range(buffer.clone(), Point::new(1, 0)..Point::new(1, 0), None, cx)
+            log.keep_edits_in_range(buffer.clone(), Point::new(1, 0)..Point::new(1, 0), cx)
         });
         cx.run_until_parked();
         assert_eq!(unreviewed_hunks(&action_log, cx), vec![]);
@@ -1218,7 +1183,7 @@ mod tests {
         );
 
         action_log.update(cx, |log, cx| {
-            log.keep_edits_in_range(buffer.clone(), Point::new(0, 0)..Point::new(1, 0), None, cx)
+            log.keep_edits_in_range(buffer.clone(), Point::new(0, 0)..Point::new(1, 0), cx)
         });
         cx.run_until_parked();
         assert_eq!(unreviewed_hunks(&action_log, cx), vec![]);
@@ -1277,7 +1242,7 @@ mod tests {
         );
 
         action_log.update(cx, |log, cx| {
-            log.keep_edits_in_range(buffer.clone(), 0..5, None, cx)
+            log.keep_edits_in_range(buffer.clone(), 0..5, cx)
         });
         cx.run_until_parked();
         assert_eq!(unreviewed_hunks(&action_log, cx), vec![]);
@@ -1329,7 +1294,7 @@ mod tests {
 
         action_log
             .update(cx, |log, cx| {
-                log.reject_edits_in_ranges(buffer.clone(), vec![2..5], None, cx)
+                log.reject_edits_in_ranges(buffer.clone(), vec![2..5], cx)
             })
             .await
             .unwrap();
@@ -1409,7 +1374,7 @@ mod tests {
 
         action_log
             .update(cx, |log, cx| {
-                log.reject_edits_in_ranges(buffer.clone(), vec![2..5], None, cx)
+                log.reject_edits_in_ranges(buffer.clone(), vec![2..5], cx)
             })
             .await
             .unwrap();
@@ -1592,7 +1557,6 @@ mod tests {
                 log.reject_edits_in_ranges(
                     buffer.clone(),
                     vec![Point::new(4, 0)..Point::new(4, 0)],
-                    None,
                     cx,
                 )
             })
@@ -1627,7 +1591,6 @@ mod tests {
                 log.reject_edits_in_ranges(
                     buffer.clone(),
                     vec![Point::new(0, 0)..Point::new(1, 0)],
-                    None,
                     cx,
                 )
             })
@@ -1655,7 +1618,6 @@ mod tests {
                 log.reject_edits_in_ranges(
                     buffer.clone(),
                     vec![Point::new(4, 0)..Point::new(4, 0)],
-                    None,
                     cx,
                 )
             })
@@ -1730,7 +1692,7 @@ mod tests {
             let range_2 = buffer.read(cx).anchor_before(Point::new(5, 0))
                 ..buffer.read(cx).anchor_before(Point::new(5, 3));
 
-            log.reject_edits_in_ranges(buffer.clone(), vec![range_1, range_2], None, cx)
+            log.reject_edits_in_ranges(buffer.clone(), vec![range_1, range_2], cx)
                 .detach();
             assert_eq!(
                 buffer.read_with(cx, |buffer, _| buffer.text()),
@@ -1791,7 +1753,6 @@ mod tests {
                 log.reject_edits_in_ranges(
                     buffer.clone(),
                     vec![Point::new(0, 0)..Point::new(0, 0)],
-                    None,
                     cx,
                 )
             })
@@ -1847,7 +1808,6 @@ mod tests {
                 log.reject_edits_in_ranges(
                     buffer.clone(),
                     vec![Point::new(0, 0)..Point::new(0, 11)],
-                    None,
                     cx,
                 )
             })
@@ -1910,7 +1870,6 @@ mod tests {
                 log.reject_edits_in_ranges(
                     buffer.clone(),
                     vec![Point::new(0, 0)..Point::new(100, 0)],
-                    None,
                     cx,
                 )
             })
@@ -1958,7 +1917,7 @@ mod tests {
 
         // User accepts the single hunk
         action_log.update(cx, |log, cx| {
-            log.keep_edits_in_range(buffer.clone(), Anchor::MIN..Anchor::MAX, None, cx)
+            log.keep_edits_in_range(buffer.clone(), Anchor::MIN..Anchor::MAX, cx)
         });
         cx.run_until_parked();
         assert_eq!(unreviewed_hunks(&action_log, cx), vec![]);
@@ -1979,7 +1938,7 @@ mod tests {
         // User rejects the hunk
         action_log
             .update(cx, |log, cx| {
-                log.reject_edits_in_ranges(buffer.clone(), vec![Anchor::MIN..Anchor::MAX], None, cx)
+                log.reject_edits_in_ranges(buffer.clone(), vec![Anchor::MIN..Anchor::MAX], cx)
             })
             .await
             .unwrap();
@@ -2023,7 +1982,7 @@ mod tests {
         cx.run_until_parked();
 
         // User clicks "Accept All"
-        action_log.update(cx, |log, cx| log.keep_all_edits(None, cx));
+        action_log.update(cx, |log, cx| log.keep_all_edits(cx));
         cx.run_until_parked();
         assert!(fs.is_file(path!("/dir/new_file").as_ref()).await);
         assert_eq!(unreviewed_hunks(&action_log, cx), vec![]); // Hunks are cleared
@@ -2042,7 +2001,7 @@ mod tests {
 
         // User clicks "Reject All"
         action_log
-            .update(cx, |log, cx| log.reject_all_edits(None, cx))
+            .update(cx, |log, cx| log.reject_all_edits(cx))
             .await;
         cx.run_until_parked();
         assert!(fs.is_file(path!("/dir/new_file").as_ref()).await);
@@ -2082,7 +2041,7 @@ mod tests {
                     action_log.update(cx, |log, cx| {
                         let range = buffer.read(cx).random_byte_range(0, &mut rng);
                         log::info!("keeping edits in range {:?}", range);
-                        log.keep_edits_in_range(buffer.clone(), range, None, cx)
+                        log.keep_edits_in_range(buffer.clone(), range, cx)
                     });
                 }
                 25..50 => {
@@ -2090,7 +2049,7 @@ mod tests {
                         .update(cx, |log, cx| {
                             let range = buffer.read(cx).random_byte_range(0, &mut rng);
                             log::info!("rejecting edits in range {:?}", range);
-                            log.reject_edits_in_ranges(buffer.clone(), vec![range], None, cx)
+                            log.reject_edits_in_ranges(buffer.clone(), vec![range], cx)
                         })
                         .await
                         .unwrap();

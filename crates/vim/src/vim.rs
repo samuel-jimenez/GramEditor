@@ -1382,12 +1382,7 @@ impl Vim {
         let editor = editor.read(cx);
         let editor_mode = editor.mode();
 
-        if editor_mode.is_full()
-            && !newest_selection_empty
-            && self.mode == Mode::Normal
-            // When following someone, don't switch vim mode.
-            && editor.leader_id().is_none()
-        {
+        if editor_mode.is_full() && !newest_selection_empty && self.mode == Mode::Normal {
             if preserve_selection {
                 self.switch_mode(Mode::Visual, true, window, cx);
             } else {
@@ -1716,10 +1711,6 @@ impl Vim {
     fn local_selections_changed(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         let Some(editor) = self.editor() else { return };
 
-        if editor.read(cx).leader_id().is_some() {
-            return;
-        }
-
         let newest = editor.read(cx).selections.newest_anchor().clone();
         let is_multicursor = editor.read(cx).selections.count() > 1;
         if self.mode == Mode::Insert && self.current_tx.is_some() {
@@ -1902,7 +1893,7 @@ impl Vim {
         }
     }
 
-    fn sync_vim_settings(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+    fn sync_vim_settings(&mut self, _window: &mut Window, cx: &mut Context<Self>) {
         self.update_editor(cx, |vim, editor, cx| {
             editor.set_cursor_shape(vim.cursor_shape(cx), cx);
             editor.set_clip_at_line_ends(vim.clip_at_line_ends(), cx);

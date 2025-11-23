@@ -1,6 +1,5 @@
 use anyhow::{Context as _, Result};
-use channel::ChannelStore;
-use client::{ChannelId, Client, UserStore};
+use client::{Client, UserStore};
 use db::smol::stream::StreamExt;
 use gpui::{App, AppContext as _, AsyncApp, Context, Entity, EventEmitter, Global, Task};
 use rpc::{Notification, TypedEnvelope, proto};
@@ -21,7 +20,6 @@ impl Global for GlobalNotificationStore {}
 pub struct NotificationStore {
     client: Arc<Client>,
     user_store: Entity<UserStore>,
-    channel_store: Entity<ChannelStore>,
     notifications: SumTree<NotificationEntry>,
     loaded_all_notifications: bool,
     _watch_connection_status: Task<Option<()>>,
@@ -95,7 +93,6 @@ impl NotificationStore {
         });
 
         Self {
-            channel_store: ChannelStore::global(cx),
             notifications: Default::default(),
             loaded_all_notifications: false,
             _watch_connection_status: watch_connection_status,
@@ -350,31 +347,6 @@ impl NotificationStore {
             old_range,
             new_count,
         });
-    }
-
-    pub fn respond_to_notification(
-        &mut self,
-        notification: Notification,
-        response: bool,
-        cx: &mut Context<Self>,
-    ) {
-        match notification {
-            Notification::ContactRequest { sender_id } => {
-                self.user_store
-                    .update(cx, |store, cx| {
-                        store.respond_to_contact_request(sender_id, response, cx)
-                    })
-                    .detach();
-            }
-            Notification::ChannelInvitation { channel_id, .. } => {
-                self.channel_store
-                    .update(cx, |store, cx| {
-                        store.respond_to_channel_invite(ChannelId(channel_id), response, cx)
-                    })
-                    .detach();
-            }
-            _ => {}
-        }
     }
 }
 

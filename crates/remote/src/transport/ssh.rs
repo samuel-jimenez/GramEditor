@@ -12,7 +12,6 @@ use futures::{
 };
 use gpui::{App, AppContext as _, AsyncApp, SemanticVersion, Task};
 use parking_lot::Mutex;
-use paths::remote_server_dir_relative;
 use release_channel::{AppCommitSha, AppVersion, ReleaseChannel};
 use rpc::proto::Envelope;
 pub use settings::SshPortForwardOption;
@@ -588,137 +587,7 @@ impl SshRemoteConnection {
             return Ok(dst_path);
         }
 
-        let wanted_version = cx.update(|cx| match release_channel {
-            ReleaseChannel::Nightly => Ok(None),
-            ReleaseChannel::Dev => {
-                anyhow::bail!(
-                    "ZED_BUILD_REMOTE_SERVER is not set and no remote server exists at ({:?})",
-                    dst_path
-                )
-            }
-            _ => Ok(Some(AppVersion::global(cx))),
-        })??;
-
-        let tmp_path_gz = remote_server_dir_relative().join(
-            RelPath::unix(&format!(
-                "{}-download-{}.gz",
-                binary_name,
-                std::process::id()
-            ))
-            .unwrap(),
-        );
-        if !self.socket.connection_options.upload_binary_over_ssh
-            && let Some(url) = delegate
-                .get_download_url(self.ssh_platform, release_channel, wanted_version, cx)
-                .await?
-        {
-            match self
-                .download_binary_on_server(&url, &tmp_path_gz, delegate, cx)
-                .await
-            {
-                Ok(_) => {
-                    self.extract_server_binary(&dst_path, &tmp_path_gz, delegate, cx)
-                        .await
-                        .context("extracting server binary")?;
-                    return Ok(dst_path);
-                }
-                Err(e) => {
-                    log::error!(
-                        "Failed to download binary on server, attempting to download locally and then upload it the server: {e:#}",
-                    )
-                }
-            }
-        }
-
-        let src_path = delegate
-            .download_server_binary_locally(self.ssh_platform, release_channel, wanted_version, cx)
-            .await
-            .context("downloading server binary locally")?;
-        self.upload_local_server_binary(&src_path, &tmp_path_gz, delegate, cx)
-            .await
-            .context("uploading server binary")?;
-        self.extract_server_binary(&dst_path, &tmp_path_gz, delegate, cx)
-            .await
-            .context("extracting server binary")?;
         Ok(dst_path)
-    }
-
-    async fn download_binary_on_server(
-        &self,
-        url: &str,
-        tmp_path_gz: &RelPath,
-        delegate: &Arc<dyn RemoteClientDelegate>,
-        cx: &mut AsyncApp,
-    ) -> Result<()> {
-        if let Some(parent) = tmp_path_gz.parent() {
-            self.socket
-                .run_command(
-                    self.ssh_shell_kind,
-                    "mkdir",
-                    &["-p", parent.display(self.path_style()).as_ref()],
-                    true,
-                )
-                .await?;
-        }
-
-        delegate.set_status(Some("Downloading remote development server on host"), cx);
-
-        match self
-            .socket
-            .run_command(
-                self.ssh_shell_kind,
-                "curl",
-                &[
-                    "-f",
-                    "-L",
-                    url,
-                    "-o",
-                    &tmp_path_gz.display(self.path_style()),
-                ],
-                true,
-            )
-            .await
-        {
-            Ok(_) => {}
-            Err(e) => {
-                if self
-                    .socket
-                    .run_command(self.ssh_shell_kind, "which", &["curl"], true)
-                    .await
-                    .is_ok()
-                {
-                    return Err(e);
-                }
-
-                log::info!("curl is not available, trying wget");
-                match self
-                    .socket
-                    .run_command(
-                        self.ssh_shell_kind,
-                        "wget",
-                        &[url, "-O", &tmp_path_gz.display(self.path_style())],
-                        true,
-                    )
-                    .await
-                {
-                    Ok(_) => {}
-                    Err(e) => {
-                        if self
-                            .socket
-                            .run_command(self.ssh_shell_kind, "which", &["wget"], true)
-                            .await
-                            .is_ok()
-                        {
-                            return Err(e);
-                        } else {
-                            anyhow::bail!("Neither curl nor wget is available");
-                        }
-                    }
-                }
-            }
-        }
-
-        Ok(())
     }
 
     async fn upload_local_server_binary(

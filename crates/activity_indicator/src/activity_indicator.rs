@@ -293,17 +293,6 @@ impl ActivityIndicator {
         });
     }
 
-    fn dismiss_message(&mut self, _: &DismissMessage, _: &mut Window, cx: &mut Context<Self>) {
-        self.project.update(cx, |project, cx| {
-            if project.last_formatting_failure(cx).is_some() {
-                project.reset_last_formatting_failure(cx);
-                true
-            } else {
-                false
-            }
-        });
-    }
-
     fn pending_language_server_work<'a>(
         &self,
         cx: &'a App,
@@ -388,7 +377,7 @@ impl ActivityIndicator {
                             .into_any_element(),
                     ),
                     message,
-                    on_click: Some(Arc::new(Self::toggle_language_server_work_context_menu)),
+                    on_click: None,
                     tooltip_message: None,
                 });
             }
@@ -518,10 +507,9 @@ impl ActivityIndicator {
                         }
                     )
                 ),
-                on_click: Some(Arc::new(move |this, window, cx| {
+                on_click: Some(Arc::new(move |this, _window, _cx| {
                     this.statuses
                         .retain(|status| !downloading.contains(&status.name));
-                    this.dismiss_message(&DismissMessage, window, cx)
                 })),
                 tooltip_message: None,
             });
@@ -547,10 +535,9 @@ impl ActivityIndicator {
                         }
                     ),
                 ),
-                on_click: Some(Arc::new(move |this, window, cx| {
+                on_click: Some(Arc::new(move |this, _window, _cx| {
                     this.statuses
                         .retain(|status| !checking_for_update.contains(&status.name));
-                    this.dismiss_message(&DismissMessage, window, cx)
                 })),
                 tooltip_message: None,
             });
@@ -684,9 +671,7 @@ impl ActivityIndicator {
                     }
                 })),
                 message,
-                on_click: Some(Arc::new(|this, window, cx| {
-                    this.dismiss_message(&Default::default(), window, cx)
-                })),
+                on_click: Some(Arc::new(|_this, _window, _cx| {})),
                 tooltip_message: None,
             })
         } else {
@@ -703,8 +688,7 @@ impl Render for ActivityIndicator {
     fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let result = h_flex()
             .id("activity-indicator")
-            .on_action(cx.listener(Self::show_error_message))
-            .on_action(cx.listener(Self::dismiss_message));
+            .on_action(cx.listener(Self::show_error_message));
         let Some(content) = self.content_to_render(cx) else {
             return result;
         };
@@ -819,28 +803,5 @@ impl StatusItemView for ActivityIndicator {
         _window: &mut Window,
         _: &mut Context<Self>,
     ) {
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use gpui::SemanticVersion;
-    use release_channel::AppCommitSha;
-
-    use super::*;
-
-    #[test]
-    fn test_version_tooltip_message() {
-        let message = ActivityIndicator::version_tooltip_message(&VersionCheckType::Semantic(
-            SemanticVersion::new(1, 0, 0),
-        ));
-
-        assert_eq!(message, "Version: 1.0.0");
-
-        let message = ActivityIndicator::version_tooltip_message(&VersionCheckType::Sha(
-            AppCommitSha::new("14d9a4189f058d8736339b06ff2340101eaea5af".to_string()),
-        ));
-
-        assert_eq!(message, "Version: 14d9a41…");
     }
 }

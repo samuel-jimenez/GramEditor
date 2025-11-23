@@ -16,6 +16,7 @@ default = []
 
 [dependencies]
 anyhow.workspace = true
+client.workspace = true
 component.workspace = true
 db.workspace = true
 documented.workspace = true

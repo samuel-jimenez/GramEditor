@@ -126,19 +126,6 @@ async fn build_remote_server_from_source(
     use std::path::Path;
     use util::command::new_smol_command;
 
-    // By default, we make building remote server from source opt-out and we do not force artifact compression
-    // for quicker builds.
-    let build_remote_server =
-        std::env::var("ZED_BUILD_REMOTE_SERVER").unwrap_or("nocompress".into());
-
-    if build_remote_server == "false"
-        || build_remote_server == "no"
-        || build_remote_server == "off"
-        || build_remote_server == "0"
-    {
-        return Ok(None);
-    }
-
     async fn run_cmd(command: &mut Command) -> Result<()> {
         let output = command
             .kill_on_drop(true)
@@ -152,7 +139,7 @@ async fn build_remote_server_from_source(
         Ok(())
     }
 
-    let use_musl = !build_remote_server.contains("nomusl");
+    let use_musl = true;
     let triple = format!(
         "{}-{}",
         platform.arch,
@@ -181,9 +168,6 @@ async fn build_remote_server_from_source(
         if let Ok(path) = std::env::var("ZED_ZSTD_MUSL_LIB") {
             rust_flags.push_str(&format!(" -C link-arg=-L{path}"));
         }
-    }
-    if build_remote_server.contains("mold") {
-        rust_flags.push_str(" -C link-arg=-fuse-ld=mold");
     }
 
     if platform.arch == std::env::consts::ARCH && platform.os == std::env::consts::OS {
@@ -264,40 +248,36 @@ async fn build_remote_server_from_source(
         .join("debug")
         .join("remote_server");
 
-    let path = if !build_remote_server.contains("nocompress") {
-        delegate.set_status(Some("Compressing binary"), cx);
+    delegate.set_status(Some("Compressing binary"), cx);
 
-        #[cfg(not(target_os = "windows"))]
-        {
-            run_cmd(new_smol_command("gzip").args(["-f", &bin_path.to_string_lossy()])).await?;
+    #[cfg(not(target_os = "windows"))]
+    {
+        run_cmd(new_smol_command("gzip").args(["-f", &bin_path.to_string_lossy()])).await?;
+    }
+
+    #[cfg(target_os = "windows")]
+    {
+        // On Windows, we use 7z to compress the binary
+
+        let seven_zip = which("7z.exe",cx)
+            .await?
+            .context("7z.exe not found on $PATH, install it (e.g. with `winget install -e --id 7zip.7zip`) or, if you don't want this behaviour, set $env:ZED_BUILD_REMOTE_SERVER=\"nocompress\"")?;
+        let gz_path = format!("target/remote_server/{}/debug/remote_server.gz", triple);
+        if smol::fs::metadata(&gz_path).await.is_ok() {
+            smol::fs::remove_file(&gz_path).await?;
         }
+        run_cmd(new_smol_command(seven_zip).args([
+            "a",
+            "-tgzip",
+            &gz_path,
+            &bin_path.to_string_lossy(),
+        ]))
+        .await?;
+    }
 
-        #[cfg(target_os = "windows")]
-        {
-            // On Windows, we use 7z to compress the binary
-
-            let seven_zip = which("7z.exe",cx)
-                .await?
-                .context("7z.exe not found on $PATH, install it (e.g. with `winget install -e --id 7zip.7zip`) or, if you don't want this behaviour, set $env:ZED_BUILD_REMOTE_SERVER=\"nocompress\"")?;
-            let gz_path = format!("target/remote_server/{}/debug/remote_server.gz", triple);
-            if smol::fs::metadata(&gz_path).await.is_ok() {
-                smol::fs::remove_file(&gz_path).await?;
-            }
-            run_cmd(new_smol_command(seven_zip).args([
-                "a",
-                "-tgzip",
-                &gz_path,
-                &bin_path.to_string_lossy(),
-            ]))
-            .await?;
-        }
-
-        let mut archive_path = bin_path;
-        archive_path.set_extension("gz");
-        std::env::current_dir()?.join(archive_path)
-    } else {
-        bin_path
-    };
+    let mut archive_path = bin_path;
+    archive_path.set_extension("gz");
+    let path = std::env::current_dir()?.join(archive_path);
 
     Ok(Some(path))
 }

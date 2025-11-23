@@ -14,16 +14,9 @@ use crate::traits::transformable::Transformable;
 )]
 #[strum(serialize_all = "snake_case")]
 pub enum VectorName {
-    AcpGrid,
-    AcpLogo,
-    AcpLogoSerif,
-    AiGrid,
     DebuggerGrid,
     Grid,
-    ProTrialStamp,
-    ProUserStamp,
     ZedLogo,
-    ZedXCopilot,
 }
 
 impl VectorName {
@@ -152,17 +145,10 @@ impl Component for Vector {
                     ),
                     example_group_with_title(
                         "Different Vectors",
-                        vec![
-                            single_example(
-                                "Zed Logo",
-                                Vector::square(VectorName::ZedLogo, rems(8.)).into_any_element(),
-                            ),
-                            single_example(
-                                "Zed X Copilot",
-                                Vector::square(VectorName::ZedXCopilot, rems(8.))
-                                    .into_any_element(),
-                            ),
-                        ],
+                        vec![single_example(
+                            "Zed Logo",
+                            Vector::square(VectorName::ZedLogo, rems(8.)).into_any_element(),
+                        )],
                     ),
                 ])
                 .into_any_element(),

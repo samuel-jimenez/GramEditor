@@ -9,7 +9,7 @@ use workspace::{
     item::{Item, ItemEvent},
     with_active_or_new_workspace,
 };
-use zed_actions::{Extensions, OpenSettings, agent, command_palette};
+use zed_actions::{Extensions, OpenSettings, command_palette};
 
 use crate::{Onboarding, OpenOnboarding};
 
@@ -21,7 +21,7 @@ actions!(
     ]
 );
 
-const CONTENT: (Section<4>, Section<3>) = (
+const CONTENT: (Section<4>, Section<2>) = (
     Section {
         title: "Get Started",
         entries: [

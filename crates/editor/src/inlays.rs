@@ -7,7 +7,6 @@
 //! Inlay examples in Zed:
 //! * inlay hints, received from LSP
 //! * inline values, shown in the debugger
-//! * inline predictions, showing the Zeta/Copilot/etc. predictions
 //! * document color values, if configured to be displayed as inlays
 //! * ... anything else, potentially.
 //!

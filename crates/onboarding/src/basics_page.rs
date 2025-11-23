@@ -150,7 +150,6 @@ fn render_theme_section(tab_index: &mut isize, cx: &mut App) -> impl IntoElement
                         })
                         .on_click({
                             let theme_name = theme.name.clone();
-                            let current_theme_name = current_theme_name.clone();
 
                             move |_, _, cx| {
                                 write_theme_change(theme_name.clone(), theme_mode, cx);
@@ -246,8 +245,8 @@ fn render_base_keymap_section(tab_index: &mut isize, cx: &mut App) -> impl IntoE
                 ToggleButtonWithIcon::new("Emacs", IconName::EditorEmacs, |_, _, cx| {
                     write_keymap_base(BaseKeymap::Emacs, cx);
                 }),
-                ToggleButtonWithIcon::new("Cursor", IconName::EditorCursor, |_, _, cx| {
-                    write_keymap_base(BaseKeymap::Cursor, cx);
+                ToggleButtonWithIcon::new("Emacs++", IconName::EditorEmacs, |_, _, cx| {
+                    write_keymap_base(BaseKeymap::Emacs, cx);
                 }),
             ],
         )
@@ -329,13 +328,13 @@ fn render_setting_import_button(
 
 fn render_import_settings_section(tab_index: &mut isize, cx: &mut App) -> impl IntoElement {
     let import_state = SettingsImportState::global(cx);
-    let imports: [(SharedString, &dyn Action, bool); 2] = [(
+    let imports: [(SharedString, &dyn Action, bool); 1] = [(
         "VS Code".into(),
         &ImportVsCodeSettings { skip_prompt: false },
         import_state.vscode,
     )];
 
-    let [vscode, cursor] = imports.map(|(label, action, imported)| {
+    let [vscode] = imports.map(|(label, action, imported)| {
         *tab_index += 1;
         render_setting_import_button(*tab_index - 1, label, action, imported)
     });
@@ -354,7 +353,7 @@ fn render_import_settings_section(tab_index: &mut isize, cx: &mut App) -> impl I
                         .color(Color::Muted),
                 ),
         )
-        .child(h_flex().gap_1().child(vscode).child(cursor))
+        .child(h_flex().gap_1().child(vscode))
 }
 
 pub(crate) fn render_basics_page(cx: &mut App) -> impl IntoElement {

@@ -1,13 +1,9 @@
-use anyhow::{Context as _, Result};
-use futures::AsyncReadExt;
-use gpui::{App, AppContext as _, SerializedThreadTaskTimings};
-use http_client::{self, HttpClient};
+use anyhow::Context as _;
+use gpui::{App, SerializedThreadTaskTimings};
 use log::info;
-use project::Project;
-use proto::{CrashReport, GetCrashFilesResponse};
-use reqwest::multipart::{Form, Part};
+use reqwest::multipart::Form;
 use smol::stream::StreamExt;
-use std::{ffi::OsStr, fs, sync::Arc, thread::ThreadId, time::Duration};
+use std::{thread::ThreadId, time::Duration};
 use util::ResultExt;
 
 use crate::STARTUP_TIME;
@@ -102,146 +98,6 @@ fn save_hang_trace(
         "hang detected, trace file saved at: {}",
         trace_path.display()
     );
-}
-
-pub async fn upload_previous_minidumps(client: Arc<Client>) -> anyhow::Result<()> {
-    let Some(minidump_endpoint) = MINIDUMP_ENDPOINT.as_ref() else {
-        log::warn!("Minidump endpoint not set");
-        return Ok(());
-    };
-
-    let mut children = smol::fs::read_dir(paths::logs_dir()).await?;
-    while let Some(child) = children.next().await {
-        let child = child?;
-        let child_path = child.path();
-        if child_path.extension() != Some(OsStr::new("dmp")) {
-            continue;
-        }
-        let mut json_path = child_path.clone();
-        json_path.set_extension("json");
-        if let Ok(metadata) = serde_json::from_slice(&smol::fs::read(&json_path).await?)
-            && upload_minidump(
-                client.clone(),
-                minidump_endpoint,
-                smol::fs::read(&child_path)
-                    .await
-                    .context("Failed to read minidump")?,
-                &metadata,
-            )
-            .await
-            .log_err()
-            .is_some()
-        {
-            fs::remove_file(child_path).ok();
-            fs::remove_file(json_path).ok();
-        }
-    }
-    Ok(())
-}
-
-async fn upload_minidump(
-    client: Arc<Client>,
-    endpoint: &str,
-    minidump: Vec<u8>,
-    metadata: &crashes::CrashInfo,
-) -> Result<()> {
-    let mut form = Form::new()
-        .part(
-            "upload_file_minidump",
-            Part::bytes(minidump)
-                .file_name("minidump.dmp")
-                .mime_str("application/octet-stream")?,
-        )
-        .text(
-            "sentry[tags][channel]",
-            metadata.init.release_channel.clone(),
-        )
-        .text("sentry[tags][version]", metadata.init.zed_version.clone())
-        .text("sentry[tags][binary]", metadata.init.binary.clone())
-        .text("sentry[release]", metadata.init.commit_sha.clone())
-        .text("platform", "rust");
-    let mut panic_message = "".to_owned();
-    if let Some(panic_info) = metadata.panic.as_ref() {
-        panic_message = panic_info.message.clone();
-        form = form
-            .text("sentry[logentry][formatted]", panic_info.message.clone())
-            .text("span", panic_info.span.clone());
-    }
-    if let Some(minidump_error) = metadata.minidump_error.clone() {
-        form = form.text("minidump_error", minidump_error);
-    }
-
-    let gpu_count = metadata.gpus.len();
-    for (index, gpu) in metadata.gpus.iter().cloned().enumerate() {
-        let system_specs::GpuInfo {
-            device_name,
-            device_pci_id,
-            vendor_name,
-            vendor_pci_id,
-            driver_version,
-            driver_name,
-        } = gpu;
-        let num = if gpu_count == 1 && metadata.active_gpu.is_none() {
-            String::new()
-        } else {
-            index.to_string()
-        };
-        let name = format!("gpu{num}");
-        let root = format!("sentry[contexts][{name}]");
-        form = form
-            .text(
-                format!("{root}[Description]"),
-                "A GPU found on the users system. May or may not be the GPU Zed is running on",
-            )
-            .text(format!("{root}[type]"), "gpu")
-            .text(format!("{root}[name]"), device_name.unwrap_or(name))
-            .text(format!("{root}[id]"), format!("{:#06x}", device_pci_id))
-            .text(
-                format!("{root}[vendor_id]"),
-                format!("{:#06x}", vendor_pci_id),
-            )
-            .text_if_some(format!("{root}[vendor_name]"), vendor_name)
-            .text_if_some(format!("{root}[driver_version]"), driver_version)
-            .text_if_some(format!("{root}[driver_name]"), driver_name);
-    }
-    if let Some(active_gpu) = metadata.active_gpu.clone() {
-        form = form
-            .text(
-                "sentry[contexts][Active_GPU][Description]",
-                "The GPU Zed is running on",
-            )
-            .text("sentry[contexts][Active_GPU][type]", "gpu")
-            .text("sentry[contexts][Active_GPU][name]", active_gpu.device_name)
-            .text(
-                "sentry[contexts][Active_GPU][driver_version]",
-                active_gpu.driver_info,
-            )
-            .text(
-                "sentry[contexts][Active_GPU][driver_name]",
-                active_gpu.driver_name,
-            )
-            .text(
-                "sentry[contexts][Active_GPU][is_software_emulated]",
-                active_gpu.is_software_emulated.to_string(),
-            );
-    }
-
-    // TODO: feature-flag-context, and more of device-context like screen resolution, available ram, device model, etc
-
-    let mut response_text = String::new();
-    let mut response = client
-        .http_client()
-        .send_multipart_form(endpoint, form)
-        .await?;
-    response
-        .body_mut()
-        .read_to_string(&mut response_text)
-        .await?;
-    if !response.status().is_success() {
-        anyhow::bail!("failed to upload minidump: {response_text}");
-    }
-    log::info!("Uploaded minidump. event id: {response_text}");
-    Ok(())
 }
 
 trait FormExt {

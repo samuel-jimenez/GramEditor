@@ -69,8 +69,3 @@ message AskPassResponse {
     string response = 1;
 }
 
-message GetSupermavenApiKey {}
-
-message GetSupermavenApiKeyResponse {
-    string api_key = 1;
-}

@@ -17,8 +17,6 @@
         <ul>
             <li>Performance: Efficiently uses every CPU core and your GPU for instant startup, quick file loading, and responsive keystrokes.</li>
             <li>Language-aware: Maintains a syntax tree for precise highlighting, and auto-indent, with LSP support for autocompletion and refactoring.</li>
-            <li>Collaboration: Real-time editing and navigation for multiple developers in a shared workspace.</li>
-            <li>AI Integration: Integrates GitHub Copilot and GPT-4 for natural language code generation.</li>
         </ul>
     </description>
 

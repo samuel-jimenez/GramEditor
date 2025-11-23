@@ -2354,52 +2354,6 @@ async fn test_selected_history_item_stays_selected_on_worktree_updated(cx: &mut 
 }
 
 #[gpui::test]
-async fn test_history_items_vs_very_good_external_match(cx: &mut gpui::TestAppContext) {
-    let app_state = init_test(cx);
-
-    app_state
-        .fs
-        .as_fake()
-        .insert_tree(
-            path!("/src"),
-            json!({
-                "collab_ui": {
-                    "first.rs": "// First Rust file",
-                    "second.rs": "// Second Rust file",
-                    "third.rs": "// Third Rust file",
-                    "collab_ui.rs": "// Fourth Rust file",
-                }
-            }),
-        )
-        .await;
-
-    let project = Project::test(app_state.fs.clone(), [path!("/src").as_ref()], cx).await;
-    let (workspace, cx) = cx.add_window_view(|window, cx| Workspace::test_new(project, window, cx));
-    // generate some history to select from
-    open_close_queried_buffer("fir", 1, "first.rs", &workspace, cx).await;
-    open_close_queried_buffer("sec", 1, "second.rs", &workspace, cx).await;
-    open_close_queried_buffer("thi", 1, "third.rs", &workspace, cx).await;
-    open_close_queried_buffer("sec", 1, "second.rs", &workspace, cx).await;
-
-    let finder = open_file_picker(&workspace, cx);
-    let query = "collab_ui";
-    cx.simulate_input(query);
-    finder.update(cx, |picker, _| {
-            let search_entries = collect_search_matches(picker).search_paths_only();
-            assert_eq!(
-                search_entries,
-                vec![
-                    rel_path("collab_ui/collab_ui.rs").into(),
-                    rel_path("collab_ui/first.rs").into(),
-                    rel_path("collab_ui/third.rs").into(),
-                    rel_path("collab_ui/second.rs").into(),
-                ],
-                "Despite all search results having the same directory name, the most matching one should be on top"
-            );
-        });
-}
-
-#[gpui::test]
 async fn test_nonexistent_history_items_not_shown(cx: &mut gpui::TestAppContext) {
     let app_state = init_test(cx);
 
