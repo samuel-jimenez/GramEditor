@@ -2,13 +2,13 @@ use crate::persistence::model::DockData;
 use crate::{DraggedDock, Event, ModalLayer, Pane};
 use crate::{Workspace, status_bar::StatusItemView};
 use anyhow::Context as _;
-use client::proto;
 use gpui::{
     Action, AnyView, App, Axis, Context, Corner, Entity, EntityId, EventEmitter, FocusHandle,
     Focusable, IntoElement, KeyContext, MouseButton, MouseDownEvent, MouseUpEvent, ParentElement,
     Render, SharedString, StyleRefinement, Styled, Subscription, WeakEntity, Window, deferred, div,
     px,
 };
+use proto;
 use settings::SettingsStore;
 use std::sync::Arc;
 use ui::{ContextMenu, Divider, DividerColor, IconButton, Tooltip, h_flex};
