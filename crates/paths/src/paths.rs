@@ -18,28 +18,28 @@ static CUSTOM_DATA_DIR: OnceLock<PathBuf> = OnceLock::new();
 /// The resolved data directory, combining custom override or platform defaults.
 /// This is set once and cached for subsequent calls.
 /// On macOS, this is `~/Library/Application Support/Tehanu`.
-/// On Linux/FreeBSD, this is `$XDG_DATA_HOME/zed`.
+/// On Linux/FreeBSD, this is `$XDG_DATA_HOME/tehanu`.
 /// On Windows, this is `%LOCALAPPDATA%\Tehanu`.
 static CURRENT_DATA_DIR: OnceLock<PathBuf> = OnceLock::new();
 
 /// The resolved config directory, combining custom override or platform defaults.
 /// This is set once and cached for subsequent calls.
 /// On macOS, this is `~/.config/tehanu`.
-/// On Linux/FreeBSD, this is `$XDG_CONFIG_HOME/zed`.
+/// On Linux/FreeBSD, this is `$XDG_CONFIG_HOME/tehanu`.
 /// On Windows, this is `%APPDATA%\Tehanu`.
 static CONFIG_DIR: OnceLock<PathBuf> = OnceLock::new();
 
-/// Returns the relative path to the zed_server directory on the ssh host.
+/// Returns the relative path to the tehanu_server directory on the ssh host.
 pub fn remote_server_dir_relative() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::unix(".zed_server").unwrap());
+        LazyLock::new(|| RelPath::unix(".tehanu_server").unwrap());
     *CACHED
 }
 
-/// Returns the relative path to the zed_wsl_server directory on the wsl host.
+/// Returns the relative path to the tehanu_wsl_server directory on the wsl host.
 pub fn remote_wsl_server_dir_relative() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::unix(".zed_wsl_server").unwrap());
+        LazyLock::new(|| RelPath::unix(".tehanu_wsl_server").unwrap());
     *CACHED
 }
 
@@ -388,9 +388,9 @@ pub fn remote_servers_dir() -> &'static PathBuf {
     REMOTE_SERVERS_DIR.get_or_init(|| data_dir().join("remote_servers"))
 }
 
-/// Returns the relative path to a `.zed` folder within a project.
+/// Returns the relative path to a `.tehanu` folder within a project.
 pub fn local_settings_folder_name() -> &'static str {
-    ".zed"
+    ".tehanu"
 }
 
 /// Returns the relative path to a `.vscode` folder within a project.
@@ -401,14 +401,14 @@ pub fn local_vscode_folder_name() -> &'static str {
 /// Returns the relative path to a `settings.json` file within a project.
 pub fn local_settings_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::unix(".zed/settings.json").unwrap());
+        LazyLock::new(|| RelPath::unix(".tehanu/settings.json").unwrap());
     *CACHED
 }
 
 /// Returns the relative path to a `tasks.json` file within a project.
 pub fn local_tasks_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::unix(".zed/tasks.json").unwrap());
+        LazyLock::new(|| RelPath::unix(".tehanu/tasks.json").unwrap());
     *CACHED
 }
 
@@ -428,10 +428,10 @@ pub fn task_file_name() -> &'static str {
 }
 
 /// Returns the relative path to a `debug.json` file within a project.
-/// .zed/debug.json
+/// .tehanu/debug.json
 pub fn local_debug_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::unix(".zed/debug.json").unwrap());
+        LazyLock::new(|| RelPath::unix(".tehanu/debug.json").unwrap());
     *CACHED
 }
 
