@@ -10,15 +10,13 @@ use extension_host::ExtensionStore;
 use futures::channel::oneshot;
 use gpui::{
     AnyWindowHandle, App, AsyncApp, DismissEvent, Entity, EventEmitter, Focusable, FontFeatures,
-    ParentElement as _, PromptLevel, Render, SemanticVersion, SharedString, Task,
-    TextStyleRefinement, WeakEntity,
+    ParentElement as _, PromptLevel, Render, SharedString, Task, TextStyleRefinement, WeakEntity,
 };
 
 use language::{CursorShape, Point};
 use markdown::{Markdown, MarkdownElement, MarkdownStyle};
-use release_channel::ReleaseChannel;
 use remote::{
-    ConnectionIdentifier, RemoteClient, RemoteConnection, RemoteConnectionOptions, RemotePlatform,
+    ConnectionIdentifier, RemoteClient, RemoteConnection, RemoteConnectionOptions,
     SshConnectionOptions,
 };
 pub use settings::SshConnection;

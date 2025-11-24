@@ -79,14 +79,14 @@ pub struct ClientSettings {
 }
 
 impl Settings for ClientSettings {
-    fn from_settings(content: &settings::SettingsContent) -> Self {
+    fn from_settings(_content: &settings::SettingsContent) -> Self {
         if let Some(server_url) = &*ZED_SERVER_URL {
             return Self {
                 server_url: server_url.clone(),
             };
         }
         Self {
-            server_url: content.server_url.clone().unwrap(),
+            server_url: "http://localhost:9090".into(),
         }
     }
 }

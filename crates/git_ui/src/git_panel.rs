@@ -15,7 +15,6 @@ use editor::{
     Direction, Editor, EditorElement, EditorMode, MultiBuffer, MultiBufferOffset,
     actions::ExpandAllDiffHunks,
 };
-use futures::StreamExt as _;
 use git::blame::ParsedCommitMessage;
 use git::repository::{
     Branch, CommitDetails, CommitOptions, CommitSummary, FetchOptions, GitCommitter, PushOptions,
@@ -336,7 +335,6 @@ pub struct GitPanel {
     pub(crate) commit_editor: Entity<Editor>,
     conflicted_count: usize,
     conflicted_staged_count: usize,
-    add_coauthors: bool,
     entries: Vec<GitListEntry>,
     single_staged_entry: Option<GitStatusEntry>,
     single_tracked_entry: Option<GitStatusEntry>,
@@ -488,7 +486,6 @@ impl GitPanel {
                 commit_editor,
                 conflicted_count: 0,
                 conflicted_staged_count: 0,
-                add_coauthors: true,
                 entries: Vec::new(),
                 focus_handle: cx.focus_handle(),
                 fs,
@@ -2414,13 +2411,6 @@ impl GitPanel {
                 .ok();
             }));
         }
-    }
-
-    fn local_committer(&self, _cx: &App) -> Option<(String, String)> {
-        let committer = self.local_committer.as_ref()?;
-        let email = committer.email.clone()?;
-        let name = committer.name.clone().unwrap_or_else(|| email.clone());
-        Some((name, email))
     }
 
     fn toggle_sort_by_path(

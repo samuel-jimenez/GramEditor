@@ -1,6 +1,6 @@
 pub use crate::welcome::ShowWelcome;
 use crate::{multibuffer_hint::MultibufferHint, welcome::WelcomePage};
-use client::{Client, UserStore, zed_urls};
+use client::UserStore;
 use db::kvp::KEY_VALUE_STORE;
 use fs::Fs;
 use gpui::{
@@ -21,7 +21,6 @@ use workspace::{
     AppState, Workspace, WorkspaceId,
     dock::DockPosition,
     item::{Item, ItemEvent},
-    notifications::NotifyResultExt as _,
     open_new, register_serializable_item, with_active_or_new_workspace,
 };
 

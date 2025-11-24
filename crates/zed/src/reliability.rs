@@ -1,7 +1,6 @@
 use anyhow::Context as _;
 use gpui::{App, SerializedThreadTaskTimings};
 use log::info;
-use reqwest::multipart::Form;
 use smol::stream::StreamExt;
 use std::{thread::ThreadId, time::Duration};
 use util::ResultExt;
@@ -98,25 +97,4 @@ fn save_hang_trace(
         "hang detected, trace file saved at: {}",
         trace_path.display()
     );
-}
-
-trait FormExt {
-    fn text_if_some(
-        self,
-        label: impl Into<std::borrow::Cow<'static, str>>,
-        value: Option<impl Into<std::borrow::Cow<'static, str>>>,
-    ) -> Self;
-}
-
-impl FormExt for Form {
-    fn text_if_some(
-        self,
-        label: impl Into<std::borrow::Cow<'static, str>>,
-        value: Option<impl Into<std::borrow::Cow<'static, str>>>,
-    ) -> Self {
-        match value {
-            Some(value) => self.text(label.into(), value.into()),
-            None => self,
-        }
-    }
 }

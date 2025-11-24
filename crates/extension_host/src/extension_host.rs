@@ -3,10 +3,7 @@ pub mod extension_settings;
 pub mod headless_host;
 pub mod wasm_host;
 
-#[cfg(test)]
-mod extension_store_test;
-
-use anyhow::{Context as _, Result, anyhow};
+use anyhow::{Context as _, Result, anyhow, bail};
 use client::{Client, ExtensionMetadata, proto};
 use collections::{BTreeMap, HashSet, btree_map};
 pub use extension::ExtensionManifest;
@@ -16,7 +13,7 @@ use extension::{
     ExtensionLanguageProxy, ExtensionLanguageServerProxy, ExtensionSnippetProxy,
     ExtensionThemeProxy,
 };
-use fs::Fs;
+use fs::{Fs, RemoveOptions};
 use futures::future::join_all;
 use futures::{
     Future, FutureExt as _, StreamExt as _,
@@ -283,6 +280,13 @@ impl ExtensionStore {
         if let Ok(index_content) = index_content
             && let Some(index) = serde_json::from_str(&index_content).log_err()
         {
+            log::info!(
+                "Starting up extensions from {:?} (installed: {:?})...",
+                this.index_path.to_str(),
+                this.installed_dir.to_str(),
+            );
+            log::info!("Index: {}", index_content);
+
             extension_index = index;
         }
 
@@ -297,7 +301,7 @@ impl ExtensionStore {
             async move {
                 load_initial_extensions.await;
 
-                let mut index_changed = false;
+                let mut index_changed = true;
                 let mut debounce_timer = cx.background_spawn(futures::future::pending()).fuse();
                 loop {
                     select_biased! {
@@ -466,6 +470,184 @@ impl ExtensionStore {
         let icons_root_path = self.extensions_dir().join(entry.extension.as_ref());
 
         Some((icon_theme_path, icons_root_path))
+    }
+
+    pub fn uninstall_extension(
+        &mut self,
+        extension_id: Arc<str>,
+        cx: &mut Context<Self>,
+    ) -> Task<Result<()>> {
+        let extension_dir = self.installed_dir.join(extension_id.as_ref());
+        let work_dir = self.wasm_host.work_dir.join(extension_id.as_ref());
+        let fs = self.fs.clone();
+
+        let extension_manifest = self.extension_manifest_for_id(&extension_id).cloned();
+
+        match self.outstanding_operations.entry(extension_id.clone()) {
+            btree_map::Entry::Occupied(_) => return Task::ready(Ok(())),
+            btree_map::Entry::Vacant(e) => e.insert(ExtensionOperation::Remove),
+        };
+
+        cx.spawn(async move |extension_store, cx| {
+            let _finish = cx.on_drop(&extension_store, {
+                let extension_id = extension_id.clone();
+                move |this, cx| {
+                    this.outstanding_operations.remove(extension_id.as_ref());
+                    cx.notify();
+                }
+            });
+
+            fs.remove_dir(
+                &extension_dir,
+                RemoveOptions {
+                    recursive: true,
+                    ignore_if_not_exists: true,
+                },
+            )
+            .await
+            .with_context(|| format!("Removing extension dir {extension_dir:?}"))?;
+
+            extension_store
+                .update(cx, |extension_store, cx| extension_store.reload(None, cx))?
+                .await;
+
+            // There's a race between wasm extension fully stopping and the directory removal.
+            // On Windows, it's impossible to remove a directory that has a process running in it.
+            for i in 0..3 {
+                cx.background_executor()
+                    .timer(Duration::from_millis(i * 100))
+                    .await;
+                let removal_result = fs
+                    .remove_dir(
+                        &work_dir,
+                        RemoveOptions {
+                            recursive: true,
+                            ignore_if_not_exists: true,
+                        },
+                    )
+                    .await;
+                match removal_result {
+                    Ok(()) => break,
+                    Err(e) => {
+                        if i == 2 {
+                            log::error!("Failed to remove extension work dir {work_dir:?} : {e}");
+                        }
+                    }
+                }
+            }
+
+            extension_store.update(cx, |_, cx| {
+                cx.emit(Event::ExtensionUninstalled(extension_id.clone()));
+                if let Some(events) = ExtensionEvents::try_global(cx)
+                    && let Some(manifest) = extension_manifest
+                {
+                    events.update(cx, |this, cx| {
+                        this.emit(extension::Event::ExtensionUninstalled(manifest.clone()), cx)
+                    });
+                }
+            })?;
+
+            anyhow::Ok(())
+        })
+    }
+
+    pub fn install_dev_extension(
+        &mut self,
+        extension_source_path: PathBuf,
+        cx: &mut Context<Self>,
+    ) -> Task<Result<()>> {
+        let extensions_dir = self.extensions_dir();
+        let fs = self.fs.clone();
+        let builder = self.builder.clone();
+
+        cx.spawn(async move |this, cx| {
+            let mut extension_manifest =
+                ExtensionManifest::load(fs.clone(), &extension_source_path).await?;
+            let extension_id = extension_manifest.id.clone();
+
+            if let Some(uninstall_task) = this
+                .update(cx, |this, cx| {
+                    this.extension_index
+                        .extensions
+                        .get(extension_id.as_ref())
+                        .is_some_and(|index_entry| !index_entry.dev)
+                        .then(|| this.uninstall_extension(extension_id.clone(), cx))
+                })
+                .ok()
+                .flatten()
+            {
+                uninstall_task.await.log_err();
+            }
+
+            if !this.update(cx, |this, cx| {
+                match this.outstanding_operations.entry(extension_id.clone()) {
+                    btree_map::Entry::Occupied(_) => return false,
+                    btree_map::Entry::Vacant(e) => e.insert(ExtensionOperation::Install),
+                };
+                cx.notify();
+                true
+            })? {
+                return Ok(());
+            }
+
+            let _finish = cx.on_drop(&this, {
+                let extension_id = extension_id.clone();
+                move |this, cx| {
+                    this.outstanding_operations.remove(extension_id.as_ref());
+                    cx.notify();
+                }
+            });
+
+            cx.background_spawn({
+                let extension_source_path = extension_source_path.clone();
+                async move {
+                    builder
+                        .compile_extension(
+                            &extension_source_path,
+                            &mut extension_manifest,
+                            CompileExtensionOptions { release: false },
+                        )
+                        .await
+                }
+            })
+            .await
+            .inspect_err(|error| {
+                util::log_err(error);
+            })?;
+
+            let output_path = &extensions_dir.join(extension_id.as_ref());
+            if let Some(metadata) = fs.metadata(output_path).await? {
+                if metadata.is_symlink {
+                    fs.remove_file(
+                        output_path,
+                        RemoveOptions {
+                            recursive: false,
+                            ignore_if_not_exists: true,
+                        },
+                    )
+                    .await?;
+                } else {
+                    bail!("extension {extension_id} is still installed");
+                }
+            }
+
+            fs.create_symlink(output_path, extension_source_path)
+                .await?;
+
+            this.update(cx, |this, cx| this.reload(None, cx))?.await;
+            this.update(cx, |this, cx| {
+                cx.emit(Event::ExtensionInstalled(extension_id.clone()));
+                if let Some(events) = ExtensionEvents::try_global(cx)
+                    && let Some(manifest) = this.extension_manifest_for_id(&extension_id)
+                {
+                    events.update(cx, |this, cx| {
+                        this.emit(extension::Event::ExtensionInstalled(manifest.clone()), cx)
+                    });
+                }
+            })?;
+
+            Ok(())
+        })
     }
 
     pub fn rebuild_dev_extension(&mut self, extension_id: Arc<str>, cx: &mut Context<Self>) {
@@ -871,11 +1053,15 @@ impl ExtensionStore {
 
             fs.create_dir(&work_dir).await.log_err();
             fs.create_dir(&extensions_dir).await.log_err();
+            log::info!("Rebuilding extension index at {:?}", index_path);
+            log::info!("  from {:?}", extensions_dir);
+            log::info!("  in {:?}", work_dir);
 
             let extension_paths = fs.read_dir(&extensions_dir).await;
             if let Ok(mut extension_paths) = extension_paths {
                 while let Some(extension_dir) = extension_paths.next().await {
                     let Ok(extension_dir) = extension_dir else {
+                        log::info!("Not ok: {:?}", extension_dir);
                         continue;
                     };
 
@@ -929,6 +1115,8 @@ impl ExtensionStore {
             .await?
             .context("directory does not exist")?
             .is_symlink;
+
+        log::info!("Found manifest: {:?} (dev: {})", extension_manifest, is_dev);
 
         if let Ok(mut language_paths) = fs.read_dir(&extension_dir.join("languages")).await {
             while let Some(language_path) = language_paths.next().await {

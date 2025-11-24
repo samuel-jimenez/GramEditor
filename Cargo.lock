@@ -9509,6 +9509,7 @@ dependencies = [
  "askpass",
  "cargo_toml",
  "clap",
+ "client",
  "clock",
  "collections",
  "crash-handler",

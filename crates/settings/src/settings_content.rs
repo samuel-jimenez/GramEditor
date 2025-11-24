@@ -112,9 +112,6 @@ pub struct SettingsContent {
 
     pub proxy: Option<String>,
 
-    /// The URL of the Zed server to connect to.
-    pub server_url: Option<String>,
-
     /// Configuration for session-related features
     pub session: Option<SessionSettingsContent>,
 

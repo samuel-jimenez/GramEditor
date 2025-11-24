@@ -570,12 +570,9 @@ impl KeymapEditor {
     fn on_query_changed(&mut self, cx: &mut Context<Self>) {
         let action_query = self.current_action_query(cx);
         let keystroke_query = self.current_keystroke_query(cx);
-        let exact_match = self.search_mode.exact_match();
 
         let timer = cx.background_executor().timer(Duration::from_secs(1));
         self.search_query_debounce = Some(cx.background_spawn({
-            let action_query = action_query.clone();
-            let keystroke_query = keystroke_query.clone();
             async move {
                 timer.await;
             }
@@ -1166,18 +1163,6 @@ impl KeymapEditor {
         };
         let keybind = keybind.clone();
         let keymap_editor = cx.entity();
-
-        let keystroke = keybind.keystroke_text().cloned().unwrap_or_default();
-        let arguments = keybind
-            .action()
-            .arguments
-            .as_ref()
-            .map(|arguments| arguments.text.clone());
-        let context = keybind
-            .context()
-            .map(|context| context.local_str().unwrap_or("global"));
-        let action = keybind.action().name;
-        let source = keybind.keybind_source().map(|source| source.name());
 
         let temp_dir = self.action_args_temp_dir.as_ref().map(|dir| dir.path());
 

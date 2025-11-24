@@ -1,6 +1,5 @@
 mod components;
 mod extension_suggest;
-mod extension_version_selector;
 
 use std::sync::OnceLock;
 use std::{ops::Range, sync::Arc};
@@ -10,11 +9,12 @@ use collections::{BTreeMap, BTreeSet};
 use editor::{Editor, EditorElement, EditorStyle};
 use extension_host::{ExtensionManifest, ExtensionOperation, ExtensionStore};
 use gpui::{
-    Action, App, ClipboardItem, Context, Corner, Entity, EventEmitter, Focusable,
-    InteractiveElement, KeyContext, ParentElement, Point, Render, Styled, Task, TextStyle,
+    App, ClipboardItem, Context, Corner, Entity, EventEmitter, Flatten, Focusable,
+    InteractiveElement, KeyContext, ParentElement, Point, Render, Styled, TextStyle,
     UniformListScrollHandle, WeakEntity, Window, actions, point, uniform_list,
 };
 use num_format::{Locale, ToFormattedString};
+use project::DirectoryLister;
 use settings::{Settings, SettingsContent};
 use strum::IntoEnumIterator as _;
 use theme::ThemeSettings;
@@ -45,56 +45,120 @@ pub fn init(cx: &mut App) {
         let Some(window) = window else {
             return;
         };
-        workspace.register_action(
-            move |workspace, action: &zed_actions::Extensions, window, cx| {
-                let provides_filter = action.category_filter.map(|category| match category {
-                    ExtensionCategoryFilter::Themes => ExtensionProvides::Themes,
-                    ExtensionCategoryFilter::IconThemes => ExtensionProvides::IconThemes,
-                    ExtensionCategoryFilter::Languages => ExtensionProvides::Languages,
-                    ExtensionCategoryFilter::Grammars => ExtensionProvides::Grammars,
-                    ExtensionCategoryFilter::LanguageServers => ExtensionProvides::LanguageServers,
-                    ExtensionCategoryFilter::IndexedDocsProviders => {
-                        ExtensionProvides::IndexedDocsProviders
-                    }
-                    ExtensionCategoryFilter::Snippets => ExtensionProvides::Snippets,
-                    ExtensionCategoryFilter::DebugAdapters => ExtensionProvides::DebugAdapters,
-                });
-
-                let existing = workspace
-                    .active_pane()
-                    .read(cx)
-                    .items()
-                    .find_map(|item| item.downcast::<ExtensionsPage>());
-
-                if let Some(existing) = existing {
-                    existing.update(cx, |extensions_page, cx| {
-                        if provides_filter.is_some() {
-                            extensions_page.change_provides_filter(provides_filter, cx);
+        workspace
+            .register_action(
+                move |workspace, action: &zed_actions::Extensions, window, cx| {
+                    let provides_filter = action.category_filter.map(|category| match category {
+                        ExtensionCategoryFilter::Themes => ExtensionProvides::Themes,
+                        ExtensionCategoryFilter::IconThemes => ExtensionProvides::IconThemes,
+                        ExtensionCategoryFilter::Languages => ExtensionProvides::Languages,
+                        ExtensionCategoryFilter::Grammars => ExtensionProvides::Grammars,
+                        ExtensionCategoryFilter::LanguageServers => {
+                            ExtensionProvides::LanguageServers
                         }
-                        if let Some(id) = action.id.as_ref() {
-                            extensions_page.focus_extension(id, window, cx);
+                        ExtensionCategoryFilter::IndexedDocsProviders => {
+                            ExtensionProvides::IndexedDocsProviders
                         }
+                        ExtensionCategoryFilter::Snippets => ExtensionProvides::Snippets,
+                        ExtensionCategoryFilter::DebugAdapters => ExtensionProvides::DebugAdapters,
                     });
 
-                    workspace.activate_item(&existing, true, true, window, cx);
-                } else {
-                    let extensions_page = ExtensionsPage::new(
-                        workspace,
-                        provides_filter,
-                        action.id.as_deref(),
-                        window,
-                        cx,
-                    );
-                    workspace.add_item_to_active_pane(
-                        Box::new(extensions_page),
-                        None,
-                        true,
-                        window,
-                        cx,
-                    )
-                }
-            },
-        );
+                    let existing = workspace
+                        .active_pane()
+                        .read(cx)
+                        .items()
+                        .find_map(|item| item.downcast::<ExtensionsPage>());
+
+                    if let Some(existing) = existing {
+                        existing.update(cx, |extensions_page, cx| {
+                            if provides_filter.is_some() {
+                                extensions_page.change_provides_filter(provides_filter, cx);
+                            }
+                            if let Some(id) = action.id.as_ref() {
+                                extensions_page.focus_extension(id, window, cx);
+                            }
+                        });
+
+                        workspace.activate_item(&existing, true, true, window, cx);
+                    } else {
+                        let extensions_page = ExtensionsPage::new(
+                            workspace,
+                            provides_filter,
+                            action.id.as_deref(),
+                            window,
+                            cx,
+                        );
+                        workspace.add_item_to_active_pane(
+                            Box::new(extensions_page),
+                            None,
+                            true,
+                            window,
+                            cx,
+                        )
+                    }
+                },
+            )
+            .register_action(move |workspace, _: &InstallDevExtension, window, cx| {
+                let store = ExtensionStore::global(cx);
+                let prompt = workspace.prompt_for_open_path(
+                    gpui::PathPromptOptions {
+                        files: false,
+                        directories: true,
+                        multiple: false,
+                        prompt: None,
+                    },
+                    DirectoryLister::Local(
+                        workspace.project().clone(),
+                        workspace.app_state().fs.clone(),
+                    ),
+                    window,
+                    cx,
+                );
+
+                let workspace_handle = cx.entity().downgrade();
+                window
+                    .spawn(cx, async move |cx| {
+                        let extension_path =
+                            match Flatten::flatten(prompt.await.map_err(|e| e.into())) {
+                                Ok(Some(mut paths)) => paths.pop()?,
+                                Ok(None) => return None,
+                                Err(err) => {
+                                    workspace_handle
+                                        .update(cx, |workspace, cx| {
+                                            workspace.show_portal_error(err.to_string(), cx);
+                                        })
+                                        .ok();
+                                    return None;
+                                }
+                            };
+
+                        let install_task = store
+                            .update(cx, |store, cx| {
+                                store.install_dev_extension(extension_path, cx)
+                            })
+                            .ok()?;
+
+                        match install_task.await {
+                            Ok(_) => {}
+                            Err(err) => {
+                                log::error!("Failed to install dev extension: {:?}", err);
+                                workspace_handle
+                                    .update(cx, |workspace, cx| {
+                                        workspace.show_error(
+                                            // NOTE: using `anyhow::context` here ends up not printing
+                                            // the error
+                                            &format!("Failed to install dev extension: {}", err),
+                                            cx,
+                                        );
+                                    })
+                                    .ok();
+                            }
+                        }
+
+                        Some(())
+                    })
+                    .detach();
+            });
 
         cx.subscribe_in(workspace.project(), window, |_, _, event, window, cx| {
             if let project::Event::LanguageNotFound(buffer) = event {
@@ -216,7 +280,6 @@ pub struct ExtensionsPage {
     query_contains_error: bool,
     provides_filter: Option<ExtensionProvides>,
     _subscriptions: [gpui::Subscription; 2],
-    extension_fetch_task: Option<Task<()>>,
     upsells: BTreeSet<Feature>,
 }
 
@@ -264,59 +327,12 @@ impl ExtensionsPage {
                 remote_extension_entries: Vec::new(),
                 query_contains_error: false,
                 provides_filter,
-                extension_fetch_task: None,
                 _subscriptions: subscriptions,
                 query_editor,
                 upsells: BTreeSet::default(),
             };
             this
         })
-    }
-
-    fn on_extension_installed(
-        &mut self,
-        workspace: WeakEntity<Workspace>,
-        extension_id: &str,
-        window: &mut Window,
-        cx: &mut Context<Self>,
-    ) {
-        let extension_store = ExtensionStore::global(cx).read(cx);
-        let themes = extension_store
-            .extension_themes(extension_id)
-            .map(|name| name.to_string())
-            .collect::<Vec<_>>();
-        if !themes.is_empty() {
-            workspace
-                .update(cx, |_workspace, cx| {
-                    window.dispatch_action(
-                        zed_actions::theme_selector::Toggle {
-                            themes_filter: Some(themes),
-                        }
-                        .boxed_clone(),
-                        cx,
-                    );
-                })
-                .ok();
-            return;
-        }
-
-        let icon_themes = extension_store
-            .extension_icon_themes(extension_id)
-            .map(|name| name.to_string())
-            .collect::<Vec<_>>();
-        if !icon_themes.is_empty() {
-            workspace
-                .update(cx, |_workspace, cx| {
-                    window.dispatch_action(
-                        zed_actions::icon_theme_selector::Toggle {
-                            themes_filter: Some(icon_themes),
-                        }
-                        .boxed_clone(),
-                        cx,
-                    );
-                })
-                .ok();
-        }
     }
 
     /// Returns whether a dev extension currently exists for the extension with the given ID.

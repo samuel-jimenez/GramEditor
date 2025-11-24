@@ -11,7 +11,7 @@ use collections::HashMap;
 use db::kvp::KEY_VALUE_STORE;
 use futures::{channel::oneshot, future::join_all};
 use gpui::{
-    Action, AnyView, App, AsyncApp, AsyncWindowContext, Context, Corner, Entity, EventEmitter,
+    Action, App, AsyncApp, AsyncWindowContext, Context, Corner, Entity, EventEmitter,
     ExternalPaths, FocusHandle, Focusable, IntoElement, ParentElement, Pixels, Render, Styled,
     Task, WeakEntity, Window, actions,
 };

@@ -517,7 +517,6 @@
       "cmd-alt-s": "workspace::SaveAll",
       "cmd-k m": "language_selector::Toggle",
       "cmd-k cmd-m": "toolchain::AddToolchain",
-      "escape": "workspace::Unfollow",
       "cmd-k cmd-left": "workspace::ActivatePaneLeft",
       "cmd-k cmd-right": "workspace::ActivatePaneRight",
       "cmd-k cmd-up": "workspace::ActivatePaneUp",
@@ -1113,21 +1112,6 @@
       "pagedown": "settings_editor::FocusNextRootNavEntry",
       "home": "settings_editor::FocusFirstNavEntry",
       "end": "settings_editor::FocusLastNavEntry"
-    }
-  },
-  {
-    "context": "Zeta2Feedback > Editor",
-    "bindings": {
-      "enter": "editor::Newline",
-      "cmd-enter up": "dev::Zeta2RatePredictionPositive",
-      "cmd-enter down": "dev::Zeta2RatePredictionNegative"
-    }
-  },
-  {
-    "context": "Zeta2Context > Editor",
-    "bindings": {
-      "alt-left": "dev::Zeta2ContextGoBack",
-      "alt-right": "dev::Zeta2ContextGoForward"
     }
   }
 ]

@@ -127,6 +127,7 @@ async fn build_remote_server_from_source(
     use util::command::new_smol_command;
 
     async fn run_cmd(command: &mut Command) -> Result<()> {
+        log::info!("Command: {:?}", command);
         let output = command
             .kill_on_drop(true)
             .stderr(Stdio::inherit())

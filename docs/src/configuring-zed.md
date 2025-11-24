@@ -3068,16 +3068,6 @@ Examples:
 - Searching for "function" would match "function", "Function", "FUNCTION", etc.
 - Searching for "Function" would only match "Function", not "function" or "FUNCTION"
 
-## Show Call Status Icon
-
-- Description: Whether or not to show the call status icon in the status bar.
-- Setting: `show_call_status_icon`
-- Default: `true`
-
-**Options**
-
-`boolean` values
-
 ## Completions
 
 - Description: Controls how completions are processed for this language.
