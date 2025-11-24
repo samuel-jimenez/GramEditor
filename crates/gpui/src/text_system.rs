@@ -928,7 +928,7 @@ pub(crate) fn font_name_with_fallbacks<'a>(name: &'a str, system: &'a str) -> &'
     match name {
         ".SystemUIFont" => system,
         ".TehanuSans" | "Tehanu Plex Sans" => "IBM Plex Sans",
-        ".TehanuMono" | "Tehanu Plex Mono" => "Lilex",
+        ".TehanuMono" | "Tehanu Plex Mono" => "Maple Mono NL",
         _ => name,
     }
 }
