@@ -6,10 +6,6 @@
 
 - Sniff out all the AI-written text and get rid of it
 
-- Titlebar is hidden on Mac OS at least, so things look weird
-
-  May be the case that it's visible but has height 0.
-
 - LSP queries don't work on remote connection:
 
   ```
