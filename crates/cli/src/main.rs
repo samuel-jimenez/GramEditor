@@ -49,13 +49,13 @@ This CLI is a separate binary that invokes Tehanu.
 Examples:
     `tehanu`
           Simply opens Tehanu
-    `zed --foreground`
+    `tehanu --foreground`
           Runs in foreground (shows all logs)
-    `zed path-to-your-project`
+    `tehanu path-to-your-project`
           Open your project in Tehanu
-    `zed -n path-to-file `
+    `tehanu -n path-to-file `
           Open file/folder in a new window",
-    after_help = "To read from stdin, append '-', e.g. 'ps axf | zed -'"
+    after_help = "To read from stdin, append '-', e.g. 'ps axf | tehanu -'"
 )]
 struct Args {
     /// Wait for all of the given paths to be opened/closed before exiting.
@@ -76,7 +76,7 @@ struct Args {
     #[cfg_attr(target_os = "windows", doc = "`%LOCALAPPDATA%\\Tehanu`.")]
     #[cfg_attr(
         not(any(target_os = "windows", target_os = "macos")),
-        doc = "`$XDG_DATA_HOME/zed`."
+        doc = "`$XDG_DATA_HOME/tehanu`."
     )]
     #[arg(long, value_name = "DIR")]
     user_data_dir: Option<String>,
@@ -87,13 +87,13 @@ struct Args {
     /// Print Tehanu's version and the app path.
     #[arg(short, long)]
     version: bool,
-    /// Run zed in the foreground (useful for debugging)
+    /// Run tehanu in the foreground (useful for debugging)
     #[arg(long)]
     foreground: bool,
     /// Custom path to Tehanu.app or the editor binary
     #[arg(long)]
     tehanu: Option<PathBuf>,
-    /// Run zed in dev-server mode
+    /// Run tehanu in dev-server mode
     #[arg(long)]
     dev_server_token: Option<String>,
     /// The username and WSL distribution to use when opening paths. If not specified,
@@ -213,7 +213,7 @@ fn main() -> Result<()> {
     }
     let args = Args::parse();
 
-    // `zed --askpass` Makes zed operate in nc/netcat mode for use with askpass
+    // `tehanu --askpass` Makes tehanu operate in nc/netcat mode for use with askpass
     if let Some(socket) = &args.askpass {
         askpass::main(socket);
         return Ok(());
@@ -228,7 +228,7 @@ fn main() -> Result<()> {
     #[cfg(target_os = "linux")]
     let args = flatpak::set_bin_if_no_escape(args);
 
-    let app = Detect::detect(args.zed.as_deref()).context("Bundle detection")?;
+    let app = Detect::detect(args.tehanu.as_deref()).context("Bundle detection")?;
 
     if args.version {
         println!("{}", app.tehanu_version_string());
@@ -520,10 +520,13 @@ mod linux {
                 let cli = env::current_exe()?;
                 let dir = cli.parent().context("no parent path for cli")?;
 
-                // libexec is the standard, lib/zed is for Arch (and other non-libexec distros),
-                // ./zed is for the target directory in development builds.
-                let possible_locations =
-                    ["../libexec/zed-editor", "../lib/zed/zed-editor", "./zed"];
+                // libexec is the standard, lib/tehanu is for Arch (and other non-libexec distros),
+                // ./tehanu is for the target directory in development builds.
+                let possible_locations = [
+                    "../libexec/tehanu-editor",
+                    "../lib/tehanu/tehanu-editor",
+                    "./tehanu",
+                ];
                 possible_locations
                     .iter()
                     .find_map(|p| dir.join(p).canonicalize().ok().filter(|path| path != &cli))
@@ -556,7 +559,7 @@ mod linux {
 
         fn launch(&self, ipc_url: String) -> anyhow::Result<()> {
             let sock_path = paths::data_dir().join(format!(
-                "zed-{}.sock",
+                "tehanu-{}.sock",
                 *release_channel::RELEASE_CHANNEL_NAME
             ));
             let sock = UnixDatagram::unbound()?;
@@ -657,7 +660,7 @@ mod flatpak {
         if let Some(flatpak_dir) = get_flatpak_dir() {
             let mut args = vec!["/usr/bin/flatpak-spawn".into(), "--host".into()];
             args.append(&mut get_xdg_env_args());
-            args.push("--env=TEHANU_UPDATE_EXPLANATION=Please use flatpak to update zed".into());
+            args.push("--env=TEHANU_UPDATE_EXPLANATION=Please use flatpak to update tehanu".into());
             args.push(
                 format!(
                     "--env={EXTRA_LIB_ENV_NAME}={}",
@@ -670,12 +673,12 @@ mod flatpak {
             let mut is_app_location_set = false;
             for arg in &env::args_os().collect::<Vec<_>>()[1..] {
                 args.push(arg.clone());
-                is_app_location_set |= arg == "--zed";
+                is_app_location_set |= arg == "--tehanu";
             }
 
             if !is_app_location_set {
-                args.push("--zed".into());
-                args.push(flatpak_dir.join("libexec").join("zed-editor").into());
+                args.push("--tehanu".into());
+                args.push(flatpak_dir.join("libexec").join("tehanu-editor").into());
             }
 
             let error = exec::execvp("/usr/bin/flatpak-spawn", args);
@@ -687,10 +690,15 @@ mod flatpak {
     pub fn set_bin_if_no_escape(mut args: super::Args) -> super::Args {
         if env::var(NO_ESCAPE_ENV_NAME).is_ok()
             && env::var("FLATPAK_ID").is_ok_and(|id| id.starts_with("se.ziran.Tehanu"))
-            && args.zed.is_none()
+            && args.tehanu.is_none()
         {
-            args.zed = Some("/app/libexec/zed-editor".into());
-            unsafe { env::set_var("TEHANU_UPDATE_EXPLANATION", "Please use flatpak to update zed") };
+            args.tehanu = Some("/app/libexec/tehanu-editor".into());
+            unsafe {
+                env::set_var(
+                    "TEHANU_UPDATE_EXPLANATION",
+                    "Please use flatpak to update tehanu",
+                )
+            };
         }
         args
     }
@@ -839,9 +847,13 @@ mod windows {
                 let cli = std::env::current_exe()?;
                 let dir = cli.parent().context("no parent path for cli")?;
 
-                // ../Tehanu.exe is the standard, lib/zed is for MSYS2, ./zed.exe is for the target
+                // ../Tehanu.exe is the standard, lib/tehanu is for MSYS2, ./tehanu.exe is for the target
                 // directory in development builds.
-                let possible_locations = ["../Tehanu.exe", "../lib/zed/zed-editor.exe", "./zed.exe"];
+                let possible_locations = [
+                    "../Tehanu.exe",
+                    "../lib/tehanu/tehanu-editor.exe",
+                    "./tehanu.exe",
+                ];
                 possible_locations
                     .iter()
                     .find_map(|p| dir.join(p).canonicalize().ok().filter(|path| path != &cli))
@@ -956,7 +968,7 @@ mod mac_os {
                             kCFStringEncodingUTF8,
                             ptr::null(),
                         ));
-                        // equivalent to: open zed-cli:... -a /Applications/Tehanu\ Preview.app
+                        // equivalent to: open tehanu-cli:... -a /Applications/Tehanu\ Preview.app
                         let urls_to_open =
                             CFArray::from_copyable(&[url_to_open.as_concrete_TypeRef()]);
                         LSOpenFromURLSpec(
@@ -983,7 +995,7 @@ mod mac_os {
                         .parent()
                         .with_context(|| format!("Executable {executable:?} path has no parent"))?;
                     let subprocess_stdout_file = fs::File::create(
-                        executable_parent.join("zed_dev.log"),
+                        executable_parent.join("tehanu_dev.log"),
                     )
                     .with_context(|| format!("Log file creation in {executable_parent:?}"))?;
                     let subprocess_stdin_file =
@@ -1012,7 +1024,7 @@ mod mac_os {
             user_data_dir: Option<&str>,
         ) -> io::Result<ExitStatus> {
             let path = match self {
-                Bundle::App { app_bundle, .. } => app_bundle.join("Contents/MacOS/zed"),
+                Bundle::App { app_bundle, .. } => app_bundle.join("Contents/MacOS/tehanu"),
                 Bundle::LocalPath { executable, .. } => executable.clone(),
             };
 
@@ -1026,7 +1038,7 @@ mod mac_os {
 
         fn path(&self) -> PathBuf {
             match self {
-                Bundle::App { app_bundle, .. } => app_bundle.join("Contents/MacOS/zed"),
+                Bundle::App { app_bundle, .. } => app_bundle.join("Contents/MacOS/tehanu"),
                 Bundle::LocalPath { executable, .. } => executable.clone(),
             }
         }
