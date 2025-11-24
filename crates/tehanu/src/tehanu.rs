@@ -9,6 +9,9 @@ mod quick_action_bar;
 pub(crate) mod windows_only_instance;
 
 use anyhow::Context as _;
+use app_actions::{
+    OpenBrowser, OpenDocs, OpenServerSettings, OpenSettingsFile, OpenTehanuUrl, Quit,
+};
 pub use app_menus::*;
 use assets::Assets;
 use breadcrumbs::Breadcrumbs;
@@ -26,8 +29,8 @@ use git_ui::project_diff::ProjectDiffToolbar;
 use gpui::{
     Action, App, AppContext as _, Context, DismissEvent, Element, Entity, Focusable, KeyBinding,
     ParentElement, PathPromptOptions, PromptLevel, ReadGlobal, SharedString, Styled, Task,
-    TitlebarOptions, UpdateGlobal, Window, WindowKind, WindowOptions, actions, image_cache, point,
-    px, retain_all,
+    TitlebarOptions, UpdateGlobal, WeakEntity, Window, WindowKind, WindowOptions, actions,
+    image_cache, point, px, retain_all,
 };
 use image_viewer::ImageInfo;
 use language::Capability;
@@ -79,7 +82,6 @@ use workspace::{
 };
 use workspace::{CloseIntent, CloseWindow, with_active_or_new_workspace};
 use workspace::{Pane, notifications::DetachAndPromptErr};
-use app_actions::{OpenBrowser, OpenDocs, OpenServerSettings, OpenSettingsFile, OpenTehanuUrl, Quit};
 
 actions!(
     tehanu,
@@ -590,27 +592,28 @@ fn initialize_panels(window: &mut Window, cx: &mut Context<Workspace>) {
         let git_panel = GitPanel::load(workspace_handle.clone(), cx.clone());
         let debug_panel = DebugPanel::load(workspace_handle.clone(), cx);
 
-        let (
-            project_panel,
-            outline_panel,
-            terminal_panel,
-            git_panel,
-            debug_panel,
-        ) = futures::try_join!(
-            project_panel,
-            outline_panel,
-            git_panel,
-            terminal_panel,
-            debug_panel,
-        )?;
+        async fn add_panel_when_ready(
+            panel_task: impl Future<Output = anyhow::Result<Entity<impl workspace::Panel>>> + 'static,
+            workspace_handle: WeakEntity<Workspace>,
+            mut cx: gpui::AsyncWindowContext,
+        ) {
+            if let Some(panel) = panel_task.await.context("failed to load panel").log_err()
+            {
+                workspace_handle
+                    .update_in(&mut cx, |workspace, window, cx| {
+                        workspace.add_panel(panel, window, cx);
+                    })
+                    .log_err();
+            }
+        }
 
-        workspace_handle.update_in(cx, |workspace, window, cx| {
-            workspace.add_panel(project_panel, window, cx);
-            workspace.add_panel(outline_panel, window, cx);
-            workspace.add_panel(terminal_panel, window, cx);
-            workspace.add_panel(git_panel, window, cx);
-            workspace.add_panel(debug_panel, window, cx);
-        })?;
+        futures::join!(
+            add_panel_when_ready(project_panel, workspace_handle.clone(), cx.clone()),
+            add_panel_when_ready(outline_panel, workspace_handle.clone(), cx.clone()),
+            add_panel_when_ready(terminal_panel, workspace_handle.clone(), cx.clone()),
+            add_panel_when_ready(git_panel, workspace_handle.clone(), cx.clone()),
+            add_panel_when_ready(debug_panel, workspace_handle.clone(), cx.clone()),
+        );
 
         anyhow::Ok(())
     })
