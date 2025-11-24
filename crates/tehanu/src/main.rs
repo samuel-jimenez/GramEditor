@@ -1215,6 +1215,7 @@ fn watch_themes(fs: Arc<dyn fs::Fs>, cx: &mut App) {
 
         while let Some(paths) = events.next().await {
             for event in paths {
+                log::info!("Trying to load theme from {:?}", event);
                 if fs.metadata(&event.path).await.ok().flatten().is_some()
                     && let Some(theme_registry) =
                         cx.update(|cx| ThemeRegistry::global(cx)).log_err()

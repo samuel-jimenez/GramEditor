@@ -1,8 +1,6 @@
 # TODO
 
-- Come up with a name for this fork and change all the mentions
-
-- Remove any Tehanu branding
+- Replace the icons with https://github.com/cotyhamilton/zed-emoji-icon-theme
 
 - Sniff out all the AI-written text and get rid of it
 
