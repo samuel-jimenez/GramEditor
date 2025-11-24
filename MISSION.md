@@ -10,11 +10,30 @@ that aren't beholden to investors or share-holders.
   spending CPU and GPU cycles on communicating with AI services, sending your
   keystrokes to an American company server or convincing you to sign up for a
   subscription.
-- Language-aware: Aims to support all major and many minor programming languages
+- Language-aware: Aims to support many major and many minor programming languages
   and tools out of the box.
 
 
 ## Quotes
+
+> What cannot be mended must be transcended.
+― Ursula K. Le Guin, Tehanu
+
+> I come with empty hands and the desire to unbuild walls.
+>
+> Those who build walls are their own prisoners. I'm going to go fulfil my
+> proper function in the social organism. I'm going to go unbuild walls.
+― Ursula Le Guin, The Dispossessed: An Ambiguous Utopia
+
+> Nothing is yours. It is to use. It is to share. If you will not share it, you
+> cannot use it.
+― Ursula K. Le Guin, The Dispossessed: An Ambiguous Utopia
+
+> ..all I understand about living is having your work to do, and being able to
+> do it. That's the pleasure, and the glory, and all. And if you can't do the
+> work, or it's taken from you, then what's any good? You have to have
+> something...
+― Ursula K. Le Guin, Tehanu
 
 > And you, Ring-bearer,’ she said, turning to Frodo. ‘I come to you last who are
 > not last in my thoughts. For you I have prepared this.’ She held up a small
@@ -26,16 +45,6 @@ that aren't beholden to investors or share-holders.
 
 > Frodo took the phial, and for a moment as it shone between them, he saw her
 > again standing like a queen, great and beautiful."
-
-> “The sound of her footsteps was like a stream falling gently downhill over
-> cool stones in the quiet of night.”
-
-> “It is said that the skill of the Dwarves is in their hands rather than in
-> their tongues, yet that is not true of Gimli. For none have ever made to me a
-> request so bold and yet so courteous...I do not foretell, for all foretelling
-> is now vain: on the one hand lies darkness, and on the other only hope. But if
-> hope should not fail, then I say to you, Gimli son of Glóin, that your hands
-> shall flow with gold, and yet over you gold shall have no dominion.”
 
 > “All of them, it seemed, had fared alike: each had felt that he was offered a
 > choice between a shadow full of fear that lay ahead, and something that he

@@ -1,4 +1,4 @@
-# Contributing to Galadriel
+# Contributing to this project
 
 The over-arching goal for now is to excise the Zed codebase of all the shady
 stuff so that only the good parts remain. First and foremost, that means
@@ -27,11 +27,12 @@ If this sounds interesting to you, feel free to help out.
 
 It should go without saying but AI is strictly banned from this project.
 
-## Bird's-eye view of Galadriel
+## Bird's-eye view of the code base
 
 The [glossary](docs/src/development/glossary.md) lists and explains some of the structures and terms you will see throughout the codebase.
 
-Galadriel is made up of several smaller crates - let's go over those you're most likely to interact with:
+The editor is made up of several smaller crates. This is an incomplete list of
+crates and their use.
 
 - [`gpui`](/crates/gpui) is a GPU-accelerated UI framework which provides all of the building blocks for the UI.
 - [`editor`](/crates/editor) contains the core `Editor` type that drives both the code editor and all various input fields. It also handles a display layer for LSP features such as Inlay Hints or code completions.
