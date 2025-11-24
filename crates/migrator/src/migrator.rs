@@ -162,10 +162,6 @@ pub fn migrate_settings(text: &str) -> Result<Option<String>> {
         ),
         MigrationType::Json(migrations::m_2025_10_01::flatten_code_actions_formatters),
         MigrationType::Json(migrations::m_2025_10_02::remove_formatters_on_save),
-        MigrationType::TreeSitter(
-            migrations::m_2025_10_03::SETTINGS_PATTERNS,
-            &SETTINGS_QUERY_2025_10_03,
-        ),
         MigrationType::Json(migrations::m_2025_10_16::restore_code_actions_on_format),
         MigrationType::Json(migrations::m_2025_10_17::make_file_finder_include_ignored_an_enum),
         MigrationType::Json(migrations::m_2025_10_21::make_relative_line_numbers_an_enum),
@@ -235,10 +231,6 @@ define_query!(
 define_query!(
     SETTINGS_QUERY_2025_07_08,
     migrations::m_2025_07_08::SETTINGS_PATTERNS
-);
-define_query!(
-    SETTINGS_QUERY_2025_10_03,
-    migrations::m_2025_10_03::SETTINGS_PATTERNS
 );
 define_query!(
     SETTINGS_QUERY_2025_11_12,

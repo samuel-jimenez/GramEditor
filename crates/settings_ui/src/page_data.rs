@@ -778,44 +778,6 @@ pub(crate) fn settings_data(cx: &App) -> Vec<SettingsPage> {
                     ),
                     metadata: None,
                 }),
-                SettingsPageItem::SectionHeader("Agent Panel Font"),
-                SettingsPageItem::SettingItem(SettingItem {
-                    title: "UI Font Size",
-                    description: "Font size for agent response text in the agent panel. Falls back to the regular UI font size.",
-                    field: Box::new(SettingField {
-                        json_path: Some("agent_ui_font_size"),
-                        pick: |settings_content| {
-                            settings_content
-                                .theme
-                                .agent_ui_font_size
-                                .as_ref()
-                                .or(settings_content.theme.ui_font_size.as_ref())
-                        },
-                        write: |settings_content, value|{  settings_content.theme.agent_ui_font_size = value;},
-                    }),
-                    metadata: None,
-                    files: USER,
-                }),
-                SettingsPageItem::SettingItem(SettingItem {
-                    title: "Buffer Font Size",
-                    description: "Font size for user messages text in the agent panel.",
-                    field: Box::new(SettingField {
-                        json_path: Some("agent_buffer_font_size"),
-                        pick: |settings_content| {
-                            settings_content
-                                .theme
-                                .agent_buffer_font_size
-                                .as_ref()
-                                .or(settings_content.theme.buffer_font_size.as_ref())
-                        },
-                        write: |settings_content, value| {
-                            settings_content.theme.agent_buffer_font_size = value;
-
-                        },
-                    }),
-                    metadata: None,
-                    files: USER,
-                }),
                 SettingsPageItem::SectionHeader("Cursor"),
                 SettingsPageItem::SettingItem(SettingItem {
                     title: "Multi Cursor Modifier",
