@@ -1,0 +1,38 @@
+# TODO
+
+- Come up with a name for this fork and change all the mentions
+
+- Remove any Zed branding
+
+- Sniff out all the AI-written text and get rid of it
+
+- Titlebar is hidden on Mac OS at least, so things look weird
+
+  May be the case that it's visible but has height 0.
+
+- LSP queries don't work on remote connection:
+
+  ```
+  2025-11-24T11:21:47+01:00 ERROR [crates/project/src/lsp_store.rs:7448] sending LSP proto request
+
+  Caused by:
+      RPC request LspQuery failed: unknown buffer id 38654705741
+  2025-11-24T11:21:47+01:00 ERROR [remote::remote_client] (remote server) server:error handling message. type:LspQuery, error:unknown buffer id 38654705741
+  ```
+
+  ```
+  2025-11-24T11:20:58+01:00 ERROR [crates/editor/src/linked_editing_ranges.rs:101] RPC request LinkedEditingRange failed: unknown buffer id 38654705741
+  2025-11-24T11:20:58+01:00 ERROR [crates/editor/src/editor.rs:6512] RPC request GetDocumentHighlights failed: unknown buffer id 38654705741
+  ```
+
+- eslint notifications for our project don't work:
+
+  ```
+  2025-11-24T11:00:58+01:00 INFO  [lsp] (remote server) Language server with id 2 sent unhandled notification eslint/status:
+  {
+    "uri": "file:///<redacted>",
+    "state": 1,
+    "validationTime": 36
+  }
+  ```
+
