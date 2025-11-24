@@ -3,6 +3,8 @@ resolver = "2"
 members = [
     "crates/action_log",
     "crates/activity_indicator",
+    "crates/app_actions",
+    "crates/app_env_vars",
     "crates/askpass",
     "crates/assets",
     "crates/breadcrumbs",
@@ -90,7 +92,6 @@ members = [
     "crates/refineable",
     "crates/refineable/derive_refineable",
     "crates/release_channel",
-    "crates/scheduler",
     "crates/remote",
     "crates/remote_server",
     "crates/repl",
@@ -98,6 +99,7 @@ members = [
     "crates/rich_text",
     "crates/rope",
     "crates/rpc",
+    "crates/scheduler",
     "crates/schema_generator",
     "crates/search",
     "crates/semantic_version",
@@ -121,6 +123,7 @@ members = [
     "crates/tab_switcher",
     "crates/task",
     "crates/tasks_ui",
+    "crates/tehanu",
     "crates/terminal",
     "crates/terminal_view",
     "crates/text",
@@ -142,9 +145,6 @@ members = [
     "crates/watch",
     "crates/workspace",
     "crates/worktree",
-    "crates/zed",
-    "crates/zed_actions",
-    "crates/zed_env_vars",
     "crates/zlog",
     "crates/zlog_settings",
 
@@ -163,7 +163,7 @@ members = [
     "tooling/perf",
     "tooling/xtask",
 ]
-default-members = ["crates/zed"]
+default-members = ["crates/tehanu"]
 
 [workspace.package]
 publish = false
@@ -177,13 +177,15 @@ edition = "2024"
 
 action_log = { path = "crates/action_log" }
 activity_indicator = { path = "crates/activity_indicator" }
+app_actions = { path = "crates/app_actions" }
+app_env_vars = { path = "crates/app_env_vars" }
 askpass = { path = "crates/askpass" }
 assets = { path = "crates/assets" }
 breadcrumbs = { path = "crates/breadcrumbs" }
 buffer_diff = { path = "crates/buffer_diff" }
 cli = { path = "crates/cli" }
-clock = { path = "crates/clock" }
 client = { path = "crates/client" }
+clock = { path = "crates/clock" }
 collections = { path = "crates/collections", version = "0.1.0" }
 command_palette = { path = "crates/command_palette" }
 command_palette_hooks = { path = "crates/command_palette_hooks" }
@@ -236,12 +238,11 @@ line_ending_selector = { path = "crates/line_ending_selector" }
 lsp = { path = "crates/lsp" }
 markdown = { path = "crates/markdown" }
 markdown_preview = { path = "crates/markdown_preview" }
-svg_preview = { path = "crates/svg_preview" }
 media = { path = "crates/media" }
 menu = { path = "crates/menu" }
 migrator = { path = "crates/migrator" }
-multi_buffer = { path = "crates/multi_buffer" }
 miniprofiler_ui = { path = "crates/miniprofiler_ui" }
+multi_buffer = { path = "crates/multi_buffer" }
 nc = { path = "crates/nc" }
 net = { path = "crates/net" }
 node_runtime = { path = "crates/node_runtime" }
@@ -256,7 +257,6 @@ picker = { path = "crates/picker" }
 plugin = { path = "crates/plugin" }
 plugin_macros = { path = "crates/plugin_macros" }
 prettier = { path = "crates/prettier" }
-settings_profile_selector = { path = "crates/settings_profile_selector" }
 project = { path = "crates/project" }
 project_panel = { path = "crates/project_panel" }
 project_symbols = { path = "crates/project_symbols" }
@@ -264,7 +264,6 @@ proto = { path = "crates/proto" }
 recent_projects = { path = "crates/recent_projects" }
 refineable = { path = "crates/refineable" }
 release_channel = { path = "crates/release_channel" }
-scheduler = { path = "crates/scheduler" }
 remote = { path = "crates/remote" }
 remote_server = { path = "crates/remote_server" }
 repl = { path = "crates/repl" }
@@ -272,12 +271,14 @@ reqwest_client = { path = "crates/reqwest_client" }
 rich_text = { path = "crates/rich_text" }
 rope = { path = "crates/rope" }
 rpc = { path = "crates/rpc" }
+scheduler = { path = "crates/scheduler" }
 search = { path = "crates/search" }
 semantic_version = { path = "crates/semantic_version" }
 session = { path = "crates/session" }
 settings = { path = "crates/settings" }
 settings_json = { path = "crates/settings_json" }
 settings_macros = { path = "crates/settings_macros" }
+settings_profile_selector = { path = "crates/settings_profile_selector" }
 settings_ui = { path = "crates/settings_ui" }
 snippet = { path = "crates/snippet" }
 snippet_provider = { path = "crates/snippet_provider" }
@@ -288,10 +289,12 @@ story = { path = "crates/story" }
 storybook = { path = "crates/storybook" }
 streaming_diff = { path = "crates/streaming_diff" }
 sum_tree = { path = "crates/sum_tree" }
+svg_preview = { path = "crates/svg_preview" }
 system_specs = { path = "crates/system_specs" }
 tab_switcher = { path = "crates/tab_switcher" }
 task = { path = "crates/task" }
 tasks_ui = { path = "crates/tasks_ui" }
+tehanu = { path = "crates/tehanu" }
 terminal = { path = "crates/terminal" }
 terminal_view = { path = "crates/terminal_view" }
 text = { path = "crates/text" }
@@ -310,13 +313,9 @@ util = { path = "crates/util" }
 util_macros = { path = "crates/util_macros" }
 vim = { path = "crates/vim" }
 vim_mode_setting = { path = "crates/vim_mode_setting" }
-
 watch = { path = "crates/watch" }
 workspace = { path = "crates/workspace" }
 worktree = { path = "crates/worktree" }
-zed = { path = "crates/zed" }
-zed_actions = { path = "crates/zed_actions" }
-zed_env_vars = { path = "crates/zed_env_vars" }
 zlog = { path = "crates/zlog" }
 zlog_settings = { path = "crates/zlog_settings" }
 
@@ -690,6 +689,7 @@ wasmtime-cranelift = { opt-level = 3 }
 wasmtime = { opt-level = 3 }
 # Build single-source-file crates with cg=1 as it helps make `cargo build` of a whole workspace a bit faster
 activity_indicator = { codegen-units = 1 }
+app_actions = { codegen-units = 1 }
 assets = { codegen-units = 1 }
 breadcrumbs = { codegen-units = 1 }
 collections = { codegen-units = 1 }
@@ -721,7 +721,6 @@ story = { codegen-units = 1 }
 theme_selector = { codegen-units = 1 }
 time_format = { codegen-units = 1 }
 ui_input = { codegen-units = 1 }
-zed_actions = { codegen-units = 1 }
 
 [profile.release]
 debug = "limited"
@@ -729,7 +728,7 @@ lto = "thin"
 codegen-units = 1
 
 [profile.release.package]
-zed = { codegen-units = 16 }
+tehanu = { codegen-units = 16 }
 
 [profile.release-fast]
 inherits = "release"
@@ -752,7 +751,7 @@ redundant_clone = "deny"
 disallowed_methods = "deny"
 
 # We currently do not restrict any style rules
-# as it slows down shipping code to Zed.
+# as it slows down shipping code to Tehanu.
 #
 # Running ./script/clippy can take several minutes, and so it's
 # common to skip that step and let CI do it. Any unexpected failures
@@ -760,7 +759,7 @@ disallowed_methods = "deny"
 # to an old branch, manual fixing, and re-pushing.
 #
 # In the future we could improve this by either making sure
-# Zed can surface clippy errors in diagnostics (in addition to the
+# Tehanu can surface clippy errors in diagnostics (in addition to the
 # rust-analyzer errors), or by having CI fix style nits automatically.
 style = { level = "allow", priority = -1 }
 

@@ -228,19 +228,19 @@ where
 ///
 /// This function checks if the current process is running with root privileges
 /// and terminates the program with an error message unless explicitly allowed via the
-/// `ZED_ALLOW_ROOT` environment variable.
+/// `TEHANU_ALLOW_ROOT` environment variable.
 #[cfg(unix)]
 pub fn prevent_root_execution() {
     let is_root = nix::unistd::geteuid().is_root();
-    let allow_root = std::env::var("ZED_ALLOW_ROOT").is_ok_and(|val| val == "true");
+    let allow_root = std::env::var("TEHANU_ALLOW_ROOT").is_ok_and(|val| val == "true");
 
     if is_root && !allow_root {
         eprintln!(
             "\
-Error: Running Zed as root or via sudo is unsupported.
-       Doing so (even once) may subtly break things for all subsequent non-root usage of Zed.
+Error: Running Tehanu as root or via sudo is unsupported.
+       Doing so (even once) may subtly break things for all subsequent non-root usage of Tehanu.
        It is untested and not recommended, don't complain when things break.
-       If you wish to proceed anyways, set `ZED_ALLOW_ROOT=true` in your environment."
+       If you wish to proceed anyways, set `TEHANU_ALLOW_ROOT=true` in your environment."
         );
         std::process::exit(1);
     }
@@ -301,27 +301,27 @@ fn load_shell_from_passwd() -> Result<()> {
     Ok(())
 }
 
-/// Returns a shell escaped path for the current zed executable
-pub fn get_shell_safe_zed_path(shell_kind: shell::ShellKind) -> anyhow::Result<String> {
-    let zed_path =
-        std::env::current_exe().context("Failed to determine current zed executable path.")?;
+/// Returns a shell escaped path for the current executable
+pub fn get_shell_safe_binary_path(shell_kind: shell::ShellKind) -> anyhow::Result<String> {
+    let binary_path =
+        std::env::current_exe().context("Failed to determine current executable path.")?;
 
-    zed_path
+    binary_path
         .try_shell_safe(shell_kind)
-        .context("Failed to shell-escape Zed executable path.")
+        .context("Failed to shell-escape Tehanu executable path.")
 }
 
 /// Returns a path for the zed cli executable, this function
-/// should be called from the zed executable, not zed-cli.
+/// should be called from the executable, not zed-cli.
 pub fn get_zed_cli_path() -> Result<PathBuf> {
-    let zed_path =
-        std::env::current_exe().context("Failed to determine current zed executable path.")?;
-    let parent = zed_path
+    let binary_path =
+        std::env::current_exe().context("Failed to determine current executable path.")?;
+    let parent = binary_path
         .parent()
-        .context("Failed to determine parent directory of zed executable path.")?;
+        .context("Failed to determine parent directory of executable path.")?;
 
     let possible_locations: &[&str] = if cfg!(target_os = "macos") {
-        // On macOS, the zed executable and zed-cli are inside the app bundle,
+        // On macOS, the executable and zed-cli are inside the app bundle,
         // so here ./cli is for both installed and development builds.
         &["./cli"]
     } else if cfg!(target_os = "windows") {
@@ -341,7 +341,7 @@ pub fn get_zed_cli_path() -> Result<PathBuf> {
                 .join(p)
                 .canonicalize()
                 .ok()
-                .filter(|p| p != &zed_path)
+                .filter(|p| p != &binary_path)
         })
         .with_context(|| {
             format!(
@@ -467,9 +467,9 @@ pub fn merge_non_null_json_value_into(source: serde_json::Value, target: &mut se
 }
 
 pub fn measure<R>(label: &str, f: impl FnOnce() -> R) -> R {
-    static ZED_MEASUREMENTS: OnceLock<bool> = OnceLock::new();
-    let zed_measurements = ZED_MEASUREMENTS.get_or_init(|| {
-        env::var("ZED_MEASUREMENTS")
+    static TEHANU_MEASUREMENTS: OnceLock<bool> = OnceLock::new();
+    let zed_measurements = TEHANU_MEASUREMENTS.get_or_init(|| {
+        env::var("TEHANU_MEASUREMENTS")
             .map(|measurements| measurements == "1" || measurements == "true")
             .unwrap_or(false)
     });

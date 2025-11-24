@@ -18,8 +18,8 @@ struct FeatureFlags {
     staff: bool,
 }
 
-pub static ZED_DISABLE_STAFF: LazyLock<bool> = LazyLock::new(|| {
-    std::env::var("ZED_DISABLE_STAFF").is_ok_and(|value| !value.is_empty() && value != "0")
+pub static TEHANU_DISABLE_STAFF: LazyLock<bool> = LazyLock::new(|| {
+    std::env::var("TEHANU_DISABLE_STAFF").is_ok_and(|value| !value.is_empty() && value != "0")
 });
 
 impl FeatureFlags {
@@ -28,7 +28,7 @@ impl FeatureFlags {
             return true;
         }
 
-        if (cfg!(debug_assertions) || self.staff) && !*ZED_DISABLE_STAFF && T::enabled_for_staff() {
+        if (cfg!(debug_assertions) || self.staff) && !*TEHANU_DISABLE_STAFF && T::enabled_for_staff() {
             return true;
         }
 
@@ -41,13 +41,13 @@ impl Global for FeatureFlags {}
 /// To create a feature flag, implement this trait on a trivial type and use it as
 /// a generic parameter when called [`FeatureFlagAppExt::has_flag`].
 ///
-/// Feature flags are enabled for members of Zed staff by default. To disable this behavior
-/// so you can test flags being disabled, set ZED_DISABLE_STAFF=1 in your environment,
-/// which will force Zed to treat the current user as non-staff.
+/// Feature flags are enabled for members of Tehanu staff by default. To disable this behavior
+/// so you can test flags being disabled, set TEHANU_DISABLE_STAFF=1 in your environment,
+/// which will force Tehanu to treat the current user as non-staff.
 pub trait FeatureFlag {
     const NAME: &'static str;
 
-    /// Returns whether this feature flag is enabled for Zed staff.
+    /// Returns whether this feature flag is enabled for Tehanu staff.
     fn enabled_for_staff() -> bool {
         true
     }
@@ -157,7 +157,7 @@ impl FeatureFlagAppExt for App {
         self.try_global::<FeatureFlags>()
             .map(|flags| flags.has_flag::<T>())
             .unwrap_or_else(|| {
-                (cfg!(debug_assertions) && T::enabled_for_staff() && !*ZED_DISABLE_STAFF)
+                (cfg!(debug_assertions) && T::enabled_for_staff() && !*TEHANU_DISABLE_STAFF)
                     || T::enabled_for_all()
             })
     }

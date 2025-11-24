@@ -1,9 +1,9 @@
-# Language Support in Zed
+# Language Support in Tehanu
 
-Zed supports hundreds of programming languages and text formats.
+Tehanu supports hundreds of programming languages and text formats.
 Some work out-of-the box and others rely on 3rd party extensions.
 
-> The ones included out-of-the-box, natively built into Zed, are marked with \*.
+> The ones included out-of-the-box, natively built into Tehanu, are marked with \*.
 
 ## Languages with Documentation
 
@@ -57,7 +57,7 @@ Some work out-of-the box and others rely on 3rd party extensions.
 - [Racket](./languages/racket.md)
 - [Roc](./languages/roc.md)
 - [Ruby](./languages/ruby.md)
-- [Rust](./languages/rust.md) \* (Zed's written in Rust)
+- [Rust](./languages/rust.md) \* (Tehanu's written in Rust)
 - [Scala](./languages/scala.md)
 - [Scheme](./languages/scheme.md)
 - [Shell Script](./languages/sh.md)

@@ -3,12 +3,12 @@ set -eu
 
 # Downloads the latest tarball from https://zed.dev/releases and unpacks it
 # into ~/.local/. If you'd prefer to do this manually, instructions are at
-# https://zed.dev/docs/linux.
+# https://tehanu.liten.app/docs/linux.
 
 main() {
     platform="$(uname -s)"
     arch="$(uname -m)"
-    channel="${ZED_CHANNEL:-stable}"
+    channel="${TEHANU_CHANNEL:-stable}"
     # Use TMPDIR if available (for environments with non-standard temp directories)
     if [ -n "${TMPDIR:-}" ] && [ -d "${TMPDIR}" ]; then
         temp="$(mktemp -d "$TMPDIR/zed-XXXXXX")"
@@ -53,10 +53,10 @@ main() {
 
     "$platform" "$@"
 
-    if [ "$(command -v zed)" = "$HOME/.local/bin/zed" ]; then
-        echo "Zed has been installed. Run with 'zed'"
+    if [ "$(command -v zed)" = "$HOME/.local/bin/tehanu" ]; then
+        echo "Tehanu has been installed. Run with 'zed'"
     else
-        echo "To run Zed from your terminal, you must add ~/.local/bin to your PATH"
+        echo "To run Tehanu from your terminal, you must add ~/.local/bin to your PATH"
         echo "Run:"
 
         case "$SHELL" in
@@ -73,16 +73,16 @@ main() {
                 ;;
         esac
 
-        echo "To run Zed now, '~/.local/bin/zed'"
+        echo "To run Tehanu now, '~/.local/bin/tehanu'"
     fi
 }
 
 linux() {
-    if [ -n "${ZED_BUNDLE_PATH:-}" ]; then
-        cp "$ZED_BUNDLE_PATH" "$temp/zed-linux-$arch.tar.gz"
+    if [ -n "${TEHANU_BUNDLE_PATH:-}" ]; then
+        cp "$TEHANU_BUNDLE_PATH" "$temp/tehanu-linux-$arch.tar.gz"
     else
-        echo "Downloading Zed"
-        curl "https://cloud.zed.dev/releases/$channel/latest/download?asset=zed&arch=$arch&os=linux&source=install.sh" > "$temp/zed-linux-$arch.tar.gz"
+        echo "Downloading Tehanu"
+        curl "https://cloud.zed.dev/releases/$channel/latest/download?asset=zed&arch=$arch&os=linux&source=install.sh" > "$temp/tehanu-linux-$arch.tar.gz"
     fi
 
     suffix=""
@@ -93,50 +93,50 @@ linux() {
     appid=""
     case "$channel" in
       stable)
-        appid="dev.zed.Zed"
+        appid="se.ziran.Tehanu"
         ;;
       nightly)
-        appid="dev.zed.Zed-Nightly"
+        appid="se.ziran.Tehanu-Nightly"
         ;;
       preview)
-        appid="dev.zed.Zed-Preview"
+        appid="se.ziran.Tehanu-Preview"
         ;;
       dev)
-        appid="dev.zed.Zed-Dev"
+        appid="se.ziran.Tehanu-Dev"
         ;;
       *)
         echo "Unknown release channel: ${channel}. Using stable app ID."
-        appid="dev.zed.Zed"
+        appid="se.ziran.Tehanu"
         ;;
     esac
 
     # Unpack
-    rm -rf "$HOME/.local/zed$suffix.app"
-    mkdir -p "$HOME/.local/zed$suffix.app"
-    tar -xzf "$temp/zed-linux-$arch.tar.gz" -C "$HOME/.local/"
+    rm -rf "$HOME/.local/tehanu$suffix.app"
+    mkdir -p "$HOME/.local/tehanu$suffix.app"
+    tar -xzf "$temp/tehanu-linux-$arch.tar.gz" -C "$HOME/.local/"
 
     # Setup ~/.local directories
     mkdir -p "$HOME/.local/bin" "$HOME/.local/share/applications"
 
     # Link the binary
-    if [ -f "$HOME/.local/zed$suffix.app/bin/zed" ]; then
-        ln -sf "$HOME/.local/zed$suffix.app/bin/zed" "$HOME/.local/bin/zed"
+    if [ -f "$HOME/.local/tehanu$suffix.app/bin/tehanu" ]; then
+        ln -sf "$HOME/.local/tehanu$suffix.app/bin/tehanu" "$HOME/.local/bin/tehanu"
     else
         # support for versions before 0.139.x.
-        ln -sf "$HOME/.local/zed$suffix.app/bin/cli" "$HOME/.local/bin/zed"
+        ln -sf "$HOME/.local/tehanu$suffix.app/bin/cli" "$HOME/.local/bin/tehanu"
     fi
 
     # Copy .desktop file
     desktop_file_path="$HOME/.local/share/applications/${appid}.desktop"
-    cp "$HOME/.local/zed$suffix.app/share/applications/zed$suffix.desktop" "${desktop_file_path}"
-    sed -i "s|Icon=zed|Icon=$HOME/.local/zed$suffix.app/share/icons/hicolor/512x512/apps/zed.png|g" "${desktop_file_path}"
-    sed -i "s|Exec=zed|Exec=$HOME/.local/zed$suffix.app/bin/zed|g" "${desktop_file_path}"
+    cp "$HOME/.local/tehanu$suffix.app/share/applications/tehanu$suffix.desktop" "${desktop_file_path}"
+    sed -i "s|Icon=tehanu|Icon=$HOME/.local/tehanu$suffix.app/share/icons/hicolor/512x512/apps/tehanu.png|g" "${desktop_file_path}"
+    sed -i "s|Exec=zed|Exec=$HOME/.local/tehanu$suffix.app/bin/tehanu|g" "${desktop_file_path}"
 }
 
 macos() {
-    echo "Downloading Zed"
-    curl "https://cloud.zed.dev/releases/$channel/latest/download?asset=zed&os=macos&arch=$arch&source=install.sh" > "$temp/Zed-$arch.dmg"
-    hdiutil attach -quiet "$temp/Zed-$arch.dmg" -mountpoint "$temp/mount"
+    echo "Downloading Tehanu"
+    curl "https://cloud.zed.dev/releases/$channel/latest/download?asset=zed&os=macos&arch=$arch&source=install.sh" > "$temp/Tehanu-$arch.dmg"
+    hdiutil attach -quiet "$temp/Tehanu-$arch.dmg" -mountpoint "$temp/mount"
     app="$(cd "$temp/mount/"; echo *.app)"
     echo "Installing $app"
     if [ -d "/Applications/$app" ]; then
@@ -148,7 +148,7 @@ macos() {
 
     mkdir -p "$HOME/.local/bin"
     # Link the binary
-    ln -sf "/Applications/$app/Contents/MacOS/cli" "$HOME/.local/bin/zed"
+    ln -sf "/Applications/$app/Contents/MacOS/cli" "$HOME/.local/bin/tehanu"
 }
 
 main "$@"

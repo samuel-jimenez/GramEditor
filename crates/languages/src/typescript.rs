@@ -792,7 +792,7 @@ impl LspAdapter for TypeScriptLspAdapter {
         let tsdk_path = self.tsdk_path(adapter).await;
         Ok(Some(json!({
             "provideFormatter": true,
-            "hostInfo": "zed",
+            "hostInfo": "tehanu",
             "tsserver": {
                 "path": tsdk_path,
             },
@@ -1030,7 +1030,7 @@ impl LspAdapter for EsLintLspAdapter {
             "problems": {},
             "codeActionOnSave": {
                 // We enable this, but without also configuring code_actions_on_format
-                // in the Zed configuration, it doesn't have an effect.
+                // in the Tehanu configuration, it doesn't have an effect.
                 "enable": true,
             },
             "codeAction": {
@@ -1516,19 +1516,19 @@ mod tests {
             [
                 (
                     "vitest file test".into(),
-                    Some("$ZED_CUSTOM_TYPESCRIPT_VITEST_PACKAGE_PATH".into()),
+                    Some("$TEHANU_CUSTOM_TYPESCRIPT_VITEST_PACKAGE_PATH".into()),
                 ),
                 (
-                    "vitest test $ZED_SYMBOL".into(),
-                    Some("$ZED_CUSTOM_TYPESCRIPT_VITEST_PACKAGE_PATH".into()),
+                    "vitest test $TEHANU_SYMBOL".into(),
+                    Some("$TEHANU_CUSTOM_TYPESCRIPT_VITEST_PACKAGE_PATH".into()),
                 ),
                 (
                     "mocha file test".into(),
-                    Some("$ZED_CUSTOM_TYPESCRIPT_MOCHA_PACKAGE_PATH".into()),
+                    Some("$TEHANU_CUSTOM_TYPESCRIPT_MOCHA_PACKAGE_PATH".into()),
                 ),
                 (
-                    "mocha test $ZED_SYMBOL".into(),
-                    Some("$ZED_CUSTOM_TYPESCRIPT_MOCHA_PACKAGE_PATH".into()),
+                    "mocha test $TEHANU_SYMBOL".into(),
+                    Some("$TEHANU_CUSTOM_TYPESCRIPT_MOCHA_PACKAGE_PATH".into()),
                 ),
                 (
                     "root/package.json > test".into(),

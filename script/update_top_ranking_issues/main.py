@@ -51,7 +51,7 @@ def main(
         remaining_requests_before: int = github.rate_limiting[0]
         print(f"Remaining requests before: {remaining_requests_before}")
 
-        repo_name: str = "zed-industries/zed"
+        repo_name: str = "krig/tehanu"
         repository: Repository = github.get_repo(repo_name)
 
         label_to_issue_data: dict[str, list[IssueData]] = get_issue_maps(
@@ -180,7 +180,7 @@ def get_issue_text(
         f"*Updated on {current_datetime}*",
         *highest_ranking_issues_lines,
         "\n---\n",
-        "*For details on how this issue is generated, [see the script](https://github.com/zed-industries/zed/blob/main/script/update_top_ranking_issues/main.py)*",
+        "*For details on how this issue is generated, [see the script](https://codeberg.org/krig/tehanu/blob/main/script/update_top_ranking_issues/main.py)*",
     ]
 
     return "\n".join(issue_text_lines)

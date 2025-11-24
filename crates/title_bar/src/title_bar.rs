@@ -36,7 +36,7 @@ use ui::{
 };
 use util::rel_path::RelPath;
 use workspace::Workspace;
-use zed_actions::{OpenRecent, OpenRemote};
+use app_actions::{OpenRecent, OpenRemote};
 
 #[cfg(feature = "stories")]
 pub use stories::*;
@@ -240,7 +240,7 @@ impl TitleBar {
         let platform_style = PlatformStyle::platform();
         let application_menu = match platform_style {
             PlatformStyle::Mac => {
-                if option_env!("ZED_USE_CROSS_PLATFORM_MENU").is_some() {
+                if option_env!("TEHANU_USE_CROSS_PLATFORM_MENU").is_some() {
                     Some(cx.new(|cx| ApplicationMenu::new(window, cx)))
                 } else {
                     None
@@ -414,7 +414,7 @@ impl TitleBar {
             .tooltip(move |_window, cx| {
                 Tooltip::for_action(
                     "Recent Projects",
-                    &zed_actions::OpenRecent {
+                    &app_actions::OpenRecent {
                         create_new_window: false,
                     },
                     cx,
@@ -459,7 +459,7 @@ impl TitleBar {
                 .tooltip(move |_window, cx| {
                     Tooltip::with_meta(
                         "Recent Branches",
-                        Some(&zed_actions::git::Branch),
+                        Some(&app_actions::git::Branch),
                         "Local branches only",
                         cx,
                     )
@@ -467,7 +467,7 @@ impl TitleBar {
                 .on_click(move |_, window, cx| {
                     let _ = workspace.update(cx, |this, cx| {
                         window.focus(&this.active_pane().focus_handle(cx));
-                        window.dispatch_action(zed_actions::git::Branch.boxed_clone(), cx);
+                        window.dispatch_action(app_actions::git::Branch.boxed_clone(), cx);
                     });
                 })
                 .when(settings.show_branch_icon, |branch_button| {
@@ -524,19 +524,19 @@ impl TitleBar {
             .anchor(Corner::TopRight)
             .menu(move |window, cx| {
                 ContextMenu::build(window, cx, |menu, _, _cx| {
-                    menu.action("Settings", zed_actions::OpenSettings.boxed_clone())
-                        .action("Keymap", Box::new(zed_actions::OpenKeymap))
+                    menu.action("Settings", app_actions::OpenSettings.boxed_clone())
+                        .action("Keymap", Box::new(app_actions::OpenKeymap))
                         .action(
                             "Themes…",
-                            zed_actions::theme_selector::Toggle::default().boxed_clone(),
+                            app_actions::theme_selector::Toggle::default().boxed_clone(),
                         )
                         .action(
                             "Icon Themes…",
-                            zed_actions::icon_theme_selector::Toggle::default().boxed_clone(),
+                            app_actions::icon_theme_selector::Toggle::default().boxed_clone(),
                         )
                         .action(
                             "Extensions",
-                            zed_actions::Extensions::default().boxed_clone(),
+                            app_actions::Extensions::default().boxed_clone(),
                         )
                 })
                 .into()

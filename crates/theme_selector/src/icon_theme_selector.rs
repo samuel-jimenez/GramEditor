@@ -14,7 +14,7 @@ use theme::{
 use ui::{ListItem, ListItemSpacing, prelude::*, v_flex};
 use util::ResultExt;
 use workspace::{ModalView, ui::HighlightedLabel};
-use zed_actions::{ExtensionCategoryFilter, Extensions};
+use app_actions::{ExtensionCategoryFilter, Extensions};
 
 pub(crate) struct IconThemeSelector {
     picker: Entity<Picker<IconThemeSelectorDelegate>>,
@@ -310,7 +310,7 @@ impl PickerDelegate for IconThemeSelectorDelegate {
                         .icon_size(IconSize::Small)
                         .icon_color(Color::Muted)
                         .on_click(|_event, _window, cx| {
-                            cx.open_url("https://zed.dev/docs/icon-themes");
+                            cx.open_url("https://tehanu.liten.app/docs/icon-themes");
                         }),
                 )
                 .child(

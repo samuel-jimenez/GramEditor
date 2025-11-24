@@ -25,7 +25,7 @@ impl DapLocator for PythonLocator {
         if adapter.0.as_ref() != "Debugpy" {
             return None;
         }
-        let valid_program = build_config.command.starts_with("$ZED_")
+        let valid_program = build_config.command.starts_with("$TEHANU_")
             || Path::new(&build_config.command)
                 .file_name()
                 .is_some_and(|name| name.to_str().is_some_and(|path| path.starts_with("python")));
@@ -105,11 +105,11 @@ mod test {
     async fn test_python_locator() {
         let adapter = DebugAdapterName("Debugpy".into());
         let build_task = TaskTemplate {
-            label: "run module '$ZED_FILE'".into(),
-            command: "$ZED_CUSTOM_PYTHON_ACTIVE_ZED_TOOLCHAIN".into(),
-            args: vec!["-m".into(), "$ZED_CUSTOM_PYTHON_MODULE_NAME".into()],
+            label: "run module '$TEHANU_FILE'".into(),
+            command: "$TEHANU_CUSTOM_PYTHON_ACTIVE_TEHANU_TOOLCHAIN".into(),
+            args: vec!["-m".into(), "$TEHANU_CUSTOM_PYTHON_MODULE_NAME".into()],
             env: Default::default(),
-            cwd: Some("$ZED_WORKTREE_ROOT".into()),
+            cwd: Some("$TEHANU_WORKTREE_ROOT".into()),
             use_new_terminal: false,
             allow_concurrent_runs: false,
             reveal: task::RevealStrategy::Always,
@@ -127,10 +127,10 @@ mod test {
             build: None,
             config: json!({
                 "request": "launch",
-                "python": "$ZED_CUSTOM_PYTHON_ACTIVE_ZED_TOOLCHAIN",
+                "python": "$TEHANU_CUSTOM_PYTHON_ACTIVE_TEHANU_TOOLCHAIN",
                 "args": [],
-                "cwd": "$ZED_WORKTREE_ROOT",
-                "module": "$ZED_CUSTOM_PYTHON_MODULE_NAME",
+                "cwd": "$TEHANU_WORKTREE_ROOT",
+                "module": "$TEHANU_CUSTOM_PYTHON_MODULE_NAME",
             }),
             tcp_connection: None,
         };

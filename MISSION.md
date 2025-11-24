@@ -1,7 +1,44 @@
 # Performance, but at what cost?
 
+> "What cannot be mended must be transcended."
+>
+> Maybe the change coming into Earthsea has something to do with no longer
+> identifying freedom with power, with separating being free from being in
+> control. There is a kind of refusal to serve power that isn't a revolt or a
+> rebellion, but a revolution in the sense of reversing meanings, of changing
+> how things are understood. Anyone who has been able to break from the grip of
+> a controlling, crippling belief or bigotry or enforced ignorance knows the
+> sense of coming out into the light and air, of release, being set free to fly,
+> to transcend.
+
 Coding is more than just productivity. We need tools that are fit for purpose,
-that aren't beholden to investors or share-holders.
+that aren't beholden to investors or share holders. There are aspects of the Tehanu
+code editor that I think are wrong in the moral and ethical sense, and there are
+aspects that I think are simply bad choices from a technical perspective.
+
+I don't want AI features in my editor. It's not just because I think they are
+bad for productivity, performance and quality (I do), but because I think the
+companies behind the technology and the _cost_ of the technology make it not
+only unsustainable but unethical.
+
+I also object to making myself and my work dependent on paying a subscription
+fee. I don't want an outage at Anthropic to affect my ability to do my work. I
+think it is a grave mistake to build anything on such shaky foundations as the
+sustainability and profit margins of the AI industry.
+
+But ignore all that. I think these are bad features in a code editor, period.
+
+I don't want multiplayer editing integrated into the editor. Pair programming
+works just fine without having two people editing the same file at the same
+time. Assigning one person to think is a good thing.
+
+I don't want my software to update itself automatically, or to download binaries
+without me explicitly asking it to.
+
+I don't want to sign in, or sign up, or join the community.
+
+I want my tools to be hammers, screwdrivers and saws. I don't need my hammer to
+come with a subscription fee.
 
 ## Features:
 
@@ -13,41 +50,3 @@ that aren't beholden to investors or share-holders.
 - Language-aware: Aims to support many major and many minor programming languages
   and tools out of the box.
 
-
-## Quotes
-
-> What cannot be mended must be transcended.
-― Ursula K. Le Guin, Tehanu
-
-> I come with empty hands and the desire to unbuild walls.
->
-> Those who build walls are their own prisoners. I'm going to go fulfil my
-> proper function in the social organism. I'm going to go unbuild walls.
-― Ursula Le Guin, The Dispossessed: An Ambiguous Utopia
-
-> Nothing is yours. It is to use. It is to share. If you will not share it, you
-> cannot use it.
-― Ursula K. Le Guin, The Dispossessed: An Ambiguous Utopia
-
-> ..all I understand about living is having your work to do, and being able to
-> do it. That's the pleasure, and the glory, and all. And if you can't do the
-> work, or it's taken from you, then what's any good? You have to have
-> something...
-― Ursula K. Le Guin, Tehanu
-
-> And you, Ring-bearer,’ she said, turning to Frodo. ‘I come to you last who are
-> not last in my thoughts. For you I have prepared this.’ She held up a small
-> crystal phial: it glittered as she moved it, and rays of white light sprang
-> from her hand. ‘In this phial,’ she said, ‘is caught the light of Eärendil’s
-> star, set amid the waters of my fountain. It will shine still brighter when
-> night is about you. May it be a light to you in dark places, when all other
-> lights go out. Remember Galadriel and her Mirror!’
-
-> Frodo took the phial, and for a moment as it shone between them, he saw her
-> again standing like a queen, great and beautiful."
-
-> “All of them, it seemed, had fared alike: each had felt that he was offered a
-> choice between a shadow full of fear that lay ahead, and something that he
-> greatly desired: clear before his mind it lay, and to get it he had only to
-> turn aside from the road and leave the Quest and the war against Sauron to
-> others.”

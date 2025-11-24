@@ -1,6 +1,6 @@
-# Zed Schema Generator
+# Tehanu Schema Generator
 
-Prints various Zed schemas to stdout.
+Prints various Tehanu schemas to stdout.
 
 ## Usage
 

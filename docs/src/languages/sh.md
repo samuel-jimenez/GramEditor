@@ -1,12 +1,12 @@
 # Shell Scripts
 
-Shell Scripts (bash, zsh, dash, sh) are supported natively by Zed.
+Shell Scripts (bash, zsh, dash, sh) are supported natively by Tehanu.
 
 - Tree-sitter: [tree-sitter/tree-sitter-bash](https://github.com/tree-sitter/tree-sitter-bash)
 
 ## Settings
 
-You can configure various settings for Shell Scripts in your Zed User Settings (`~/.config/zed/settings.json`) or Zed Project Settings (`.zed/settings.json`):
+You can configure various settings for Shell Scripts in your Tehanu User Settings (`~/.config/tehanu/settings.json`) or Tehanu Project Settings (`.zed/settings.json`):
 
 ```json [settings]
   "languages": {
@@ -19,7 +19,7 @@ You can configure various settings for Shell Scripts in your Zed User Settings (
 
 ### Formatting
 
-Zed supports auto-formatting Shell Scripts using external tools like [`shfmt`](https://github.com/mvdan/sh).
+Tehanu supports auto-formatting Shell Scripts using external tools like [`shfmt`](https://github.com/mvdan/sh).
 
 1. Install `shfmt`:
 
@@ -39,7 +39,7 @@ which shfmt
 shfmt --version
 ```
 
-3. Configure Zed to automatically format Shell Scripts with `shfmt` on save:
+3. Configure Tehanu to automatically format Shell Scripts with `shfmt` on save:
 
 ```json [settings]
   "languages": {
@@ -58,5 +58,5 @@ shfmt --version
 
 ## See also:
 
-- [Zed Docs: Language Support: Bash](./bash.md)
-- [Zed Docs: Language Support: Fish](./fish.md)
+- [Tehanu Docs: Language Support: Bash](./bash.md)
+- [Tehanu Docs: Language Support: Fish](./fish.md)

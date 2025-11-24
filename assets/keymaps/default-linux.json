@@ -26,13 +26,13 @@
       "shift-escape": "workspace::ToggleZoom",
       "open": "workspace::Open",
       "ctrl-o": "workspace::Open",
-      "ctrl-=": ["zed::IncreaseBufferFontSize", { "persist": false }],
-      "ctrl-+": ["zed::IncreaseBufferFontSize", { "persist": false }],
-      "ctrl--": ["zed::DecreaseBufferFontSize", { "persist": false }],
-      "ctrl-0": ["zed::ResetBufferFontSize", { "persist": false }],
-      "ctrl-,": "zed::OpenSettings",
-      "ctrl-alt-,": "zed::OpenSettingsFile",
-      "ctrl-q": "zed::Quit",
+      "ctrl-=": ["tehanu::IncreaseBufferFontSize", { "persist": false }],
+      "ctrl-+": ["tehanu::IncreaseBufferFontSize", { "persist": false }],
+      "ctrl--": ["tehanu::DecreaseBufferFontSize", { "persist": false }],
+      "ctrl-0": ["tehanu::ResetBufferFontSize", { "persist": false }],
+      "ctrl-,": "tehanu::OpenSettings",
+      "ctrl-alt-,": "tehanu::OpenSettingsFile",
+      "ctrl-q": "tehanu::Quit",
       "f4": "debugger::Start",
       "shift-f5": "debugger::Stop",
       "ctrl-shift-f5": "debugger::RerunSession",
@@ -40,7 +40,7 @@
       "f7": "debugger::StepOver",
       "ctrl-f11": "debugger::StepInto",
       "shift-f11": "debugger::StepOut",
-      "f11": "zed::ToggleFullScreen",
+      "f11": "tehanu::ToggleFullScreen",
       "ctrl-alt-l": "lsp_tool::ToggleMenu"
     }
   },
@@ -416,7 +416,7 @@
       "shift-new": "workspace::NewWindow",
       "ctrl-shift-n": "workspace::NewWindow",
       "ctrl-`": "terminal_panel::Toggle",
-      "f10": ["app_menu::OpenApplicationMenu", "Zed"],
+      "f10": ["app_menu::OpenApplicationMenu", "Tehanu"],
       "alt-1": ["workspace::ActivatePane", 0],
       "alt-2": ["workspace::ActivatePane", 1],
       "alt-3": ["workspace::ActivatePane", 2],
@@ -441,7 +441,7 @@
       "ctrl-shift-f": "pane::DeploySearch",
       "ctrl-shift-h": ["pane::DeploySearch", { "replace_enabled": true }],
       "ctrl-shift-t": "pane::ReopenClosedItem",
-      "ctrl-k ctrl-s": "zed::OpenKeymap",
+      "ctrl-k ctrl-s": "tehanu::OpenKeymap",
       "ctrl-k ctrl-t": "theme_selector::Toggle",
       "ctrl-alt-super-p": "settings_profile_selector::Toggle",
       "ctrl-t": "project_symbols::Toggle",
@@ -468,7 +468,7 @@
       "ctrl-k shift-right": "workspace::SwapPaneRight",
       "ctrl-k shift-up": "workspace::SwapPaneUp",
       "ctrl-k shift-down": "workspace::SwapPaneDown",
-      "ctrl-shift-x": "zed::Extensions",
+      "ctrl-shift-x": "tehanu::Extensions",
       // All task parameters are captured and unchanged between reruns by default.
       // Use the `"reevaluate_context"` parameter to control this.
       "ctrl-shift-r": ["task::Rerun", { "reevaluate_context": false }],
@@ -488,7 +488,7 @@
   {
     "context": "Workspace && debugger_running",
     "bindings": {
-      "f5": "zed::NoAction"
+      "f5": "tehanu::NoAction"
     }
   },
   {
@@ -886,7 +886,7 @@
     }
   },
   {
-    "context": "ZedPredictModal",
+    "context": "TehanuPredictModal",
     "bindings": {
       "escape": "menu::Cancel"
     }
@@ -986,10 +986,10 @@
     "context": "Onboarding",
     "use_key_equivalents": true,
     "bindings": {
-      "ctrl-=": ["zed::IncreaseUiFontSize", { "persist": false }],
-      "ctrl-+": ["zed::IncreaseUiFontSize", { "persist": false }],
-      "ctrl--": ["zed::DecreaseUiFontSize", { "persist": false }],
-      "ctrl-0": ["zed::ResetUiFontSize", { "persist": false }],
+      "ctrl-=": ["tehanu::IncreaseUiFontSize", { "persist": false }],
+      "ctrl-+": ["tehanu::IncreaseUiFontSize", { "persist": false }],
+      "ctrl--": ["tehanu::DecreaseUiFontSize", { "persist": false }],
+      "ctrl-0": ["tehanu::ResetUiFontSize", { "persist": false }],
       "ctrl-enter": "onboarding::Finish"
     }
   },
@@ -997,10 +997,10 @@
     "context": "Welcome",
     "use_key_equivalents": true,
     "bindings": {
-      "ctrl-=": ["zed::IncreaseUiFontSize", { "persist": false }],
-      "ctrl-+": ["zed::IncreaseUiFontSize", { "persist": false }],
-      "ctrl--": ["zed::DecreaseUiFontSize", { "persist": false }],
-      "ctrl-0": ["zed::ResetUiFontSize", { "persist": false }]
+      "ctrl-=": ["tehanu::IncreaseUiFontSize", { "persist": false }],
+      "ctrl-+": ["tehanu::IncreaseUiFontSize", { "persist": false }],
+      "ctrl--": ["tehanu::DecreaseUiFontSize", { "persist": false }],
+      "ctrl-0": ["tehanu::ResetUiFontSize", { "persist": false }]
     }
   },
   {

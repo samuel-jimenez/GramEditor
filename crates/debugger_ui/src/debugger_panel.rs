@@ -40,7 +40,7 @@ use workspace::{
     Item, Pane, Workspace,
     dock::{DockPosition, Panel, PanelEvent},
 };
-use zed_actions::ToggleFocus;
+use app_actions::ToggleFocus;
 
 const DEBUG_PANEL_KEY: &str = "DebugPanel";
 
@@ -630,7 +630,7 @@ impl DebugPanel {
             IconButton::new("debug-edit-debug-json", IconName::Code)
                 .icon_size(IconSize::Small)
                 .on_click(|_, window, cx| {
-                    window.dispatch_action(zed_actions::OpenProjectDebugTasks.boxed_clone(), cx);
+                    window.dispatch_action(app_actions::OpenProjectDebugTasks.boxed_clone(), cx);
                 })
                 .tooltip(Tooltip::text("Edit debug.json"))
         };
@@ -638,7 +638,7 @@ impl DebugPanel {
         let documentation_button = || {
             IconButton::new("debug-open-documentation", IconName::CircleHelp)
                 .icon_size(IconSize::Small)
-                .on_click(move |_, _, cx| cx.open_url("https://zed.dev/docs/debugger"))
+                .on_click(move |_, _, cx| cx.open_url("https://tehanu.liten.app/docs/debugger"))
                 .tooltip(Tooltip::text("Open Documentation"))
         };
 
@@ -1708,7 +1708,7 @@ impl Render for DebugPanel {
                                 .icon_position(IconPosition::Start)
                                 .on_click(|_, window, cx| {
                                     window.dispatch_action(
-                                        zed_actions::OpenProjectDebugTasks.boxed_clone(),
+                                        app_actions::OpenProjectDebugTasks.boxed_clone(),
                                         cx,
                                     );
                                 }),
@@ -1720,7 +1720,7 @@ impl Render for DebugPanel {
                                 .icon_size(IconSize::XSmall)
                                 .icon_color(Color::Muted)
                                 .icon_position(IconPosition::Start)
-                                .on_click(|_, _, cx| cx.open_url("https://zed.dev/docs/debugger")),
+                                .on_click(|_, _, cx| cx.open_url("https://tehanu.liten.app/docs/debugger")),
                         )
                         .child(
                             Button::new(
@@ -1734,9 +1734,9 @@ impl Render for DebugPanel {
                             .icon_position(IconPosition::Start)
                             .on_click(|_, window, cx| {
                                 window.dispatch_action(
-                                    zed_actions::Extensions {
+                                    app_actions::Extensions {
                                         category_filter: Some(
-                                            zed_actions::ExtensionCategoryFilter::DebugAdapters,
+                                            app_actions::ExtensionCategoryFilter::DebugAdapters,
                                         ),
                                         id: None,
                                     }

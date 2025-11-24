@@ -29,7 +29,7 @@ impl DebuggerOnboardingModal {
     }
 
     fn view_blog(&mut self, _: &ClickEvent, _: &mut Window, cx: &mut Context<Self>) {
-        cx.open_url("https://zed.dev/blog/debugger");
+        cx.open_url("https://liten.app/blog/debugger");
         cx.notify();
     }
 
@@ -114,7 +114,7 @@ impl Render for DebuggerOnboardingModal {
                             .size(LabelSize::Small)
                             .color(Color::Muted),
                     )
-                    .child(Headline::new("Zed's Debugger").size(HeadlineSize::Large)),
+                    .child(Headline::new("Tehanu's Debugger").size(HeadlineSize::Large)),
             )
             .child(h_flex().absolute().top_2().right_2().child(
                 IconButton::new("cancel", IconName::Close).on_click(cx.listener(

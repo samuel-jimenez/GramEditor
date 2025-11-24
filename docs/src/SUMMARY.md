@@ -10,7 +10,7 @@
 
 # Configuration
 
-- [Configuring Zed](./configuring-zed.md)
+- [Configuring Tehanu](./configuring-zed.md)
 - [Configuring Languages](./configuring-languages.md)
   - [Toolchains](./toolchains.md)
 - [Key bindings](./key-bindings.md)
@@ -25,7 +25,7 @@
 <!-- - [Globs](./globs.md) -->
 <!-- - [Fonts](./fonts.md) -->
 
-# Using Zed
+# Using Tehanu
 
 - [Multibuffers](./multibuffers.md)
 - [Command Palette](./command-palette.md)
@@ -130,9 +130,9 @@
 - [Yarn](./languages/yarn.md)
 - [Zig](./languages/zig.md)
 
-# Developing Zed
+# Developing Tehanu
 
-- [Developing Zed](./development.md)
+- [Developing Tehanu](./development.md)
   - [macOS](./development/macos.md)
   - [Linux](./development/linux.md)
   - [Windows](./development/windows.md)

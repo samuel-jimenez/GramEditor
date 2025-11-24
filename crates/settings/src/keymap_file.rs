@@ -64,7 +64,7 @@ pub struct KeymapSection {
     /// `Workspace`, the bindings will be active in that context. Boolean expressions like `X && Y`,
     /// `X || Y`, `!X` are also supported. Some more complex logic including checking OS and the
     /// current file extension are also supported - see [the
-    /// documentation](https://zed.dev/docs/key-bindings#contexts) for more details.
+    /// documentation](https://tehanu.liten.app/docs/key-bindings#contexts) for more details.
     #[serde(default)]
     pub context: String,
     /// This option enables specifying keys based on their position on a QWERTY keyboard, by using
@@ -657,7 +657,7 @@ impl KeymapFile {
                 };
             }
             // if trying to remove a keybinding that is not user-defined, treat it as creating a binding
-            // that binds it to `zed::NoAction`
+            // that binds it to `tehanu::NoAction`
             KeybindUpdateOperation::Remove {
                 target,
                 target_keybind_source,
@@ -1181,14 +1181,14 @@ mod tests {
             "[]",
             KeybindUpdateOperation::add(KeybindUpdateTarget {
                 keystrokes: &parse_keystrokes("ctrl-a"),
-                action_name: "zed::SomeAction",
+                action_name: "tehanu::SomeAction",
                 context: None,
                 action_arguments: None,
             }),
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "zed::SomeAction"
+                        "ctrl-a": "tehanu::SomeAction"
                     }
                 }
             ]"#
@@ -1199,14 +1199,14 @@ mod tests {
             "[]",
             KeybindUpdateOperation::add(KeybindUpdateTarget {
                 keystrokes: &parse_keystrokes("\\ a"),
-                action_name: "zed::SomeAction",
+                action_name: "tehanu::SomeAction",
                 context: None,
                 action_arguments: None,
             }),
             r#"[
                 {
                     "bindings": {
-                        "\\ a": "zed::SomeAction"
+                        "\\ a": "tehanu::SomeAction"
                     }
                 }
             ]"#
@@ -1217,14 +1217,14 @@ mod tests {
             "[]",
             KeybindUpdateOperation::add(KeybindUpdateTarget {
                 keystrokes: &parse_keystrokes("ctrl-a"),
-                action_name: "zed::SomeAction",
+                action_name: "tehanu::SomeAction",
                 context: None,
                 action_arguments: Some(""),
             }),
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "zed::SomeAction"
+                        "ctrl-a": "tehanu::SomeAction"
                     }
                 }
             ]"#
@@ -1235,26 +1235,26 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "zed::SomeAction"
+                        "ctrl-a": "tehanu::SomeAction"
                     }
                 }
             ]"#
             .unindent(),
             KeybindUpdateOperation::add(KeybindUpdateTarget {
                 keystrokes: &parse_keystrokes("ctrl-b"),
-                action_name: "zed::SomeOtherAction",
+                action_name: "tehanu::SomeOtherAction",
                 context: None,
                 action_arguments: None,
             }),
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "zed::SomeAction"
+                        "ctrl-a": "tehanu::SomeAction"
                     }
                 },
                 {
                     "bindings": {
-                        "ctrl-b": "zed::SomeOtherAction"
+                        "ctrl-b": "tehanu::SomeOtherAction"
                     }
                 }
             ]"#
@@ -1265,27 +1265,27 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "zed::SomeAction"
+                        "ctrl-a": "tehanu::SomeAction"
                     }
                 }
             ]"#
             .unindent(),
             KeybindUpdateOperation::add(KeybindUpdateTarget {
                 keystrokes: &parse_keystrokes("ctrl-b"),
-                action_name: "zed::SomeOtherAction",
+                action_name: "tehanu::SomeOtherAction",
                 context: None,
                 action_arguments: Some(r#"{"foo": "bar"}"#),
             }),
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "zed::SomeAction"
+                        "ctrl-a": "tehanu::SomeAction"
                     }
                 },
                 {
                     "bindings": {
                         "ctrl-b": [
-                            "zed::SomeOtherAction",
+                            "tehanu::SomeOtherAction",
                             {
                                 "foo": "bar"
                             }
@@ -1300,28 +1300,28 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "zed::SomeAction"
+                        "ctrl-a": "tehanu::SomeAction"
                     }
                 }
             ]"#
             .unindent(),
             KeybindUpdateOperation::add(KeybindUpdateTarget {
                 keystrokes: &parse_keystrokes("ctrl-b"),
-                action_name: "zed::SomeOtherAction",
-                context: Some("Zed > Editor && some_condition = true"),
+                action_name: "tehanu::SomeOtherAction",
+                context: Some("Tehanu > Editor && some_condition = true"),
                 action_arguments: Some(r#"{"foo": "bar"}"#),
             }),
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "zed::SomeAction"
+                        "ctrl-a": "tehanu::SomeAction"
                     }
                 },
                 {
-                    "context": "Zed > Editor && some_condition = true",
+                    "context": "Tehanu > Editor && some_condition = true",
                     "bindings": {
                         "ctrl-b": [
-                            "zed::SomeOtherAction",
+                            "tehanu::SomeOtherAction",
                             {
                                 "foo": "bar"
                             }
@@ -1336,7 +1336,7 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "zed::SomeAction"
+                        "ctrl-a": "tehanu::SomeAction"
                     }
                 }
             ]"#
@@ -1344,13 +1344,13 @@ mod tests {
             KeybindUpdateOperation::Replace {
                 target: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("ctrl-a"),
-                    action_name: "zed::SomeAction",
+                    action_name: "tehanu::SomeAction",
                     context: None,
                     action_arguments: None,
                 },
                 source: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("ctrl-b"),
-                    action_name: "zed::SomeOtherAction",
+                    action_name: "tehanu::SomeOtherAction",
                     context: None,
                     action_arguments: Some(r#"{"foo": "bar"}"#),
                 },
@@ -1359,13 +1359,13 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "zed::SomeAction"
+                        "ctrl-a": "tehanu::SomeAction"
                     }
                 },
                 {
                     "bindings": {
                         "ctrl-b": [
-                            "zed::SomeOtherAction",
+                            "tehanu::SomeOtherAction",
                             {
                                 "foo": "bar"
                             }
@@ -1380,7 +1380,7 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "a": "zed::SomeAction"
+                        "a": "tehanu::SomeAction"
                     }
                 }
             ]"#
@@ -1388,13 +1388,13 @@ mod tests {
             KeybindUpdateOperation::Replace {
                 target: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("a"),
-                    action_name: "zed::SomeAction",
+                    action_name: "tehanu::SomeAction",
                     context: None,
                     action_arguments: None,
                 },
                 source: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("ctrl-b"),
-                    action_name: "zed::SomeOtherAction",
+                    action_name: "tehanu::SomeOtherAction",
                     context: None,
                     action_arguments: Some(r#"{"foo": "bar"}"#),
                 },
@@ -1404,7 +1404,7 @@ mod tests {
                 {
                     "bindings": {
                         "ctrl-b": [
-                            "zed::SomeOtherAction",
+                            "tehanu::SomeOtherAction",
                             {
                                 "foo": "bar"
                             }
@@ -1419,7 +1419,7 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "\\ a": "zed::SomeAction"
+                        "\\ a": "tehanu::SomeAction"
                     }
                 }
             ]"#
@@ -1427,13 +1427,13 @@ mod tests {
             KeybindUpdateOperation::Replace {
                 target: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("\\ a"),
-                    action_name: "zed::SomeAction",
+                    action_name: "tehanu::SomeAction",
                     context: None,
                     action_arguments: None,
                 },
                 source: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("\\ b"),
-                    action_name: "zed::SomeOtherAction",
+                    action_name: "tehanu::SomeOtherAction",
                     context: None,
                     action_arguments: Some(r#"{"foo": "bar"}"#),
                 },
@@ -1443,7 +1443,7 @@ mod tests {
                 {
                     "bindings": {
                         "\\ b": [
-                            "zed::SomeOtherAction",
+                            "tehanu::SomeOtherAction",
                             {
                                 "foo": "bar"
                             }
@@ -1458,7 +1458,7 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "\\ a": "zed::SomeAction"
+                        "\\ a": "tehanu::SomeAction"
                     }
                 }
             ]"#
@@ -1466,13 +1466,13 @@ mod tests {
             KeybindUpdateOperation::Replace {
                 target: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("\\ a"),
-                    action_name: "zed::SomeAction",
+                    action_name: "tehanu::SomeAction",
                     context: None,
                     action_arguments: None,
                 },
                 source: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("\\ a"),
-                    action_name: "zed::SomeAction",
+                    action_name: "tehanu::SomeAction",
                     context: None,
                     action_arguments: None,
                 },
@@ -1481,7 +1481,7 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "\\ a": "zed::SomeAction"
+                        "\\ a": "tehanu::SomeAction"
                     }
                 }
             ]"#
@@ -1492,7 +1492,7 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "zed::SomeAction"
+                        "ctrl-a": "tehanu::SomeAction"
                     }
                 }
             ]"#
@@ -1500,13 +1500,13 @@ mod tests {
             KeybindUpdateOperation::Replace {
                 target: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("ctrl-a"),
-                    action_name: "zed::SomeNonexistentAction",
+                    action_name: "tehanu::SomeNonexistentAction",
                     context: None,
                     action_arguments: None,
                 },
                 source: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("ctrl-b"),
-                    action_name: "zed::SomeOtherAction",
+                    action_name: "tehanu::SomeOtherAction",
                     context: None,
                     action_arguments: None,
                 },
@@ -1515,12 +1515,12 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "zed::SomeAction"
+                        "ctrl-a": "tehanu::SomeAction"
                     }
                 },
                 {
                     "bindings": {
-                        "ctrl-b": "zed::SomeOtherAction"
+                        "ctrl-b": "tehanu::SomeOtherAction"
                     }
                 }
             ]"#
@@ -1532,7 +1532,7 @@ mod tests {
                 {
                     "bindings": {
                         // some comment
-                        "ctrl-a": "zed::SomeAction"
+                        "ctrl-a": "tehanu::SomeAction"
                         // some other comment
                     }
                 }
@@ -1541,13 +1541,13 @@ mod tests {
             KeybindUpdateOperation::Replace {
                 target: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("ctrl-a"),
-                    action_name: "zed::SomeAction",
+                    action_name: "tehanu::SomeAction",
                     context: None,
                     action_arguments: None,
                 },
                 source: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("ctrl-b"),
-                    action_name: "zed::SomeOtherAction",
+                    action_name: "tehanu::SomeOtherAction",
                     context: None,
                     action_arguments: Some(r#"{"foo": "bar"}"#),
                 },
@@ -1558,7 +1558,7 @@ mod tests {
                     "bindings": {
                         // some comment
                         "ctrl-b": [
-                            "zed::SomeOtherAction",
+                            "tehanu::SomeOtherAction",
                             {
                                 "foo": "bar"
                             }

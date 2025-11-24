@@ -8,7 +8,7 @@ function export_vars_for_environment {
   export $(grep -v '^#' $env_file | grep -v '^[[:space:]]*$')
 }
 
-function target_zed_kube_cluster {
+function target_tehanu_kube_cluster {
   if [[ $(kubectl config current-context 2> /dev/null) != do-nyc1-zed-1 ]]; then
     doctl kubernetes cluster kubeconfig save zed-1
   fi

@@ -20,7 +20,7 @@ use ui::{
 
 use util::{ResultExt, truncate_and_trailoff};
 use workspace::{ModalView, Workspace};
-pub use zed_actions::{Rerun, Spawn};
+pub use app_actions::{Rerun, Spawn};
 
 /// A modal used to spawn new tasks.
 pub struct TasksModalDelegate {
@@ -936,14 +936,14 @@ mod tests {
                 ".zed": {
                     "tasks.json": r#"[
                         {
-                            "label": "hello from $ZED_FILE:$ZED_ROW:$ZED_COLUMN",
+                            "label": "hello from $TEHANU_FILE:$TEHANU_ROW:$TEHANU_COLUMN",
                             "command": "echo",
-                            "args": ["hello", "from", "$ZED_FILE", ":", "$ZED_ROW", ":", "$ZED_COLUMN"]
+                            "args": ["hello", "from", "$TEHANU_FILE", ":", "$TEHANU_ROW", ":", "$TEHANU_COLUMN"]
                         },
                         {
-                            "label": "opened now: $ZED_WORKTREE_ROOT",
+                            "label": "opened now: $TEHANU_WORKTREE_ROOT",
                             "command": "echo",
-                            "args": ["opened", "now:", "$ZED_WORKTREE_ROOT"]
+                            "args": ["opened", "now:", "$TEHANU_WORKTREE_ROOT"]
                         }
                     ]"#,
                 },
@@ -1076,12 +1076,12 @@ mod tests {
                             ..TaskTemplate::default()
                         },
                         TaskTemplate {
-                            label: "TypeScript task from file $ZED_FILE".to_string(),
+                            label: "TypeScript task from file $TEHANU_FILE".to_string(),
                             command: "npm run build".to_string(),
                             ..TaskTemplate::default()
                         },
                         TaskTemplate {
-                            label: "Another task from file $ZED_FILE".to_string(),
+                            label: "Another task from file $TEHANU_FILE".to_string(),
                             command: "npm run lint".to_string(),
                             ..TaskTemplate::default()
                         },

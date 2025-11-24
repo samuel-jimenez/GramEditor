@@ -1,6 +1,6 @@
 # C
 
-C support is available natively in Zed.
+C support is available natively in Tehanu.
 
 - Tree-sitter: [tree-sitter/tree-sitter-c](https://github.com/tree-sitter/tree-sitter-c)
 - Language Server: [clangd/clangd](https://github.com/clangd/clangd)
@@ -15,7 +15,7 @@ CompileFlags:
   Add: [-xc]
 ```
 
-By default clang and gcc will recognize `*.C` and `*.H` (uppercase extensions) as C++ and not C and so Zed too follows this convention. If you are working with a C-only project (perhaps one with legacy uppercase pathing like `FILENAME.C`) you can override this behavior by adding this to your settings:
+By default clang and gcc will recognize `*.C` and `*.H` (uppercase extensions) as C++ and not C and so Tehanu too follows this convention. If you are working with a C-only project (perhaps one with legacy uppercase pathing like `FILENAME.C`) you can override this behavior by adding this to your settings:
 
 ```json [settings]
 {
@@ -27,7 +27,7 @@ By default clang and gcc will recognize `*.C` and `*.H` (uppercase extensions) a
 
 ## Formatting
 
-By default Zed will use the `clangd` language server for formatting C code. The Clangd is the same as the `clang-format` CLI tool. To configure this you can add a `.clang-format` file. For example:
+By default Tehanu will use the `clangd` language server for formatting C code. The Clangd is the same as the `clang-format` CLI tool. To configure this you can add a `.clang-format` file. For example:
 
 ```yaml
 ---
@@ -38,7 +38,7 @@ IndentWidth: 2
 
 See [Clang-Format Style Options](https://clang.llvm.org/docs/ClangFormatStyleOptions.html) for a complete list of options.
 
-You can trigger formatting via {#kb editor::Format} or the `editor: format` action from the command palette or by adding `format_on_save` to your Zed settings:
+You can trigger formatting via {#kb editor::Format} or the `editor: format` action from the command palette or by adding `format_on_save` to your Tehanu settings:
 
 ```json [settings]
   "languages": {
@@ -79,9 +79,9 @@ You can use CodeLLDB or GDB to debug native binaries. (Make sure that your build
     "build": {
       "command": "make",
       "args": ["-j8"],
-      "cwd": "$ZED_WORKTREE_ROOT"
+      "cwd": "$TEHANU_WORKTREE_ROOT"
     },
-    "program": "$ZED_WORKTREE_ROOT/build/prog",
+    "program": "$TEHANU_WORKTREE_ROOT/build/prog",
     "request": "launch",
     "adapter": "CodeLLDB"
   }

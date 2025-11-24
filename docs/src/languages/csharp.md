@@ -9,7 +9,7 @@ C# support is available through the [C# extension](https://github.com/zed-extens
 
 ## Configuration
 
-The `OmniSharp` binary can be configured in a Zed settings file with:
+The `OmniSharp` binary can be configured in a Tehanu settings file with:
 
 ```json [settings]
 {

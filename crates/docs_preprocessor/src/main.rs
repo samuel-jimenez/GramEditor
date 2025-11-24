@@ -24,14 +24,14 @@ static KEYMAP_WINDOWS: LazyLock<KeymapFile> = LazyLock::new(|| {
 
 static ALL_ACTIONS: LazyLock<Vec<ActionDef>> = LazyLock::new(dump_all_gpui_actions);
 
-const FRONT_MATTER_COMMENT: &str = "<!-- ZED_META {} -->";
+const FRONT_MATTER_COMMENT: &str = "<!-- TEHANU_META {} -->";
 
 fn main() -> Result<()> {
     zlog::init();
     zlog::init_output_stderr();
-    // call a zed:: function so everything in `zed` crate is linked and
+    // call a tehanu:: function so everything in `tehanu` crate is linked and
     // all actions in the actual app are registered
-    zed::stdout_is_a_pty();
+    tehanu::stdout_is_a_pty();
     let args = std::env::args().skip(1).collect::<Vec<_>>();
 
     match args.get(0).map(String::as_str) {
@@ -523,14 +523,14 @@ fn handle_postprocessing() -> Result<()> {
         .expect("has output")
         .as_table_mut()
         .expect("output is table");
-    let zed_html = output.remove("zed-html").expect("zed-html output defined");
-    let default_description = zed_html
+    let tehanu_html = output.remove("tehanu-html").expect("tehanu-html output defined");
+    let default_description = tehanu_html
         .get("default-description")
         .expect("Default description not found")
         .as_str()
         .expect("Default description not a string")
         .to_string();
-    let default_title = zed_html
+    let default_title = tehanu_html
         .get("default-title")
         .expect("Default title not found")
         .as_str()
@@ -538,7 +538,7 @@ fn handle_postprocessing() -> Result<()> {
         .to_string();
     let amplitude_key = std::env::var("DOCS_AMPLITUDE_API_KEY").unwrap_or_default();
 
-    output.insert("html".to_string(), zed_html);
+    output.insert("html".to_string(), tehanu_html);
     mdbook::Renderer::render(&mdbook::renderer::HtmlHandlebars::new(), &ctx)?;
     let ignore_list = ["toc.html"];
 
@@ -630,7 +630,7 @@ fn handle_postprocessing() -> Result<()> {
 
         title_tag_contents
             .trim()
-            .strip_suffix("- Zed")
+            .strip_suffix("- Tehanu")
             .unwrap_or(title_tag_contents)
             .trim()
             .to_string()

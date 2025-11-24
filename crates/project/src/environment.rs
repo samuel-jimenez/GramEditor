@@ -67,7 +67,7 @@ impl ProjectEnvironment {
         }
     }
 
-    /// Returns the inherited CLI environment, if this project was opened from the Zed CLI.
+    /// Returns the inherited CLI environment, if this project was opened from the Tehanu CLI.
     pub(crate) fn get_cli_environment(&self) -> Option<HashMap<String, String>> {
         if cfg!(any(test, feature = "test-support")) {
             return Some(HashMap::default());
@@ -289,10 +289,10 @@ impl ProjectEnvironment {
 }
 
 fn set_origin_marker(env: &mut HashMap<String, String>, origin: EnvironmentOrigin) {
-    env.insert(ZED_ENVIRONMENT_ORIGIN_MARKER.to_string(), origin.into());
+    env.insert(TEHANU_ENVIRONMENT_ORIGIN_MARKER.to_string(), origin.into());
 }
 
-const ZED_ENVIRONMENT_ORIGIN_MARKER: &str = "ZED_ENVIRONMENT";
+const TEHANU_ENVIRONMENT_ORIGIN_MARKER: &str = "TEHANU_ENVIRONMENT";
 
 enum EnvironmentOrigin {
     Cli,

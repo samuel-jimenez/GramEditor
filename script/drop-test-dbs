@@ -7,7 +7,7 @@ databases=$(psql --tuples-only --command "
     pg_database
   WHERE
     datistemplate = false
-    AND datname like 'zed-test-%'
+    AND datname like 'tehanu-test-%'
 ")
 
 for database in $databases; do

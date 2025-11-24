@@ -16300,7 +16300,7 @@ async fn test_toggle_block_comment(cx: &mut TestAppContext) {
     cx.update_editor(|editor, window, cx| {
         editor.toggle_comments(&ToggleComments::default(), window, cx)
     });
-    // TODO this is how it actually worked in Zed Stable, which is not very ergonomic.
+    // TODO this is how it actually worked in Tehanu Stable, which is not very ergonomic.
     // Uncommenting and commenting from this position brings in even more wrong artifacts.
     cx.assert_editor_state(
         &r#"
@@ -19174,7 +19174,7 @@ struct Row10;"#};
         &mut cx,
     );
 
-    // Deletion hunks are ephemeral, so it's impossible to place the caret into them — Zed triggers reverts for lines, adjacent to carets and selections.
+    // Deletion hunks are ephemeral, so it's impossible to place the caret into them — Tehanu triggers reverts for lines, adjacent to carets and selections.
     assert_hunk_revert(
         indoc! {r#"struct Row;
                    ˇstruct Row2;
@@ -26904,7 +26904,7 @@ async fn test_paste_url_from_other_app_creates_markdown_link_over_selected_text(
 ) {
     init_test(cx, |_| {});
 
-    let url = "https://zed.dev";
+    let url = "https://liten.app";
 
     let markdown_language = Arc::new(Language::new(
         LanguageConfig {
@@ -26916,7 +26916,7 @@ async fn test_paste_url_from_other_app_creates_markdown_link_over_selected_text(
 
     let mut cx = EditorTestContext::new(cx).await;
     cx.update_buffer(|buffer, cx| buffer.set_language(Some(markdown_language), cx));
-    cx.set_state("Hello, «editorˇ».\nZed is «ˇgreat» (see this link: ˇ)");
+    cx.set_state("Hello, «editorˇ».\nTehanu is «ˇgreat» (see this link: ˇ)");
 
     cx.update_editor(|editor, window, cx| {
         cx.write_to_clipboard(ClipboardItem::new_string(url.to_string()));
@@ -26924,17 +26924,17 @@ async fn test_paste_url_from_other_app_creates_markdown_link_over_selected_text(
     });
 
     cx.assert_editor_state(&format!(
-        "Hello, [editor]({url})ˇ.\nZed is [great]({url})ˇ (see this link: {url}ˇ)"
+        "Hello, [editor]({url})ˇ.\nTehanu is [great]({url})ˇ (see this link: {url}ˇ)"
     ));
 }
 
 #[gpui::test]
-async fn test_paste_url_from_zed_copy_creates_markdown_link_over_selected_text(
+async fn test_paste_url_from_tehanu_copy_creates_markdown_link_over_selected_text(
     cx: &mut gpui::TestAppContext,
 ) {
     init_test(cx, |_| {});
 
-    let url = "https://zed.dev";
+    let url = "https://liten.app";
 
     let markdown_language = Arc::new(Language::new(
         LanguageConfig {
@@ -26947,7 +26947,7 @@ async fn test_paste_url_from_zed_copy_creates_markdown_link_over_selected_text(
     let mut cx = EditorTestContext::new(cx).await;
     cx.update_buffer(|buffer, cx| buffer.set_language(Some(markdown_language), cx));
     cx.set_state(&format!(
-        "Hello, editor.\nZed is great (see this link: )\n«{url}ˇ»"
+        "Hello, editor.\nTehanu is great (see this link: )\n«{url}ˇ»"
     ));
 
     cx.update_editor(|editor, window, cx| {
@@ -26955,7 +26955,7 @@ async fn test_paste_url_from_zed_copy_creates_markdown_link_over_selected_text(
     });
 
     cx.set_state(&format!(
-        "Hello, «editorˇ».\nZed is «ˇgreat» (see this link: ˇ)\n{url}"
+        "Hello, «editorˇ».\nTehanu is «ˇgreat» (see this link: ˇ)\n{url}"
     ));
 
     cx.update_editor(|editor, window, cx| {
@@ -26963,7 +26963,7 @@ async fn test_paste_url_from_zed_copy_creates_markdown_link_over_selected_text(
     });
 
     cx.assert_editor_state(&format!(
-        "Hello, [editor]({url})ˇ.\nZed is [great]({url})ˇ (see this link: {url}ˇ)\n{url}"
+        "Hello, [editor]({url})ˇ.\nTehanu is [great]({url})ˇ (see this link: {url}ˇ)\n{url}"
     ));
 }
 
@@ -26973,7 +26973,7 @@ async fn test_paste_url_from_other_app_replaces_existing_url_without_creating_ma
 ) {
     init_test(cx, |_| {});
 
-    let url = "https://zed.dev";
+    let url = "https://liten.app";
 
     let markdown_language = Arc::new(Language::new(
         LanguageConfig {
@@ -27013,14 +27013,14 @@ async fn test_paste_plain_text_from_other_app_replaces_selection_without_creatin
 
     let mut cx = EditorTestContext::new(cx).await;
     cx.update_buffer(|buffer, cx| buffer.set_language(Some(markdown_language), cx));
-    cx.set_state("Hello, «editorˇ».\nZed is «ˇgreat»");
+    cx.set_state("Hello, «editorˇ».\nTehanu is «ˇgreat»");
 
     cx.update_editor(|editor, window, cx| {
         cx.write_to_clipboard(ClipboardItem::new_string(text.to_string()));
         editor.paste(&Paste, window, cx);
     });
 
-    cx.assert_editor_state(&format!("Hello, {text}ˇ.\nZed is {text}ˇ"));
+    cx.assert_editor_state(&format!("Hello, {text}ˇ.\nTehanu is {text}ˇ"));
 }
 
 #[gpui::test]
@@ -27029,7 +27029,7 @@ async fn test_paste_url_from_other_app_without_creating_markdown_link_in_non_mar
 ) {
     init_test(cx, |_| {});
 
-    let url = "https://zed.dev";
+    let url = "https://liten.app";
 
     let markdown_language = Arc::new(Language::new(
         LanguageConfig {
@@ -27041,7 +27041,7 @@ async fn test_paste_url_from_other_app_without_creating_markdown_link_in_non_mar
 
     let mut cx = EditorTestContext::new(cx).await;
     cx.update_buffer(|buffer, cx| buffer.set_language(Some(markdown_language), cx));
-    cx.set_state("// Hello, «editorˇ».\n// Zed is «ˇgreat» (see this link: ˇ)");
+    cx.set_state("// Hello, «editorˇ».\n// Tehanu is «ˇgreat» (see this link: ˇ)");
 
     cx.update_editor(|editor, window, cx| {
         cx.write_to_clipboard(ClipboardItem::new_string(url.to_string()));
@@ -27049,7 +27049,7 @@ async fn test_paste_url_from_other_app_without_creating_markdown_link_in_non_mar
     });
 
     cx.assert_editor_state(&format!(
-        "// Hello, {url}ˇ.\n// Zed is {url}ˇ (see this link: {url}ˇ)"
+        "// Hello, {url}ˇ.\n// Tehanu is {url}ˇ (see this link: {url}ˇ)"
     ));
 }
 
@@ -27059,7 +27059,7 @@ async fn test_paste_url_from_other_app_creates_markdown_link_selectively_in_mult
 ) {
     init_test(cx, |_| {});
 
-    let url = "https://zed.dev";
+    let url = "https://liten.app";
 
     let markdown_language = Arc::new(Language::new(
         LanguageConfig {

@@ -229,8 +229,8 @@ pub enum IconName {
     WholeWord,
     XCircle,
     XCircleFilled,
-    ZedSrcCustom,
-    ZedSrcExtension,
+    TehanuSrcCustom,
+    TehanuSrcExtension,
     Linux,
 }
 

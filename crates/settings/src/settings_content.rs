@@ -59,8 +59,8 @@ pub struct SettingsContent {
 
     pub preview_tabs: Option<PreviewTabsSettingsContent>,
 
-    /// This base keymap settings adjusts the default keybindings in Zed to be similar
-    /// to other common code editors. By default, Zed's keymap closely follows VSCode's
+    /// This base keymap settings adjusts the default keybindings in Tehanu to be similar
+    /// to other common code editors. By default, Tehanu's keymap closely follows VSCode's
     /// keymap, with minor adjustments, this corresponds to the "VSCode" setting.
     ///
     /// Default: VSCode
@@ -115,7 +115,7 @@ pub struct SettingsContent {
     /// Configuration for session-related features
     pub session: Option<SessionSettingsContent>,
 
-    /// Configuration of the terminal in Zed.
+    /// Configuration of the terminal in Tehanu.
     pub terminal: Option<TerminalSettingsContent>,
 
     pub title_bar: Option<TitleBarSettingsContent>,
@@ -125,7 +125,7 @@ pub struct SettingsContent {
     /// Default: false
     pub vim_mode: Option<bool>,
 
-    /// Settings related to Vim mode in Zed.
+    /// Settings related to Vim mode in Tehanu.
     pub vim: Option<VimSettingsContent>,
 }
 
@@ -266,7 +266,7 @@ pub struct DebuggerSettingsContent {
     ///
     /// Default: line
     pub stepping_granularity: Option<SteppingGranularity>,
-    /// Whether the breakpoints should be reused across Zed sessions.
+    /// Whether the breakpoints should be reused across Tehanu sessions.
     ///
     /// Default: true
     pub save_breakpoints: Option<bool>,
@@ -278,7 +278,7 @@ pub struct DebuggerSettingsContent {
     ///
     /// Default: 2000ms
     pub timeout: Option<u64>,
-    /// Whether to log messages between active debug adapters and Zed
+    /// Whether to log messages between active debug adapters and Tehanu
     ///
     /// Default: true
     pub log_dap_communications: Option<bool>,
@@ -477,7 +477,7 @@ pub struct FileFinderSettingsContent {
     /// Default: true
     pub git_status: Option<bool>,
     /// Whether to use gitignored files when searching.
-    /// Only the file Zed had indexed will be used, not necessary all the gitignored files.
+    /// Only the file Tehanu had indexed will be used, not necessary all the gitignored files.
     ///
     /// Default: Smart
     pub include_ignored: Option<IncludeIgnoredContent>,
@@ -501,7 +501,7 @@ pub struct FileFinderSettingsContent {
 pub enum IncludeIgnoredContent {
     /// Use all gitignored files
     All,
-    /// Use only the files Zed had indexed
+    /// Use only the files Tehanu had indexed
     Indexed,
     /// Be smart and search for ignored when called from a gitignored worktree
     #[default]
@@ -773,8 +773,8 @@ pub struct SshConnection {
     pub projects: collections::BTreeSet<SshProject>,
     /// Name to use for this server in UI.
     pub nickname: Option<String>,
-    // By default Zed will download the binary to the host directly.
-    // If this is set to true, Zed will download the binary to your local machine,
+    // By default Tehanu will download the binary to the host directly.
+    // If this is set to true, Tehanu will download the binary to your local machine,
     // and then upload it over the SSH connection. Useful if your SSH server has
     // limited outbound internet access.
     pub upload_binary_over_ssh: Option<bool>,

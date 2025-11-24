@@ -2,7 +2,7 @@
 
 ## Extension Features
 
-Extensions are able to provide the following features to Zed:
+Extensions are able to provide the following features to Tehanu:
 
 - [Languages](./languages.md)
 - [Debuggers](./debugger-extensions.md)
@@ -11,21 +11,21 @@ Extensions are able to provide the following features to Zed:
 
 ## Developing an Extension Locally
 
-Before starting to develop an extension for Zed, be sure to [install Rust via rustup](https://www.rust-lang.org/tools/install).
+Before starting to develop an extension for Tehanu, be sure to [install Rust via rustup](https://www.rust-lang.org/tools/install).
 
 > Rust must be installed via rustup. If you have Rust installed via homebrew or otherwise, installing dev extensions will not work.
 
-When developing an extension, you can use it in Zed without needing to publish it by installing it as a _dev extension_.
+When developing an extension, you can use it in Tehanu without needing to publish it by installing it as a _dev extension_.
 
-From the extensions page, click the `Install Dev Extension` button (or the {#action zed::InstallDevExtension} action) and select the directory containing your extension.
+From the extensions page, click the `Install Dev Extension` button (or the {#action tehanu::InstallDevExtension} action) and select the directory containing your extension.
 
-If you need to troubleshoot, you can check the Zed.log ({#action zed::OpenLog}) for additional output. For debug output, close and relaunch zed with the `zed --foreground` from the command line which show more verbose INFO level logging.
+If you need to troubleshoot, you can check the Tehanu.log ({#action tehanu::OpenLog}) for additional output. For debug output, close and relaunch zed with the `zed --foreground` from the command line which show more verbose INFO level logging.
 
 If you already have the published version of the extension installed, the published version will be uninstalled prior to the installation of the dev extension. After successful installation, the `Extensions` page will indicate that the upstream extension is "Overridden by dev extension".
 
-## Directory Structure of a Zed Extension
+## Directory Structure of a Tehanu Extension
 
-A Zed extension is a Git repository that contains an `extension.toml`. This file must contain some
+A Tehanu extension is a Git repository that contains an `extension.toml`. This file must contain some
 basic information about the extension:
 
 ```toml
@@ -38,7 +38,7 @@ description = "My cool extension"
 repository = "https://github.com/your-name/my-zed-extension"
 ```
 
-In addition to this, there are several other optional files and directories that can be used to add functionality to a Zed extension. An example directory structure of an extension that provides all capabilities is as follows:
+In addition to this, there are several other optional files and directories that can be used to add functionality to a Tehanu extension. An example directory structure of an extension that provides all capabilities is as follows:
 
 ```
 my-extension/
@@ -71,7 +71,7 @@ crate-type = ["cdylib"]
 zed_extension_api = "0.1.0"
 ```
 
-Use the latest version of the [`zed_extension_api`](https://crates.io/crates/zed_extension_api) available on crates.io. Make sure it's still [compatible with Zed versions](https://github.com/zed-industries/zed/blob/main/crates/extension_api#compatible-zed-versions) you want to support.
+Use the latest version of the [`zed_extension_api`](https://crates.io/crates/zed_extension_api) available on crates.io. Make sure it's still [compatible with Tehanu versions](https://github.com/zed-industries/zed/blob/main/crates/extension_api#compatible-zed-versions) you want to support.
 
 In the `src/lib.rs` file in your Rust crate you will need to define a struct for your extension and implement the `Extension` trait, as well as use the `register_extension!` macro to register your extension:
 
@@ -82,20 +82,20 @@ struct MyExtension {
     // ... state
 }
 
-impl zed::Extension for MyExtension {
+impl tehanu::Extension for MyExtension {
     // ...
 }
 
-zed::register_extension!(MyExtension);
+tehanu::register_extension!(MyExtension);
 ```
 
-> `stdout`/`stderr` is forwarded directly to the Zed process. In order to see `println!`/`dbg!` output from your extension, you can start Zed in your terminal with a `--foreground` flag.
+> `stdout`/`stderr` is forwarded directly to the Tehanu process. In order to see `println!`/`dbg!` output from your extension, you can start Tehanu in your terminal with a `--foreground` flag.
 
 ## Forking and cloning the repo
 
 1. Fork the repo
 
-> Note: It is very helpful if you fork the `zed-industries/extensions` repo to a personal GitHub account instead of a GitHub organization, as this allows Zed staff to push any needed changes to your PR to expedite the publishing process.
+> Note: It is very helpful if you fork the `zed-industries/extensions` repo to a personal GitHub account instead of a GitHub organization, as this allows Tehanu staff to push any needed changes to your PR to expedite the publishing process.
 
 2. Clone the repo to your local machine
 
@@ -165,9 +165,9 @@ version = "0.0.1"
 
 3. Run `pnpm sort-extensions` to ensure `extensions.toml` and `.gitmodules` are sorted
 
-Once your PR is merged, the extension will be packaged and published to the Zed extension registry.
+Once your PR is merged, the extension will be packaged and published to the Tehanu extension registry.
 
-> Extension IDs and names should not contain `zed` or `Zed`, since they are all Zed extensions.
+> Extension IDs and names should not contain `zed` or `Tehanu`, since they are all Tehanu extensions.
 
 ## Updating an extension
 

@@ -9,7 +9,7 @@ use std::{env, fmt::Display};
 use sysinfo::{MemoryRefreshKind, RefreshKind, System};
 
 actions!(
-    zed,
+    tehanu,
     [
         /// Copies system specifications to the clipboard for bug reports.
         CopySystemSpecsIntoClipboard,
@@ -95,7 +95,7 @@ impl SystemSpecs {
 impl Display for SystemSpecs {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let app_version_information = format!(
-            "Zed: v{} ({}) {}{}",
+            "Tehanu: v{} ({}) {}{}",
             self.app_version,
             match &self.commit_sha {
                 Some(commit_sha) => format!("{} {}", self.release_channel, commit_sha),
@@ -269,15 +269,15 @@ fn read_pci_id_from_path(path: impl AsRef<std::path::Path>) -> anyhow::Result<u1
     u16::from_str_radix(id, 16).context("Failed to parse device ID")
 }
 
-/// Returns value of `ZED_BUNDLE_TYPE` set at compiletime or else at runtime.
+/// Returns value of `TEHANU_BUNDLE_TYPE` set at compiletime or else at runtime.
 ///
 /// The compiletime value is used by flatpak since it doesn't seem to have a way to provide a
 /// runtime environment variable.
 ///
-/// The runtime value is used by snap since the Zed snaps use release binaries directly, and so
+/// The runtime value is used by snap since the Tehanu snaps use release binaries directly, and so
 /// cannot have this baked in.
 fn bundle_type() -> Option<String> {
-    option_env!("ZED_BUNDLE_TYPE")
+    option_env!("TEHANU_BUNDLE_TYPE")
         .map(|bundle_type| bundle_type.to_string())
-        .or_else(|| env::var("ZED_BUNDLE_TYPE").ok())
+        .or_else(|| env::var("TEHANU_BUNDLE_TYPE").ok())
 }

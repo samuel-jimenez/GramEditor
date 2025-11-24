@@ -28,12 +28,12 @@ use workspace::{
     Workspace,
     item::{Item, ItemEvent},
 };
-use zed_actions::ExtensionCategoryFilter;
+use app_actions::ExtensionCategoryFilter;
 
 use crate::components::ExtensionCard;
 
 actions!(
-    zed,
+    tehanu,
     [
         /// Installs an extension from a local directory for development.
         InstallDevExtension
@@ -47,7 +47,7 @@ pub fn init(cx: &mut App) {
         };
         workspace
             .register_action(
-                move |workspace, action: &zed_actions::Extensions, window, cx| {
+                move |workspace, action: &app_actions::Extensions, window, cx| {
                     let provides_filter = action.category_filter.map(|category| match category {
                         ExtensionCategoryFilter::Themes => ExtensionProvides::Themes,
                         ExtensionCategoryFilter::IconThemes => ExtensionProvides::IconThemes,
@@ -1070,81 +1070,81 @@ impl ExtensionsPage {
         for feature in &self.upsells {
             let banner = match feature {
                 Feature::ExtensionRuff => self.render_feature_upsell_banner(
-                    "Ruff (linter for Python) support is built-in to Zed!".into(),
-                    "https://zed.dev/docs/languages/python#code-formatting--linting".into(),
+                    "Ruff (linter for Python) support is built-in to Tehanu!".into(),
+                    "https://tehanu.liten.app/docs/languages/python#code-formatting--linting".into(),
                     false,
                     cx,
                 ),
                 Feature::ExtensionTailwind => self.render_feature_upsell_banner(
-                    "Tailwind CSS support is built-in to Zed!".into(),
-                    "https://zed.dev/docs/languages/tailwindcss".into(),
+                    "Tailwind CSS support is built-in to Tehanu!".into(),
+                    "https://tehanu.liten.app/docs/languages/tailwindcss".into(),
                     false,
                     cx,
                 ),
                 Feature::Git => self.render_feature_upsell_banner(
-                    "Zed comes with basic Git support—more features are coming in the future."
+                    "Tehanu comes with basic Git support—more features are coming in the future."
                         .into(),
-                    "https://zed.dev/docs/git".into(),
+                    "https://tehanu.liten.app/docs/git".into(),
                     false,
                     cx,
                 ),
                 Feature::LanguageBash => self.render_feature_upsell_banner(
-                    "Shell support is built-in to Zed!".into(),
-                    "https://zed.dev/docs/languages/bash".into(),
+                    "Shell support is built-in to Tehanu!".into(),
+                    "https://tehanu.liten.app/docs/languages/bash".into(),
                     false,
                     cx,
                 ),
                 Feature::LanguageC => self.render_feature_upsell_banner(
-                    "C support is built-in to Zed!".into(),
-                    "https://zed.dev/docs/languages/c".into(),
+                    "C support is built-in to Tehanu!".into(),
+                    "https://tehanu.liten.app/docs/languages/c".into(),
                     false,
                     cx,
                 ),
                 Feature::LanguageCpp => self.render_feature_upsell_banner(
-                    "C++ support is built-in to Zed!".into(),
-                    "https://zed.dev/docs/languages/cpp".into(),
+                    "C++ support is built-in to Tehanu!".into(),
+                    "https://tehanu.liten.app/docs/languages/cpp".into(),
                     false,
                     cx,
                 ),
                 Feature::LanguageGo => self.render_feature_upsell_banner(
-                    "Go support is built-in to Zed!".into(),
-                    "https://zed.dev/docs/languages/go".into(),
+                    "Go support is built-in to Tehanu!".into(),
+                    "https://tehanu.liten.app/docs/languages/go".into(),
                     false,
                     cx,
                 ),
                 Feature::LanguagePython => self.render_feature_upsell_banner(
-                    "Python support is built-in to Zed!".into(),
-                    "https://zed.dev/docs/languages/python".into(),
+                    "Python support is built-in to Tehanu!".into(),
+                    "https://tehanu.liten.app/docs/languages/python".into(),
                     false,
                     cx,
                 ),
                 Feature::LanguageReact => self.render_feature_upsell_banner(
-                    "React support is built-in to Zed!".into(),
-                    "https://zed.dev/docs/languages/typescript".into(),
+                    "React support is built-in to Tehanu!".into(),
+                    "https://tehanu.liten.app/docs/languages/typescript".into(),
                     false,
                     cx,
                 ),
                 Feature::LanguageRust => self.render_feature_upsell_banner(
-                    "Rust support is built-in to Zed!".into(),
-                    "https://zed.dev/docs/languages/rust".into(),
+                    "Rust support is built-in to Tehanu!".into(),
+                    "https://tehanu.liten.app/docs/languages/rust".into(),
                     false,
                     cx,
                 ),
                 Feature::LanguageTypescript => self.render_feature_upsell_banner(
-                    "Typescript support is built-in to Zed!".into(),
-                    "https://zed.dev/docs/languages/typescript".into(),
+                    "Typescript support is built-in to Tehanu!".into(),
+                    "https://tehanu.liten.app/docs/languages/typescript".into(),
                     false,
                     cx,
                 ),
                 Feature::OpenIn => self.render_feature_upsell_banner(
-                    "Zed supports linking to a source line on GitHub and others.".into(),
-                    "https://zed.dev/docs/git#git-integrations".into(),
+                    "Tehanu supports linking to a source line on GitHub and others.".into(),
+                    "https://tehanu.liten.app/docs/git#git-integrations".into(),
                     false,
                     cx,
                 ),
                 Feature::Vim => self.render_feature_upsell_banner(
-                    "Vim support is built-in to Zed!".into(),
-                    "https://zed.dev/docs/vim".into(),
+                    "Vim support is built-in to Tehanu!".into(),
+                    "https://tehanu.liten.app/docs/vim".into(),
                     true,
                     cx,
                 ),

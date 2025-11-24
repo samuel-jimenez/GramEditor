@@ -736,14 +736,14 @@ impl ContextProvider for RustContextProvider {
                     "-p".into(),
                     RUST_PACKAGE_TASK_VARIABLE.template_value(),
                 ],
-                cwd: Some("$ZED_DIRNAME".to_owned()),
+                cwd: Some("$TEHANU_DIRNAME".to_owned()),
                 ..TaskTemplate::default()
             },
             TaskTemplate {
                 label: "Check all targets (workspace)".into(),
                 command: "cargo".into(),
                 args: vec!["check".into(), "--workspace".into(), "--all-targets".into()],
-                cwd: Some("$ZED_DIRNAME".to_owned()),
+                cwd: Some("$TEHANU_DIRNAME".to_owned()),
                 ..TaskTemplate::default()
             },
             TaskTemplate {
@@ -822,7 +822,7 @@ impl ContextProvider for RustContextProvider {
                     RUST_BIN_REQUIRED_FEATURES_FLAG_TASK_VARIABLE.template_value(),
                     RUST_BIN_REQUIRED_FEATURES_TASK_VARIABLE.template_value(),
                 ],
-                cwd: Some("$ZED_DIRNAME".to_owned()),
+                cwd: Some("$TEHANU_DIRNAME".to_owned()),
                 tags: vec!["rust-main".to_owned()],
                 ..TaskTemplate::default()
             },
@@ -844,14 +844,14 @@ impl ContextProvider for RustContextProvider {
                 label: "Run".into(),
                 command: "cargo".into(),
                 args: run_task_args,
-                cwd: Some("$ZED_DIRNAME".to_owned()),
+                cwd: Some("$TEHANU_DIRNAME".to_owned()),
                 ..TaskTemplate::default()
             },
             TaskTemplate {
                 label: "Clean".into(),
                 command: "cargo".into(),
                 args: vec!["clean".into()],
-                cwd: Some("$ZED_DIRNAME".to_owned()),
+                cwd: Some("$TEHANU_DIRNAME".to_owned()),
                 ..TaskTemplate::default()
             },
         ];
@@ -1033,7 +1033,7 @@ async fn human_readable_package_name(
 }
 
 // For providing local `cargo check -p $pkgid` task, we do not need most of the information we have returned.
-// Output example in the root of Zed project:
+// Output example in the root of Tehanu project:
 // ```sh
 // ❯ cargo pkgid zed
 // path+file:///absolute/path/to/project/zed/crates/zed#0.131.0
@@ -1521,7 +1521,7 @@ mod tests {
         for (input, expected) in [
             (
                 "path+file:///absolute/path/to/project/zed/crates/zed#0.131.0",
-                "zed",
+                "tehanu",
             ),
             (
                 "path+file:///absolute/path/to/project/custom-package#my-custom-package@0.1.0",
@@ -1536,12 +1536,12 @@ mod tests {
     fn test_target_info_from_metadata() {
         for (input, absolute_path, expected) in [
             (
-                r#"{"packages":[{"id":"path+file:///absolute/path/to/project/zed/crates/zed#0.131.0","manifest_path":"/path/to/zed/Cargo.toml","targets":[{"name":"zed","kind":["bin"],"src_path":"/path/to/zed/src/main.rs"}]}]}"#,
+                r#"{"packages":[{"id":"path+file:///absolute/path/to/project/zed/crates/zed#0.131.0","manifest_path":"/path/to/zed/Cargo.toml","targets":[{"name":"tehanu","kind":["bin"],"src_path":"/path/to/zed/src/main.rs"}]}]}"#,
                 "/path/to/zed/src/main.rs",
                 Some((
                     Some(TargetInfo {
-                        package_name: "zed".into(),
-                        target_name: "zed".into(),
+                        package_name: "tehanu".into(),
+                        target_name: "tehanu".into(),
                         required_features: Vec::new(),
                         target_kind: TargetKind::Bin,
                     }),

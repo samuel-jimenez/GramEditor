@@ -1,4 +1,4 @@
-# Zed Development: Glossary
+# Tehanu Development: Glossary
 
 These are some terms and structures frequently used throughout the zed codebase.
 
@@ -69,7 +69,7 @@ h_flex()
 - `Focus`: The place where keystrokes are handled first
 - `Focus tree`: Path from the place that has the current focus to the UI Root. Example <img> TODO
 
-## Zed UI
+## Tehanu UI
 
 - `Window`: A struct in zed representing a zed window in your desktop environment (see image below). There can be multiple if you have multiple zed instances open. Mostly passed around for rendering.
 - `Modal`: A UI element that floats on top of the rest of the UI
@@ -87,7 +87,7 @@ h_flex()
 
 <img width="552" height="1118" alt="Screenshot for the Worktree feature" src="https://github.com/user-attachments/assets/da5c58e4-b02e-4038-9736-27e3509fdbfa" />
 
-- [Multibuffer](https://zed.dev/docs/multibuffers): A list of Editors, a multi-buffer allows editing multiple files simultaneously. A multi-buffer opens when an operation in Zed returns multiple locations, examples: _search_ or _go to definition_. See project search in the image below.
+- [Multibuffer](https://tehanu.liten.app/docs/multibuffers): A list of Editors, a multi-buffer allows editing multiple files simultaneously. A multi-buffer opens when an operation in Tehanu returns multiple locations, examples: _search_ or _go to definition_. See project search in the image below.
 
 <img width="800" height="886" alt="Screenshot for the MultiBuffer feature" src="https://github.com/user-attachments/assets/d59dcecd-8ab6-4172-8fb6-b1fc3c3eaf9d" />
 
@@ -103,7 +103,7 @@ h_flex()
 
 - `DapStore`: Is an entity that manages debugger sessions
 - `debugger::Session`: Is an entity that manages the lifecycle of a debug session and communication with DAPS
-- `BreakpointStore`: Is an entity that manages breakpoints states in local and remote instances of Zed
+- `BreakpointStore`: Is an entity that manages breakpoints states in local and remote instances of Tehanu
 - `DebugSession`: Manages a debug session's UI and running state
 - `RunningState`: Directly manages all the views of a debug session
 - `VariableList`: The variable and watch list view of a debug session

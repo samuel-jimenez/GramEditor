@@ -2,15 +2,15 @@
 
 The `themes` directory in an extension should contain one or more theme files.
 
-Each theme file should adhere to the JSON schema specified at [`https://zed.dev/schema/themes/v0.2.0.json`](https://zed.dev/schema/themes/v0.2.0.json).
+Each theme file should adhere to the JSON schema specified at [`https://tehanu.liten.app/schema/themes/v0.2.0.json`](https://tehanu.liten.app/schema/themes/v0.2.0.json).
 
-See [this blog post](https://zed.dev/blog/user-themes-now-in-preview) for more details about creating themes.
+See [this blog post](https://tehanu.liten.app/blog/user-themes-now-in-preview) for more details about creating themes.
 
 ## Theme JSON Structure
 
-The structure of a Zed theme is defined in the [Zed Theme JSON Schema](https://zed.dev/schema/themes/v0.2.0.json).
+The structure of a Tehanu theme is defined in the [Tehanu Theme JSON Schema](https://tehanu.liten.app/schema/themes/v0.2.0.json).
 
-A Zed theme consists of a Theme Family object including:
+A Tehanu theme consists of a Theme Family object including:
 
 - `name`: The name for the theme family
 - `author`: The name of the author of the theme family

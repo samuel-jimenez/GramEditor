@@ -73,7 +73,7 @@ fn post_to_discord(deps: &[&NamedJob]) -> NamedJob {
         .add_with((
             "stringToTruncate",
             indoc::indoc! {r#"
-                📣 Zed [${{ github.event.release.tag_name }}](<${{ steps.get-release-url.outputs.URL }}>) was just released!
+                📣 Tehanu [${{ github.event.release.tag_name }}](<${{ steps.get-release-url.outputs.URL }}>) was just released!
 
                 ${{ github.event.release.body }}
             "#},
@@ -104,9 +104,9 @@ fn publish_winget() -> NamedJob {
     fn set_package_name() -> (Step<Run>, StepOutput) {
         let step = named::pwsh(indoc::indoc! {r#"
             if ("${{ github.event.release.prerelease }}" -eq "true") {
-                $PACKAGE_NAME = "ZedIndustries.Zed.Preview"
+                $PACKAGE_NAME = "TehanuIndustries.Tehanu.Preview"
             } else {
-                $PACKAGE_NAME = "ZedIndustries.Zed"
+                $PACKAGE_NAME = "TehanuIndustries.Tehanu"
             }
 
             echo "PACKAGE_NAME=$PACKAGE_NAME" >> $env:GITHUB_OUTPUT

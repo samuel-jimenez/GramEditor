@@ -31,7 +31,7 @@ impl GitOnboardingModal {
     }
 
     fn view_blog(&mut self, _: &ClickEvent, _: &mut Window, cx: &mut Context<Self>) {
-        cx.open_url("https://zed.dev/blog/git");
+        cx.open_url("https://liten.app/blog/git");
         cx.notify();
     }
 
@@ -116,7 +116,7 @@ impl Render for GitOnboardingModal {
             .full_width()
             .on_click(cx.listener(Self::view_blog));
 
-        let copy = "First-class support for staging, committing, pulling, pushing, viewing diffs, and more. All without leaving Zed.";
+        let copy = "First-class support for staging, committing, pulling, pushing, viewing diffs, and more. All without leaving Tehanu.";
 
         base.child(Label::new(copy).color(Color::Muted)).child(
             v_flex()

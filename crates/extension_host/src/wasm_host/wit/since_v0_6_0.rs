@@ -26,7 +26,7 @@ use std::{
     str::FromStr,
     sync::{Arc, OnceLock},
 };
-use task::{SpawnInTerminal, ZedDebugConfig};
+use task::{SpawnInTerminal, TehanuDebugConfig};
 use url::Url;
 use util::{
     archive::extract_zip, fs::make_file_executable, maybe, paths::PathStyle, rel_path::RelPath,
@@ -44,11 +44,11 @@ wasmtime::component::bindgen!({
          "worktree": ExtensionWorktree,
          "project": ExtensionProject,
          "key-value-store": ExtensionKeyValueStore,
-         "zed:extension/http-client/http-response-stream": ExtensionHttpResponseStream
+         "tehanu:extension/http-client/http-response-stream": ExtensionHttpResponseStream
     },
 });
 
-pub use self::zed::extension::*;
+pub use self::tehanu::extension::*;
 
 mod settings {
     #![allow(dead_code)]
@@ -200,8 +200,8 @@ impl From<AttachRequest> for task::AttachRequest {
     }
 }
 
-impl From<ZedDebugConfig> for DebugConfig {
-    fn from(value: ZedDebugConfig) -> Self {
+impl From<TehanuDebugConfig> for DebugConfig {
+    fn from(value: TehanuDebugConfig) -> Self {
         Self {
             label: value.label.into(),
             adapter: value.adapter.into(),

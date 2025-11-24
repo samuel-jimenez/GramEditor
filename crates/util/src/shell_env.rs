@@ -37,7 +37,7 @@ async fn capture_unix(
     use crate::command::new_std_command;
 
     let shell_kind = ShellKind::new(shell_path, false);
-    let zed_path = super::get_shell_safe_zed_path(shell_kind)?;
+    let binary_path = super::get_shell_safe_binary_path(shell_kind)?;
 
     let mut command_string = String::new();
     let mut command = new_std_command(shell_path);
@@ -77,7 +77,7 @@ async fn capture_unix(
     if let Some(prefix) = shell_kind.command_prefix() {
         command_string.push(prefix);
     }
-    command_string.push_str(&format!("{} --printenv {}", zed_path, redir));
+    command_string.push_str(&format!("{} --printenv {}", binary_path, redir));
     command.args(["-i", "-c", &command_string]);
 
     super::set_pre_exec_to_start_new_session(&mut command);
@@ -136,8 +136,8 @@ async fn capture_windows(
 ) -> Result<collections::HashMap<String, String>> {
     use std::process::Stdio;
 
-    let zed_path =
-        std::env::current_exe().context("Failed to determine current zed executable path.")?;
+    let binary_path =
+        std::env::current_exe().context("Failed to determine current executable path.")?;
 
     let shell_kind = ShellKind::new(shell_path, true);
     if let ShellKind::Csh | ShellKind::Tcsh | ShellKind::Rc | ShellKind::Fish | ShellKind::Xonsh =
@@ -155,7 +155,7 @@ async fn capture_windows(
             &format!(
                 "cd '{}'; '{}' --printenv",
                 directory.display(),
-                zed_path.display()
+                binary_path.display()
             ),
         ]),
         ShellKind::PowerShell => cmd.args([
@@ -165,7 +165,7 @@ async fn capture_windows(
             &format!(
                 "Set-Location '{}'; & '{}' --printenv",
                 directory.display(),
-                zed_path.display()
+                binary_path.display()
             ),
         ]),
         ShellKind::Elvish => cmd.args([
@@ -173,7 +173,7 @@ async fn capture_windows(
             &format!(
                 "cd '{}'; '{}' --printenv",
                 directory.display(),
-                zed_path.display()
+                binary_path.display()
             ),
         ]),
         ShellKind::Nushell => cmd.args([
@@ -185,7 +185,7 @@ async fn capture_windows(
                     .command_prefix()
                     .map(|prefix| prefix.to_string())
                     .unwrap_or_default(),
-                zed_path.display()
+                binary_path.display()
             ),
         ]),
         ShellKind::Cmd => cmd.args([
@@ -193,7 +193,7 @@ async fn capture_windows(
             "cd",
             &directory.display().to_string(),
             "&&",
-            &zed_path.display().to_string(),
+            &binary_path.display().to_string(),
             "--printenv",
         ]),
     }

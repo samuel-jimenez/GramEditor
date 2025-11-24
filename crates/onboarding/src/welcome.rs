@@ -9,14 +9,14 @@ use workspace::{
     item::{Item, ItemEvent},
     with_active_or_new_workspace,
 };
-use zed_actions::{Extensions, OpenSettings, command_palette};
+use app_actions::{Extensions, OpenSettings, command_palette};
 
 use crate::{Onboarding, OpenOnboarding};
 
 actions!(
-    zed,
+    tehanu,
     [
-        /// Show the Zed welcome screen
+        /// Show the Tehanu welcome screen
         ShowWelcome
     ]
 );
@@ -183,7 +183,7 @@ impl Render for WelcomePage {
                                     .child(Vector::square(VectorName::Logo, rems(2.)))
                                     .child(
                                         div().child(Headline::new("TEHANU")).child(
-                                            Label::new(r#"“I come with empty hands and the desire to unbuild walls.”"#)
+                                            Label::new(r#"What cannot be mended must be transcended."#)
                                                 .size(LabelSize::Small)
                                                 .color(Color::Muted)
                                                 .italic(),

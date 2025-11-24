@@ -166,7 +166,7 @@ async fn build_remote_server_from_source(
     if platform.os == "linux" && use_musl {
         rust_flags.push_str(" -C target-feature=+crt-static");
 
-        if let Ok(path) = std::env::var("ZED_ZSTD_MUSL_LIB") {
+        if let Ok(path) = std::env::var("TEHANU_ZSTD_MUSL_LIB") {
             rust_flags.push_str(&format!(" -C link-arg=-L{path}"));
         }
     }
@@ -262,7 +262,7 @@ async fn build_remote_server_from_source(
 
         let seven_zip = which("7z.exe",cx)
             .await?
-            .context("7z.exe not found on $PATH, install it (e.g. with `winget install -e --id 7zip.7zip`) or, if you don't want this behaviour, set $env:ZED_BUILD_REMOTE_SERVER=\"nocompress\"")?;
+            .context("7z.exe not found on $PATH, install it (e.g. with `winget install -e --id 7zip.7zip`) or, if you don't want this behaviour, set $env:TEHANU_BUILD_REMOTE_SERVER=\"nocompress\"")?;
         let gz_path = format!("target/remote_server/{}/debug/remote_server.gz", triple);
         if smol::fs::metadata(&gz_path).await.is_ok() {
             smol::fs::remove_file(&gz_path).await?;

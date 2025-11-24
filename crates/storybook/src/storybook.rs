@@ -70,7 +70,7 @@ fn main() {
 
         cx.set_global(GlobalColors(Arc::new(Colors::default())));
 
-        let http_client = ReqwestClient::user_agent("zed_storybook").unwrap();
+        let http_client = ReqwestClient::user_agent("tehanu_storybook").unwrap();
         cx.set_http_client(Arc::new(http_client));
 
         settings::init(cx);
@@ -123,7 +123,7 @@ impl Render for StoryWrapper {
             .flex()
             .flex_col()
             .size_full()
-            .font_family(".ZedMono")
+            .font_family(".TehanuMono")
             .child(self.story.clone())
     }
 }

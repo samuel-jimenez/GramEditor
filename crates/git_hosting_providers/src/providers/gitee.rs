@@ -173,8 +173,8 @@ mod tests {
         assert_eq!(
             parsed_remote,
             ParsedGitRemote {
-                owner: "zed-industries".into(),
-                repo: "zed".into(),
+                owner: "krig".into(),
+                repo: "tehanu".into(),
             }
         );
     }
@@ -188,8 +188,8 @@ mod tests {
         assert_eq!(
             parsed_remote,
             ParsedGitRemote {
-                owner: "zed-industries".into(),
-                repo: "zed".into(),
+                owner: "krig".into(),
+                repo: "tehanu".into(),
             }
         );
     }
@@ -198,8 +198,8 @@ mod tests {
     fn test_build_gitee_permalink() {
         let permalink = Gitee.build_permalink(
             ParsedGitRemote {
-                owner: "zed-industries".into(),
-                repo: "zed".into(),
+                owner: "krig".into(),
+                repo: "tehanu".into(),
             },
             BuildPermalinkParams::new(
                 "e5fe811d7ad0fc26934edd76f891d20bdc3bb194",
@@ -216,8 +216,8 @@ mod tests {
     fn test_build_gitee_permalink_with_single_line_selection() {
         let permalink = Gitee.build_permalink(
             ParsedGitRemote {
-                owner: "zed-industries".into(),
-                repo: "zed".into(),
+                owner: "krig".into(),
+                repo: "tehanu".into(),
             },
             BuildPermalinkParams::new(
                 "e5fe811d7ad0fc26934edd76f891d20bdc3bb194",
@@ -234,8 +234,8 @@ mod tests {
     fn test_build_gitee_permalink_with_multi_line_selection() {
         let permalink = Gitee.build_permalink(
             ParsedGitRemote {
-                owner: "zed-industries".into(),
-                repo: "zed".into(),
+                owner: "krig".into(),
+                repo: "tehanu".into(),
             },
             BuildPermalinkParams::new(
                 "e5fe811d7ad0fc26934edd76f891d20bdc3bb194",

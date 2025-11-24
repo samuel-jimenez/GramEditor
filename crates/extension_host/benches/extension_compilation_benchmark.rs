@@ -80,7 +80,7 @@ fn wasm_bytes(cx: &TestAppContext, manifest: &mut ExtensionManifest) -> Vec<u8> 
 
 fn extension_builder() -> ExtensionBuilder {
     let user_agent = format!(
-        "Zed Extension CLI/{} ({}; {})",
+        "Tehanu Extension CLI/{} ({}; {})",
         env!("CARGO_PKG_VERSION"),
         std::env::consts::OS,
         std::env::consts::ARCH

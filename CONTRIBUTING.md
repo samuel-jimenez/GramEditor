@@ -1,6 +1,6 @@
 # Contributing to this project
 
-The over-arching goal for now is to excise the Zed codebase of all the shady
+The over-arching goal for now is to excise the Tehanu codebase of all the shady
 stuff so that only the good parts remain. First and foremost, that means
 removing all AI integration and telemetry.
 

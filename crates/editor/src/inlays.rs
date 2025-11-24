@@ -4,7 +4,7 @@
 //! They are attached to a certain [`Anchor`], and display certain contents (usually, strings)
 //! between real text around that anchor.
 //!
-//! Inlay examples in Zed:
+//! Inlay examples in Tehanu:
 //! * inlay hints, received from LSP
 //! * inline values, shown in the debugger
 //! * document color values, if configured to be displayed as inlays

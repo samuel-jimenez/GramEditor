@@ -1,19 +1,19 @@
 # Visual Customization
 
-Various aspects of Zed's visual layout can be configured via either the settings window or the `settings.json` file, which you can access via {#action zed::OpenSettings} ({#kb zed::OpenSettings}) and {#action zed::OpenSettingsFile} ({#kb zed::OpenSettingsFile}) respectively.
+Various aspects of Tehanu's visual layout can be configured via either the settings window or the `settings.json` file, which you can access via {#action tehanu::OpenSettings} ({#kb tehanu::OpenSettings}) and {#action tehanu::OpenSettingsFile} ({#kb tehanu::OpenSettingsFile}) respectively.
 
-See [Configuring Zed](./configuring-zed.md) for additional information and other non-visual settings.
+See [Configuring Tehanu](./configuring-zed.md) for additional information and other non-visual settings.
 
 ## Themes
 
-You can install many [themes](./themes.md) and [icon themes](./icon-themes.md) in form of extensions by running {#action zed::Extensions} from the command palette.
+You can install many [themes](./themes.md) and [icon themes](./icon-themes.md) in form of extensions by running {#action tehanu::Extensions} from the command palette.
 
 You can preview/choose amongst your installed themes and icon themes with {#action theme_selector::Toggle} ({#kb theme_selector::Toggle}) and {#action icon_theme_selector::Toggle} which will modify the following settings:
 
 ```json [settings]
 {
   "theme": "One Dark",
-  "icon_theme": "Zed (Default)"
+  "icon_theme": "Tehanu (Default)"
 }
 ```
 
@@ -28,8 +28,8 @@ If you would like to use distinct themes for light mode/dark mode that can be se
     "mode": "system"
   },
   "icon_theme": {
-    "dark": "Zed (Default)",
-    "light": "Zed (Default)",
+    "dark": "Tehanu (Default)",
+    "light": "Tehanu (Default)",
     // Mode to use (dark, light) or "system" to follow the OS's light/dark mode (default)
     "mode": "system"
   }
@@ -40,13 +40,13 @@ If you would like to use distinct themes for light mode/dark mode that can be se
 
 ```json [settings]
   // UI Font. Use ".SystemUIFont" to use the default system font (SF Pro on macOS),
-  // or ".ZedSans" for the bundled default (currently IBM Plex)
+  // or ".TehanuSans" for the bundled default (currently IBM Plex)
   "ui_font_family": ".SystemUIFont",
   "ui_font_weight": 400, // Font weight in standard CSS units from 100 to 900.
   "ui_font_size": 16,
 
   // Buffer Font - Used by editor buffers
-  // use ".ZedMono" for the bundled default monospace (currently Lilex)
+  // use ".TehanuMono" for the bundled default monospace (currently Lilex)
   "buffer_font_family": "Berkeley Mono", // Font name for editor buffers
   "buffer_font_size": 15,                 // Font size for editor buffers
   "buffer_font_weight": 400,              // Font weight in CSS units [100-900]
@@ -64,7 +64,7 @@ If you would like to use distinct themes for light mode/dark mode that can be se
 
 ### Font ligatures
 
-By default Zed enable font ligatures which will visually combines certain adjacent characters.
+By default Tehanu enable font ligatures which will visually combines certain adjacent characters.
 
 For example `=>` will be displayed as `→` and `!=` will be `≠`.
 This is purely cosmetic and the individual characters remain unchanged.
@@ -118,10 +118,10 @@ To disable this behavior use:
 
 ```json [settings]
 {
-  // Force usage of Zed build in path prompts (file and directory pickers)
+  // Force usage of Tehanu build in path prompts (file and directory pickers)
   // instead of OS native pickers (false).
   "use_system_path_prompts": true,
-  // Force usage of Zed built in confirmation prompts ("Do you want to save?")
+  // Force usage of Tehanu built in confirmation prompts ("Do you want to save?")
   // instead of OS native prompts (false). On linux this is ignored (always false).
   "use_system_prompts": true,
 

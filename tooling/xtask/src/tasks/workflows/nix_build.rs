@@ -73,11 +73,11 @@ pub(crate) fn build_nix(
         .continue_on_error(true)
         .with_repository_owner_guard()
         .runs_on(runner)
-        .add_env(("ZED_CLIENT_CHECKSUM_SEED", vars::ZED_CLIENT_CHECKSUM_SEED))
-        .add_env(("ZED_MINIDUMP_ENDPOINT", vars::ZED_SENTRY_MINIDUMP_ENDPOINT))
+        .add_env(("TEHANU_CLIENT_CHECKSUM_SEED", vars::TEHANU_CLIENT_CHECKSUM_SEED))
+        .add_env(("TEHANU_MINIDUMP_ENDPOINT", vars::TEHANU_SENTRY_MINIDUMP_ENDPOINT))
         .add_env((
-            "ZED_CLOUD_PROVIDER_ADDITIONAL_MODELS_JSON",
-            vars::ZED_CLOUD_PROVIDER_ADDITIONAL_MODELS_JSON,
+            "TEHANU_CLOUD_PROVIDER_ADDITIONAL_MODELS_JSON",
+            vars::TEHANU_CLOUD_PROVIDER_ADDITIONAL_MODELS_JSON,
         ))
         .add_env(("GIT_LFS_SKIP_SMUDGE", "1")) // breaks the livekit rust sdk examples which we don't actually depend on
         .add_step(steps::checkout_repo());

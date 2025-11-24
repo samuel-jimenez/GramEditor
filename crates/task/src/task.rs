@@ -1,4 +1,4 @@
-//! Baseline interface of Tasks in Zed: all tasks in Zed are intended to use those for implementing their own logic.
+//! Baseline interface of Tasks in Tehanu: all tasks in Tehanu are intended to use those for implementing their own logic.
 
 mod adapter_schema;
 mod debug_format;
@@ -19,7 +19,7 @@ use std::str::FromStr;
 pub use adapter_schema::{AdapterSchema, AdapterSchemas};
 pub use debug_format::{
     AttachRequest, BuildTaskDefinition, DebugRequest, DebugScenario, DebugTaskFile, LaunchRequest,
-    Request, TcpArgumentsTemplate, ZedDebugConfig,
+    Request, TcpArgumentsTemplate, TehanuDebugConfig,
 };
 pub use task_template::{
     DebugArgsRequest, HideStrategy, RevealStrategy, TaskTemplate, TaskTemplates,
@@ -29,14 +29,14 @@ pub use util::shell::{Shell, ShellKind};
 pub use util::shell_builder::ShellBuilder;
 pub use vscode_debug_format::VsCodeDebugTaskFile;
 pub use vscode_format::VsCodeTaskFile;
-pub use zed_actions::RevealTarget;
+pub use app_actions::RevealTarget;
 
 /// Task identifier, unique within the application.
 /// Based on it, task reruns and terminal tabs are managed.
 #[derive(Default, Debug, Clone, PartialEq, Eq, Hash, PartialOrd, Ord, Deserialize)]
 pub struct TaskId(pub String);
 
-/// Contains all information needed by Zed to spawn a new terminal tab for the given task.
+/// Contains all information needed by Tehanu to spawn a new terminal tab for the given task.
 #[derive(Default, Debug, Clone, PartialEq, Eq)]
 pub struct SpawnInTerminal {
     /// Id of the task to use when determining task tab affinity.
@@ -143,7 +143,7 @@ impl ResolvedTask {
     }
 }
 
-/// Variables, available for use in [`TaskContext`] when a Zed's [`TaskTemplate`] gets resolved into a [`ResolvedTask`].
+/// Variables, available for use in [`TaskContext`] when a Tehanu's [`TaskTemplate`] gets resolved into a [`ResolvedTask`].
 /// Name of the variable must be a valid shell variable identifier, which generally means that it is
 /// a word  consisting only  of alphanumeric characters and underscores,
 /// and beginning with an alphabetic character or an  underscore.
@@ -196,7 +196,7 @@ impl FromStr for VariableName {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let without_prefix = s.strip_prefix(ZED_VARIABLE_NAME_PREFIX).ok_or(())?;
+        let without_prefix = s.strip_prefix(TEHANU_VARIABLE_NAME_PREFIX).ok_or(())?;
         let value = match without_prefix {
             "FILE" => Self::File,
             "FILENAME" => Self::Filename,
@@ -212,7 +212,7 @@ impl FromStr for VariableName {
             "COLUMN" => Self::Column,
             _ => {
                 if let Some(custom_name) =
-                    without_prefix.strip_prefix(ZED_CUSTOM_VARIABLE_NAME_PREFIX)
+                    without_prefix.strip_prefix(TEHANU_CUSTOM_VARIABLE_NAME_PREFIX)
                 {
                     Self::Custom(Cow::Owned(custom_name.to_owned()))
                 } else {
@@ -225,34 +225,34 @@ impl FromStr for VariableName {
 }
 
 /// A prefix that all [`VariableName`] variants are prefixed with when used in environment variables and similar template contexts.
-pub const ZED_VARIABLE_NAME_PREFIX: &str = "ZED_";
-const ZED_CUSTOM_VARIABLE_NAME_PREFIX: &str = "CUSTOM_";
+pub const TEHANU_VARIABLE_NAME_PREFIX: &str = "TEHANU_";
+const TEHANU_CUSTOM_VARIABLE_NAME_PREFIX: &str = "CUSTOM_";
 
 impl std::fmt::Display for VariableName {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
-            Self::File => write!(f, "{ZED_VARIABLE_NAME_PREFIX}FILE"),
-            Self::Filename => write!(f, "{ZED_VARIABLE_NAME_PREFIX}FILENAME"),
-            Self::RelativeFile => write!(f, "{ZED_VARIABLE_NAME_PREFIX}RELATIVE_FILE"),
-            Self::RelativeDir => write!(f, "{ZED_VARIABLE_NAME_PREFIX}RELATIVE_DIR"),
-            Self::Dirname => write!(f, "{ZED_VARIABLE_NAME_PREFIX}DIRNAME"),
-            Self::Stem => write!(f, "{ZED_VARIABLE_NAME_PREFIX}STEM"),
-            Self::WorktreeRoot => write!(f, "{ZED_VARIABLE_NAME_PREFIX}WORKTREE_ROOT"),
-            Self::Symbol => write!(f, "{ZED_VARIABLE_NAME_PREFIX}SYMBOL"),
-            Self::Row => write!(f, "{ZED_VARIABLE_NAME_PREFIX}ROW"),
-            Self::Column => write!(f, "{ZED_VARIABLE_NAME_PREFIX}COLUMN"),
-            Self::SelectedText => write!(f, "{ZED_VARIABLE_NAME_PREFIX}SELECTED_TEXT"),
-            Self::RunnableSymbol => write!(f, "{ZED_VARIABLE_NAME_PREFIX}RUNNABLE_SYMBOL"),
-            Self::PickProcessId => write!(f, "{ZED_VARIABLE_NAME_PREFIX}PICK_PID"),
+            Self::File => write!(f, "{TEHANU_VARIABLE_NAME_PREFIX}FILE"),
+            Self::Filename => write!(f, "{TEHANU_VARIABLE_NAME_PREFIX}FILENAME"),
+            Self::RelativeFile => write!(f, "{TEHANU_VARIABLE_NAME_PREFIX}RELATIVE_FILE"),
+            Self::RelativeDir => write!(f, "{TEHANU_VARIABLE_NAME_PREFIX}RELATIVE_DIR"),
+            Self::Dirname => write!(f, "{TEHANU_VARIABLE_NAME_PREFIX}DIRNAME"),
+            Self::Stem => write!(f, "{TEHANU_VARIABLE_NAME_PREFIX}STEM"),
+            Self::WorktreeRoot => write!(f, "{TEHANU_VARIABLE_NAME_PREFIX}WORKTREE_ROOT"),
+            Self::Symbol => write!(f, "{TEHANU_VARIABLE_NAME_PREFIX}SYMBOL"),
+            Self::Row => write!(f, "{TEHANU_VARIABLE_NAME_PREFIX}ROW"),
+            Self::Column => write!(f, "{TEHANU_VARIABLE_NAME_PREFIX}COLUMN"),
+            Self::SelectedText => write!(f, "{TEHANU_VARIABLE_NAME_PREFIX}SELECTED_TEXT"),
+            Self::RunnableSymbol => write!(f, "{TEHANU_VARIABLE_NAME_PREFIX}RUNNABLE_SYMBOL"),
+            Self::PickProcessId => write!(f, "{TEHANU_VARIABLE_NAME_PREFIX}PICK_PID"),
             Self::Custom(s) => write!(
                 f,
-                "{ZED_VARIABLE_NAME_PREFIX}{ZED_CUSTOM_VARIABLE_NAME_PREFIX}{s}"
+                "{TEHANU_VARIABLE_NAME_PREFIX}{TEHANU_CUSTOM_VARIABLE_NAME_PREFIX}{s}"
             ),
         }
     }
 }
 
-/// Container for predefined environment variables that describe state of Zed at the time the task was spawned.
+/// Container for predefined environment variables that describe state of Tehanu at the time the task was spawned.
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize)]
 pub struct TaskVariables(HashMap<VariableName, String>);
 
@@ -303,14 +303,14 @@ impl IntoIterator for TaskVariables {
 }
 
 /// Keeps track of the file associated with a task and context of tasks execution (i.e. current file or current function).
-/// Keeps all Zed-related state inside, used to produce a resolved task out of its template.
+/// Keeps all Tehanu-related state inside, used to produce a resolved task out of its template.
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub struct TaskContext {
     /// A path to a directory in which the task should be executed.
     pub cwd: Option<PathBuf>,
     /// Additional environment variables associated with a given task.
     pub task_variables: TaskVariables,
-    /// Environment variables obtained when loading the project into Zed.
+    /// Environment variables obtained when loading the project into Tehanu.
     /// This is the environment one would get when `cd`ing in a terminal
     /// into the project's root directory.
     pub project_env: HashMap<String, String>,
@@ -351,15 +351,15 @@ pub fn shell_to_proto(shell: Shell) -> proto::Shell {
 
 type VsCodeEnvVariable = String;
 type VsCodeCommand = String;
-type ZedEnvVariable = String;
+type TehanuEnvVariable = String;
 
 struct EnvVariableReplacer {
-    variables: HashMap<VsCodeEnvVariable, ZedEnvVariable>,
-    commands: HashMap<VsCodeCommand, ZedEnvVariable>,
+    variables: HashMap<VsCodeEnvVariable, TehanuEnvVariable>,
+    commands: HashMap<VsCodeCommand, TehanuEnvVariable>,
 }
 
 impl EnvVariableReplacer {
-    fn new(variables: HashMap<VsCodeEnvVariable, ZedEnvVariable>) -> Self {
+    fn new(variables: HashMap<VsCodeEnvVariable, TehanuEnvVariable>) -> Self {
         Self {
             variables,
             commands: HashMap::default(),
@@ -368,7 +368,7 @@ impl EnvVariableReplacer {
 
     fn with_commands(
         mut self,
-        commands: impl IntoIterator<Item = (VsCodeCommand, ZedEnvVariable)>,
+        commands: impl IntoIterator<Item = (VsCodeCommand, TehanuEnvVariable)>,
     ) -> Self {
         self.commands = commands.into_iter().collect();
         self
@@ -388,7 +388,7 @@ impl EnvVariableReplacer {
             _ => input,
         }
     }
-    // Replaces occurrences of VsCode-specific environment variables with Zed equivalents.
+    // Replaces occurrences of VsCode-specific environment variables with Tehanu equivalents.
     fn replace(&self, input: &str) -> String {
         shellexpand::env_with_context_no_errors(&input, |var: &str| {
             // Colons denote a default value in case the variable is not set. We want to preserve that default, as otherwise shellexpand will substitute it for us.
@@ -411,7 +411,7 @@ impl EnvVariableReplacer {
                 }
             };
             if let Some(substitution) = self.variables.get(variable_name) {
-                // Got a VSCode->Zed hit, perform a substitution
+                // Got a VSCode->Tehanu hit, perform a substitution
                 let mut name = format!("${{{substitution}");
                 append_previous_default(&mut name);
                 name.push('}');

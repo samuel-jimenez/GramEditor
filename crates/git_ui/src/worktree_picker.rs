@@ -25,7 +25,7 @@ pub fn register(workspace: &mut Workspace) {
 
 pub fn open(
     workspace: &mut Workspace,
-    _: &zed_actions::git::Worktree,
+    _: &app_actions::git::Worktree,
     window: &mut Window,
     cx: &mut Context<Workspace>,
 ) {

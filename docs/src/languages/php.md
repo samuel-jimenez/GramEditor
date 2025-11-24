@@ -15,7 +15,7 @@ The PHP extension offers both `phpactor` and `intelephense` language server supp
 
 ### Phpactor
 
-The Zed PHP Extension can install `phpactor` automatically but requires `php` to be installed and available in your path:
+The Tehanu PHP Extension can install `phpactor` automatically but requires `php` to be installed and available in your path:
 
 ```sh
 # brew install php            # macOS
@@ -57,13 +57,13 @@ To use the premium features, you can place your [licence.txt file](https://intel
 
 ## PHPDoc
 
-Zed supports syntax highlighting for PHPDoc comments.
+Tehanu supports syntax highlighting for PHPDoc comments.
 
 - Tree-sitter: [claytonrcarter/tree-sitter-phpdoc](https://github.com/claytonrcarter/tree-sitter-phpdoc)
 
 ## Setting up Xdebug
 
-Zed’s PHP extension provides a debug adapter for PHP and Xdebug. The adapter name is `Xdebug`. Here a couple ways you can use it:
+Tehanu’s PHP extension provides a debug adapter for PHP and Xdebug. The adapter name is `Xdebug`. Here a couple ways you can use it:
 
 ```json
 [
@@ -78,7 +78,7 @@ Zed’s PHP extension provides a debug adapter for PHP and Xdebug. The adapter n
     "adapter": "Xdebug",
     "request": "launch",
     "program": "vendor/bin/phpunit",
-    "args": ["--filter", "$ZED_SYMBOL"]
+    "args": ["--filter", "$TEHANU_SYMBOL"]
   }
 ]
 ```
@@ -88,5 +88,5 @@ In case you run into issues:
 - ensure that you have Xdebug installed for the version of PHP you’re running
 - ensure that Xdebug is configured to run in `debug` mode
 - ensure that Xdebug is actually starting a debugging session
-- check that the host and port matches between Xdebug and Zed
+- check that the host and port matches between Xdebug and Tehanu
 - look at the diagnostics log by using the `xdebug_info()` function in the page you’re trying to debug

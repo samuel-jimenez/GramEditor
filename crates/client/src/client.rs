@@ -2,7 +2,6 @@
 pub mod test;
 
 pub mod user;
-pub mod zed_urls;
 
 use anyhow::{Context as _, Result};
 use async_tungstenite::tungstenite::{error::Error as WebsocketError, http::StatusCode};
@@ -34,28 +33,29 @@ use util::{ConnectionResult, ResultExt};
 pub use rpc::*;
 pub use user::*;
 
-static ZED_SERVER_URL: LazyLock<Option<String>> =
-    LazyLock::new(|| std::env::var("ZED_SERVER_URL").ok());
+static TEHANU_SERVER_URL: LazyLock<Option<String>> =
+    LazyLock::new(|| std::env::var("TEHANU_SERVER_URL").ok());
 
 pub static IMPERSONATE_LOGIN: LazyLock<Option<String>> = LazyLock::new(|| {
-    std::env::var("ZED_IMPERSONATE")
+    std::env::var("TEHANU_IMPERSONATE")
         .ok()
         .and_then(|s| if s.is_empty() { None } else { Some(s) })
 });
 
-pub static USE_WEB_LOGIN: LazyLock<bool> = LazyLock::new(|| std::env::var("ZED_WEB_LOGIN").is_ok());
+pub static USE_WEB_LOGIN: LazyLock<bool> =
+    LazyLock::new(|| std::env::var("TEHANU_WEB_LOGIN").is_ok());
 
 pub static ADMIN_API_TOKEN: LazyLock<Option<String>> = LazyLock::new(|| {
-    std::env::var("ZED_ADMIN_API_TOKEN")
+    std::env::var("TEHANU_ADMIN_API_TOKEN")
         .ok()
         .and_then(|s| if s.is_empty() { None } else { Some(s) })
 });
 
-pub static ZED_APP_PATH: LazyLock<Option<PathBuf>> =
-    LazyLock::new(|| std::env::var("ZED_APP_PATH").ok().map(PathBuf::from));
+pub static TEHANU_APP_PATH: LazyLock<Option<PathBuf>> =
+    LazyLock::new(|| std::env::var("TEHANU_APP_PATH").ok().map(PathBuf::from));
 
-pub static ZED_ALWAYS_ACTIVE: LazyLock<bool> =
-    LazyLock::new(|| std::env::var("ZED_ALWAYS_ACTIVE").is_ok_and(|e| !e.is_empty()));
+pub static TEHANU_ALWAYS_ACTIVE: LazyLock<bool> =
+    LazyLock::new(|| std::env::var("TEHANU_ALWAYS_ACTIVE").is_ok_and(|e| !e.is_empty()));
 
 pub const INITIAL_RECONNECTION_DELAY: Duration = Duration::from_millis(500);
 pub const MAX_RECONNECTION_DELAY: Duration = Duration::from_secs(30);
@@ -64,9 +64,9 @@ pub const CONNECTION_TIMEOUT: Duration = Duration::from_secs(20);
 actions!(
     client,
     [
-        /// Signs in to Zed account.
+        /// Signs in to Tehanu account.
         SignIn,
-        /// Signs out of Zed account.
+        /// Signs out of Tehanu account.
         SignOut,
         /// Reconnects to the collaboration server.
         Reconnect
@@ -80,7 +80,7 @@ pub struct ClientSettings {
 
 impl Settings for ClientSettings {
     fn from_settings(_content: &settings::SettingsContent) -> Self {
-        if let Some(server_url) = &*ZED_SERVER_URL {
+        if let Some(server_url) = &*TEHANU_SERVER_URL {
             return Self {
                 server_url: server_url.clone(),
             };
@@ -883,12 +883,12 @@ impl ProtoClient for Client {
     }
 }
 
-/// prefix for the zed:// url scheme
-pub const ZED_URL_SCHEME: &str = "zed";
+/// prefix for the tehanu:// url scheme
+pub const TEHANU_URL_SCHEME: &str = "tehanu";
 
-/// Parses the given link into a Zed link.
+/// Parses the given link into a Tehanu link.
 ///
-/// Returns a [`Some`] containing the unprefixed link if the link is a Zed link.
+/// Returns a [`Some`] containing the unprefixed link if the link is a Tehanu link.
 /// Returns [`None`] otherwise.
 pub fn parse_zed_link<'a>(link: &'a str, cx: &App) -> Option<&'a str> {
     let server_url = &ClientSettings::get_global(cx).server_url;
@@ -899,7 +899,7 @@ pub fn parse_zed_link<'a>(link: &'a str, cx: &App) -> Option<&'a str> {
         return Some(stripped);
     }
     if let Some(stripped) = link
-        .strip_prefix(ZED_URL_SCHEME)
+        .strip_prefix(TEHANU_URL_SCHEME)
         .and_then(|result| result.strip_prefix("://"))
     {
         return Some(stripped);

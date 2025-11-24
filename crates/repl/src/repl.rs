@@ -26,7 +26,7 @@ pub use crate::repl_settings::ReplSettings;
 use crate::repl_store::ReplStore;
 pub use crate::session::Session;
 
-pub const KERNEL_DOCS_URL: &str = "https://zed.dev/docs/repl#changing-kernels";
+pub const KERNEL_DOCS_URL: &str = "https://tehanu.liten.app/docs/repl#changing-kernels";
 
 pub fn init(fs: Arc<dyn Fs>, cx: &mut App) {
     set_dispatcher(zed_dispatcher(cx));
@@ -35,15 +35,15 @@ pub fn init(fs: Arc<dyn Fs>, cx: &mut App) {
 }
 
 fn zed_dispatcher(cx: &mut App) -> impl Dispatcher {
-    struct ZedDispatcher {
+    struct TehanuDispatcher {
         dispatcher: Arc<dyn PlatformDispatcher>,
     }
 
     // PlatformDispatcher is _super_ close to the same interface we put in
     // async-dispatcher, except for the task label in dispatch. Later we should
     // just make that consistent so we have this dispatcher ready to go for
-    // other crates in Zed.
-    impl Dispatcher for ZedDispatcher {
+    // other crates in Tehanu.
+    impl Dispatcher for TehanuDispatcher {
         fn dispatch(&self, runnable: Runnable) {
             self.dispatcher
                 .dispatch(RunnableVariant::Compat(runnable), None);
@@ -55,7 +55,7 @@ fn zed_dispatcher(cx: &mut App) -> impl Dispatcher {
         }
     }
 
-    ZedDispatcher {
+    TehanuDispatcher {
         dispatcher: cx.background_executor().dispatcher.clone(),
     }
 }

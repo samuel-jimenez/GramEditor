@@ -31,8 +31,8 @@ fn run_cherry_pick(branch: &Input, commit: &Input, channel: &Input) -> NamedJob 
             "create-github-app-token",
             "bef1eaf1c0ac2b148ee2a0a74c65fbe6db0631f1",
         ) // v2
-        .add_with(("app-id", vars::ZED_ZIPPY_APP_ID))
-        .add_with(("private-key", vars::ZED_ZIPPY_APP_PRIVATE_KEY))
+        .add_with(("app-id", vars::TEHANU_ZIPPY_APP_ID))
+        .add_with(("private-key", vars::TEHANU_ZIPPY_APP_PRIVATE_KEY))
         .id("get-app-token");
         let output = StepOutput::new(&step, "token");
         (step, output)
@@ -45,7 +45,7 @@ fn run_cherry_pick(branch: &Input, commit: &Input, channel: &Input) -> NamedJob 
         token: &StepOutput,
     ) -> Step<Run> {
         named::bash(&format!("./script/cherry-pick {branch} {commit} {channel}"))
-            .add_env(("GIT_COMMITTER_NAME", "Zed Zippy"))
+            .add_env(("GIT_COMMITTER_NAME", "Tehanu Zippy"))
             .add_env(("GIT_COMMITTER_EMAIL", "hi@zed.dev"))
             .add_env(("GITHUB_TOKEN", token))
     }

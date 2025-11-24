@@ -2,7 +2,7 @@
 
 - Come up with a name for this fork and change all the mentions
 
-- Remove any Zed branding
+- Remove any Tehanu branding
 
 - Sniff out all the AI-written text and get rid of it
 

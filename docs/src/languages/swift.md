@@ -1,6 +1,6 @@
 # Swift
 
-Swift language support in Zed is provided by the community-maintained [Swift extension](https://github.com/zed-extensions/swift).
+Swift language support in Tehanu is provided by the community-maintained [Swift extension](https://github.com/zed-extensions/swift).
 Report issues to: [https://github.com/zed-extensions/swift/issues](https://github.com/zed-extensions/swift/issues)
 
 - Tree-sitter: [alex-pinkus/tree-sitter-swift](https://github.com/alex-pinkus/tree-sitter-swift)
@@ -14,7 +14,7 @@ You can modify the behavior of SourceKit LSP by creating a `.sourcekit-lsp/confi
 ## Debugging
 
 The Swift extension provides a debug adapter for debugging Swift code.
-Zed's name for the adapter (in the UI and `debug.json`) is `Swift`, and under the hood it uses [`lldb-dap`](https://github.com/swiftlang/llvm-project/blob/next/lldb/tools/lldb-dap/README.md), as provided by the Swift toolchain.
+Tehanu's name for the adapter (in the UI and `debug.json`) is `Swift`, and under the hood it uses [`lldb-dap`](https://github.com/swiftlang/llvm-project/blob/next/lldb/tools/lldb-dap/README.md), as provided by the Swift toolchain.
 The extension tries to find an `lldb-dap` binary using `swiftly`, using `xcrun`, and by searching `$PATH`, in that order of preference.
 The extension doesn't attempt to download `lldb-dap` if it's not found.
 
@@ -32,7 +32,7 @@ The extension doesn't attempt to download `lldb-dap` if it's not found.
       "command": "swift",
       "args": ["build"]
     },
-    "program": "$ZED_WORKTREE_ROOT/swift-app/.build/arm64-apple-macosx/debug/swift-app",
+    "program": "$TEHANU_WORKTREE_ROOT/swift-app/.build/arm64-apple-macosx/debug/swift-app",
     "request": "launch",
     "adapter": "Swift"
   }

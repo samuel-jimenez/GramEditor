@@ -6,7 +6,7 @@ SQL files are handled by the [SQL Extension](https://github.com/zed-extensions/s
 
 ### Formatting
 
-Zed supports auto-formatting SQL using external tools like [`sql-formatter`](https://github.com/sql-formatter-org/sql-formatter).
+Tehanu supports auto-formatting SQL using external tools like [`sql-formatter`](https://github.com/sql-formatter-org/sql-formatter).
 
 1. Install `sql-formatter`:
 
@@ -21,7 +21,7 @@ which sql-formatter
 sql-formatter --version
 ```
 
-3. Configure Zed to automatically format SQL with `sql-formatter`:
+3. Configure Tehanu to automatically format SQL with `sql-formatter`:
 
 ```json [settings]
   "languages": {
@@ -38,7 +38,7 @@ sql-formatter --version
 
 Substitute your preferred [SQL Dialect] for `mysql` above (`duckdb`, `hive`, `mariadb`, `postgresql`, `redshift`, `snowflake`, `sqlite`, `spark`, etc).
 
-You can add this to Zed project settings (`.zed/settings.json`) or via your Zed user settings (`~/.config/zed/settings.json`).
+You can add this to Tehanu project settings (`.zed/settings.json`) or via your Tehanu user settings (`~/.config/tehanu/settings.json`).
 
 ### Advanced Formatting
 
@@ -53,7 +53,7 @@ Sql-formatter also allows more precise control by providing [sql-formatter confi
 }
 ```
 
-When using a `.sql-formatter.json` file you can use a more simplified set of Zed settings since the language need not be specified inline:
+When using a `.sql-formatter.json` file you can use a more simplified set of Tehanu settings since the language need not be specified inline:
 
 ```json [settings]
   "languages": {

@@ -9,8 +9,8 @@ const {
   runTests,
 } = require("./randomized-test-minimize");
 
-const { ZED_SERVER_URL } = process.env;
-if (!ZED_SERVER_URL) throw new Error("Missing env var `ZED_SERVER_URL`");
+const { TEHANU_SERVER_URL } = process.env;
+if (!TEHANU_SERVER_URL) throw new Error("Missing env var `TEHANU_SERVER_URL`");
 
 main();
 
@@ -45,7 +45,7 @@ async function main() {
 
   console.log("minimized plan:\n", minimizedPlan);
 
-  const url = `${ZED_SERVER_URL}/api/randomized_test_failure`;
+  const url = `${TEHANU_SERVER_URL}/api/randomized_test_failure`;
   const body = {
     seed: minimizedSeed,
     plan: JSON.parse(minimizedPlan),

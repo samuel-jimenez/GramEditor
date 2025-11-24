@@ -103,8 +103,8 @@ mod tests {
         assert_eq!(
             parsed_remote,
             ParsedGitRemote {
-                owner: "zed-industries".into(),
-                repo: "zed".into(),
+                owner: "krig".into(),
+                repo: "tehanu".into(),
             }
         );
     }
@@ -118,7 +118,7 @@ mod tests {
         assert_eq!(
             parsed_remote,
             ParsedGitRemote {
-                owner: "zed-industries".into(),
+                owner: "krig".into(),
                 repo: "zed.git".into(),
             }
         );
@@ -133,8 +133,8 @@ mod tests {
         assert_eq!(
             parsed_remote,
             ParsedGitRemote {
-                owner: "zed-industries".into(),
-                repo: "zed".into(),
+                owner: "krig".into(),
+                repo: "tehanu".into(),
             }
         );
     }
@@ -143,8 +143,8 @@ mod tests {
     fn test_build_sourcehut_permalink() {
         let permalink = Sourcehut.build_permalink(
             ParsedGitRemote {
-                owner: "zed-industries".into(),
-                repo: "zed".into(),
+                owner: "krig".into(),
+                repo: "tehanu".into(),
             },
             BuildPermalinkParams::new(
                 "faa6f979be417239b2e070dbbf6392b909224e0b",
@@ -161,7 +161,7 @@ mod tests {
     fn test_build_sourcehut_permalink_with_git_suffix() {
         let permalink = Sourcehut.build_permalink(
             ParsedGitRemote {
-                owner: "zed-industries".into(),
+                owner: "krig".into(),
                 repo: "zed.git".into(),
             },
             BuildPermalinkParams::new(
@@ -179,8 +179,8 @@ mod tests {
     fn test_build_sourcehut_permalink_with_single_line_selection() {
         let permalink = Sourcehut.build_permalink(
             ParsedGitRemote {
-                owner: "zed-industries".into(),
-                repo: "zed".into(),
+                owner: "krig".into(),
+                repo: "tehanu".into(),
             },
             BuildPermalinkParams::new(
                 "faa6f979be417239b2e070dbbf6392b909224e0b",
@@ -197,8 +197,8 @@ mod tests {
     fn test_build_sourcehut_permalink_with_multi_line_selection() {
         let permalink = Sourcehut.build_permalink(
             ParsedGitRemote {
-                owner: "zed-industries".into(),
-                repo: "zed".into(),
+                owner: "krig".into(),
+                repo: "tehanu".into(),
             },
             BuildPermalinkParams::new(
                 "faa6f979be417239b2e070dbbf6392b909224e0b",

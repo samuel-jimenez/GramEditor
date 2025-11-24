@@ -132,7 +132,7 @@ impl MasterProcess {
 
 #[cfg(target_os = "windows")]
 impl MasterProcess {
-    const CONNECTION_ESTABLISHED_MAGIC: &str = "ZED_SSH_CONNECTION_ESTABLISHED";
+    const CONNECTION_ESTABLISHED_MAGIC: &str = "TEHANU_SSH_CONNECTION_ESTABLISHED";
 
     pub fn new(
         askpass_script_path: &std::ffi::OsStr,
@@ -353,7 +353,7 @@ impl RemoteConnection for SshRemoteConnection {
         };
 
         let mut proxy_args = vec![];
-        for env_var in ["RUST_LOG", "RUST_BACKTRACE", "ZED_GENERATE_MINIDUMPS"] {
+        for env_var in ["RUST_LOG", "RUST_BACKTRACE", "TEHANU_GENERATE_MINIDUMPS"] {
             if let Some(value) = std::env::var(env_var).ok() {
                 proxy_args.push(format!("{}='{}'", env_var, value));
             }
@@ -405,7 +405,7 @@ impl SshRemoteConnection {
         let url = connection_options.ssh_url();
 
         let temp_dir = tempfile::Builder::new()
-            .prefix("zed-ssh-session")
+            .prefix("tehanu-ssh-session")
             .tempdir()?;
         let askpass_delegate = askpass::AskPassDelegate::new(cx, {
             let delegate = delegate.clone();
@@ -546,7 +546,7 @@ impl SshRemoteConnection {
             _ => version.to_string(),
         };
         let binary_name = format!(
-            "zed-remote-server-{}-{}",
+            "tehanu-remote-server-{}-{}",
             release_channel.dev_name(),
             version_str
         );
@@ -928,7 +928,7 @@ impl SshSocket {
             "Darwin" => "macos",
             "Linux" => "linux",
             _ => anyhow::bail!(
-                "Prebuilt remote servers are not yet available for {os:?}. See https://zed.dev/docs/remote-development"
+                "Prebuilt remote servers are not yet available for {os:?}. See https://tehanu.liten.app/docs/remote-development"
             ),
         };
         // exclude armv5,6,7 as they are 32-bit.
@@ -942,7 +942,7 @@ impl SshSocket {
             "x86_64"
         } else {
             anyhow::bail!(
-                "Prebuilt remote servers are not yet available for {arch:?}. See https://zed.dev/docs/remote-development"
+                "Prebuilt remote servers are not yet available for {arch:?}. See https://tehanu.liten.app/docs/remote-development"
             )
         };
 

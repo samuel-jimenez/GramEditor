@@ -197,7 +197,7 @@ impl PasswordProxy {
         let askpass_socket = temp_dir.path().join("askpass.sock");
         let askpass_script_path = temp_dir.path().join(ASKPASS_SCRIPT_NAME);
         let current_exec =
-            std::env::current_exe().context("Failed to determine current zed executable path.")?;
+            std::env::current_exe().context("Failed to determine current executable path.")?;
 
         // TODO: inferred from the use of powershell.exe in askpass_helper_script
         let shell_kind = if cfg!(windows) {
@@ -276,8 +276,8 @@ impl PasswordProxy {
         }
     }
 }
-/// The main function for when Zed is running in netcat mode for use in askpass.
-/// Called from both the remote server binary and the zed binary in their respective main functions.
+/// The main function for when Tehanu is running in netcat mode for use in askpass.
+/// Called from both the remote server binary and the editor binary in their respective main functions.
 pub fn main(socket: &str) {
     use net::UnixStream;
     use std::io::{self, Read, Write};

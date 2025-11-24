@@ -55,9 +55,9 @@ if ($Help) {
     exit 0
 }
 
-Push-Location -Path crates/zed
+Push-Location -Path crates/tehanu
 $channel = Get-Content "RELEASE_CHANNEL"
-$env:ZED_RELEASE_CHANNEL = $channel
+$env:TEHANU_RELEASE_CHANNEL = $channel
 $env:RELEASE_CHANNEL = $channel
 Pop-Location
 
@@ -67,7 +67,7 @@ function CheckEnvironmentVariables {
     }
 
     $requiredVars = @(
-        'ZED_WORKSPACE', 'RELEASE_VERSION', 'ZED_RELEASE_CHANNEL',
+        'TEHANU_WORKSPACE', 'RELEASE_VERSION', 'TEHANU_RELEASE_CHANNEL',
         'AZURE_TENANT_ID', 'AZURE_CLIENT_ID', 'AZURE_CLIENT_SECRET',
         'ACCOUNT_NAME', 'CERT_PROFILE_NAME', 'ENDPOINT',
         'FILE_DIGEST', 'TIMESTAMP_DIGEST', 'TIMESTAMP_SERVER'
@@ -86,7 +86,7 @@ function PrepareForBundle {
         Remove-Item -Path "$innoDir" -Recurse -Force
     }
     New-Item -Path "$innoDir" -ItemType Directory -Force
-    Copy-Item -Path "$env:ZED_WORKSPACE\crates\zed\resources\windows\*" -Destination "$innoDir" -Recurse -Force
+    Copy-Item -Path "$env:TEHANU_WORKSPACE\crates\tehanu\resources\windows\*" -Destination "$innoDir" -Recurse -Force
     New-Item -Path "$innoDir\make_appx" -ItemType Directory -Force
     New-Item -Path "$innoDir\appx" -ItemType Directory -Force
     New-Item -Path "$innoDir\bin" -ItemType Directory -Force
@@ -102,11 +102,11 @@ function GenerateLicenses {
     $ErrorActionPreference = $oldErrorActionPreference
 }
 
-function BuildZedAndItsFriends {
-    Write-Output "Building Zed and its friends, for channel: $channel"
-    # Build zed.exe, cli.exe and auto_update_helper.exe
-    cargo build --release --package zed --package cli --package auto_update_helper --target $target
-    Copy-Item -Path ".\$CargoOutDir\zed.exe" -Destination "$innoDir\Zed.exe" -Force
+function BuildTehanuAndItsFriends {
+    Write-Output "Building Tehanu and its friends, for channel: $channel"
+    # Build tehanu.exe, cli.exe and auto_update_helper.exe
+    cargo build --release --package tehanu --package cli --package auto_update_helper --target $target
+    Copy-Item -Path ".\$CargoOutDir\tehanu.exe" -Destination "$innoDir\Tehanu.exe" -Force
     Copy-Item -Path ".\$CargoOutDir\cli.exe" -Destination "$innoDir\cli.exe" -Force
     Copy-Item -Path ".\$CargoOutDir\auto_update_helper.exe" -Destination "$innoDir\auto_update_helper.exe" -Force
     # Build explorer_command_injector.dll
@@ -121,18 +121,18 @@ function BuildZedAndItsFriends {
             cargo build --release --package explorer_command_injector --target $target
         }
     }
-    Copy-Item -Path ".\$CargoOutDir\explorer_command_injector.dll" -Destination "$innoDir\zed_explorer_command_injector.dll" -Force
+    Copy-Item -Path ".\$CargoOutDir\explorer_command_injector.dll" -Destination "$innoDir\tehanu_explorer_command_injector.dll" -Force
 }
 
-function ZipZedAndItsFriendsDebug {
+function ZipTehanuAndItsFriendsDebug {
     $items = @(
-        ".\$CargoOutDir\zed.pdb",
+        ".\$CargoOutDir\tehanu.pdb",
         ".\$CargoOutDir\cli.pdb",
         ".\$CargoOutDir\auto_update_helper.pdb",
         ".\$CargoOutDir\explorer_command_injector.pdb"
     )
 
-    Compress-Archive -Path $items -DestinationPath ".\$CargoOutDir\zed-$env:RELEASE_VERSION-$env:ZED_RELEASE_CHANNEL.dbg.zip" -Force
+    Compress-Archive -Path $items -DestinationPath ".\$CargoOutDir\tehanu-$env:RELEASE_VERSION-$env:TEHANU_RELEASE_CHANNEL.dbg.zip" -Force
 }
 
 
@@ -146,35 +146,35 @@ function UploadToSentry {
         Write-Output "missing SENTRY_AUTH_TOKEN. skipping sentry upload."
         return
     }
-    Write-Output "Uploading zed debug symbols to sentry..."
-    sentry-cli debug-files upload --include-sources --wait -p zed -o zed-dev $CargoOutDir
+    Write-Output "Uploading tehanu debug symbols to sentry..."
+    sentry-cli debug-files upload --include-sources --wait -p tehanu -o tehanu-dev $CargoOutDir
 }
 
 function MakeAppx {
     switch ($channel) {
         "stable" {
-            $manifestFile = "$env:ZED_WORKSPACE\crates\explorer_command_injector\AppxManifest.xml"
+            $manifestFile = "$env:TEHANU_WORKSPACE\crates\explorer_command_injector\AppxManifest.xml"
         }
         "preview" {
-            $manifestFile = "$env:ZED_WORKSPACE\crates\explorer_command_injector\AppxManifest-Preview.xml"
+            $manifestFile = "$env:TEHANU_WORKSPACE\crates\explorer_command_injector\AppxManifest-Preview.xml"
         }
         default {
-            $manifestFile = "$env:ZED_WORKSPACE\crates\explorer_command_injector\AppxManifest-Nightly.xml"
+            $manifestFile = "$env:TEHANU_WORKSPACE\crates\explorer_command_injector\AppxManifest-Nightly.xml"
         }
     }
     Copy-Item -Path "$manifestFile" -Destination "$innoDir\make_appx\AppxManifest.xml"
     # Add makeAppx.exe to Path
     $sdk = "C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x64"
     $env:Path += ';' + $sdk
-    makeAppx.exe pack /d "$innoDir\make_appx" /p "$innoDir\zed_explorer_command_injector.appx" /nv
+    makeAppx.exe pack /d "$innoDir\make_appx" /p "$innoDir\tehanu_explorer_command_injector.appx" /nv
 }
 
-function SignZedAndItsFriends {
+function SignTehanuAndItsFriends {
     if (-not $env:CI) {
         return
     }
 
-    $files = "$innoDir\Zed.exe,$innoDir\cli.exe,$innoDir\auto_update_helper.exe,$innoDir\zed_explorer_command_injector.dll,$innoDir\zed_explorer_command_injector.appx"
+    $files = "$innoDir\Tehanu.exe,$innoDir\cli.exe,$innoDir\auto_update_helper.exe,$innoDir\tehanu_explorer_command_injector.dll,$innoDir\tehanu_explorer_command_injector.appx"
     & "$innoDir\sign.ps1" $files
 }
 
@@ -196,10 +196,10 @@ function DownloadConpty {
 }
 
 function CollectFiles {
-    Move-Item -Path "$innoDir\zed_explorer_command_injector.appx" -Destination "$innoDir\appx\zed_explorer_command_injector.appx" -Force
-    Move-Item -Path "$innoDir\zed_explorer_command_injector.dll" -Destination "$innoDir\appx\zed_explorer_command_injector.dll" -Force
-    Move-Item -Path "$innoDir\cli.exe" -Destination "$innoDir\bin\zed.exe" -Force
-    Move-Item -Path "$innoDir\zed.sh" -Destination "$innoDir\bin\zed" -Force
+    Move-Item -Path "$innoDir\tehanu_explorer_command_injector.appx" -Destination "$innoDir\appx\tehanu_explorer_command_injector.appx" -Force
+    Move-Item -Path "$innoDir\tehanu_explorer_command_injector.dll" -Destination "$innoDir\appx\tehanu_explorer_command_injector.dll" -Force
+    Move-Item -Path "$innoDir\cli.exe" -Destination "$innoDir\bin\tehanu.exe" -Force
+    Move-Item -Path "$innoDir\tehanu.sh" -Destination "$innoDir\bin\tehanu" -Force
     Move-Item -Path "$innoDir\auto_update_helper.exe" -Destination "$innoDir\tools\auto_update_helper.exe" -Force
     if($Architecture -eq "aarch64") {
         New-Item -Type Directory -Path "$innoDir\arm64" -Force
@@ -217,63 +217,63 @@ function CollectFiles {
 }
 
 function BuildInstaller {
-    $issFilePath = "$innoDir\zed.iss"
+    $issFilePath = "$innoDir\tehanu.iss"
     switch ($channel) {
         "stable" {
             $appId = "{{2DB0DA96-CA55-49BB-AF4F-64AF36A86712}"
             $appIconName = "app-icon"
-            $appName = "Zed"
-            $appDisplayName = "Zed"
-            $appSetupName = "Zed-$Architecture"
-            # The mutex name here should match the mutex name in crates\zed\src\zed\windows_only_instance.rs
-            $appMutex = "Zed-Stable-Instance-Mutex"
-            $appExeName = "Zed"
-            $regValueName = "Zed"
-            $appUserId = "ZedIndustries.Zed"
+            $appName = "Tehanu"
+            $appDisplayName = "Tehanu"
+            $appSetupName = "Tehanu-$Architecture"
+            # The mutex name here should match the mutex name in crates\tehanu\src\tehanu\windows_only_instance.rs
+            $appMutex = "Tehanu-Stable-Instance-Mutex"
+            $appExeName = "Tehanu"
+            $regValueName = "Tehanu"
+            $appUserId = "TehanuIndustries.Tehanu"
             $appShellNameShort = "Z&ed"
-            $appAppxFullName = "ZedIndustries.Zed_1.0.0.0_neutral__japxn1gcva8rg"
+            $appAppxFullName = "TehanuIndustries.Tehanu_1.0.0.0_neutral__japxn1gcva8rg"
         }
         "preview" {
             $appId = "{{F70E4811-D0E2-4D88-AC99-D63752799F95}"
             $appIconName = "app-icon-preview"
-            $appName = "Zed Preview"
-            $appDisplayName = "Zed Preview"
-            $appSetupName = "Zed-$Architecture"
-            # The mutex name here should match the mutex name in crates\zed\src\zed\windows_only_instance.rs
-            $appMutex = "Zed-Preview-Instance-Mutex"
-            $appExeName = "Zed"
-            $regValueName = "ZedPreview"
-            $appUserId = "ZedIndustries.Zed.Preview"
+            $appName = "Tehanu Preview"
+            $appDisplayName = "Tehanu Preview"
+            $appSetupName = "Tehanu-$Architecture"
+            # The mutex name here should match the mutex name in crates\tehanu\src\tehanu\windows_only_instance.rs
+            $appMutex = "Tehanu-Preview-Instance-Mutex"
+            $appExeName = "Tehanu"
+            $regValueName = "TehanuPreview"
+            $appUserId = "TehanuIndustries.Tehanu.Preview"
             $appShellNameShort = "Z&ed Preview"
-            $appAppxFullName = "ZedIndustries.Zed.Preview_1.0.0.0_neutral__japxn1gcva8rg"
+            $appAppxFullName = "TehanuIndustries.Tehanu.Preview_1.0.0.0_neutral__japxn1gcva8rg"
         }
         "nightly" {
             $appId = "{{1BDB21D3-14E7-433C-843C-9C97382B2FE0}"
             $appIconName = "app-icon-nightly"
-            $appName = "Zed Nightly"
-            $appDisplayName = "Zed Nightly"
-            $appSetupName = "Zed-$Architecture"
-            # The mutex name here should match the mutex name in crates\zed\src\zed\windows_only_instance.rs
-            $appMutex = "Zed-Nightly-Instance-Mutex"
-            $appExeName = "Zed"
-            $regValueName = "ZedNightly"
-            $appUserId = "ZedIndustries.Zed.Nightly"
+            $appName = "Tehanu Nightly"
+            $appDisplayName = "Tehanu Nightly"
+            $appSetupName = "Tehanu-$Architecture"
+            # The mutex name here should match the mutex name in crates\tehanu\src\tehanu\windows_only_instance.rs
+            $appMutex = "Tehanu-Nightly-Instance-Mutex"
+            $appExeName = "Tehanu"
+            $regValueName = "TehanuNightly"
+            $appUserId = "TehanuIndustries.Tehanu.Nightly"
             $appShellNameShort = "Z&ed Editor Nightly"
-            $appAppxFullName = "ZedIndustries.Zed.Nightly_1.0.0.0_neutral__japxn1gcva8rg"
+            $appAppxFullName = "TehanuIndustries.Tehanu.Nightly_1.0.0.0_neutral__japxn1gcva8rg"
         }
         "dev" {
             $appId = "{{8357632E-24A4-4F32-BA97-E575B4D1FE5D}"
             $appIconName = "app-icon-dev"
-            $appName = "Zed Dev"
-            $appDisplayName = "Zed Dev"
-            $appSetupName = "Zed-$Architecture"
-            # The mutex name here should match the mutex name in crates\zed\src\zed\windows_only_instance.rs
-            $appMutex = "Zed-Dev-Instance-Mutex"
-            $appExeName = "Zed"
-            $regValueName = "ZedDev"
-            $appUserId = "ZedIndustries.Zed.Dev"
+            $appName = "Tehanu Dev"
+            $appDisplayName = "Tehanu Dev"
+            $appSetupName = "Tehanu-$Architecture"
+            # The mutex name here should match the mutex name in crates\tehanu\src\tehanu\windows_only_instance.rs
+            $appMutex = "Tehanu-Dev-Instance-Mutex"
+            $appExeName = "Tehanu"
+            $regValueName = "TehanuDev"
+            $appUserId = "TehanuIndustries.Tehanu.Dev"
             $appShellNameShort = "Z&ed Dev"
-            $appAppxFullName = "ZedIndustries.Zed.Dev_1.0.0.0_neutral__japxn1gcva8rg"
+            $appAppxFullName = "TehanuIndustries.Tehanu.Dev_1.0.0.0_neutral__japxn1gcva8rg"
         }
         default {
             Write-Error "can't bundle installer for $channel."
@@ -289,7 +289,7 @@ function BuildInstaller {
     $definitions = @{
         "AppId"          = $appId
         "AppIconName"    = $appIconName
-        "OutputDir"      = "$env:ZED_WORKSPACE\target"
+        "OutputDir"      = "$env:TEHANU_WORKSPACE\target"
         "AppSetupName"   = $appSetupName
         "AppName"        = $appName
         "AppDisplayName" = $appDisplayName
@@ -300,7 +300,7 @@ function BuildInstaller {
         "ShellNameShort" = $appShellNameShort
         "AppUserId"      = $appUserId
         "Version"        = "$env:RELEASE_VERSION"
-        "SourceDir"      = "$env:ZED_WORKSPACE"
+        "SourceDir"      = "$env:TEHANU_WORKSPACE"
         "AppxFullName"   = $appAppxFullName
     }
 
@@ -330,18 +330,18 @@ function BuildInstaller {
     }
 }
 
-ParseZedWorkspace
-$innoDir = "$env:ZED_WORKSPACE\inno\$Architecture"
-$debugArchive = "$CargoOutDir\zed-$env:RELEASE_VERSION-$env:ZED_RELEASE_CHANNEL.dbg.zip"
-$debugStoreKey = "$env:ZED_RELEASE_CHANNEL/zed-$env:RELEASE_VERSION-$env:ZED_RELEASE_CHANNEL.dbg.zip"
+ParseTehanuWorkspace
+$innoDir = "$env:TEHANU_WORKSPACE\inno\$Architecture"
+$debugArchive = "$CargoOutDir\tehanu-$env:RELEASE_VERSION-$env:TEHANU_RELEASE_CHANNEL.dbg.zip"
+$debugStoreKey = "$env:TEHANU_RELEASE_CHANNEL/tehanu-$env:RELEASE_VERSION-$env:TEHANU_RELEASE_CHANNEL.dbg.zip"
 
 CheckEnvironmentVariables
 PrepareForBundle
 GenerateLicenses
-BuildZedAndItsFriends
+BuildTehanuAndItsFriends
 MakeAppx
-SignZedAndItsFriends
-ZipZedAndItsFriendsDebug
+SignTehanuAndItsFriends
+ZipTehanuAndItsFriendsDebug
 DownloadAMDGpuServices
 DownloadConpty
 CollectFiles
@@ -354,8 +354,8 @@ if($env:CI) {
 if ($buildSuccess) {
     Write-Output "Build successful"
     if ($Install) {
-        Write-Output "Installing Zed..."
-        Start-Process -FilePath "$env:ZED_WORKSPACE/target/ZedEditorUserSetup-x64-$env:RELEASE_VERSION.exe"
+        Write-Output "Installing Tehanu..."
+        Start-Process -FilePath "$env:TEHANU_WORKSPACE/target/TehanuEditorUserSetup-x64-$env:RELEASE_VERSION.exe"
     }
     exit 0
 }

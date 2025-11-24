@@ -7,7 +7,7 @@ OCaml support is available through the [OCaml extension](https://github.com/zed-
 
 ## Setup Instructions
 
-If you have the development environment already setup, you can skip to [Launching Zed](#launching-zed)
+If you have the development environment already setup, you can skip to [Launching Tehanu](#launching-zed)
 
 ### Using Opam
 
@@ -15,7 +15,7 @@ Opam is the official package manager for OCaml and is highly recommended for get
 
 Once you install opam and setup a switch with your development environment as per the instructions, you can proceed.
 
-### Launching Zed
+### Launching Tehanu
 
 By now you should have `ocamllsp` installed, you can verify so by running
 
@@ -25,7 +25,7 @@ ocamllsp --help
 
 in your terminal. If you get a help message, you're good to go. If not, please revisit the installation instructions for `ocamllsp` and ensure it's properly installed.
 
-With that aside, we can now launch Zed. Given how the OCaml package manager works, we require you to run Zed from the terminal, so please make sure you install the [Zed cli](https://zed.dev/features#cli) if you haven't already.
+With that aside, we can now launch Tehanu. Given how the OCaml package manager works, we require you to run Tehanu from the terminal, so please make sure you install the [Tehanu cli](https://tehanu.liten.app/features#cli) if you haven't already.
 
 Once you have the cli, simply from a terminal, navigate to your project and run
 
@@ -33,4 +33,4 @@ Once you have the cli, simply from a terminal, navigate to your project and run
 zed .
 ```
 
-Voilà! You should have Zed running with OCaml support, no additional setup required.
+Voilà! You should have Tehanu running with OCaml support, no additional setup required.

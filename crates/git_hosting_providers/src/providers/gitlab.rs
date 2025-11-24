@@ -266,8 +266,8 @@ mod tests {
         assert_eq!(
             parsed_remote,
             ParsedGitRemote {
-                owner: "zed-industries".into(),
-                repo: "zed".into(),
+                owner: "krig".into(),
+                repo: "tehanu".into(),
             }
         );
     }
@@ -281,8 +281,8 @@ mod tests {
         assert_eq!(
             parsed_remote,
             ParsedGitRemote {
-                owner: "zed-industries".into(),
-                repo: "zed".into(),
+                owner: "krig".into(),
+                repo: "tehanu".into(),
             }
         );
     }
@@ -299,8 +299,8 @@ mod tests {
         assert_eq!(
             parsed_remote,
             ParsedGitRemote {
-                owner: "zed-industries".into(),
-                repo: "zed".into(),
+                owner: "krig".into(),
+                repo: "tehanu".into(),
             }
         );
     }
@@ -317,7 +317,7 @@ mod tests {
             parsed_remote,
             ParsedGitRemote {
                 owner: "group/subgroup".into(),
-                repo: "zed".into(),
+                repo: "tehanu".into(),
             }
         );
     }
@@ -326,8 +326,8 @@ mod tests {
     fn test_build_gitlab_permalink() {
         let permalink = Gitlab::public_instance().build_permalink(
             ParsedGitRemote {
-                owner: "zed-industries".into(),
-                repo: "zed".into(),
+                owner: "krig".into(),
+                repo: "tehanu".into(),
             },
             BuildPermalinkParams::new(
                 "e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7",
@@ -344,8 +344,8 @@ mod tests {
     fn test_build_gitlab_permalink_with_single_line_selection() {
         let permalink = Gitlab::public_instance().build_permalink(
             ParsedGitRemote {
-                owner: "zed-industries".into(),
-                repo: "zed".into(),
+                owner: "krig".into(),
+                repo: "tehanu".into(),
             },
             BuildPermalinkParams::new(
                 "e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7",
@@ -362,8 +362,8 @@ mod tests {
     fn test_build_gitlab_permalink_with_multi_line_selection() {
         let permalink = Gitlab::public_instance().build_permalink(
             ParsedGitRemote {
-                owner: "zed-industries".into(),
-                repo: "zed".into(),
+                owner: "krig".into(),
+                repo: "tehanu".into(),
             },
             BuildPermalinkParams::new(
                 "e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7",
@@ -383,8 +383,8 @@ mod tests {
                 .unwrap();
         let permalink = gitlab.build_permalink(
             ParsedGitRemote {
-                owner: "zed-industries".into(),
-                repo: "zed".into(),
+                owner: "krig".into(),
+                repo: "tehanu".into(),
             },
             BuildPermalinkParams::new(
                 "e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7",
@@ -404,8 +404,8 @@ mod tests {
                 .unwrap();
         let permalink = gitlab.build_permalink(
             ParsedGitRemote {
-                owner: "zed-industries".into(),
-                repo: "zed".into(),
+                owner: "krig".into(),
+                repo: "tehanu".into(),
             },
             BuildPermalinkParams::new(
                 "b2efec9824c45fcc90c9a7eb107a50d1772a60aa",

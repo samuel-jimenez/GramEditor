@@ -19,8 +19,8 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
 GITHUB_API_BASE_URL = "https://api.github.com"
-REPO_OWNER = "zed-industries"
-REPO_NAME = "zed"
+REPO_OWNER = "krig"
+REPO_NAME = "tehanu"
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 HEADERS = {
     "Authorization": f"token {GITHUB_TOKEN}",

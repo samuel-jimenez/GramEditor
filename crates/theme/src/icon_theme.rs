@@ -383,11 +383,11 @@ fn icon_keys_by_association(
 }
 
 /// The name of the default icon theme.
-pub(crate) const DEFAULT_ICON_THEME_NAME: &str = "Zed (Default)";
+pub(crate) const DEFAULT_ICON_THEME_NAME: &str = "Tehanu (Default)";
 
 static DEFAULT_ICON_THEME: LazyLock<Arc<IconTheme>> = LazyLock::new(|| {
     Arc::new(IconTheme {
-        id: "zed".into(),
+        id: "tehanu".into(),
         name: DEFAULT_ICON_THEME_NAME.into(),
         appearance: Appearance::Dark,
         directory_icons: DirectoryIcons {

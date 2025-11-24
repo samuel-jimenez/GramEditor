@@ -143,7 +143,7 @@ fn git_panel_context_menu(
                 StashAll.boxed_clone(),
             )
             .action_disabled_when(!state.has_stash_items, "Stash Pop", StashPop.boxed_clone())
-            .action("View Stash", zed_actions::git::ViewStash.boxed_clone())
+            .action("View Stash", app_actions::git::ViewStash.boxed_clone())
             .separator()
             .action("Open Diff", project_diff::Diff.boxed_clone())
             .separator()
@@ -4434,14 +4434,14 @@ impl RenderOnce for PanelRepoFooter {
             .label_size(LabelSize::Small)
             .truncate(true)
             .on_click(|_, window, cx| {
-                window.dispatch_action(zed_actions::git::Switch.boxed_clone(), cx);
+                window.dispatch_action(app_actions::git::Switch.boxed_clone(), cx);
             });
 
         let branch_selector = PopoverMenu::new("popover-button")
             .menu(move |window, cx| Some(branch_picker::popover(repo.clone(), window, cx)))
             .trigger_with_tooltip(
                 branch_selector_button,
-                Tooltip::for_action_title("Switch Branch", &zed_actions::git::Switch),
+                Tooltip::for_action_title("Switch Branch", &app_actions::git::Switch),
             )
             .anchor(Corner::BottomLeft)
             .offset(gpui::Point {
@@ -4665,7 +4665,7 @@ impl Component for PanelRepoFooter {
                                     .w(example_width)
                                     .overflow_hidden()
                                     .child(PanelRepoFooter::new_preview(
-                                        SharedString::from("zed"),
+                                        SharedString::from("tehanu"),
                                         Some(custom("main", behind_upstream)),
                                     ))
                                     .into_any_element(),
@@ -4676,7 +4676,7 @@ impl Component for PanelRepoFooter {
                                     .w(example_width)
                                     .overflow_hidden()
                                     .child(PanelRepoFooter::new_preview(
-                                        SharedString::from("zed"),
+                                        SharedString::from("tehanu"),
                                         Some(custom(
                                             "redesign-and-update-git-ui-list-entry-style",
                                             behind_upstream,
@@ -4726,7 +4726,7 @@ impl Component for PanelRepoFooter {
                                     .w(example_width)
                                     .overflow_hidden()
                                     .child(PanelRepoFooter::new_preview(
-                                        SharedString::from("zed"),
+                                        SharedString::from("tehanu"),
                                         Some(custom("update-README", behind_upstream)),
                                     ))
                                     .into_any_element(),
@@ -4777,7 +4777,7 @@ mod tests {
         fs.insert_tree(
             "/root",
             json!({
-                "zed": {
+                "tehanu": {
                     ".git": {},
                     "crates": {
                         "gpui": {

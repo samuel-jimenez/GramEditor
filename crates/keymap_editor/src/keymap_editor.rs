@@ -42,7 +42,7 @@ use workspace::{
 };
 
 pub use ui_components::*;
-use zed_actions::{ChangeKeybinding, OpenKeymap};
+use app_actions::{ChangeKeybinding, OpenKeymap};
 
 use crate::{
     persistence::KEYBINDING_EDITORS,
@@ -1724,13 +1724,13 @@ impl Render for KeymapEditor {
                                                         Some(ContextMenu::build(window, cx, |menu, _, _| {
                                                             menu.header("View Default...")
                                                                 .action(
-                                                                    "Zed Key Bindings",
-                                                                    zed_actions::OpenDefaultKeymap
+                                                                    "Tehanu Key Bindings",
+                                                                    app_actions::OpenDefaultKeymap
                                                                         .boxed_clone(),
                                                                 )
                                                                 .action(
                                                                     "Vim Bindings",
-                                                                    zed_actions::vim::OpenDefaultKeymap.boxed_clone(),
+                                                                    app_actions::vim::OpenDefaultKeymap.boxed_clone(),
                                                                 )
                                                         }))
                                                     })
@@ -1750,7 +1750,7 @@ impl Render for KeymapEditor {
                                                             move |_window, cx| {
                                                                 Tooltip::for_action_in(
                                                                     "View Default...",
-                                                                    &zed_actions::OpenKeymapFile,
+                                                                    &app_actions::OpenKeymapFile,
                                                                     &focus_handle,
                                                                     cx,
                                                                 )
@@ -1763,7 +1763,7 @@ impl Render for KeymapEditor {
                                                     .style(ButtonStyle::Outlined)
                                                     .on_click(|_, window, cx| {
                                                         window.dispatch_action(
-                                                            zed_actions::OpenKeymapFile.boxed_clone(),
+                                                            app_actions::OpenKeymapFile.boxed_clone(),
                                                             cx,
                                                         );
                                                     })
@@ -3006,21 +3006,21 @@ async fn load_keybind_context_language(
                 .project()
                 .read(cx)
                 .languages()
-                .language_for_name("Zed Keybind Context")
+                .language_for_name("Tehanu Keybind Context")
         })
-        .context("Failed to load Zed Keybind Context language")
+        .context("Failed to load Tehanu Keybind Context language")
         .log_err();
     let language = match language_task {
         Some(task) => task
             .await
-            .context("Failed to load Zed Keybind Context language")
+            .context("Failed to load Tehanu Keybind Context language")
             .log_err(),
         None => None,
     };
     language.unwrap_or_else(|| {
         Arc::new(Language::new(
             LanguageConfig {
-                name: "Zed Keybind Context".into(),
+                name: "Tehanu Keybind Context".into(),
                 ..Default::default()
             },
             Some(tree_sitter_rust::LANGUAGE.into()),

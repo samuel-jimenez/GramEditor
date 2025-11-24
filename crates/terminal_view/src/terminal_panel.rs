@@ -141,7 +141,7 @@ impl TerminalPanel {
                                         // context menu will be gone the moment we spawn the modal.
                                         .action(
                                             "Spawn task",
-                                            zed_actions::Spawn::modal().boxed_clone(),
+                                            app_actions::Spawn::modal().boxed_clone(),
                                         )
                                 });
 
@@ -1293,10 +1293,10 @@ impl Render for FailedToSpawnTerminal {
             .menu(move |window, cx| {
                 Some(ContextMenu::build(window, cx, |context_menu, _, _| {
                     context_menu
-                        .action("Open Settings", zed_actions::OpenSettings.boxed_clone())
+                        .action("Open Settings", app_actions::OpenSettings.boxed_clone())
                         .action(
                             "Edit settings.json",
-                            zed_actions::OpenSettingsFile.boxed_clone(),
+                            app_actions::OpenSettingsFile.boxed_clone(),
                         )
                 }))
             })
@@ -1330,7 +1330,7 @@ impl Render for FailedToSpawnTerminal {
                         ButtonLike::new("open-settings-ui")
                             .child(Label::new("Edit Settings").size(LabelSize::Small))
                             .on_click(|_, window, cx| {
-                                window.dispatch_action(zed_actions::OpenSettings.boxed_clone(), cx);
+                                window.dispatch_action(app_actions::OpenSettings.boxed_clone(), cx);
                             }),
                         popover_menu.into_any_element(),
                     )),
@@ -1810,7 +1810,7 @@ mod tests {
             })
             .unwrap();
 
-        let user_command = r#"REPO_URL=$(git remote get-url origin | sed -e \"s/^git@\\(.*\\):\\(.*\\)\\.git$/https:\\/\\/\\1\\/\\2/\"); COMMIT_SHA=$(git log -1 --format=\"%H\" -- \"${ZED_RELATIVE_FILE}\"); echo \"${REPO_URL}/blob/${COMMIT_SHA}/${ZED_RELATIVE_FILE}#L${ZED_ROW}-$(echo $(($(wc -l <<< \"$ZED_SELECTED_TEXT\") + $ZED_ROW - 1)))\" | xclip -selection clipboard"#.to_string();
+        let user_command = r#"REPO_URL=$(git remote get-url origin | sed -e \"s/^git@\\(.*\\):\\(.*\\)\\.git$/https:\\/\\/\\1\\/\\2/\"); COMMIT_SHA=$(git log -1 --format=\"%H\" -- \"${TEHANU_RELATIVE_FILE}\"); echo \"${REPO_URL}/blob/${COMMIT_SHA}/${TEHANU_RELATIVE_FILE}#L${TEHANU_ROW}-$(echo $(($(wc -l <<< \"$TEHANU_SELECTED_TEXT\") + $TEHANU_ROW - 1)))\" | xclip -selection clipboard"#.to_string();
 
         let expected_cwd = PathBuf::from("/some/work");
         let task = window_handle

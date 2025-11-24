@@ -37,7 +37,7 @@ pub struct WorkspaceSettingsContent {
     ///
     /// Default: off
     pub autosave: Option<AutosaveSetting>,
-    /// Controls previous session restoration in freshly launched Zed instance.
+    /// Controls previous session restoration in freshly launched Tehanu instance.
     /// Values: none, last_workspace, last_session
     /// Default: last_session
     pub restore_on_startup: Option<RestoreOnStartupBehavior>,
@@ -61,13 +61,13 @@ pub struct WorkspaceSettingsContent {
     /// Default: auto ("on" on macOS, "off" otherwise)
     pub when_closing_with_no_tabs: Option<CloseWindowWhenNoItems>,
     /// Whether to use the system provided dialogs for Open and Save As.
-    /// When set to false, Zed will use the built-in keyboard-first pickers.
+    /// When set to false, Tehanu will use the built-in keyboard-first pickers.
     ///
     /// Default: true
     pub use_system_path_prompts: Option<bool>,
     /// Whether to use the system provided prompts.
-    /// When set to false, Zed will use the built-in prompts.
-    /// Note that this setting has no effect on Linux, where Zed will always
+    /// When set to false, Tehanu will use the built-in prompts.
+    /// Note that this setting has no effect on Linux, where Tehanu will always
     /// use the built-in prompts.
     ///
     /// Default: true
@@ -340,7 +340,7 @@ pub enum RestoreOnStartupBehavior {
     None,
     /// Restore the workspace that was closed last.
     LastWorkspace,
-    /// Restore all workspaces that were open when quitting Zed.
+    /// Restore all workspaces that were open when quitting Tehanu.
     #[default]
     LastSession,
 }

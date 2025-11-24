@@ -32,7 +32,7 @@ pub fn init(cx: &mut App) {
                 extension::Event::ExtensionsInstalledChanged => {}
             }
             cx.update_global::<SchemaStore, _>(|schema_store, cx| {
-                schema_store.notify_schema_changed("zed://schemas/settings", cx);
+                schema_store.notify_schema_changed("tehanu://schemas/settings", cx);
             });
         })
         .detach();
@@ -40,7 +40,7 @@ pub fn init(cx: &mut App) {
 
     cx.observe_global::<dap::DapRegistry>(|cx| {
         cx.update_global::<SchemaStore, _>(|schema_store, cx| {
-            schema_store.notify_schema_changed("zed://schemas/debug_tasks", cx);
+            schema_store.notify_schema_changed("tehanu://schemas/debug_tasks", cx);
         });
     })
     .detach();
@@ -85,7 +85,7 @@ pub fn resolve_schema_request(
     uri: String,
     cx: &mut AsyncApp,
 ) -> Result<serde_json::Value> {
-    let path = uri.strip_prefix("zed://schemas/").context("Invalid URI")?;
+    let path = uri.strip_prefix("tehanu://schemas/").context("Invalid URI")?;
     resolve_schema_request_inner(languages, path, cx)
 }
 
@@ -173,25 +173,25 @@ pub fn all_schema_file_associations(cx: &mut App) -> serde_json::Value {
                 schema_file_match(paths::settings_file()),
                 paths::local_settings_file_relative_path()
             ],
-            "url": "zed://schemas/settings",
+            "url": "tehanu://schemas/settings",
         },
         {
             "fileMatch": [schema_file_match(paths::keymap_file())],
-            "url": "zed://schemas/keymap",
+            "url": "tehanu://schemas/keymap",
         },
         {
             "fileMatch": [
                 schema_file_match(paths::tasks_file()),
                 paths::local_tasks_file_relative_path()
             ],
-            "url": "zed://schemas/tasks",
+            "url": "tehanu://schemas/tasks",
         },
         {
             "fileMatch": [
                 schema_file_match(paths::debug_scenarios_file()),
                 paths::local_debug_file_relative_path()
             ],
-            "url": "zed://schemas/debug_tasks",
+            "url": "tehanu://schemas/debug_tasks",
         },
         {
             "fileMatch": [
@@ -201,15 +201,15 @@ pub fn all_schema_file_associations(cx: &mut App) -> serde_json::Value {
                         .as_path()
                 )
             ],
-            "url": "zed://schemas/snippets",
+            "url": "tehanu://schemas/snippets",
         },
         {
             "fileMatch": ["tsconfig.json"],
-            "url": "zed://schemas/tsconfig"
+            "url": "tehanu://schemas/tsconfig"
         },
         {
             "fileMatch": ["package.json"],
-            "url": "zed://schemas/package_json"
+            "url": "tehanu://schemas/package_json"
         },
     ]);
 
@@ -222,7 +222,7 @@ pub fn all_schema_file_associations(cx: &mut App) -> serde_json::Value {
                 "fileMatch": [
                     "zed-inspector-style.json"
                 ],
-                "url": "zed://schemas/zed_inspector_style"
+                "url": "tehanu://schemas/zed_inspector_style"
             }));
     }
 
@@ -233,7 +233,7 @@ pub fn all_schema_file_associations(cx: &mut App) -> serde_json::Value {
             let file_name = normalized_action_name_to_file_name(normalized_name.clone());
             serde_json::json!({
                 "fileMatch": [file_name],
-                "url": format!("zed://schemas/action/{}", normalized_name)
+                "url": format!("tehanu://schemas/action/{}", normalized_name)
             })
         }),
     );

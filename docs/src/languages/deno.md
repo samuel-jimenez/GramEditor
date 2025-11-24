@@ -51,7 +51,7 @@ To use the Deno Language Server with TypeScript and TSX files, you will likely w
 }
 ```
 
-See [Configuring supported languages](../configuring-languages.md) in the Zed documentation for more information.
+See [Configuring supported languages](../configuring-languages.md) in the Tehanu documentation for more information.
 
 <!--
 TBD: Deno TypeScript REPL instructions [docs/repl#typescript-deno](../repl.md#typescript-deno)
@@ -59,7 +59,7 @@ TBD: Deno TypeScript REPL instructions [docs/repl#typescript-deno](../repl.md#ty
 
 ## Configuration completion
 
-To get completions for `deno.json` or `package.json` you can add the following to your `settings.json`: (More info here https://zed.dev/docs/languages/json)
+To get completions for `deno.json` or `package.json` you can add the following to your `settings.json`: (More info here https://tehanu.liten.app/docs/languages/json)
 
 ```json [settings]
 "lsp": {
@@ -98,8 +98,8 @@ To debug deno programs, add this to `.zed/debug.json`
     "label": "Deno",
     "request": "launch",
     "type": "pwa-node",
-    "cwd": "$ZED_WORKTREE_ROOT",
-    "program": "$ZED_FILE",
+    "cwd": "$TEHANU_WORKTREE_ROOT",
+    "program": "$TEHANU_FILE",
     "runtimeExecutable": "deno",
     "runtimeArgs": ["run", "--allow-all", "--inspect-wait"],
     "attachSimplePort": 9229
@@ -115,7 +115,7 @@ To run deno tasks like tests from the ui, add this to `.zed/tasks.json`
 [
   {
     "label": "deno test",
-    "command": "deno test -A --filter '/^$ZED_CUSTOM_DENO_TEST_NAME$/' '$ZED_FILE'",
+    "command": "deno test -A --filter '/^$TEHANU_CUSTOM_DENO_TEST_NAME$/' '$TEHANU_FILE'",
     "tags": ["js-test"]
   }
 ]

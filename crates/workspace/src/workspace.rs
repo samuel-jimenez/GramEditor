@@ -121,7 +121,7 @@ pub use workspace_settings::{
     AutosaveSetting, BottomDockLayout, RestoreOnStartupBehavior, StatusBarSettings, TabBarSettings,
     WorkspaceSettings,
 };
-use zed_actions::{Spawn, feedback::FileBugReport};
+use app_actions::{Spawn, feedback::FileBugReport};
 
 use crate::persistence::{
     SerializedAxis,
@@ -131,15 +131,15 @@ use crate::{item::ItemBufferKind, notifications::NotificationId};
 
 pub const SERIALIZATION_THROTTLE_TIME: Duration = Duration::from_millis(200);
 
-static ZED_WINDOW_SIZE: LazyLock<Option<Size<Pixels>>> = LazyLock::new(|| {
-    env::var("ZED_WINDOW_SIZE")
+static TEHANU_WINDOW_SIZE: LazyLock<Option<Size<Pixels>>> = LazyLock::new(|| {
+    env::var("TEHANU_WINDOW_SIZE")
         .ok()
         .as_deref()
         .and_then(parse_pixel_size_env_var)
 });
 
-static ZED_WINDOW_POSITION: LazyLock<Option<Point<Pixels>>> = LazyLock::new(|| {
-    env::var("ZED_WINDOW_POSITION")
+static TEHANU_WINDOW_POSITION: LazyLock<Option<Point<Pixels>>> = LazyLock::new(|| {
+    env::var("TEHANU_WINDOW_POSITION")
         .ok()
         .as_deref()
         .and_then(parse_pixel_position_env_var)
@@ -5209,8 +5209,8 @@ impl Workspace {
 }
 
 fn window_bounds_env_override() -> Option<Bounds<Pixels>> {
-    ZED_WINDOW_POSITION
-        .zip(*ZED_WINDOW_SIZE)
+    TEHANU_WINDOW_POSITION
+        .zip(*TEHANU_WINDOW_SIZE)
         .map(|(position, size)| Bounds {
             origin: position,
             size,
@@ -5939,11 +5939,11 @@ pub fn last_session_workspace_locations(
 }
 
 actions!(
-    zed,
+    tehanu,
     [
-        /// Opens the Zed log file.
+        /// Opens the Tehanu log file.
         OpenLog,
-        /// Reveals the Zed log file in the system file manager.
+        /// Reveals the Tehanu log file in the system file manager.
         RevealLogInFileManager
     ]
 );

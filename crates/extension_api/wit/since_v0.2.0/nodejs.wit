@@ -1,5 +1,5 @@
 interface nodejs {
-    /// Returns the path to the Node binary used by Zed.
+    /// Returns the path to the Node binary used by Tehanu.
     node-binary-path: func() -> result<string, string>;
 
     /// Returns the latest version of the given NPM package.

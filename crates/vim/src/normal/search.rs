@@ -277,7 +277,7 @@ impl Vim {
             self.push_operator(operator, window, cx);
         };
         self.search_motion(
-            Motion::ZedSearchResult {
+            Motion::TehanuSearchResult {
                 prior_selections,
                 new_selections,
             },
@@ -317,7 +317,7 @@ impl Vim {
 
         let new_selections = self.editor_selections(window, cx);
         self.search_motion(
-            Motion::ZedSearchResult {
+            Motion::TehanuSearchResult {
                 prior_selections,
                 new_selections,
             },
@@ -386,7 +386,7 @@ impl Vim {
                     vim.update(cx, |vim, cx| {
                         let new_selections = vim.editor_selections(window, cx);
                         vim.search_motion(
-                            Motion::ZedSearchResult {
+                            Motion::TehanuSearchResult {
                                 prior_selections,
                                 new_selections,
                             },
@@ -568,7 +568,7 @@ impl Vim {
 }
 
 impl Replacement {
-    // convert a vim query into something more usable by zed.
+    // convert a vim query into something more usable by tehanu.
     // we don't attempt to fully convert between the two regex syntaxes,
     // but we do flip \( and \) to ( and ) (and vice-versa) in the pattern,
     // and convert \0..\9 to $0..$9 in the replacement so that common idioms work.

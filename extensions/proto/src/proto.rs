@@ -12,8 +12,8 @@ struct ProtobufExtension;
 impl ProtobufExtension {
     fn language_server_binary(
         &self,
-        _language_server_id: &zed::LanguageServerId,
-        worktree: &zed::Worktree,
+        _language_server_id: &tehanu::LanguageServerId,
+        worktree: &tehanu::Worktree,
     ) -> Result<ProtobufLanguageServerBinary> {
         let binary_settings = LspSettings::for_worktree("protobuf-language-server", worktree)
             .ok()
@@ -40,7 +40,7 @@ impl ProtobufExtension {
     }
 }
 
-impl zed::Extension for ProtobufExtension {
+impl tehanu::Extension for ProtobufExtension {
     fn new() -> Self {
         Self
     }
@@ -51,7 +51,7 @@ impl zed::Extension for ProtobufExtension {
         worktree: &zed_extension_api::Worktree,
     ) -> zed_extension_api::Result<zed_extension_api::Command> {
         let binary = self.language_server_binary(language_server_id, worktree)?;
-        Ok(zed::Command {
+        Ok(tehanu::Command {
             command: binary.path,
             args: binary
                 .args
@@ -61,4 +61,4 @@ impl zed::Extension for ProtobufExtension {
     }
 }
 
-zed::register_extension!(ProtobufExtension);
+tehanu::register_extension!(ProtobufExtension);

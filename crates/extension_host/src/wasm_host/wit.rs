@@ -13,7 +13,7 @@ use gpui::BackgroundExecutor;
 use language::LanguageName;
 use lsp::LanguageServerName;
 use release_channel::ReleaseChannel;
-use task::{DebugScenario, SpawnInTerminal, TaskTemplate, ZedDebugConfig};
+use task::{DebugScenario, SpawnInTerminal, TaskTemplate, TehanuDebugConfig};
 
 use crate::wasm_host::wit::since_v0_6_0::dap::StartDebuggingRequestArgumentsRequest;
 
@@ -31,7 +31,7 @@ use wasmtime::{
 pub use latest::CodeLabelSpanLiteral;
 pub use latest::{
     CodeLabel, CodeLabelSpan, Command, DebugAdapterBinary, ExtensionProject, Range,
-    zed::extension::lsp::{
+    tehanu::extension::lsp::{
         Completion, CompletionKind, CompletionLabelDetails, InsertTextFormat, Symbol, SymbolKind,
     },
 };
@@ -89,7 +89,7 @@ pub fn authorize_access_to_unreleased_wasm_api_version(
 
     anyhow::ensure!(
         allow_unreleased_version,
-        "unreleased versions of the extension API can only be used on development builds of Zed"
+        "unreleased versions of the extension API can only be used on development builds of Tehanu"
     );
 
     Ok(())
@@ -810,7 +810,7 @@ impl Extension {
     pub async fn call_dap_config_to_scenario(
         &self,
         store: &mut Store<WasmState>,
-        config: ZedDebugConfig,
+        config: TehanuDebugConfig,
     ) -> Result<Result<DebugScenario, String>> {
         match self {
             Extension::V0_6_0(ext) => {

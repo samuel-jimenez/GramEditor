@@ -1,5 +1,5 @@
 syntax = "proto3";
-package zed.messages;
+package tehanu.messages;
 
 message UpdateInviteInfo {
     string url = 1;

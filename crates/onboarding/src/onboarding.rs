@@ -32,7 +32,7 @@ mod welcome;
 
 /// Imports settings from Visual Studio Code.
 #[derive(Copy, Clone, Debug, Default, PartialEq, Deserialize, JsonSchema, Action)]
-#[action(namespace = zed)]
+#[action(namespace = tehanu)]
 #[serde(deny_unknown_fields)]
 pub struct ImportVsCodeSettings {
     #[serde(default)]
@@ -40,10 +40,10 @@ pub struct ImportVsCodeSettings {
 }
 
 pub const FIRST_OPEN: &str = "first_open";
-pub const DOCS_URL: &str = "https://zed.dev/docs/";
+pub const DOCS_URL: &str = "https://tehanu.liten.app/docs/";
 
 actions!(
-    zed,
+    tehanu,
     [
         /// Opens the onboarding view.
         OpenOnboarding
@@ -266,7 +266,7 @@ impl Render for Onboarding {
                                                             .size(HeadlineSize::Small),
                                                     )
                                                     .child(
-                                                        Label::new(r#"“I come with empty hands and the desire to unbuild walls.”"#)
+                                                        Label::new(r#"What cannot be mended must be transcended."#)
                                                             .color(Color::Muted)
                                                             .size(LabelSize::Small)
                                                             .italic(),

@@ -137,7 +137,7 @@ pub(crate) fn current_platform(_headless: bool) -> Rc<dyn Platform> {
 #[cfg(any(target_os = "linux", target_os = "freebsd"))]
 #[inline]
 pub fn guess_compositor() -> &'static str {
-    if std::env::var_os("ZED_HEADLESS").is_some() {
+    if std::env::var_os("TEHANU_HEADLESS").is_some() {
         return "Headless";
     }
 
@@ -1049,7 +1049,7 @@ pub struct UTF16Selection {
     pub reversed: bool,
 }
 
-/// Zed's interface for handling text input from the platform's IME system
+/// Tehanu's interface for handling text input from the platform's IME system
 /// This is currently a 1:1 exposure of the NSTextInputClient API:
 ///
 /// <https://developer.apple.com/documentation/appkit/nstextinputclient>

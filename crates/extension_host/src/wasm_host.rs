@@ -37,7 +37,7 @@ use std::{
     },
     time::Duration,
 };
-use task::{DebugScenario, SpawnInTerminal, TaskTemplate, ZedDebugConfig};
+use task::{DebugScenario, SpawnInTerminal, TaskTemplate, TehanuDebugConfig};
 use util::paths::SanitizedPath;
 use wasmtime::{
     CacheStore, Engine, Store,
@@ -66,7 +66,7 @@ pub struct WasmExtension {
     pub manifest: Arc<ExtensionManifest>,
     pub work_dir: Arc<Path>,
     #[allow(unused)]
-    pub zed_api_version: SemanticVersion,
+    pub tehanu_api_version: SemanticVersion,
     _task: Arc<Task<Result<(), gpui_tokio::JoinError>>>,
 }
 
@@ -342,7 +342,7 @@ impl extension::Extension for WasmExtension {
         .await?
     }
 
-    async fn dap_config_to_scenario(&self, config: ZedDebugConfig) -> Result<DebugScenario> {
+    async fn dap_config_to_scenario(&self, config: TehanuDebugConfig) -> Result<DebugScenario> {
         self.call(|extension, store| {
             async move {
                 let kind = extension
@@ -512,7 +512,7 @@ impl WasmHost {
         let manifest = manifest.clone();
         let executor = cx.background_executor().clone();
         let load_extension_task = async move {
-            let zed_api_version = parse_wasm_extension_version(&manifest.id, &wasm_bytes)?;
+            let tehanu_api_version = parse_wasm_extension_version(&manifest.id, &wasm_bytes)?;
 
             let component = Component::from_binary(&this.engine, &wasm_bytes)
                 .context("failed to compile wasm component")?;
@@ -537,7 +537,7 @@ impl WasmHost {
                 &executor,
                 &mut store,
                 this.release_channel,
-                zed_api_version,
+                tehanu_api_version,
                 &component,
             )
             .await?;
@@ -552,7 +552,7 @@ impl WasmHost {
                 // note: Setting the thread local here will slowly "poison" all tokio threads
                 // causing us to not record their panics any longer.
                 //
-                // This is fine though, the main zed binary only uses tokio for livekit and wasm extensions.
+                // This is fine though, the main editor binary only uses tokio for livekit and wasm extensions.
                 // Livekit seldom (if ever) panics 🤞 so the likelihood of us missing a panic in sentry is very low.
                 IS_WASM_THREAD.with(|v| v.store(true, Ordering::Release));
                 while let Some(call) = rx.next().await {
@@ -565,11 +565,11 @@ impl WasmHost {
                 manifest.clone(),
                 this.work_dir.join(manifest.id.as_ref()).into(),
                 tx,
-                zed_api_version,
+                tehanu_api_version,
             ))
         };
         cx.spawn(async move |cx| {
-            let (extension_task, manifest, work_dir, tx, zed_api_version) =
+            let (extension_task, manifest, work_dir, tx, tehanu_api_version) =
                 cx.background_executor().spawn(load_extension_task).await?;
             // we need to run run the task in a tokio context as wasmtime_wasi may
             // call into tokio, accessing its runtime handle when we trigger the `engine.increment_epoch()` above.
@@ -579,7 +579,7 @@ impl WasmHost {
                 manifest,
                 work_dir,
                 tx,
-                zed_api_version,
+                tehanu_api_version,
                 _task: task,
             })
         })
@@ -629,12 +629,12 @@ pub fn parse_wasm_extension_version(
     for part in wasmparser::Parser::new(0).parse_all(wasm_bytes) {
         if let wasmparser::Payload::CustomSection(s) =
             part.context("error parsing wasm extension")?
-            && s.name() == "zed:api-version"
+            && s.name() == "tehanu:api-version"
         {
             version = parse_wasm_extension_version_custom_section(s.data());
             if version.is_none() {
                 bail!(
-                    "extension {} has invalid zed:api-version section: {:?}",
+                    "extension {} has invalid tehanu:api-version section: {:?}",
                     extension_id,
                     s.data()
                 );
@@ -647,7 +647,7 @@ pub fn parse_wasm_extension_version(
     //
     // By parsing the entirety of the Wasm bytes before we return, we're able to detect this problem
     // earlier as an `Err` rather than as a panic.
-    version.with_context(|| format!("extension {extension_id} has no zed:api-version section"))
+    version.with_context(|| format!("extension {extension_id} has no tehanu:api-version section"))
 }
 
 fn parse_wasm_extension_version_custom_section(data: &[u8]) -> Option<SemanticVersion> {

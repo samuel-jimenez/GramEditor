@@ -197,12 +197,12 @@ impl serde::Serialize for Input {
 
 pub mod assets {
     // NOTE: these asset names also exist in the zed.dev codebase.
-    pub const MAC_AARCH64: &str = "Zed-aarch64.dmg";
-    pub const MAC_X86_64: &str = "Zed-x86_64.dmg";
+    pub const MAC_AARCH64: &str = "Tehanu-aarch64.dmg";
+    pub const MAC_X86_64: &str = "Tehanu-x86_64.dmg";
     pub const LINUX_AARCH64: &str = "zed-linux-aarch64.tar.gz";
     pub const LINUX_X86_64: &str = "zed-linux-x86_64.tar.gz";
-    pub const WINDOWS_X86_64: &str = "Zed-x86_64.exe";
-    pub const WINDOWS_AARCH64: &str = "Zed-aarch64.exe";
+    pub const WINDOWS_X86_64: &str = "Tehanu-x86_64.exe";
+    pub const WINDOWS_AARCH64: &str = "Tehanu-aarch64.exe";
 
     pub const REMOTE_SERVER_MAC_AARCH64: &str = "zed-remote-server-macos-aarch64.gz";
     pub const REMOTE_SERVER_MAC_X86_64: &str = "zed-remote-server-macos-x86_64.gz";

@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-RELEASE_CRATES=("cli" "remote_server" "zed")
+RELEASE_CRATES=("cli" "remote_server" "tehanu")
 
 check_license () {
     local dir="$1"

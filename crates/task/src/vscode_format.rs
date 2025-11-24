@@ -157,15 +157,15 @@ mod tests {
         // And now, the actual replacing
         let replacer = EnvVariableReplacer::new(HashMap::from_iter([(
             "PATH".to_owned(),
-            "ZED_PATH".to_owned(),
+            "TEHANU_PATH".to_owned(),
         )]));
         assert_eq!(replacer.replace("Food"), "Food");
         assert_eq!(
             replacer.replace("$PATH is an environment variable"),
-            "${ZED_PATH} is an environment variable"
+            "${TEHANU_PATH} is an environment variable"
         );
-        assert_eq!(replacer.replace("${PATH}"), "${ZED_PATH}");
-        assert_eq!(replacer.replace("${PATH:food}"), "${ZED_PATH:food}");
+        assert_eq!(replacer.replace("${PATH}"), "${TEHANU_PATH}");
+        assert_eq!(replacer.replace("${PATH:food}"), "${TEHANU_PATH:food}");
     }
 
     #[test]
@@ -233,9 +233,9 @@ mod tests {
                 label: "tsc: watch ./src".to_string(),
                 command: "node".to_string(),
                 args: vec![
-                    "${ZED_WORKTREE_ROOT}/node_modules/typescript/lib/tsc.js".to_string(),
+                    "${TEHANU_WORKTREE_ROOT}/node_modules/typescript/lib/tsc.js".to_string(),
                     "--build".to_string(),
-                    "${ZED_WORKTREE_ROOT}/src".to_string(),
+                    "${TEHANU_WORKTREE_ROOT}/src".to_string(),
                     "--watch".to_string(),
                 ],
                 ..Default::default()

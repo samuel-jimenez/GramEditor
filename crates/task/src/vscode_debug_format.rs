@@ -129,22 +129,22 @@ mod tests {
         "#;
         let parsed: VsCodeDebugTaskFile =
             serde_json_lenient::from_str(raw).expect("deserializing launch.json");
-        let zed = DebugTaskFile::try_from(parsed).expect("converting to Zed debug templates");
+        let zed = DebugTaskFile::try_from(parsed).expect("converting to Tehanu debug templates");
         pretty_assertions::assert_eq!(
-            zed,
+            tehanu,
             DebugTaskFile(vec![DebugScenario {
                 label: "Debug my JS app".into(),
                 adapter: "JavaScript".into(),
                 config: json!({
                     "request": "launch",
-                    "program": "${ZED_WORKTREE_ROOT}/xyz.js",
+                    "program": "${TEHANU_WORKTREE_ROOT}/xyz.js",
                     "showDevDebugOutput": false,
                     "stopOnEntry": true,
                     "args": [
                         "--foo",
-                        "${ZED_WORKTREE_ROOT}/thing",
+                        "${TEHANU_WORKTREE_ROOT}/thing",
                     ],
-                    "cwd": "${ZED_WORKTREE_ROOT}/${FOO}/sub",
+                    "cwd": "${TEHANU_WORKTREE_ROOT}/${FOO}/sub",
                     "env": {
                         "X": "Y",
                     },
@@ -174,11 +174,11 @@ mod tests {
         "#;
         let parsed: VsCodeDebugTaskFile =
             serde_json_lenient::from_str(raw).expect("deserializing launch.json");
-        let zed = DebugTaskFile::try_from(parsed).expect("converting to Zed debug templates");
+        let zed = DebugTaskFile::try_from(parsed).expect("converting to Tehanu debug templates");
 
         let expected_placeholder = format!("${{{}}}", VariableName::PickProcessId);
         pretty_assertions::assert_eq!(
-            zed,
+            tehanu,
             DebugTaskFile(vec![DebugScenario {
                 label: "Attach to Process".into(),
                 adapter: "CodeLLDB".into(),

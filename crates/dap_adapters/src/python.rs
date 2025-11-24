@@ -95,7 +95,7 @@ impl PythonDebugAdapter {
 
         let mut configuration = task_definition.config.clone();
         if let Ok(console) = configuration.dot_get_mut("console") {
-            // Use built-in Zed terminal if user did not explicitly provide a setting for console.
+            // Use built-in Tehanu terminal if user did not explicitly provide a setting for console.
             if console.is_null() {
                 *console = Value::String("integratedTerminal".into());
             }
@@ -260,7 +260,7 @@ impl PythonDebugAdapter {
 
                 let debug_adapter_path = paths::debug_adapters_dir().join(Self::DEBUG_ADAPTER_NAME.as_ref());
                 let output = util::command::new_smol_command(&base_python)
-                    .args(["-m", "venv", "zed_base_venv"])
+                    .args(["-m", "venv", "tehanu_base_venv"])
                     .current_dir(
                         &debug_adapter_path,
                     )
@@ -285,7 +285,7 @@ impl PythonDebugAdapter {
                 Ok(Arc::from(
                     paths::debug_adapters_dir()
                         .join(Self::DEBUG_ADAPTER_NAME.as_ref())
-                        .join("zed_base_venv")
+                        .join("tehanu_base_venv")
                         .join(PYTHON_PATH)
                         .as_ref(),
                 ))
@@ -428,9 +428,9 @@ impl DebugAdapter for PythonDebugAdapter {
         Some(SharedString::new_static("Python").into())
     }
 
-    async fn config_from_zed_format(&self, zed_scenario: ZedDebugConfig) -> Result<DebugScenario> {
+    async fn config_from_tehanu_format(&self, tehanu_scenario: TehanuDebugConfig) -> Result<DebugScenario> {
         let mut args = json!({
-            "request": match zed_scenario.request {
+            "request": match tehanu_scenario.request {
                 DebugRequest::Launch(_) => "launch",
                 DebugRequest::Attach(_) => "attach",
             },
@@ -439,7 +439,7 @@ impl DebugAdapter for PythonDebugAdapter {
         });
 
         let map = args.as_object_mut().unwrap();
-        match &zed_scenario.request {
+        match &tehanu_scenario.request {
             DebugRequest::Attach(attach) => {
                 map.insert("processId".into(), attach.process_id.into());
             }
@@ -450,7 +450,7 @@ impl DebugAdapter for PythonDebugAdapter {
                     map.insert("env".into(), launch.env_json());
                 }
 
-                if let Some(stop_on_entry) = zed_scenario.stop_on_entry {
+                if let Some(stop_on_entry) = tehanu_scenario.stop_on_entry {
                     map.insert("stopOnEntry".into(), stop_on_entry.into());
                 }
                 if let Some(cwd) = launch.cwd.as_ref() {
@@ -460,8 +460,8 @@ impl DebugAdapter for PythonDebugAdapter {
         }
 
         Ok(DebugScenario {
-            adapter: zed_scenario.adapter,
-            label: zed_scenario.label,
+            adapter: tehanu_scenario.adapter,
+            label: tehanu_scenario.label,
             config: args,
             build: None,
             tcp_connection: None,
@@ -547,7 +547,7 @@ impl DebugAdapter for PythonDebugAdapter {
                         "label": "Path mapping",
                         "properties": {
                             "localRoot": {
-                                "default": "${ZED_WORKTREE_ROOT}",
+                                "default": "${TEHANU_WORKTREE_ROOT}",
                                 "label": "Local source root.",
                                 "type": "string"
                             },
@@ -709,7 +709,7 @@ impl DebugAdapter for PythonDebugAdapter {
                                 ]
                             },
                             "cwd": {
-                                "default": "${ZED_WORKTREE_ROOT}",
+                                "default": "${TEHANU_WORKTREE_ROOT}",
                                 "description": "Absolute path to the working directory of the program being debugged. Default is the root directory of the file (leave empty).",
                                 "type": "string"
                             },
@@ -727,7 +727,7 @@ impl DebugAdapter for PythonDebugAdapter {
                                 "type": "object"
                             },
                             "envFile": {
-                                "default": "${ZED_WORKTREE_ROOT}/.env",
+                                "default": "${TEHANU_WORKTREE_ROOT}/.env",
                                 "description": "Absolute path to a file containing environment variable definitions.",
                                 "type": "string"
                             },
@@ -742,7 +742,7 @@ impl DebugAdapter for PythonDebugAdapter {
                                 "type": "string"
                             },
                             "program": {
-                                "default": "${ZED_FILE}",
+                                "default": "${TEHANU_FILE}",
                                 "description": "Absolute path to the program.",
                                 "type": "string"
                             },
@@ -843,7 +843,7 @@ impl DebugAdapter for PythonDebugAdapter {
             })
             .chain(
                 // While Debugpy's wiki saids absolute paths are required, but it actually supports relative paths when cwd is passed in.
-                // (Which should always be the case because Zed defaults to the cwd worktree root)
+                // (Which should always be the case because Tehanu defaults to the cwd worktree root)
                 // So we want to check that these relative paths find toolchains as well. Otherwise, they won't be checked
                 // because the strip prefix in the iteration above will return an error
                 config

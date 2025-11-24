@@ -20,7 +20,7 @@ use itertools::Itertools as _;
 use picker::{Picker, PickerDelegate, highlighted_match_with_paths::HighlightedMatch};
 use project::{DebugScenarioContext, Project, TaskContexts, TaskSourceKind, task_store::TaskStore};
 use settings::Settings;
-use task::{DebugScenario, RevealTarget, VariableName, ZedDebugConfig};
+use task::{DebugScenario, RevealTarget, VariableName, TehanuDebugConfig};
 use theme::ThemeSettings;
 use ui::{
     CheckboxWithLabel, ContextMenu, DropdownMenu, FluentBuilder, IconWithIndicator, Indicator,
@@ -319,7 +319,7 @@ impl NewProcessModal {
             None
         };
 
-        let session_scenario = ZedDebugConfig {
+        let session_scenario = TehanuDebugConfig {
             adapter: debugger.to_owned().into(),
             label,
             request,
@@ -330,7 +330,7 @@ impl NewProcessModal {
             .global::<DapRegistry>()
             .adapter(&session_scenario.adapter);
 
-        cx.spawn(async move |_| adapter?.config_from_zed_format(session_scenario).await.ok())
+        cx.spawn(async move |_| adapter?.config_from_tehanu_format(session_scenario).await.ok())
     }
 
     fn start_new_session(&mut self, window: &mut Window, cx: &mut Context<Self>) {
@@ -795,12 +795,12 @@ impl ConfigureMode {
     pub(super) fn new(window: &mut Window, cx: &mut App) -> Entity<Self> {
         let program = cx.new(|cx| Editor::single_line(window, cx));
         program.update(cx, |this, cx| {
-            this.set_placeholder_text("ENV=Zed ~/bin/program --option", window, cx);
+            this.set_placeholder_text("ENV=Tehanu ~/bin/program --option", window, cx);
         });
 
         let cwd = cx.new(|cx| Editor::single_line(window, cx));
         cwd.update(cx, |this, cx| {
-            this.set_placeholder_text("Ex: $ZED_WORKTREE_ROOT", window, cx);
+            this.set_placeholder_text("Ex: $TEHANU_WORKTREE_ROOT", window, cx);
         });
 
         cx.new(|_| Self {
@@ -930,7 +930,7 @@ impl ConfigureMode {
 
 #[derive(Clone)]
 pub(super) struct AttachMode {
-    pub(super) definition: ZedDebugConfig,
+    pub(super) definition: TehanuDebugConfig,
     pub(super) attach_picker: Entity<AttachModal>,
 }
 
@@ -942,7 +942,7 @@ impl AttachMode {
         window: &mut Window,
         cx: &mut Context<NewProcessModal>,
     ) -> Entity<Self> {
-        let definition = ZedDebugConfig {
+        let definition = TehanuDebugConfig {
             adapter: debugger.unwrap_or(DebugAdapterName("".into())).0,
             label: "Attach New Session Setup".into(),
             request: dap::DebugRequest::Attach(task::AttachRequest { process_id: None }),
@@ -1458,7 +1458,7 @@ impl PickerDelegate for DebugDelegate {
                     Button::new("edit-debug-json", "Edit debug.json").on_click(cx.listener(
                         |_picker, _, window, cx| {
                             window.dispatch_action(
-                                zed_actions::OpenProjectDebugTasks.boxed_clone(),
+                                app_actions::OpenProjectDebugTasks.boxed_clone(),
                                 cx,
                             );
                             cx.emit(DismissEvent);
@@ -1579,7 +1579,7 @@ pub(crate) fn resolve_path(path: &mut String) {
         *path = trimmed_path.replacen('~', &home, 1);
     } else if let Some(strip_path) = path.strip_prefix(&format!(".{}", std::path::MAIN_SEPARATOR)) {
         *path = format!(
-            "$ZED_WORKTREE_ROOT{}{}",
+            "$TEHANU_WORKTREE_ROOT{}{}",
             std::path::MAIN_SEPARATOR,
             &strip_path
         );

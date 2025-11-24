@@ -1744,7 +1744,7 @@ impl Pane {
             let path = item.project_path(cx);
             // Put the currently active item at the end, because if the currently active item is not closed last
             // closing the currently active item will cause the focus to switch to another item
-            // This will cause Zed to expand the content of the currently active item
+            // This will cause Tehanu to expand the content of the currently active item
             //
             // Beyond that sort in order of project path, with untitled files and multibuffers coming last.
             (active_item_id == Some(item.item_id()), path.is_none(), path)
@@ -2942,7 +2942,7 @@ impl Pane {
                                 .when_some(entry_abs_path, |menu, abs_path| {
                                     menu.entry(
                                         "Copy Path",
-                                        Some(Box::new(zed_actions::workspace::CopyPath)),
+                                        Some(Box::new(app_actions::workspace::CopyPath)),
                                         window.handler_for(&pane, move |_, _, cx| {
                                             cx.write_to_clipboard(ClipboardItem::new_string(
                                                 abs_path.to_string_lossy().into_owned(),
@@ -2953,7 +2953,7 @@ impl Pane {
                                 .when_some(relative_path, |menu, relative_path| {
                                     menu.entry(
                                         "Copy Relative Path",
-                                        Some(Box::new(zed_actions::workspace::CopyRelativePath)),
+                                        Some(Box::new(app_actions::workspace::CopyRelativePath)),
                                         window.handler_for(&pane, move |this, _, cx| {
                                             let Some(project) = this.project.upgrade() else {
                                                 return;

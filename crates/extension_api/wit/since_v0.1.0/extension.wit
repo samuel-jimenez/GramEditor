@@ -1,4 +1,4 @@
-package zed:extension;
+package tehanu:extension;
 
 world extension {
     import github;
@@ -68,7 +68,7 @@ world extension {
         env: env-vars,
     }
 
-    /// A Zed worktree.
+    /// A Tehanu worktree.
     resource worktree {
         /// Returns the ID of the worktree.
         id: func() -> u64;

@@ -98,7 +98,7 @@ impl Vim {
                     } else if action.before {
                         sel.start
                     } else if sel.start == sel.end {
-                        // Helix and Zed differ in how they understand
+                        // Helix and Tehanu differ in how they understand
                         // single-point cursors. In Helix, a single-point cursor
                         // is "on top" of some character, and pasting after that
                         // cursor means that the pasted content should go after

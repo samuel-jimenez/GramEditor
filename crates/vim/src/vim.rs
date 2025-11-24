@@ -1,4 +1,4 @@
-//! Vim support for Zed.
+//! Vim support for Tehanu.
 
 #[cfg(test)]
 mod test;
@@ -313,7 +313,7 @@ pub fn init(cx: &mut App) {
 
         workspace.register_action(|_, _: &ToggleProjectPanelFocus, window, cx| {
             if Vim::take_count(cx).is_none() {
-                window.dispatch_action(zed_actions::project_panel::ToggleFocus.boxed_clone(), cx);
+                window.dispatch_action(app_actions::project_panel::ToggleFocus.boxed_clone(), cx);
             }
         });
 
@@ -342,7 +342,7 @@ pub fn init(cx: &mut App) {
             };
         });
 
-        workspace.register_action(|_, _: &zed_actions::vim::OpenDefaultKeymap, _, cx| {
+        workspace.register_action(|_, _: &app_actions::vim::OpenDefaultKeymap, _, cx| {
             cx.emit(workspace::Event::OpenBundledFile {
                 text: settings::vim_keymap(),
                 title: "Default Vim Bindings",

@@ -242,6 +242,23 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a23eb6b1614318a8071c9b2521f36b424b2c83db5eb3a0fead4a6c0809af6e61"
 
 [[package]]
+name = "app_actions"
+version = "0.1.0"
+dependencies = [
+ "gpui",
+ "schemars",
+ "serde",
+ "uuid",
+]
+
+[[package]]
+name = "app_env_vars"
+version = "0.1.0"
+dependencies = [
+ "gpui",
+]
+
+[[package]]
 name = "approx"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1054,6 +1071,7 @@ dependencies = [
 name = "breadcrumbs"
 version = "0.1.0"
 dependencies = [
+ "app_actions",
  "editor",
  "gpui",
  "itertools 0.14.0",
@@ -1061,7 +1079,6 @@ dependencies = [
  "theme",
  "ui",
  "workspace",
- "zed_actions",
 ]
 
 [[package]]
@@ -1772,6 +1789,7 @@ name = "command_palette"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "app_actions",
  "client",
  "collections",
  "command_palette_hooks",
@@ -1796,7 +1814,6 @@ dependencies = [
  "ui",
  "util",
  "workspace",
- "zed_actions",
 ]
 
 [[package]]
@@ -2568,6 +2585,7 @@ name = "db"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "app_env_vars",
  "gpui",
  "indoc",
  "log",
@@ -2578,7 +2596,6 @@ dependencies = [
  "sqlez_macros",
  "tempfile",
  "util",
- "zed_env_vars",
 ]
 
 [[package]]
@@ -2630,6 +2647,7 @@ version = "0.1.0"
 dependencies = [
  "alacritty_terminal",
  "anyhow",
+ "app_actions",
  "bitflags 2.10.0",
  "collections",
  "command_palette_hooks",
@@ -2674,7 +2692,6 @@ dependencies = [
  "unindent",
  "util",
  "workspace",
- "zed_actions",
  "zlog",
 ]
 
@@ -2959,9 +2976,9 @@ dependencies = [
  "serde_json",
  "settings",
  "task",
+ "tehanu",
  "theme",
  "util",
- "zed",
  "zlog",
 ]
 
@@ -3069,6 +3086,7 @@ version = "0.1.0"
 dependencies = [
  "aho-corasick",
  "anyhow",
+ "app_actions",
  "assets",
  "buffer_diff",
  "client",
@@ -3135,7 +3153,6 @@ dependencies = [
  "uuid",
  "vim_mode_setting",
  "workspace",
- "zed_actions",
  "zlog",
 ]
 
@@ -3526,6 +3543,7 @@ name = "extensions_ui"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "app_actions",
  "client",
  "collections",
  "db",
@@ -3551,7 +3569,6 @@ dependencies = [
  "util",
  "vim_mode_setting",
  "workspace",
- "zed_actions",
 ]
 
 [[package]]
@@ -3645,13 +3662,13 @@ dependencies = [
 name = "feedback"
 version = "0.1.0"
 dependencies = [
+ "app_actions",
  "editor",
  "gpui",
  "system_specs",
  "urlencoding",
  "util",
  "workspace",
- "zed_actions",
 ]
 
 [[package]]
@@ -4324,6 +4341,7 @@ name = "git_ui"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "app_actions",
  "askpass",
  "buffer_diff",
  "collections",
@@ -4365,7 +4383,6 @@ dependencies = [
  "watch",
  "windows 0.61.3",
  "workspace",
- "zed_actions",
  "zeroize",
  "zlog",
 ]
@@ -5352,6 +5369,7 @@ name = "inspector_ui"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "app_actions",
  "command_palette_hooks",
  "editor",
  "fuzzy",
@@ -5366,7 +5384,6 @@ dependencies = [
  "util",
  "util_macros",
  "workspace",
- "zed_actions",
 ]
 
 [[package]]
@@ -5713,6 +5730,7 @@ name = "keymap_editor"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "app_actions",
  "collections",
  "command_palette",
  "component",
@@ -5741,7 +5759,6 @@ dependencies = [
  "ui_input",
  "util",
  "workspace",
- "zed_actions",
 ]
 
 [[package]]
@@ -5910,6 +5927,7 @@ name = "language_tools"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "app_actions",
  "collections",
  "command_palette_hooks",
  "editor",
@@ -5928,7 +5946,6 @@ dependencies = [
  "ui",
  "util",
  "workspace",
- "zed_actions",
  "zlog",
 ]
 
@@ -6710,12 +6727,12 @@ checksum = "68354c5c6bd36d73ff3feceb05efa59b6acb7626617f4962be322a825e61f79a"
 name = "miniprofiler_ui"
 version = "0.1.0"
 dependencies = [
+ "app_actions",
  "gpui",
  "serde_json",
  "smol",
  "util",
  "workspace",
- "zed_actions",
 ]
 
 [[package]]
@@ -7032,6 +7049,7 @@ name = "notifications"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "app_actions",
  "client",
  "collections",
  "component",
@@ -7044,7 +7062,6 @@ dependencies = [
  "ui",
  "util",
  "workspace",
- "zed_actions",
 ]
 
 [[package]]
@@ -7442,6 +7459,7 @@ name = "onboarding"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "app_actions",
  "client",
  "component",
  "db",
@@ -7462,7 +7480,6 @@ dependencies = [
  "util",
  "vim_mode_setting",
  "workspace",
- "zed_actions",
  "zlog",
 ]
 
@@ -7626,6 +7643,7 @@ dependencies = [
 name = "outline"
 version = "0.1.0"
 dependencies = [
+ "app_actions",
  "editor",
  "fuzzy",
  "gpui",
@@ -7645,7 +7663,6 @@ dependencies = [
  "ui",
  "util",
  "workspace",
- "zed_actions",
 ]
 
 [[package]]
@@ -7653,6 +7670,7 @@ name = "outline_panel"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "app_actions",
  "collections",
  "db",
  "editor",
@@ -7677,7 +7695,6 @@ dependencies = [
  "util",
  "workspace",
  "worktree",
- "zed_actions",
 ]
 
 [[package]]
@@ -8855,6 +8872,7 @@ name = "project_panel"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "app_actions",
  "client",
  "collections",
  "command_palette_hooks",
@@ -8882,7 +8900,6 @@ dependencies = [
  "util",
  "workspace",
  "worktree",
- "zed_actions",
 ]
 
 [[package]]
@@ -9321,6 +9338,7 @@ name = "recent_projects"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "app_actions",
  "askpass",
  "dap",
  "editor",
@@ -9350,7 +9368,6 @@ dependencies = [
  "util",
  "windows-registry 0.6.1",
  "workspace",
- "zed_actions",
 ]
 
 [[package]]
@@ -10188,6 +10205,7 @@ version = "0.1.0"
 dependencies = [
  "any_vec",
  "anyhow",
+ "app_actions",
  "bitflags 2.10.0",
  "collections",
  "editor",
@@ -10209,7 +10227,6 @@ dependencies = [
  "util",
  "util_macros",
  "workspace",
- "zed_actions",
 ]
 
 [[package]]
@@ -10487,6 +10504,7 @@ dependencies = [
 name = "settings_profile_selector"
 version = "0.1.0"
 dependencies = [
+ "app_actions",
  "editor",
  "fuzzy",
  "gpui",
@@ -10499,7 +10517,6 @@ dependencies = [
  "theme",
  "ui",
  "workspace",
- "zed_actions",
 ]
 
 [[package]]
@@ -10507,6 +10524,7 @@ name = "settings_ui"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "app_actions",
  "assets",
  "bm25",
  "editor",
@@ -10537,7 +10555,6 @@ dependencies = [
  "ui_input",
  "util",
  "workspace",
- "zed_actions",
  "zlog",
 ]
 
@@ -11419,6 +11436,7 @@ name = "task"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "app_actions",
  "collections",
  "futures 0.3.31",
  "gpui",
@@ -11434,7 +11452,6 @@ dependencies = [
  "sha2",
  "shellexpand 2.1.2",
  "util",
- "zed_actions",
 ]
 
 [[package]]
@@ -11442,6 +11459,7 @@ name = "tasks_ui"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "app_actions",
  "collections",
  "editor",
  "file_icons",
@@ -11460,7 +11478,138 @@ dependencies = [
  "ui",
  "util",
  "workspace",
- "zed_actions",
+]
+
+[[package]]
+name = "tehanu"
+version = "0.215.0"
+dependencies = [
+ "activity_indicator",
+ "anyhow",
+ "app_actions",
+ "app_env_vars",
+ "ashpd 0.11.0",
+ "askpass",
+ "assets",
+ "bincode",
+ "breadcrumbs",
+ "chrono",
+ "clap",
+ "cli",
+ "client",
+ "collections",
+ "command_palette",
+ "component",
+ "crashes",
+ "dap",
+ "dap_adapters",
+ "db",
+ "debug_adapter_extension",
+ "debugger_tools",
+ "debugger_ui",
+ "diagnostics",
+ "editor",
+ "env_logger 0.11.8",
+ "extension",
+ "extension_host",
+ "extensions_ui",
+ "feature_flags",
+ "feedback",
+ "file_finder",
+ "fs",
+ "futures 0.3.31",
+ "git",
+ "git_hosting_providers",
+ "git_ui",
+ "go_to_line",
+ "gpui",
+ "gpui_tokio",
+ "http_client",
+ "image_viewer",
+ "inspector_ui",
+ "install_cli",
+ "itertools 0.14.0",
+ "journal",
+ "json_schema_store",
+ "keymap_editor",
+ "language",
+ "language_extension",
+ "language_onboarding",
+ "language_selector",
+ "language_tools",
+ "languages",
+ "line_ending_selector",
+ "log",
+ "markdown",
+ "markdown_preview",
+ "menu",
+ "migrator",
+ "mimalloc",
+ "miniprofiler_ui",
+ "nc",
+ "node_runtime",
+ "notifications",
+ "onboarding",
+ "outline",
+ "outline_panel",
+ "parking_lot",
+ "paths",
+ "picker",
+ "pretty_assertions",
+ "profiling",
+ "project",
+ "project_panel",
+ "project_symbols",
+ "proto",
+ "rayon",
+ "recent_projects",
+ "release_channel",
+ "remote",
+ "repl",
+ "reqwest_client",
+ "rope",
+ "search",
+ "serde",
+ "serde_json",
+ "session",
+ "settings",
+ "settings_profile_selector",
+ "settings_ui",
+ "shellexpand 2.1.2",
+ "smol",
+ "snippet_provider",
+ "snippets_ui",
+ "svg_preview",
+ "sysinfo 0.37.2",
+ "system_specs",
+ "tab_switcher",
+ "task",
+ "tasks_ui",
+ "terminal_view",
+ "theme",
+ "theme_extension",
+ "theme_selector",
+ "time",
+ "title_bar",
+ "toolchain_selector",
+ "tree-sitter-md",
+ "tree-sitter-rust",
+ "ui",
+ "ui_input",
+ "ui_prompt",
+ "url",
+ "urlencoding",
+ "util",
+ "uuid",
+ "vim",
+ "vim_mode_setting",
+ "watch",
+ "windows 0.61.3",
+ "winresource",
+ "workspace",
+ "zed-reqwest",
+ "zlog",
+ "zlog_settings",
 ]
 
 [[package]]
@@ -11540,6 +11689,7 @@ name = "terminal_view"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "app_actions",
  "async-recursion",
  "breadcrumbs",
  "collections",
@@ -11568,7 +11718,6 @@ dependencies = [
  "ui",
  "util",
  "workspace",
- "zed_actions",
 ]
 
 [[package]]
@@ -11653,6 +11802,7 @@ dependencies = [
 name = "theme_selector"
 version = "0.1.0"
 dependencies = [
+ "app_actions",
  "fs",
  "fuzzy",
  "gpui",
@@ -11664,7 +11814,6 @@ dependencies = [
  "ui",
  "util",
  "workspace",
- "zed_actions",
 ]
 
 [[package]]
@@ -11861,6 +12010,7 @@ name = "title_bar"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "app_actions",
  "chrono",
  "client",
  "collections",
@@ -11884,7 +12034,6 @@ dependencies = [
  "util",
  "windows 0.61.3",
  "workspace",
- "zed_actions",
 ]
 
 [[package]]
@@ -12887,6 +13036,7 @@ name = "vim"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "app_actions",
  "assets",
  "async-compat",
  "async-trait",
@@ -12930,7 +13080,6 @@ dependencies = [
  "util_macros",
  "vim_mode_setting",
  "workspace",
- "zed_actions",
 ]
 
 [[package]]
@@ -14723,6 +14872,7 @@ version = "0.1.0"
 dependencies = [
  "any_vec",
  "anyhow",
+ "app_actions",
  "async-recursion",
  "client",
  "clock",
@@ -14760,7 +14910,6 @@ dependencies = [
  "util",
  "uuid",
  "windows 0.61.3",
- "zed_actions",
  "zlog",
 ]
 
@@ -15065,138 +15214,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "zed"
-version = "0.215.0"
-dependencies = [
- "activity_indicator",
- "anyhow",
- "ashpd 0.11.0",
- "askpass",
- "assets",
- "bincode",
- "breadcrumbs",
- "chrono",
- "clap",
- "cli",
- "client",
- "collections",
- "command_palette",
- "component",
- "crashes",
- "dap",
- "dap_adapters",
- "db",
- "debug_adapter_extension",
- "debugger_tools",
- "debugger_ui",
- "diagnostics",
- "editor",
- "env_logger 0.11.8",
- "extension",
- "extension_host",
- "extensions_ui",
- "feature_flags",
- "feedback",
- "file_finder",
- "fs",
- "futures 0.3.31",
- "git",
- "git_hosting_providers",
- "git_ui",
- "go_to_line",
- "gpui",
- "gpui_tokio",
- "http_client",
- "image_viewer",
- "inspector_ui",
- "install_cli",
- "itertools 0.14.0",
- "journal",
- "json_schema_store",
- "keymap_editor",
- "language",
- "language_extension",
- "language_onboarding",
- "language_selector",
- "language_tools",
- "languages",
- "line_ending_selector",
- "log",
- "markdown",
- "markdown_preview",
- "menu",
- "migrator",
- "mimalloc",
- "miniprofiler_ui",
- "nc",
- "node_runtime",
- "notifications",
- "onboarding",
- "outline",
- "outline_panel",
- "parking_lot",
- "paths",
- "picker",
- "pretty_assertions",
- "profiling",
- "project",
- "project_panel",
- "project_symbols",
- "proto",
- "rayon",
- "recent_projects",
- "release_channel",
- "remote",
- "repl",
- "reqwest_client",
- "rope",
- "search",
- "serde",
- "serde_json",
- "session",
- "settings",
- "settings_profile_selector",
- "settings_ui",
- "shellexpand 2.1.2",
- "smol",
- "snippet_provider",
- "snippets_ui",
- "svg_preview",
- "sysinfo 0.37.2",
- "system_specs",
- "tab_switcher",
- "task",
- "tasks_ui",
- "terminal_view",
- "theme",
- "theme_extension",
- "theme_selector",
- "time",
- "title_bar",
- "toolchain_selector",
- "tree-sitter-md",
- "tree-sitter-rust",
- "ui",
- "ui_input",
- "ui_prompt",
- "url",
- "urlencoding",
- "util",
- "uuid",
- "vim",
- "vim_mode_setting",
- "watch",
- "windows 0.61.3",
- "winresource",
- "workspace",
- "zed-reqwest",
- "zed_actions",
- "zed_env_vars",
- "zlog",
- "zlog_settings",
-]
-
-[[package]]
 name = "zed-font-kit"
 version = "0.14.1-zed"
 source = "git+https://github.com/zed-industries/font-kit?rev=110523127440aefb11ce0cf280ae7c5071337ec5#110523127440aefb11ce0cf280ae7c5071337ec5"
@@ -15301,23 +15318,6 @@ dependencies = [
  "x11rb",
  "xim-ctext",
  "xim-parser",
-]
-
-[[package]]
-name = "zed_actions"
-version = "0.1.0"
-dependencies = [
- "gpui",
- "schemars",
- "serde",
- "uuid",
-]
-
-[[package]]
-name = "zed_env_vars"
-version = "0.1.0"
-dependencies = [
- "gpui",
 ]
 
 [[package]]

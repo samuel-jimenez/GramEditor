@@ -1,4 +1,4 @@
-//! Provides access to Zed settings.
+//! Provides access to Tehanu settings.
 
 #[path = "../wit/since_v0.2.0/settings.rs"]
 mod types;
