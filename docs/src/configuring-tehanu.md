@@ -3822,7 +3822,7 @@ Example command to set the title: `echo -e "\e]2;New Title\007";`
 
 **Options**
 
-1. Use the current file's project directory. Will Fallback to the first project directory strategy if unsuccessful
+1. Use the current file's project directory. Fallback to the first project directory strategy if unsuccessful.
 
 ```json [settings]
 {
@@ -3832,7 +3832,7 @@ Example command to set the title: `echo -e "\e]2;New Title\007";`
 }
 ```
 
-2. Use the first project in this workspace's directory. Will fallback to using this platform's home directory.
+2. Use the first project in this workspace's directory. Fallback to using this platform's home directory.
 
 ```json [settings]
 {
@@ -3842,7 +3842,7 @@ Example command to set the title: `echo -e "\e]2;New Title\007";`
 }
 ```
 
-3. Always use this platform's home directory (if we can find it)
+3. Always use this platform's home directory if it can be found.
 
 ```json [settings]
 {
