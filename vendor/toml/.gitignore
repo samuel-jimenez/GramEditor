@@ -1,0 +1,6 @@
+#
+# zed-toml
+#
+
+*.wasm
+grammars/

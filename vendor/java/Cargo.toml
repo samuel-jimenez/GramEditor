@@ -1,0 +1,19 @@
+
+[package]
+name = "zed_java"
+version = "6.7.1"
+edition = "2024"
+publish = false
+license = "Apache-2.0"
+
+[lib]
+path = "src/java.rs"
+crate-type = ["cdylib"]
+
+[dependencies]
+hex = "0.4.3"
+regex = "1.12.2"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.145"
+sha1 = "0.10.6"
+tehanu_extension_api = { path = "../../crates/extension_api" }

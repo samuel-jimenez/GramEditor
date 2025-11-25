@@ -1,0 +1,32 @@
+[
+  {
+    "label": "run: '$ZED_FILENAME'",
+    "command": "odin",
+    "args": ["run", "$ZED_FILE", "-file"],
+    "tags": ["odin-main"]
+  },
+  {
+    "label": "run: package '$ZED_RELATIVE_DIR'",
+    "command": "odin",
+    "args": ["run", "$ZED_DIRNAME"],
+    "tags": ["odin-main"]
+  },
+  {
+    "label": "test: '$ZED_SYMBOL'",
+    "command": "odin",
+    "args": [
+      "test",
+      "$ZED_DIRNAME",
+      "-define:ODIN_TEST_NAMES=$ZED_SYMBOL",
+      "-define:ODIN_TEST_CLIPBOARD=false",
+      "-define:ODIN_TEST_FANCY=false"
+    ],
+    "tags": ["odin-test"]
+  },
+  {
+    "label": "test: '$ZED_RELATIVE_DIR'",
+    "command": "odin",
+    "args": ["test", "$ZED_DIRNAME", "-define:ODIN_TEST_CLIPBOARD=false"],
+    "tags": ["odin-test-all"]
+  }
+]
