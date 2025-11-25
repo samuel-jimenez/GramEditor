@@ -3,7 +3,7 @@ use crate::restorable_workspace_locations;
 use anyhow::{Context as _, Result, anyhow};
 use cli::{CliRequest, CliResponse, ipc::IpcSender};
 use cli::{IpcHandshake, ipc};
-use client::parse_zed_link;
+use client::parse_editor_link;
 use collections::HashMap;
 use db::kvp::KEY_VALUE_STORE;
 use editor::Editor;
@@ -108,7 +108,7 @@ impl OpenRequest {
                 });
             } else if url.starts_with("ssh://") {
                 this.parse_ssh_file_path(&url, cx)?
-            } else if let Some(request_path) = parse_zed_link(&url, cx) {
+            } else if let Some(request_path) = parse_editor_link(&url, cx) {
                 this.parse_request_path(request_path).log_err();
             } else {
                 log::error!("unhandled url: {}", url);

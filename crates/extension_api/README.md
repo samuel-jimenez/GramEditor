@@ -34,7 +34,7 @@ crate-type = ["cdylib"]
 To define your extension, create a type that implements the `Extension` trait, and register it.
 
 ```rust
-use zed_extension_api as tehanu;
+use tehanu_extension_api as tehanu;
 
 struct MyExtension {
     // ... state

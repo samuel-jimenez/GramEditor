@@ -890,7 +890,7 @@ pub const TEHANU_URL_SCHEME: &str = "tehanu";
 ///
 /// Returns a [`Some`] containing the unprefixed link if the link is a Tehanu link.
 /// Returns [`None`] otherwise.
-pub fn parse_zed_link<'a>(link: &'a str, cx: &App) -> Option<&'a str> {
+pub fn parse_editor_link<'a>(link: &'a str, cx: &App) -> Option<&'a str> {
     let server_url = &ClientSettings::get_global(cx).server_url;
     if let Some(stripped) = link
         .strip_prefix(server_url)

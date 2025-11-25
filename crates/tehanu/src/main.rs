@@ -4,7 +4,7 @@ mod tehanu;
 use anyhow::{Context as _, Error, Result};
 use clap::{Parser, command};
 use cli::FORCE_CLI_MODE_ENV_VAR_NAME;
-use client::{Client, ProxySettings, UserStore, parse_zed_link};
+use client::{Client, ProxySettings, UserStore, parse_editor_link};
 use collections::HashMap;
 use crashes::InitCrashHandler;
 use db::kvp::KEY_VALUE_STORE;
@@ -1139,7 +1139,7 @@ fn parse_url_arg(arg: &str, cx: &App) -> String {
             if arg.starts_with("file://")
                 || arg.starts_with("tehanu-cli://")
                 || arg.starts_with("ssh://")
-                || parse_zed_link(arg, cx).is_some()
+                || parse_editor_link(arg, cx).is_some()
             {
                 arg.into()
             } else {

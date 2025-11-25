@@ -18,9 +18,9 @@ use ui::{
     prelude::*,
 };
 
+pub use app_actions::{Rerun, Spawn};
 use util::{ResultExt, truncate_and_trailoff};
 use workspace::{ModalView, Workspace};
-pub use app_actions::{Rerun, Spawn};
 
 /// A modal used to spawn new tasks.
 pub struct TasksModalDelegate {
@@ -183,7 +183,7 @@ impl TasksModal {
                 id: _,
                 directory_in_worktree: dir,
                 id_base: _,
-            } => dir.file_name().is_some_and(|name| name == ".zed"),
+            } => dir.file_name().is_some_and(|name| name == ".tehanu"),
             _ => false,
         });
         // todo(debugger): We're always adding lsp tasks here even if prefer_lsp is false
@@ -761,7 +761,7 @@ mod tests {
         fs.insert_tree(
             path!("/dir"),
             json!({
-                ".zed": {
+                ".tehanu": {
                     "tasks.json": r#"[
                         {
                             "label": "example task",
@@ -933,7 +933,7 @@ mod tests {
         fs.insert_tree(
             path!("/dir"),
             json!({
-                ".zed": {
+                ".tehanu": {
                     "tasks.json": r#"[
                         {
                             "label": "hello from $TEHANU_FILE:$TEHANU_ROW:$TEHANU_COLUMN",

@@ -263,8 +263,8 @@ macro_rules! register_extension {
             #[cfg(target_os = "wasi")]
             wasi_ext::init_cwd();
 
-            zed_extension_api::register_extension(|| {
-                Box::new(<$extension_type as zed_extension_api::Extension>::new())
+            tehanu_extension_api::register_extension(|| {
+                Box::new(<$extension_type as tehanu_extension_api::Extension>::new())
             });
         }
     };
@@ -287,7 +287,8 @@ static mut EXTENSION: Option<Box<dyn Extension>> = None;
 #[cfg(target_arch = "wasm32")]
 #[unsafe(link_section = "tehanu:api-version")]
 #[doc(hidden)]
-pub static TEHANU_API_VERSION: [u8; 6] = *include_bytes!(concat!(env!("OUT_DIR"), "/version_bytes"));
+pub static TEHANU_API_VERSION: [u8; 6] =
+    *include_bytes!(concat!(env!("OUT_DIR"), "/version_bytes"));
 
 mod wit {
 
