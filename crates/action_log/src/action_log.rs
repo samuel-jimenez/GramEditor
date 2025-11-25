@@ -407,9 +407,11 @@ impl ActionLog {
                     let new_diff_base = new_diff_base.clone();
                     async move {
                         let mut unreviewed_edits = Patch::default();
-                        for hunk in diff_snapshot
-                            .hunks_intersecting_range(Anchor::MIN..Anchor::MAX, &buffer_snapshot)
-                        {
+                        for hunk in diff_snapshot.hunks_intersecting_range(
+                            Anchor::min_for_buffer(buffer_snapshot.remote_id())
+                                ..Anchor::max_for_buffer(buffer_snapshot.remote_id()),
+                            &buffer_snapshot,
+                        ) {
                             let old_range = new_diff_base
                                 .offset_to_point(hunk.diff_base_byte_range.start)
                                 ..new_diff_base.offset_to_point(hunk.diff_base_byte_range.end);
@@ -680,7 +682,10 @@ impl ActionLog {
 
     pub fn reject_all_edits(&mut self, cx: &mut Context<Self>) -> Task<()> {
         let futures = self.changed_buffers(cx).into_keys().map(|buffer| {
-            let reject = self.reject_edits_in_ranges(buffer, vec![Anchor::MIN..Anchor::MAX], cx);
+            let buffer_ranges = vec![Anchor::min_max_range_for_buffer(
+                buffer.read(cx).remote_id(),
+            )];
+            let reject = self.reject_edits_in_ranges(buffer, buffer_ranges, cx);
 
             async move {
                 reject.await.log_err();
@@ -1917,7 +1922,8 @@ mod tests {
 
         // User accepts the single hunk
         action_log.update(cx, |log, cx| {
-            log.keep_edits_in_range(buffer.clone(), Anchor::MIN..Anchor::MAX, cx)
+            let buffer_range = Anchor::min_max_range_for_buffer(buffer.read(cx).remote_id());
+            log.keep_edits_in_range(buffer.clone(), buffer_range, cx)
         });
         cx.run_until_parked();
         assert_eq!(unreviewed_hunks(&action_log, cx), vec![]);
@@ -1938,7 +1944,13 @@ mod tests {
         // User rejects the hunk
         action_log
             .update(cx, |log, cx| {
-                log.reject_edits_in_ranges(buffer.clone(), vec![Anchor::MIN..Anchor::MAX], cx)
+                log.reject_edits_in_ranges(
+                    buffer.clone(),
+                    vec![Anchor::min_max_range_for_buffer(
+                        buffer.read(cx).remote_id(),
+                    )],
+                    cx,
+                )
             })
             .await
             .unwrap();
