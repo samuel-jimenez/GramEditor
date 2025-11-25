@@ -263,8 +263,8 @@ macro_rules! register_extension {
             #[cfg(target_os = "wasi")]
             wasi_ext::init_cwd();
 
-            tehanu_extension_api::register_extension(|| {
-                Box::new(<$extension_type as tehanu_extension_api::Extension>::new())
+            zed_extension_api::register_extension(|| {
+                Box::new(<$extension_type as zed_extension_api::Extension>::new())
             });
         }
     };

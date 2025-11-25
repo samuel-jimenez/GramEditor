@@ -4,6 +4,7 @@ mod extension_suggest;
 use std::sync::OnceLock;
 use std::{ops::Range, sync::Arc};
 
+use app_actions::ExtensionCategoryFilter;
 use client::{ExtensionMetadata, ExtensionProvides};
 use collections::{BTreeMap, BTreeSet};
 use editor::{Editor, EditorElement, EditorStyle};
@@ -28,7 +29,6 @@ use workspace::{
     Workspace,
     item::{Item, ItemEvent},
 };
-use app_actions::ExtensionCategoryFilter;
 
 use crate::components::ExtensionCard;
 
@@ -141,13 +141,16 @@ pub fn init(cx: &mut App) {
                         match install_task.await {
                             Ok(_) => {}
                             Err(err) => {
-                                log::error!("Failed to install dev extension: {:?}", err);
+                                log::error!("Failed to install dev extension(144): {:?}", err);
                                 workspace_handle
                                     .update(cx, |workspace, cx| {
                                         workspace.show_error(
                                             // NOTE: using `anyhow::context` here ends up not printing
                                             // the error
-                                            &format!("Failed to install dev extension: {}", err),
+                                            &format!(
+                                                "Failed to install dev extension(150): {}",
+                                                err
+                                            ),
                                             cx,
                                         );
                                     })
@@ -1071,7 +1074,8 @@ impl ExtensionsPage {
             let banner = match feature {
                 Feature::ExtensionRuff => self.render_feature_upsell_banner(
                     "Ruff (linter for Python) support is built-in to Tehanu!".into(),
-                    "https://tehanu.liten.app/docs/languages/python#code-formatting--linting".into(),
+                    "https://tehanu.liten.app/docs/languages/python#code-formatting--linting"
+                        .into(),
                     false,
                     cx,
                 ),

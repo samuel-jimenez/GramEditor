@@ -89,6 +89,12 @@ impl ExtensionBuilder {
 
         fs::create_dir_all(&self.cache_dir).context("failed to create cache dir")?;
 
+        log::info!(
+            "compile_extension: {:?} {:?}",
+            extension_dir,
+            extension_manifest,
+        );
+
         if extension_manifest.lib.kind == Some(ExtensionLibraryKind::Rust) {
             log::info!("compiling Rust extension {}", extension_dir.display());
             self.compile_rust_extension(extension_dir, extension_manifest, options)
@@ -247,7 +253,13 @@ impl ExtensionBuilder {
         let parser_path = src_path.join("parser.c");
         let scanner_path = src_path.join("scanner.c");
 
-        log::info!("compiling {grammar_name} parser");
+        log::info!(
+            "compiling {grammar_name} grammar={} src={} parser={} scanner={}",
+            grammar_wasm_path.display(),
+            src_path.display(),
+            parser_path.display(),
+            scanner_path.display()
+        );
         let clang_output = util::command::new_smol_command(&clang_path)
             .args(["-fPIC", "-shared", "-Os"])
             .arg(format!("-Wl,--export=tree_sitter_{grammar_name}"))
@@ -296,10 +308,12 @@ impl ExtensionBuilder {
                     url
                 );
             }
+            log::info!("checkout_repo: {} exists", directory.display());
         } else {
             fs::create_dir_all(directory).with_context(|| {
                 format!("failed to create grammar directory {}", directory.display(),)
             })?;
+            log::info!("checkout_repo: running git init {}", directory.display());
             let init_output = util::command::new_smol_command("git")
                 .arg("init")
                 .current_dir(directory)
@@ -312,6 +326,11 @@ impl ExtensionBuilder {
                 );
             }
 
+            log::info!(
+                "checkout_repo: running git --git-dir {} remote add origin {}",
+                git_dir.display(),
+                url
+            );
             let remote_add_output = util::command::new_smol_command("git")
                 .arg("--git-dir")
                 .arg(&git_dir)

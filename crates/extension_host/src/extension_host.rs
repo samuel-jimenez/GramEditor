@@ -615,6 +615,8 @@ impl ExtensionStore {
                 util::log_err(error);
             })?;
 
+            log::info!("Compiled {:?} to {:?}", extension_id, extensions_dir);
+
             let output_path = &extensions_dir.join(extension_id.as_ref());
             if let Some(metadata) = fs.metadata(output_path).await? {
                 if metadata.is_symlink {
