@@ -301,6 +301,7 @@ impl std::ops::Deref for Repository {
 #[derive(Clone)]
 pub enum RepositoryState {
     Local {
+        fs: Arc<dyn Fs>,
         backend: Arc<dyn GitRepository>,
         environment: Arc<HashMap<String, String>>,
     },
@@ -4284,6 +4285,7 @@ impl Repository {
                     RepositoryState::Local {
                         backend,
                         environment,
+                        ..
                     } => backend.run_hook(hook, environment.clone()).await,
                     RepositoryState::Remote { project_id, client } => {
                         client
@@ -4576,6 +4578,7 @@ impl Repository {
         let id = self.id;
         let this = cx.weak_entity();
         let git_store = self.git_store.clone();
+        let abs_path = self.snapshot.repo_path_to_abs_path(&path);
         self.send_keyed_job(
             Some(GitJobKey::WriteIndex(vec![path.clone()])),
             None,
@@ -4584,14 +4587,21 @@ impl Repository {
                     "start updating index text for buffer {}",
                     path.as_unix_str()
                 );
+
                 match git_repo {
                     RepositoryState::Local {
+                        fs,
                         backend,
                         environment,
                         ..
                     } => {
+                        let executable = match fs.metadata(&abs_path).await {
+                            Ok(Some(meta)) => meta.is_executable,
+                            Ok(None) => false,
+                            Err(_err) => false,
+                        };
                         backend
-                            .set_index_text(path.clone(), content, environment.clone())
+                            .set_index_text(path.clone(), content, environment.clone(), executable)
                             .await?;
                     }
                     RepositoryState::Remote { project_id, client } => {
@@ -5160,6 +5170,7 @@ impl Repository {
         cx: &mut Context<Self>,
     ) -> mpsc::UnboundedSender<GitJob> {
         let (job_tx, mut job_rx) = mpsc::unbounded::<GitJob>();
+        let fs_cloned = fs.clone();
 
         cx.spawn(async move |_, cx| {
             let environment = project_environment
@@ -5191,8 +5202,8 @@ impl Repository {
                     backend.clone(),
                 );
             }
-
             let state = RepositoryState::Local {
+                fs: fs_cloned,
                 backend,
                 environment: Arc::new(environment),
             };
