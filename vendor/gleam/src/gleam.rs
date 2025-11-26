@@ -1,9 +1,6 @@
 use std::fs;
 use zed::lsp::CompletionKind;
-use zed::{
-    CodeLabel, CodeLabelSpan, LanguageServerId, SlashCommand, SlashCommandOutput,
-    SlashCommandOutputSection,
-};
+use zed::{CodeLabel, CodeLabelSpan, LanguageServerId};
 use zed_extension_api::{self as zed, Result};
 
 struct GleamExtension {
@@ -151,36 +148,6 @@ impl zed::Extension for GleamExtension {
             filter_range: (0..name.len()).into(),
             code,
         })
-    }
-
-    fn run_slash_command(
-        &self,
-        command: SlashCommand,
-        _args: Vec<String>,
-        worktree: Option<&zed::Worktree>,
-    ) -> Result<SlashCommandOutput, String> {
-        match command.name.as_str() {
-            "gleam-project" => {
-                let worktree = worktree.ok_or("no worktree")?;
-
-                let mut text = String::new();
-                text.push_str("You are in a Gleam project.\n");
-
-                if let Ok(gleam_toml) = worktree.read_text_file("gleam.toml") {
-                    text.push_str("The `gleam.toml` is as follows:\n");
-                    text.push_str(&gleam_toml);
-                }
-
-                Ok(SlashCommandOutput {
-                    sections: vec![SlashCommandOutputSection {
-                        range: (0..text.len()).into(),
-                        label: "gleam-project".to_string(),
-                    }],
-                    text,
-                })
-            }
-            command => Err(format!("unknown slash command: \"{command}\"")),
-        }
     }
 }
 

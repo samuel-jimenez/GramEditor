@@ -5,6 +5,7 @@
 **/.direnv
 *.wasm
 *.xcodeproj
+vendor/*/grammars
 .DS_Store
 .blob_store
 .build

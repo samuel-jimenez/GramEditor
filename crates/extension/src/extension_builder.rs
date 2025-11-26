@@ -279,6 +279,16 @@ impl ExtensionBuilder {
                 grammar_name,
                 String::from_utf8_lossy(&clang_output.stderr),
             );
+        } else {
+            log::info!("clang status: {}", clang_output.status);
+            log::info!(
+                "clang stdout: {}",
+                String::from_utf8_lossy(&clang_output.stdout)
+            );
+            log::info!(
+                "clang stderr: {}",
+                String::from_utf8_lossy(&clang_output.stderr)
+            );
         }
 
         Ok(())
@@ -287,6 +297,7 @@ impl ExtensionBuilder {
     async fn checkout_repo(&self, directory: &Path, url: &str, rev: &str) -> Result<()> {
         let git_dir = directory.join(".git");
 
+        log::info!("git_dir={:?}", git_dir.display());
         if directory.exists() {
             let remotes_output = util::command::new_smol_command("git")
                 .arg("--git-dir")
@@ -502,6 +513,7 @@ impl ExtensionBuilder {
                 && !name.starts_with("component-type:")
                 && name != "dylink.0"
                 && name != "tehanu:api-version"
+                && name != "zed:api-version"
         };
 
         let mut output = Vec::new();

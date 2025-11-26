@@ -4,6 +4,8 @@
 
 - Add back support for downloading extensions (but still building them locally)
 
+- No extensions show up in the UI...
+
 - Sort themes alphabetically in the theme picker
 
 - Replace the icons with https://github.com/cotyhamilton/zed-emoji-icon-theme

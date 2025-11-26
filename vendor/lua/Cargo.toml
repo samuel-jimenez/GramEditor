@@ -10,4 +10,6 @@ path = "src/lua.rs"
 crate-type = ["cdylib"]
 
 [dependencies]
-tehanu_extension_api = { path = "../../crates/extension_api" }
+zed_extension_api = { path = "../../crates/extension_api" }
+
+[workspace]

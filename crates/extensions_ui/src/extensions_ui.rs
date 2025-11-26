@@ -1,22 +1,23 @@
 mod components;
 mod extension_suggest;
 
-use std::sync::OnceLock;
-use std::{ops::Range, sync::Arc};
-
 use app_actions::ExtensionCategoryFilter;
 use client::{ExtensionMetadata, ExtensionProvides};
 use collections::{BTreeMap, BTreeSet};
 use editor::{Editor, EditorElement, EditorStyle};
 use extension_host::{ExtensionManifest, ExtensionOperation, ExtensionStore};
+use fuzzy::{StringMatchCandidate, match_strings};
 use gpui::{
-    App, ClipboardItem, Context, Corner, Entity, EventEmitter, Flatten, Focusable,
-    InteractiveElement, KeyContext, ParentElement, Point, Render, Styled, TextStyle,
+    Action, App, ClipboardItem, Context, Corner, Entity, EventEmitter, Flatten, Focusable,
+    InteractiveElement, KeyContext, ParentElement, Point, Render, Styled, Task, TextStyle,
     UniformListScrollHandle, WeakEntity, Window, actions, point, uniform_list,
 };
 use num_format::{Locale, ToFormattedString};
 use project::DirectoryLister;
 use settings::{Settings, SettingsContent};
+use std::sync::OnceLock;
+use std::time::Duration;
+use std::{ops::Range, sync::Arc};
 use strum::IntoEnumIterator as _;
 use theme::ThemeSettings;
 use ui::{
@@ -283,6 +284,7 @@ pub struct ExtensionsPage {
     query_contains_error: bool,
     provides_filter: Option<ExtensionProvides>,
     _subscriptions: [gpui::Subscription; 2],
+    extension_fetch_task: Option<Task<()>>,
     upsells: BTreeSet<Feature>,
 }
 
@@ -296,12 +298,23 @@ impl ExtensionsPage {
     ) -> Entity<Self> {
         cx.new(|cx| {
             let store = ExtensionStore::global(cx);
+            let workspace_handle = workspace.weak_handle();
             let subscriptions = [
                 cx.observe(&store, |_: &mut Self, _, cx| cx.notify()),
                 cx.subscribe_in(
                     &store,
                     window,
-                    move |_this, _, event, _window, _cx| match event {
+                    move |this, _, event, window, cx| match event {
+                        extension_host::Event::ExtensionsUpdated => {
+                            this.fetch_extensions_debounced(None, cx)
+                        }
+                        extension_host::Event::ExtensionInstalled(extension_id) => this
+                            .on_extension_installed(
+                                workspace_handle.clone(),
+                                extension_id,
+                                window,
+                                cx,
+                            ),
                         _ => {}
                     },
                 ),
@@ -330,12 +343,152 @@ impl ExtensionsPage {
                 remote_extension_entries: Vec::new(),
                 query_contains_error: false,
                 provides_filter,
+                extension_fetch_task: None,
                 _subscriptions: subscriptions,
                 query_editor,
                 upsells: BTreeSet::default(),
             };
             this
         })
+    }
+
+    fn fetch_extensions(
+        &mut self,
+        search: Option<String>,
+        _provides_filter: Option<BTreeSet<ExtensionProvides>>,
+        on_complete: Option<Box<dyn FnOnce(&mut Self, &mut Context<Self>) + Send>>,
+        cx: &mut Context<Self>,
+    ) {
+        self.is_fetching_extensions = true;
+        self.fetch_failed = false;
+        cx.notify();
+
+        let extension_store = ExtensionStore::global(cx);
+
+        let dev_extensions = extension_store
+            .read(cx)
+            .dev_extensions()
+            .cloned()
+            .collect::<Vec<_>>();
+
+        cx.spawn(async move |this, cx| {
+            let dev_extensions = if let Some(search) = search {
+                let match_candidates = dev_extensions
+                    .iter()
+                    .enumerate()
+                    .map(|(ix, manifest)| StringMatchCandidate::new(ix, &manifest.name))
+                    .collect::<Vec<_>>();
+
+                let matches = match_strings(
+                    &match_candidates,
+                    &search,
+                    false,
+                    true,
+                    match_candidates.len(),
+                    &Default::default(),
+                    cx.background_executor().clone(),
+                )
+                .await;
+                matches
+                    .into_iter()
+                    .map(|mat| dev_extensions[mat.candidate_id].clone())
+                    .collect()
+            } else {
+                dev_extensions
+            };
+
+            this.update(cx, |this, cx| {
+                cx.notify();
+                this.dev_extension_entries = dev_extensions;
+                this.is_fetching_extensions = false;
+                this.fetch_failed = false;
+                this.filter_extension_entries(cx);
+                if let Some(callback) = on_complete {
+                    callback(this, cx);
+                }
+            })
+        })
+        .detach_and_log_err(cx);
+    }
+    fn fetch_extensions_debounced(
+        &mut self,
+        on_complete: Option<Box<dyn FnOnce(&mut Self, &mut Context<Self>) + Send>>,
+        cx: &mut Context<ExtensionsPage>,
+    ) {
+        self.extension_fetch_task = Some(cx.spawn(async move |this, cx| {
+            let search = this
+                .update(cx, |this, cx| this.search_query(cx))
+                .ok()
+                .flatten();
+
+            // Only debounce the fetching of extensions if we have a search
+            // query.
+            //
+            // If the search was just cleared then we can just reload the list
+            // of extensions without a debounce, which allows us to avoid seeing
+            // an intermittent flash of a "no extensions" state.
+            if search.is_some() {
+                cx.background_executor()
+                    .timer(Duration::from_millis(250))
+                    .await;
+            };
+
+            this.update(cx, |this, cx| {
+                this.fetch_extensions(
+                    search,
+                    Some(BTreeSet::from_iter(this.provides_filter)),
+                    on_complete,
+                    cx,
+                );
+            })
+            .ok();
+        }));
+    }
+
+    fn on_extension_installed(
+        &mut self,
+        workspace: WeakEntity<Workspace>,
+        extension_id: &str,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        let extension_store = ExtensionStore::global(cx).read(cx);
+        let themes = extension_store
+            .extension_themes(extension_id)
+            .map(|name| name.to_string())
+            .collect::<Vec<_>>();
+        if !themes.is_empty() {
+            workspace
+                .update(cx, |_workspace, cx| {
+                    window.dispatch_action(
+                        app_actions::theme_selector::Toggle {
+                            themes_filter: Some(themes),
+                        }
+                        .boxed_clone(),
+                        cx,
+                    );
+                })
+                .ok();
+            return;
+        }
+
+        let icon_themes = extension_store
+            .extension_icon_themes(extension_id)
+            .map(|name| name.to_string())
+            .collect::<Vec<_>>();
+        if !icon_themes.is_empty() {
+            workspace
+                .update(cx, |_workspace, cx| {
+                    window.dispatch_action(
+                        app_actions::icon_theme_selector::Toggle {
+                            themes_filter: Some(icon_themes),
+                        }
+                        .boxed_clone(),
+                        cx,
+                    );
+                })
+                .ok();
+        }
     }
 
     /// Returns whether a dev extension currently exists for the extension with the given ID.

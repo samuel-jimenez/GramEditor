@@ -264,7 +264,7 @@ impl ExtensionStore {
         // The extensions store maintains an index file, which contains a complete
         // list of the installed extensions and the resources that they provide.
         // This index is loaded synchronously on startup.
-        let (index_content, _index_metadata, _extensions_metadata) =
+        let (index_content, index_metadata, extensions_metadata) =
             cx.background_executor().block(async {
                 futures::join!(
                     this.fs.load(&this.index_path),
@@ -277,22 +277,39 @@ impl ExtensionStore {
         // is invalid or is out-of-date according to the filesystem mtimes, then
         // it must be asynchronously rebuilt.
         let mut extension_index = ExtensionIndex::default();
+        let mut extension_index_needs_rebuild = true;
         if let Ok(index_content) = index_content
             && let Some(index) = serde_json::from_str(&index_content).log_err()
         {
-            log::info!(
-                "Starting up extensions from {:?} (installed: {:?})...",
-                this.index_path.to_str(),
-                this.installed_dir.to_str(),
-            );
-            log::info!("Index: {}", index_content);
-
             extension_index = index;
+            if let (Ok(Some(index_metadata)), Ok(Some(extensions_metadata))) =
+                (index_metadata, extensions_metadata)
+                && index_metadata
+                    .mtime
+                    .bad_is_greater_than(extensions_metadata.mtime)
+            {
+                extension_index_needs_rebuild = false;
+            }
         }
 
         // Immediately load all of the extensions in the initial manifest. If the
         // index needs to be rebuild, then enqueue
         let load_initial_extensions = this.extensions_updated(extension_index, cx);
+        let mut reload_future = None;
+        if extension_index_needs_rebuild {
+            log::info!("Rebuild the index!");
+            reload_future = Some(this.reload(None, cx));
+        }
+
+        cx.spawn(async move |this, cx| {
+            if let Some(future) = reload_future {
+                future.await;
+            }
+            this.update(cx, |this, cx| this.auto_install_extensions(cx))
+                .ok();
+            // this.update(cx, |this, cx| this.check_for_updates(cx)).ok();
+        })
+        .detach();
 
         // Perform all extension loading in a single task to ensure that we
         // never attempt to simultaneously load/unload extensions from multiple
@@ -388,6 +405,14 @@ impl ExtensionStore {
             rx.await.ok();
         }
     }
+
+    /// We don't auto-install any extensions at the moment
+    /// (since we don't want to download anything without
+    /// explicit permission or maintain any central repository)
+    ///
+    /// However, I suspect the auto-installation is how all of
+    /// the directories we need are created in Zed...
+    pub fn auto_install_extensions(&mut self, _cx: &mut Context<Self>) {}
 
     fn extensions_dir(&self) -> PathBuf {
         self.installed_dir.clone()
@@ -618,6 +643,7 @@ impl ExtensionStore {
             log::info!("Compiled {:?} to {:?}", extension_id, extensions_dir);
 
             let output_path = &extensions_dir.join(extension_id.as_ref());
+            log::info!("Now this should exist.. {}", output_path.display());
             if let Some(metadata) = fs.metadata(output_path).await? {
                 if metadata.is_symlink {
                     fs.remove_file(
@@ -633,6 +659,11 @@ impl ExtensionStore {
                 }
             }
 
+            log::info!(
+                "create_symlink {} -> {}",
+                output_path.display(),
+                extension_source_path.display()
+            );
             fs.create_symlink(output_path, extension_source_path)
                 .await?;
 
