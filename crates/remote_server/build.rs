@@ -1,11 +1,11 @@
 #![allow(clippy::disallowed_methods, reason = "build scripts are exempt")]
 use std::process::Command;
 
-const TEHANU_MANIFEST: &str = include_str!("../zed/Cargo.toml");
+const TEHANU_MANIFEST: &str = include_str!("../tehanu/Cargo.toml");
 
 fn main() {
     let zed_cargo_toml: cargo_toml::Manifest =
-        toml::from_str(TEHANU_MANIFEST).expect("failed to parse zed Cargo.toml");
+        toml::from_str(TEHANU_MANIFEST).expect("failed to parse tehanu Cargo.toml");
     println!(
         "cargo:rustc-env=TEHANU_PKG_VERSION={}",
         zed_cargo_toml.package.unwrap().version.unwrap()

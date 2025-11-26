@@ -10,8 +10,8 @@ local_install=false
 can_code_sign=false
 
 # This must match the team in the provisioning profile.
-IDENTITY="Tehanu Project, Inc."
-APPLE_NOTARIZATION_TEAM="MQ55VZLNZQ"
+IDENTITY="krig@koru.se"
+APPLE_NOTARIZATION_TEAM="TQ3LTB39SU"
 
 # Function for displaying help info
 help_info() {
@@ -57,8 +57,8 @@ popd
 export TEHANU_BUNDLE=true
 
 cargo_bundle_version=$(cargo -q bundle --help 2>&1 | head -n 1 || echo "")
-if [ "$cargo_bundle_version" != "cargo-bundle v0.6.1-tehanu" ]; then
-    cargo install cargo-bundle --git https://github.com/tehanu-industries/cargo-bundle.git --branch tehanu-deploy
+if [ "$cargo_bundle_version" != "cargo-bundle v0.6.1-zed" ]; then
+    cargo install cargo-bundle --git https://github.com/zed-industries/cargo-bundle.git --branch zed-deploy
 fi
 
 # Deal with versions of macOS that don't include libstdc++ headers
@@ -280,34 +280,6 @@ function sign_binary() {
         /usr/bin/codesign --deep --force --timestamp --options runtime --entitlements crates/tehanu/resources/tehanu.entitlements --sign "$IDENTITY" "${binary_path}" -v
     fi
 }
-
-function upload_debug_symbols() {
-    if [ "$local_install" = true ]; then
-        echo "local install; skipping sentry upload."
-    elif [[ -n "${SENTRY_AUTH_TOKEN:-}" ]]; then
-        echo "Uploading tehanu debug symbols to sentry..."
-        exe_path="target/${target_triple}/release/Tehanu"
-        if ! dsymutil --flat "target/${target_triple}/${target_dir}/tehanu" 2> target/dsymutil.log; then
-            echo "dsymutil failed"
-            cat target/dsymutil.log
-            exit 1
-        fi
-        if ! dsymutil --flat "target/${target_triple}/${target_dir}/remote_server" 2> target/dsymutil.log; then
-            echo "dsymutil failed"
-            cat target/dsymutil.log
-            exit 1
-        fi
-        # note: this uploads the unstripped binary which is needed because it contains
-        # .eh_frame data for stack unwinding. see https://github.com/getsentry/symbolic/issues/783
-        sentry-cli debug-files upload --include-sources --wait -p tehanu -o tehanu-dev \
-            "target/${target_triple}/${target_dir}/tehanu.dwarf" \
-            "target/${target_triple}/${target_dir}/remote_server.dwarf"
-    else
-        echo "missing SENTRY_AUTH_TOKEN. skipping sentry upload."
-    fi
-}
-
-upload_debug_symbols
 
 cp target/${target_triple}/${target_dir}/tehanu "${app_path}/Contents/MacOS/tehanu"
 cp target/${target_triple}/${target_dir}/cli "${app_path}/Contents/MacOS/cli"
