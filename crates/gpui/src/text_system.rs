@@ -922,13 +922,10 @@ impl FontMetrics {
 
 #[allow(unused)]
 pub(crate) fn font_name_with_fallbacks<'a>(name: &'a str, system: &'a str) -> &'a str {
-    // Note: the "Tehanu Plex" fonts were deprecated as we are not allowed to use "Plex"
-    // in a derived font name. They are essentially indistinguishable from IBM Plex/Lilex,
-    // and so retained here for backward compatibility.
     match name {
         ".SystemUIFont" => system,
-        ".TehanuSans" | "Tehanu Plex Sans" => "IBM Plex Sans",
-        ".TehanuMono" | "Tehanu Plex Mono" => "Maple Mono NL",
+        ".TehanuSans" => "Fira Sans",
+        ".TehanuMono" => "Fira Code",
         _ => name,
     }
 }

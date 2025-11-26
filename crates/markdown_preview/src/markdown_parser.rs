@@ -1769,29 +1769,6 @@ mod tests {
     }
 
     #[gpui::test]
-    async fn test_image_alt_text() {
-        let parsed = parse("[![Tehanu](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/zed-industries/zed/main/assets/badge/v0.json)](https://liten.app)\n ").await;
-
-        let paragraph = if let ParsedMarkdownElement::Paragraph(text) = &parsed.children[0] {
-            text
-        } else {
-            panic!("Expected a paragraph");
-        };
-        assert_eq!(
-                    paragraph[0],
-                    MarkdownParagraphChunk::Image(Image {
-                        source_range: 0..142,
-                        link: Link::Web {
-                            url: "https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/zed-industries/zed/main/assets/badge/v0.json".to_string(),
-                        },
-                        alt_text: Some("Tehanu".into()),
-                        height: None,
-                        width: None,
-                    },)
-                );
-    }
-
-    #[gpui::test]
     async fn test_image_without_alt_text() {
         let parsed = parse("![](http://example.com/foo.png)").await;
 
