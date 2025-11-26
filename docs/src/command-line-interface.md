@@ -1,7 +1,7 @@
 # Command-line Interface
 
 Tehanu has a CLI, on Linux this should come with the distribution's Tehanu package (binary name can vary from distribution to distribution, `zed` will be used later for brevity).
-For macOS, the CLI comes in the same package with the editor binary, and could be installed into the system with the `cli: install` Tehanu command which will create a symlink to the `/usr/local/bin/zed`.
+For macOS, the CLI comes in the same package with the editor binary, and could be installed into the system with the `cli: install` Tehanu command which will create a symlink to the `/usr/local/bin/tehanu`.
 It can also be built from source out of the `cli` crate in this repository.
 
 Use `zed --help` to see the full list of capabilities.

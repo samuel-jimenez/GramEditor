@@ -17,9 +17,9 @@ if [ $IN_WSL = true ]; then
     if [ -z "$WSL_USER" ]; then
         WSL_USER="$USERNAME"
     fi
-    "$TEHANU_PATH/zed.exe" --wsl "$WSL_USER@$WSL_DISTRO_NAME" "$@"
+    "$TEHANU_PATH/tehanu.exe" --wsl "$WSL_USER@$WSL_DISTRO_NAME" "$@"
     exit $?
 else
-    "$TEHANU_PATH/zed.exe" "$@"
+    "$TEHANU_PATH/tehanu.exe" "$@"
     exit $?
 fi

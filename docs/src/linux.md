@@ -35,27 +35,27 @@ Tehanu is open source, and [you can install from source](./development/linux.md)
 
 ### Installing via a package manager
 
-There are several third-party Tehanu packages for various Linux distributions and package managers, sometimes under `zed-editor`. You may be able to install Tehanu using these packages:
+There are several third-party Tehanu packages for various Linux distributions and package managers, sometimes under `tehanu-editor`. You may be able to install Tehanu using these packages:
 
 - Flathub: [`se.ziran.Tehanu`](https://flathub.org/apps/se.ziran.Tehanu)
-- Arch: [`zed`](https://archlinux.org/packages/extra/x86_64/zed/)
-- Arch (AUR): [`zed-git`](https://aur.archlinux.org/packages/zed-git), [`zed-preview`](https://aur.archlinux.org/packages/zed-preview), [`zed-preview-bin`](https://aur.archlinux.org/packages/zed-preview-bin)
-- Alpine: `zed` ([aarch64](https://pkgs.alpinelinux.org/package/edge/testing/aarch64/zed)) ([x86_64](https://pkgs.alpinelinux.org/package/edge/testing/x86_64/zed))
-- Nix: `zed-editor` ([unstable](https://search.nixos.org/packages?channel=unstable&show=zed-editor))
-- Fedora/Ultramarine (Terra): [`zed`](https://github.com/terrapkg/packages/tree/frawhide/anda/devs/zed/stable), [`zed-preview`](https://github.com/terrapkg/packages/tree/frawhide/anda/devs/zed/preview), [`zed-nightly`](https://github.com/terrapkg/packages/tree/frawhide/anda/devs/zed/nightly)
-- Solus: [`zed`](https://github.com/getsolus/packages/tree/main/packages/z/zed)
-- Parabola: [`zed`](https://www.parabola.nu/packages/extra/x86_64/zed/)
-- Manjaro: [`zed`](https://packages.manjaro.org/?query=zed)
-- ALT Linux (Sisyphus): [`zed`](https://packages.altlinux.org/en/sisyphus/srpms/zed/)
-- AOSC OS: [`zed`](https://packages.aosc.io/packages/zed)
+- Arch: [`tehanu`](https://archlinux.org/packages/extra/x86_64/tehanu/)
+- Arch (AUR): [`tehanu-git`](https://aur.archlinux.org/packages/tehanu-git), [`tehanu-preview`](https://aur.archlinux.org/packages/tehanu-preview), [`tehanu-preview-bin`](https://aur.archlinux.org/packages/tehanu-preview-bin)
+- Alpine: `tehanu` ([aarch64](https://pkgs.alpinelinux.org/package/edge/testing/aarch64/tehanu)) ([x86_64](https://pkgs.alpinelinux.org/package/edge/testing/x86_64/tehanu))
+- Nix: `tehanu-editor` ([unstable](https://search.nixos.org/packages?channel=unstable&show=tehanu-editor))
+- Fedora/Ultramarine (Terra): [`tehanu`](https://github.com/terrapkg/packages/tree/frawhide/anda/devs/tehanu/stable), [`tehanu-preview`](https://github.com/terrapkg/packages/tree/frawhide/anda/devs/tehanu/preview), [`tehanu-nightly`](https://github.com/terrapkg/packages/tree/frawhide/anda/devs/tehanu/nightly)
+- Solus: [`tehanu`](https://github.com/getsolus/packages/tree/main/packages/z/tehanu)
+- Parabola: [`tehanu`](https://www.parabola.nu/packages/extra/x86_64/tehanu/)
+- Manjaro: [`tehanu`](https://packages.manjaro.org/?query=tehanu)
+- ALT Linux (Sisyphus): [`tehanu`](https://packages.altlinux.org/en/sisyphus/srpms/tehanu/)
+- AOSC OS: [`tehanu`](https://packages.aosc.io/packages/tehanu)
 
-See [Repology](https://repology.org/project/zed-editor/versions) for a list of Tehanu packages in various repositories.
+See [Repology](https://repology.org/project/tehanu-editor/versions) for a list of Tehanu packages in various repositories.
 
 ### Community
 
-When installing a third-party package please be aware that it may not be completely up to date and may be slightly different from the Tehanu we package (a common change is to rename the binary to `zedit` or `zeditor` to avoid conflicting with other packages).
+When installing a third-party package please be aware that it may not be completely up to date and may be slightly different from the Tehanu we package (a common change is to rename the binary to `tehanuit` or `tehanuitor` to avoid conflicting with other packages).
 
-We'd love your help making Tehanu available for everyone. If Tehanu is not yet available for your package manager, and you would like to fix that, we have some notes on [how to do it](./development/linux.md#notes-for-packaging-zed).
+We'd love your help making Tehanu available for everyone. If Tehanu is not yet available for your package manager, and you would like to fix that, we have some notes on [how to do it](./development/linux.md#notes-for-packaging-tehanu).
 
 The packages in this section provide binary installs for Tehanu but are not official packages within the associated distributions. These packages are maintained by community members and as such a higher level of caution should be taken when installing them.
 
@@ -64,7 +64,7 @@ The packages in this section provide binary installs for Tehanu but are not offi
 Tehanu is available in [this community-maintained repository](https://debian.griffo.io/).
 
 Instructions for each version are available in the README of the repository where packages are built.
-Build, packaging and instructions for each version are available in the README of the [repository](https://github.com/dariogriffo/zed-debian)
+Build, packaging and instructions for each version are available in the README of the [repository](https://github.com/dariogriffo/tehanu-debian)
 
 ### Downloading manually
 
@@ -72,56 +72,56 @@ If you'd prefer, you can install Tehanu by downloading our pre-built .tar.gz. Th
 
 Download the `.tar.gz` file:
 
-- [zed-linux-x86_64.tar.gz](https://cloud.tehanu.liten.app/releases/stable/latest/download?asset=zed&arch=x86_64&os=linux&source=docs)
-  ([preview](https://cloud.tehanu.liten.app/releases/preview/latest/download?asset=zed&arch=x86_64&os=linux&source=docs))
-- [zed-linux-aarch64.tar.gz](https://cloud.tehanu.liten.app/releases/stable/latest/download?asset=zed&arch=aarch64&os=linux&source=docs)
-  ([preview](https://cloud.tehanu.liten.app/releases/preview/latest/download?asset=zed&arch=aarch64&os=linux&source=docs))
+- [tehanu-linux-x86_64.tar.gz](https://cloud.tehanu.liten.app/releases/stable/latest/download?asset=tehanu&arch=x86_64&os=linux&source=docs)
+  ([preview](https://cloud.tehanu.liten.app/releases/preview/latest/download?asset=tehanu&arch=x86_64&os=linux&source=docs))
+- [tehanu-linux-aarch64.tar.gz](https://cloud.tehanu.liten.app/releases/stable/latest/download?asset=tehanu&arch=aarch64&os=linux&source=docs)
+  ([preview](https://cloud.tehanu.liten.app/releases/preview/latest/download?asset=tehanu&arch=aarch64&os=linux&source=docs))
 
-Then ensure that the `zed` binary in the tarball is on your path. The easiest way is to unpack the tarball and create a symlink:
+Then ensure that the `tehanu` binary in the tarball is on your path. The easiest way is to unpack the tarball and create a symlink:
 
 ```sh
 mkdir -p ~/.local
-# extract zed to ~/.local/zed.app/
+# extract tehanu to ~/.local/tehanu.app/
 tar -xvf <path/to/download>.tar.gz -C ~/.local
-# link the zed binary to ~/.local/bin (or another directory in your $PATH)
-ln -sf ~/.local/zed.app/bin/zed ~/.local/bin/zed
+# link the tehanu binary to ~/.local/bin (or another directory in your $PATH)
+ln -sf ~/.local/tehanu.app/bin/tehanu ~/.local/bin/tehanu
 ```
 
 If you'd like integration with an XDG-compatible desktop environment, you will also need to install the `.desktop` file:
 
 ```sh
-cp ~/.local/zed.app/share/applications/zed.desktop ~/.local/share/applications/se.ziran.Tehanu.desktop
-sed -i "s|Icon=zed|Icon=$HOME/.local/zed.app/share/icons/hicolor/512x512/apps/zed.png|g" ~/.local/share/applications/se.ziran.Tehanu.desktop
-sed -i "s|Exec=zed|Exec=$HOME/.local/zed.app/libexec/zed-editor|g" ~/.local/share/applications/se.ziran.Tehanu.desktop
+cp ~/.local/tehanu.app/share/applications/tehanu.desktop ~/.local/share/applications/se.ziran.Tehanu.desktop
+sed -i "s|Icon=tehanu|Icon=$HOME/.local/tehanu.app/share/icons/hicolor/512x512/apps/tehanu.png|g" ~/.local/share/applications/se.ziran.Tehanu.desktop
+sed -i "s|Exec=tehanu|Exec=$HOME/.local/tehanu.app/libexec/tehanu-editor|g" ~/.local/share/applications/se.ziran.Tehanu.desktop
 ```
 
 ## Uninstalling Tehanu
 
 ### Standard Uninstall
 
-If Tehanu was installed using the default installation script, it can be uninstalled by supplying the `--uninstall` flag to the `zed` shell command
+If Tehanu was installed using the default installation script, it can be uninstalled by supplying the `--uninstall` flag to the `tehanu` shell command
 
 ```sh
-zed --uninstall
+tehanu --uninstall
 ```
 
 If there are no errors, the shell will then prompt you whether you'd like to keep your preferences or delete them. After making a choice, you should see a message that Tehanu was successfully uninstalled.
 
-In the case that the `zed` shell command was not found in your PATH, you can try one of the following commands
+In the case that the `tehanu` shell command was not found in your PATH, you can try one of the following commands
 
 ```sh
-$HOME/.local/bin/zed --uninstall
+$HOME/.local/bin/tehanu --uninstall
 ```
 
 or
 
 ```sh
-$HOME/.local/zed.app/bin.zed --uninstall
+$HOME/.local/tehanu.app/bin.tehanu --uninstall
 ```
 
-The first case might fail if a symlink was not properly established between `$HOME/.local/bin/zed` and `$HOME/.local/zed.app/bin.zed`. But the second case should work as long as Tehanu was installed to its default location.
+The first case might fail if a symlink was not properly established between `$HOME/.local/bin/tehanu` and `$HOME/.local/tehanu.app/bin.tehanu`. But the second case should work as long as Tehanu was installed to its default location.
 
-If Tehanu was installed to a different location, you must invoke the `zed` binary stored in that installation directory and pass the `--uninstall` flag to it in the same format as the previous commands.
+If Tehanu was installed to a different location, you must invoke the `tehanu` binary stored in that installation directory and pass the `--uninstall` flag to it in the same format as the previous commands.
 
 ### Package Manager
 
@@ -151,19 +151,19 @@ vkcube
 
 This should output a line describing your current graphics setup and show a rotating cube. If this does not work, you should be able to fix it by installing Vulkan compatible GPU drivers, however in some cases there is no Vulkan support yet.
 
-You can find out which graphics card Tehanu is using by looking in the Tehanu log (`~/.local/share/zed/logs/Tehanu.log`) for `Using GPU: ...`.
+You can find out which graphics card Tehanu is using by looking in the Tehanu log (`~/.local/share/tehanu/logs/Tehanu.log`) for `Using GPU: ...`.
 
-If you see errors like `ERROR_INITIALIZATION_FAILED` or `GPU Crashed` or `ERROR_SURFACE_LOST_KHR` then you may be able to work around this by installing different drivers for your GPU, or by selecting a different GPU to run on. (See [#14225](https://github.com/zed-industries/zed/issues/14225))
+If you see errors like `ERROR_INITIALIZATION_FAILED` or `GPU Crashed` or `ERROR_SURFACE_LOST_KHR` then you may be able to work around this by installing different drivers for your GPU, or by selecting a different GPU to run on. (See [#14225](https://github.com/tehanu-industries/tehanu/issues/14225))
 
 On some systems the file `/etc/prime-discrete` can be used to enforce the use of a discrete GPU using [PRIME](https://wiki.archlinux.org/title/PRIME). Depending on the details of your setup, you may need to change the contents of this file to "on" (to force discrete graphics) or "off" (to force integrated graphics).
 
 On others, you may be able to the environment variable `DRI_PRIME=1` when running Tehanu to force the use of the discrete GPU.
 
-If you're using an AMD GPU and Tehanu crashes when selecting long lines, try setting the `TEHANU_PATH_SAMPLE_COUNT=0` environment variable. (See [#26143](https://github.com/zed-industries/zed/issues/26143))
+If you're using an AMD GPU and Tehanu crashes when selecting long lines, try setting the `TEHANU_PATH_SAMPLE_COUNT=0` environment variable. (See [#26143](https://github.com/tehanu-industries/tehanu/issues/26143))
 
-If you're using an AMD GPU, you might get a 'Broken Pipe' error. Try using the RADV or Mesa drivers. (See [#13880](https://github.com/zed-industries/zed/issues/13880))
+If you're using an AMD GPU, you might get a 'Broken Pipe' error. Try using the RADV or Mesa drivers. (See [#13880](https://github.com/tehanu-industries/tehanu/issues/13880))
 
-If you are using `amdvlk`, the default open-source AMD graphics driver, you may find that Tehanu consistently fails to launch. This is a known issue for some users, for example on Omarchy (see issue [#28851](https://github.com/zed-industries/zed/issues/28851)). To fix this, you will need to use a different driver. We recommend removing the `amdvlk` and `lib32-amdvlk` packages and installing `vulkan-radeon` instead (see issue [#14141](https://github.com/zed-industries/zed/issues/14141)).
+If you are using `amdvlk`, the default open-source AMD graphics driver, you may find that Tehanu consistently fails to launch. This is a known issue for some users, for example on Omarchy (see issue [#28851](https://github.com/tehanu-industries/tehanu/issues/28851)). To fix this, you will need to use a different driver. We recommend removing the `amdvlk` and `lib32-amdvlk` packages and installing `vulkan-radeon` instead (see issue [#14141](https://github.com/tehanu-industries/tehanu/issues/14141)).
 
 For more information, the [Arch guide to Vulkan](https://wiki.archlinux.org/title/Vulkan) has some good steps that translate well to most distributions.
 
@@ -184,14 +184,14 @@ You can obtain the device ID of your GPU by running `lspci -nn | grep VGA` which
 where the device ID here is `2484`. This value is in hexadecimal, so to force Tehanu to use this specific GPU you would set the environment variable like so:
 
 ```
-TEHANU_DEVICE_ID=0x2484 zed
+TEHANU_DEVICE_ID=0x2484 tehanu
 ```
 
 Make sure to export the variable if you choose to define it globally in a `.bashrc` or similar.
 
 ##### Option B
 
-If you are using Mesa, you can run `MESA_VK_DEVICE_SELECT=list zed --foreground` to get a list of available GPUs and then export `MESA_VK_DEVICE_SELECT=xxxx:yyyy` to choose a specific device. Furthermore, you can fallback to xwayland with an additional export of `WAYLAND_DISPLAY=""`.
+If you are using Mesa, you can run `MESA_VK_DEVICE_SELECT=list tehanu --foreground` to get a list of available GPUs and then export `MESA_VK_DEVICE_SELECT=xxxx:yyyy` to choose a specific device. Furthermore, you can fallback to xwayland with an additional export of `WAYLAND_DISPLAY=""`.
 
 ##### Option C
 
@@ -199,31 +199,31 @@ Using [vkdevicechooser](https://github.com/jiriks74/vkdevicechooser).
 
 #### Reporting graphics issues
 
-If Vulkan is configured correctly, and Tehanu is still not working for you, please [file an issue](https://github.com/zed-industries/zed) with as much information as possible.
+If Vulkan is configured correctly, and Tehanu is still not working for you, please [file an issue](https://github.com/tehanu-industries/tehanu) with as much information as possible.
 
-When reporting issues where Tehanu fails to start due to graphics initialization errors on GitHub, it can be impossible to run the `zed: copy system specs into clipboard` command like we instruct you to in our issue template. We provide an alternative way to collect the system specs specifically for this situation.
+When reporting issues where Tehanu fails to start due to graphics initialization errors on GitHub, it can be impossible to run the `tehanu: copy system specs into clipboard` command like we instruct you to in our issue template. We provide an alternative way to collect the system specs specifically for this situation.
 
 Passing the `--system-specs` flag to Tehanu like
 
 ```sh
-zed --system-specs
+tehanu --system-specs
 ```
 
 will print the system specs to the terminal like so. It is strongly recommended to copy the output verbatim into the issue on GitHub, as it uses markdown formatting to ensure the output is readable.
 
-Additionally, it is extremely beneficial to provide the contents of your Tehanu log when reporting such issues. The log is usually located at `~/.local/share/zed/logs/Tehanu.log`. The recommended process for producing a helpful log file is as follows:
+Additionally, it is extremely beneficial to provide the contents of your Tehanu log when reporting such issues. The log is usually located at `~/.local/share/tehanu/logs/Tehanu.log`. The recommended process for producing a helpful log file is as follows:
 
 ```sh
-truncate -s 0 ~/.local/share/zed/logs/Tehanu.log # Clear the log file
-TEHANU_LOG=blade_graphics=info zed .
-cat ~/.local/share/zed/logs/Tehanu.log
+truncate -s 0 ~/.local/share/tehanu/logs/Tehanu.log # Clear the log file
+TEHANU_LOG=blade_graphics=info tehanu .
+cat ~/.local/share/tehanu/logs/Tehanu.log
 # copy the output
 ```
 
 Or, if you have the Tehanu cli setup, you can do
 
 ```sh
-TEHANU_LOG=blade_graphics=info /path/to/zed/cli --foreground .
+TEHANU_LOG=blade_graphics=info /path/to/tehanu/cli --foreground .
 # copy the output
 ```
 
@@ -235,7 +235,7 @@ It is also highly recommended when pasting the log into a github issue, to do so
 <details><summary>Tehanu Log</summary>
 
 ```
-{zed log contents}
+{tehanu log contents}
 ```
 
 </details>
@@ -362,7 +362,7 @@ Restart Tehanu for the changes to take effect.
 This Tehanu-specific environment variable directly sets the scale factor, bypassing all automatic detection.
 
 ```sh
-GPUI_X11_SCALE_FACTOR=1.5 zed
+GPUI_X11_SCALE_FACTOR=1.5 tehanu
 ```
 
 You can use decimal values (e.g., `1.25`, `1.5`, `2.0`) or set `GPUI_X11_SCALE_FACTOR=randr` to force RandR-based detection even when `Xft.dpi` is set.

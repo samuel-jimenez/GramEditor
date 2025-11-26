@@ -54,13 +54,13 @@ You'll be prompted whether to keep or delete your preferences. After making a ch
 If the `zed` command is not found in your PATH, try:
 
 ```sh
-$HOME/.local/bin/zed --uninstall
+$HOME/.local/bin/tehanu --uninstall
 ```
 
 or:
 
 ```sh
-$HOME/.local/zed.app/bin/zed --uninstall
+$HOME/.local/tehanu.app/bin/tehanu --uninstall
 ```
 
 ### Package Manager
@@ -71,8 +71,8 @@ If you installed Tehanu using a package manager (such as Flatpak, Snap, or a dis
 
 If the uninstall command fails or Tehanu was installed to a custom location, you can manually remove:
 
-- Installation directory: `~/.local/zed.app` (or your custom installation path)
-- Binary symlink: `~/.local/bin/zed`
+- Installation directory: `~/.local/tehanu.app` (or your custom installation path)
+- Binary symlink: `~/.local/bin/tehanu`
 - Configuration and data: `~/.config/tehanu`
 
 ## Windows

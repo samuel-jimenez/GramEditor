@@ -53,7 +53,7 @@ parts:
 
 apps:
   tehanu:
-    command: usr/bin/zed
+    command: usr/bin/tehanu
     common-id: se.ziran.Tehanu
     environment:
       TEHANU_BUNDLE_TYPE: snap

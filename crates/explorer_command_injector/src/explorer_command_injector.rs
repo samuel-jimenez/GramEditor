@@ -49,10 +49,10 @@ impl IExplorerCommand_Impl for ExplorerCommandInjector_Impl {
     }
 
     fn GetIcon(&self, _: Ref<IShellItemArray>) -> Result<windows_core::PWSTR> {
-        let Some(zed_exe) = get_zed_exe_path() else {
+        let Some(tehanu_exe) = get_tehanu_exe_path() else {
             return Err(E_FAIL.into());
         };
-        unsafe { SHStrDupW(&HSTRING::from(zed_exe)) }
+        unsafe { SHStrDupW(&HSTRING::from(tehanu_exe)) }
     }
 
     fn GetToolTip(&self, _: Ref<IShellItemArray>) -> Result<windows_core::PWSTR> {
@@ -69,7 +69,7 @@ impl IExplorerCommand_Impl for ExplorerCommandInjector_Impl {
 
     fn Invoke(&self, psiitemarray: Ref<IShellItemArray>, _: Ref<IBindCtx>) -> Result<()> {
         let items = psiitemarray.ok()?;
-        let Some(zed_exe) = get_zed_exe_path() else {
+        let Some(tehanu_exe) = get_tehanu_exe_path() else {
             return Ok(());
         };
 
@@ -78,7 +78,7 @@ impl IExplorerCommand_Impl for ExplorerCommandInjector_Impl {
             let item = unsafe { items.GetItemAt(idx)? };
             let item_path = unsafe { item.GetDisplayName(SIGDN_FILESYSPATH)?.to_string()? };
             #[allow(clippy::disallowed_methods, reason = "no async context in sight..")]
-            std::process::Command::new(&zed_exe)
+            std::process::Command::new(&tehanu_exe)
                 .arg(&item_path)
                 .spawn()
                 .map_err(|_| E_INVALIDARG)?;
@@ -180,7 +180,7 @@ fn get_zed_install_folder() -> Option<PathBuf> {
 }
 
 #[inline]
-fn get_zed_exe_path() -> Option<String> {
+fn get_tehanu_exe_path() -> Option<String> {
     get_zed_install_folder().map(|path| path.join("Tehanu.exe").to_string_lossy().into_owned())
 }
 
