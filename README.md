@@ -10,8 +10,6 @@ I have gotten to this point in my life without making the tools of my trade into
 a subscription service from some of the worst companies ever to exist, and I
 don't intend to start now.
 
-I am making these changes available to all without warranty or
-
 ## Manifesto
 
 This project is first and foremost a source code editor. It aims to be a fast,
@@ -32,7 +30,7 @@ We promise:
 - NO SUBSCRIPTIONS
 - NO AUTOMATIC INSTALLATION OR UPDATES
 
-For more thoughts on this topic, see [MISSION.md][].
+For more thoughts on this topic, see [MISSION.md](./MISSION.md).
 
 ---
 
