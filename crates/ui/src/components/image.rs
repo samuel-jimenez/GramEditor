@@ -108,6 +108,8 @@ impl Component for Vector {
     }
 
     fn preview(_window: &mut Window, _cx: &mut App) -> Option<AnyElement> {
+        let size = rems_from_px(60.);
+
         Some(
             v_flex()
                 .gap_6()
@@ -117,11 +119,18 @@ impl Component for Vector {
                         vec![
                             single_example(
                                 "Default",
-                                Vector::square(VectorName::Logo, rems(8.)).into_any_element(),
+                                Vector::square(VectorName::Logo, size).into_any_element(),
                             ),
                             single_example(
                                 "Custom Size",
-                                Vector::new(VectorName::Logo, rems(12.), rems(6.))
+                                h_flex()
+                                    .h(rems_from_px(120.))
+                                    .justify_center()
+                                    .child(Vector::new(
+                                        VectorName::Logo,
+                                        rems_from_px(120.),
+                                        rems_from_px(200.),
+                                    ))
                                     .into_any_element(),
                             ),
                         ],
@@ -131,13 +140,13 @@ impl Component for Vector {
                         vec![
                             single_example(
                                 "Accent Color",
-                                Vector::square(VectorName::Logo, rems(8.))
+                                Vector::square(VectorName::Logo, size)
                                     .color(Color::Accent)
                                     .into_any_element(),
                             ),
                             single_example(
                                 "Error Color",
-                                Vector::square(VectorName::Logo, rems(8.))
+                                Vector::square(VectorName::Logo, size)
                                     .color(Color::Error)
                                     .into_any_element(),
                             ),
@@ -147,7 +156,7 @@ impl Component for Vector {
                         "Different Vectors",
                         vec![single_example(
                             "Tehanu Logo",
-                            Vector::square(VectorName::Logo, rems(8.)).into_any_element(),
+                            Vector::square(VectorName::Logo, rems_from_px(8.)).into_any_element(),
                         )],
                     ),
                 ])
