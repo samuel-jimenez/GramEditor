@@ -7,9 +7,12 @@ use std::{
     ops::{AddAssign, Range, Sub},
 };
 use sum_tree::Bias;
+use text::BufferId;
 
 #[derive(Clone, Copy, Eq, PartialEq, Hash)]
 pub struct Anchor {
+    /// Invariant: If buffer id is `None`, excerpt id must be `ExcerptId::min()` or `ExcerptId::max()`.
+    pub buffer_id: Option<BufferId>,
     pub excerpt_id: ExcerptId,
     pub text_anchor: text::Anchor,
     pub diff_base_anchor: Option<text::Anchor>,
@@ -17,14 +20,15 @@ pub struct Anchor {
 
 impl std::fmt::Debug for Anchor {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        if self.is_min() {
-            return write!(f, "Anchor::min({:?})", self.text_anchor.buffer_id);
+        if *self == Self::min() {
+            return f.write_str("Anchor::MIN");
         }
-        if self.is_max() {
-            return write!(f, "Anchor::max({:?})", self.text_anchor.buffer_id);
+        if *self == Self::max() {
+            return f.write_str("Anchor::MAX");
         }
 
         f.debug_struct("Anchor")
+            .field("buffer_id", &self.buffer_id)
             .field("excerpt_id", &self.excerpt_id)
             .field("text_anchor", &self.text_anchor)
             .field("diff_base_anchor", &self.diff_base_anchor)
@@ -40,20 +44,35 @@ impl Anchor {
         }
     }
 
-    pub fn in_buffer(excerpt_id: ExcerptId, text_anchor: text::Anchor) -> Self {
+    pub fn in_buffer(
+        excerpt_id: ExcerptId,
+        buffer_id: BufferId,
+        text_anchor: text::Anchor,
+    ) -> Self {
+        debug_assert!(
+            text_anchor.buffer_id.is_none_or(|id| id == buffer_id),
+            "buffer id does not match the one in the text anchor: {buffer_id:?} {text_anchor:?}",
+        );
         Self {
+            buffer_id: Some(buffer_id),
             excerpt_id,
             text_anchor,
             diff_base_anchor: None,
         }
     }
 
-    pub fn range_in_buffer(excerpt_id: ExcerptId, range: Range<text::Anchor>) -> Range<Self> {
-        Self::in_buffer(excerpt_id, range.start)..Self::in_buffer(excerpt_id, range.end)
+    pub fn range_in_buffer(
+        excerpt_id: ExcerptId,
+        buffer_id: BufferId,
+        range: Range<text::Anchor>,
+    ) -> Range<Self> {
+        Self::in_buffer(excerpt_id, buffer_id, range.start)
+            ..Self::in_buffer(excerpt_id, buffer_id, range.end)
     }
 
     pub fn min() -> Self {
         Self {
+            buffer_id: None,
             excerpt_id: ExcerptId::min(),
             text_anchor: text::Anchor::MIN,
             diff_base_anchor: None,
@@ -62,22 +81,11 @@ impl Anchor {
 
     pub fn max() -> Self {
         Self {
+            buffer_id: None,
             excerpt_id: ExcerptId::max(),
             text_anchor: text::Anchor::MAX,
             diff_base_anchor: None,
         }
-    }
-
-    pub fn is_min(&self) -> bool {
-        self.excerpt_id == ExcerptId::min()
-            && self.text_anchor.is_min()
-            && self.diff_base_anchor.is_none()
-    }
-
-    pub fn is_max(&self) -> bool {
-        self.excerpt_id == ExcerptId::max()
-            && self.text_anchor.is_max()
-            && self.diff_base_anchor.is_none()
     }
 
     pub fn cmp(&self, other: &Anchor, snapshot: &MultiBufferSnapshot) -> Ordering {
@@ -93,8 +101,8 @@ impl Anchor {
             return excerpt_id_cmp;
         }
         if self_excerpt_id == ExcerptId::max()
-            && self.text_anchor.is_max()
-            && self.text_anchor.is_max()
+            && self.text_anchor == text::Anchor::MAX
+            && self.text_anchor == text::Anchor::MAX
             && self.diff_base_anchor.is_none()
             && other.diff_base_anchor.is_none()
         {
@@ -139,6 +147,7 @@ impl Anchor {
             && let Some(excerpt) = snapshot.excerpt(self.excerpt_id)
         {
             return Self {
+                buffer_id: Some(excerpt.buffer_id),
                 excerpt_id: excerpt.id,
                 text_anchor: self.text_anchor.bias_left(&excerpt.buffer),
                 diff_base_anchor: self.diff_base_anchor.map(|a| {
@@ -162,6 +171,7 @@ impl Anchor {
             && let Some(excerpt) = snapshot.excerpt(self.excerpt_id)
         {
             return Self {
+                buffer_id: Some(excerpt.buffer_id),
                 excerpt_id: excerpt.id,
                 text_anchor: self.text_anchor.bias_right(&excerpt.buffer),
                 diff_base_anchor: self.diff_base_anchor.map(|a| {
@@ -192,8 +202,8 @@ impl Anchor {
     }
 
     pub fn is_valid(&self, snapshot: &MultiBufferSnapshot) -> bool {
-        if self.is_min() || self.is_max() {
-            true
+        if *self == Anchor::min() || self.excerpt_id == ExcerptId::max() {
+            !snapshot.is_empty()
         } else if let Some(excerpt) = snapshot.excerpt(self.excerpt_id) {
             (self.text_anchor == excerpt.range.context.start
                 || self.text_anchor == excerpt.range.context.end

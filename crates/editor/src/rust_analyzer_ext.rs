@@ -322,11 +322,7 @@ fn cancel_flycheck_action(
         .disjoint_anchors_arc()
         .iter()
         .find_map(|selection| {
-            let buffer_id = selection
-                .start
-                .text_anchor
-                .buffer_id
-                .or(selection.end.text_anchor.buffer_id)?;
+            let buffer_id = selection.start.buffer_id.or(selection.end.buffer_id)?;
             let project = project.read(cx);
             let entry_id = project
                 .buffer_for_id(buffer_id, cx)?
@@ -351,11 +347,7 @@ fn run_flycheck_action(
         .disjoint_anchors_arc()
         .iter()
         .find_map(|selection| {
-            let buffer_id = selection
-                .start
-                .text_anchor
-                .buffer_id
-                .or(selection.end.text_anchor.buffer_id)?;
+            let buffer_id = selection.start.buffer_id.or(selection.end.buffer_id)?;
             let project = project.read(cx);
             let entry_id = project
                 .buffer_for_id(buffer_id, cx)?
@@ -380,11 +372,7 @@ fn clear_flycheck_action(
         .disjoint_anchors_arc()
         .iter()
         .find_map(|selection| {
-            let buffer_id = selection
-                .start
-                .text_anchor
-                .buffer_id
-                .or(selection.end.text_anchor.buffer_id)?;
+            let buffer_id = selection.start.buffer_id.or(selection.end.buffer_id)?;
             let project = project.read(cx);
             let entry_id = project
                 .buffer_for_id(buffer_id, cx)?

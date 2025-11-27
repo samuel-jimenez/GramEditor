@@ -490,7 +490,11 @@ impl EditorTestContext {
             );
             assert_eq!(
                 multibuffer_snapshot
-                    .text_for_range(Anchor::range_in_buffer(excerpt_id, range.context.clone()))
+                    .text_for_range(Anchor::range_in_buffer(
+                        excerpt_id,
+                        snapshot.remote_id(),
+                        range.context.clone()
+                    ))
                     .collect::<String>(),
                 expected_text,
                 "{}",
@@ -671,7 +675,11 @@ impl std::fmt::Display for FormatMultiBufferAsMarkedText {
             }
 
             let mut text = multibuffer_snapshot
-                .text_for_range(Anchor::range_in_buffer(*excerpt_id, range.context.clone()))
+                .text_for_range(Anchor::range_in_buffer(
+                    *excerpt_id,
+                    snapshot.remote_id(),
+                    range.context.clone(),
+                ))
                 .collect::<String>();
 
             let selections = selections
