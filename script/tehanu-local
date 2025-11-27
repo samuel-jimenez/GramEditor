@@ -2,7 +2,7 @@
 
 const HELP = `
 USAGE
-  zed-local  [options]  [zed args]
+  tehanu-local  [options]  [zed args]
 
 SUMMARY
   Runs 1-6 instances of Tehanu using a locally-running collaboration server.
@@ -36,9 +36,7 @@ if (process.env.SEED_PATH) {
     const defaultUsers = users;
     const customUsers = require("../crates/collab/seed.json").admins;
     assert(customUsers.length > 0);
-    users = customUsers.concat(
-      defaultUsers.filter((user) => !customUsers.includes(user)),
-    );
+    users = customUsers.concat(defaultUsers.filter((user) => !customUsers.includes(user)));
   } catch (_) {}
 }
 
@@ -91,9 +89,7 @@ if (platform === "darwin") {
       encoding: "utf8",
     }),
   );
-  const mainDisplayResolution = displayInfo?.SPDisplaysDataType?.flatMap(
-    (display) => display?.spdisplays_ndrvs,
-  )
+  const mainDisplayResolution = displayInfo?.SPDisplaysDataType?.flatMap((display) => display?.spdisplays_ndrvs)
     ?.find((entry) => entry?.spdisplays_main === "spdisplays_yes")
     ?._spdisplays_resolution?.match(RESOLUTION_REGEX);
   if (!mainDisplayResolution) {
@@ -164,10 +160,10 @@ if (user) {
 }
 
 let buildArgs = ["build"];
-let zedBinary = "target/debug/tehanu";
+let appBinary = "target/debug/tehanu";
 if (isReleaseMode) {
   buildArgs.push("--release");
-  zedBinary = "target/release/tehanu";
+  appBinary = "target/release/tehanu";
 }
 
 try {
@@ -186,17 +182,14 @@ setTimeout(() => {
     if (platform == "win32") {
       position = [column * instanceWidth, row * instanceHeight].join(",");
     } else {
-      position = [
-        column * instanceWidth,
-        row * instanceHeight + titleBarHeight,
-      ].join(",");
+      position = [column * instanceWidth, row * instanceHeight + titleBarHeight].join(",");
     }
     const size = [instanceWidth, instanceHeight].join(",");
-    let binaryPath = zedBinary;
+    let binaryPath = appBinary;
     if (i != 0 && othersOnStable) {
-      binaryPath = "/Applications/Tehanu.app/Contents/MacOS/zed";
+      binaryPath = "/Applications/Tehanu.app/Contents/MacOS/tehanu";
     } else if (i != 0 && othersOnPreview) {
-      binaryPath = "/Applications/Tehanu Preview.app/Contents/MacOS/zed";
+      binaryPath = "/Applications/Tehanu Preview.app/Contents/MacOS/tehanu";
     }
     spawn(binaryPath, i == 0 ? args : [], {
       stdio: "inherit",

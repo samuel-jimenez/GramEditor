@@ -5,7 +5,7 @@
 # It expects a version to be passed as the first argument, and expects
 # the built `.snap` for that version to be in the current directory.
 #
-# This will uninstall the current `zed` snap, replacing it with a snap
+# This will uninstall the current `tehanu` snap, replacing it with a snap
 # that directly uses the `snap/unpacked` directory.
 
 set -euxo pipefail
@@ -21,5 +21,5 @@ fi
 snap remove zed || true
 mkdir -p snap
 rm -rf snap/unpacked
-unsquashfs -dest snap/unpacked "zed_$1_amd64.snap"
+unsquashfs -dest snap/unpacked "tehanu_$1_amd64.snap"
 snap try --classic snap/unpacked
