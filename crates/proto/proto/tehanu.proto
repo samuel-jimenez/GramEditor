@@ -364,7 +364,9 @@ message Envelope {
         OpenImageResponse open_image_response = 392;
         CreateImageForPeer create_image_for_peer = 393;
 
-        RunGitHook run_git_hook = 395; // current max
+        RunGitHook run_git_hook = 395;
+
+        GitDeleteBranch git_delete_branch = 396; // current max
     }
 
     reserved 87 to 88;

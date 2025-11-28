@@ -4354,6 +4354,122 @@ mod tests {
         });
     }
 
+    /// Checks that action namespaces are the expected set. The purpose of this is to prevent typos
+    /// and let you know when introducing a new namespace.
+    #[gpui::test]
+    async fn test_action_namespaces(cx: &mut gpui::TestAppContext) {
+        use itertools::Itertools;
+
+        init_keymap_test(cx);
+        cx.update(|cx| {
+            let all_actions = cx.all_action_names();
+
+            let mut actions_without_namespace = Vec::new();
+            let all_namespaces = all_actions
+                .iter()
+                .filter_map(|action_name| {
+                    let namespace = action_name
+                        .split("::")
+                        .collect::<Vec<_>>()
+                        .into_iter()
+                        .rev()
+                        .skip(1)
+                        .rev()
+                        .join("::");
+                    if namespace.is_empty() {
+                        actions_without_namespace.push(*action_name);
+                    }
+                    if &namespace == "test_only" || &namespace == "stories" {
+                        None
+                    } else {
+                        Some(namespace)
+                    }
+                })
+                .sorted()
+                .dedup()
+                .collect::<Vec<_>>();
+            assert_eq!(actions_without_namespace, Vec::<&str>::new());
+
+            let expected_namespaces = vec![
+                "action",
+                "activity_indicator",
+                "app_actions",
+                #[cfg(not(target_os = "macos"))]
+                "app_menu",
+                "bedrock",
+                "branch_picker",
+                "branches",
+                "buffer_search",
+                "cli",
+                "client",
+                "command_palette",
+                "console",
+                "context_server",
+                "debug_panel",
+                "debugger",
+                "dev",
+                "diagnostics",
+                "edit_prediction",
+                "editor",
+                "feedback",
+                "file_finder",
+                "git",
+                "git_onboarding",
+                "git_panel",
+                "go_to_line",
+                "icon_theme_selector",
+                "journal",
+                "keymap_editor",
+                "keystroke_input",
+                "language_selector",
+                "line_ending_selector",
+                "lsp_tool",
+                "markdown",
+                "menu",
+                "notebook",
+                "notification_panel",
+                "onboarding",
+                "outline",
+                "outline_panel",
+                "pane",
+                "panel",
+                "picker",
+                "project_panel",
+                "project_search",
+                "project_symbols",
+                "projects",
+                "repl",
+                "search",
+                "settings_editor",
+                "settings_profile_selector",
+                "snippets",
+                "stash_picker",
+                "svg",
+                "syntax_tree_view",
+                "tab_switcher",
+                "task",
+                "tehanu",
+                "terminal",
+                "terminal_panel",
+                "theme_selector",
+                "toast",
+                "toolchain",
+                "variable_list",
+                "vim",
+                "window",
+                "workspace",
+            ];
+            assert_eq!(
+                all_namespaces,
+                expected_namespaces
+                    .into_iter()
+                    .map(|namespace| namespace.to_string())
+                    .sorted()
+                    .collect::<Vec<_>>()
+            );
+        });
+    }
+
     #[gpui::test]
     fn test_bundled_settings_and_themes(cx: &mut App) {
         cx.text_system()
