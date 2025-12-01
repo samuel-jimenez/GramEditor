@@ -1137,6 +1137,8 @@
   //      "load_direnv": "direct"
   // 2. Load direnv configuration through the shell hook, works for POSIX shells and fish.
   //      "load_direnv": "shell_hook"
+  // 3. Don't load direnv configuration at all.
+  //      "load_direnv": "disabled"
   "load_direnv": "direct",
   // Settings specific to journaling
   "journal": {
