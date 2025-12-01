@@ -3,6 +3,7 @@ use std::sync::{Arc, OnceLock};
 
 use db::kvp::KEY_VALUE_STORE;
 use editor::Editor;
+use extension_host::ExtensionStore;
 use gpui::{AppContext as _, Context, Entity, SharedString, Window};
 use language::Buffer;
 use ui::prelude::*;
@@ -169,17 +170,33 @@ pub(crate) fn suggest(buffer: Entity<Buffer>, window: &mut Window, cx: &mut Cont
             cx.new(move |cx| {
                 MessageNotification::new(
                     format!(
-                        "You may install the '{}' extension for '{}' files.",
+                        "Install the '{}' extension for '{}' files?",
                         extension_id, file_name_or_extension
                     ),
                     cx,
                 )
-                .primary_message("Will do")
+                .primary_message("Install")
                 .primary_icon(IconName::Check)
                 .primary_icon_color(Color::Success)
-                .secondary_message("Nah")
+                .primary_on_click({
+                    let extension_id = extension_id.clone();
+                    move |_window, cx| {
+                        let extension_id = extension_id.clone();
+                        let extension_store = ExtensionStore::global(cx);
+                        extension_store.update(cx, move |store, cx| {
+                            store.install_dev_extension_by_name(extension_id, cx);
+                        });
+                    }
+                })
+                .secondary_message("No")
                 .secondary_icon(IconName::Close)
                 .secondary_icon_color(Color::Error)
+                .secondary_on_click(move |_window, cx| {
+                    let key = language_extension_key(&extension_id);
+                    db::write_and_log(cx, move || {
+                        KEY_VALUE_STORE.write_kvp(key, "dismissed".to_string())
+                    });
+                })
             })
         });
     })

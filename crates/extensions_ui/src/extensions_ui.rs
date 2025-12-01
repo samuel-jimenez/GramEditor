@@ -36,8 +36,10 @@ use crate::components::ExtensionCard;
 actions!(
     tehanu,
     [
-        /// Installs an extension from a local directory for development.
-        InstallDevExtension
+        /// Installs an extension from a local directory.
+        InstallExtensionFromFolder,
+        /// Installs an extension from a URL to a git repository.
+        InstallExtensionFromUrl,
     ]
 );
 
@@ -99,7 +101,74 @@ pub fn init(cx: &mut App) {
                     }
                 },
             )
-            .register_action(move |workspace, _: &InstallDevExtension, window, cx| {
+            .register_action(
+                move |workspace, _: &InstallExtensionFromFolder, window, cx| {
+                    let store = ExtensionStore::global(cx);
+                    let prompt = workspace.prompt_for_open_path(
+                        gpui::PathPromptOptions {
+                            files: false,
+                            directories: true,
+                            multiple: false,
+                            prompt: None,
+                        },
+                        DirectoryLister::Local(
+                            workspace.project().clone(),
+                            workspace.app_state().fs.clone(),
+                        ),
+                        window,
+                        cx,
+                    );
+
+                    let workspace_handle = cx.entity().downgrade();
+                    window
+                        .spawn(cx, async move |cx| {
+                            let extension_path =
+                                match Flatten::flatten(prompt.await.map_err(|e| e.into())) {
+                                    Ok(Some(mut paths)) => paths.pop()?,
+                                    Ok(None) => return None,
+                                    Err(err) => {
+                                        workspace_handle
+                                            .update(cx, |workspace, cx| {
+                                                workspace.show_portal_error(err.to_string(), cx);
+                                            })
+                                            .ok();
+                                        return None;
+                                    }
+                                };
+
+                            let install_task = store
+                                .update(cx, |store, cx| {
+                                    store.install_dev_extension(extension_path, cx)
+                                })
+                                .ok()?;
+
+                            match install_task.await {
+                                Ok(_) => {}
+                                Err(err) => {
+                                    log::error!("Failed to install dev extension(144): {:?}", err);
+                                    workspace_handle
+                                        .update(cx, |workspace, cx| {
+                                            workspace.show_error(
+                                                // NOTE: using `anyhow::context` here ends up not printing
+                                                // the error
+                                                &format!(
+                                                    "Failed to install dev extension(150): {}",
+                                                    err
+                                                ),
+                                                cx,
+                                            );
+                                        })
+                                        .ok();
+                                }
+                            }
+
+                            Some(())
+                        })
+                        .detach();
+                },
+            )
+            .register_action(move |workspace, _: &InstallExtensionFromUrl, window, cx| {
+                // TODO: display dialog to enter URL
                 let store = ExtensionStore::global(cx);
                 let prompt = workspace.prompt_for_open_path(
                     gpui::PathPromptOptions {
@@ -142,14 +211,14 @@ pub fn init(cx: &mut App) {
                         match install_task.await {
                             Ok(_) => {}
                             Err(err) => {
-                                log::error!("Failed to install dev extension(144): {:?}", err);
+                                log::error!("Failed to install URL extension(144): {:?}", err);
                                 workspace_handle
                                     .update(cx, |workspace, cx| {
                                         workspace.show_error(
                                             // NOTE: using `anyhow::context` here ends up not printing
                                             // the error
                                             &format!(
-                                                "Failed to install dev extension(150): {}",
+                                                "Failed to install URL extension(150): {}",
                                                 err
                                             ),
                                             cx,
@@ -1369,12 +1438,30 @@ impl Render for ExtensionsPage {
                             .justify_between()
                             .child(Headline::new("Extensions").size(HeadlineSize::XLarge))
                             .child(
-                                Button::new("install-dev-extension", "Install Dev Extension")
-                                    .style(ButtonStyle::Outlined)
-                                    .size(ButtonSize::Medium)
-                                    .on_click(|_event, window, cx| {
-                                        window.dispatch_action(Box::new(InstallDevExtension), cx)
-                                    }),
+                                h_flex()
+                                    .gap_1p5()
+                                    .child(
+                                        Button::new("install-dev-extension", "Install From URL")
+                                            .style(ButtonStyle::Outlined)
+                                            .size(ButtonSize::Medium)
+                                            .on_click(|_event, window, cx| {
+                                                window.dispatch_action(
+                                                    Box::new(InstallExtensionFromUrl),
+                                                    cx,
+                                                )
+                                            }),
+                                    )
+                                    .child(
+                                        Button::new("install-dev-extension", "Install Local")
+                                            .style(ButtonStyle::Outlined)
+                                            .size(ButtonSize::Medium)
+                                            .on_click(|_event, window, cx| {
+                                                window.dispatch_action(
+                                                    Box::new(InstallExtensionFromFolder),
+                                                    cx,
+                                                )
+                                            }),
+                                    ),
                             ),
                     )
                     .child(

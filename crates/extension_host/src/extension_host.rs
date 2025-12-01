@@ -23,6 +23,7 @@ use futures::{
     },
     select_biased,
 };
+use git2::Repository;
 use gpui::{
     App, AppContext as _, AsyncApp, Context, Entity, EventEmitter, Global, Task, WeakEntity,
     actions,
@@ -38,6 +39,7 @@ use release_channel::ReleaseChannel;
 use remote::RemoteClient;
 use semantic_version::SemanticVersion;
 use serde::{Deserialize, Serialize};
+use std::env;
 use std::ops::RangeInclusive;
 use std::str::FromStr;
 use std::{
@@ -46,6 +48,7 @@ use std::{
     sync::Arc,
     time::{Duration, Instant},
 };
+use url::Url;
 use util::{ResultExt, paths::RemotePathBuf};
 use wasm_host::{WasmExtension, WasmHost, wit::is_supported_wasm_api_version};
 
@@ -53,6 +56,8 @@ pub use extension::{
     ExtensionLibraryKind, GrammarManifestEntry, OldExtensionManifest, SchemaVersion,
 };
 pub use extension_settings::ExtensionSettings;
+
+use crate::wasm_host::wit::wasm_api_version_range;
 
 pub const RELOAD_DEBOUNCE_DURATION: Duration = Duration::from_millis(200);
 const FS_WATCH_LATENCY: Duration = Duration::from_millis(100);
@@ -574,6 +579,36 @@ impl ExtensionStore {
 
             anyhow::Ok(())
         })
+    }
+
+    pub fn lookup_extension_url(&self, extension_id: Arc<str>) -> Result<Url> {
+        Err(anyhow!("Don't have URL for {}", extension_id))
+    }
+
+    // pub fn clone_from_url(&self, extension_id: Arc<str>, url: Url) -> Result<Path> {
+    //     let temp_dir = tempfile::Builder::new()
+    //         .prefix(&format!("tehanu-{}", extension_id))
+    //         .tempdir()?;
+    //     let repo = Repository::clone(url.as_str(), temp_dir)?;
+    //     Ok(repo.path())
+    // }
+
+    pub fn install_dev_extension_by_name(
+        &mut self,
+        extension_id: Arc<str>,
+        cx: &mut Context<Self>,
+    ) {
+        log::info!("installing extension {extension_id} from URL");
+
+        // cx.spawn(async move |this, cx| {
+        //     let Some(url) = self.lookup_extension_url(extension_id).log_err() else {
+        //         return;
+        //     };
+        //
+        //     let path = self.clone_from_url(url).await?;
+        //     this.install_dev_extension(path, cx).detach_and_log_err(cx);
+        //     Ok(())
+        // })
     }
 
     pub fn install_dev_extension(
