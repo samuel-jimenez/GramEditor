@@ -12,7 +12,7 @@
 > to transcend.
 
 Coding is more than just productivity. We need tools that are fit for purpose,
-that aren't beholden to investors or share holders. There are aspects of the Tehanu
+that aren't beholden to investors or share holders. There are aspects of the Zed
 code editor that I think are wrong in the moral and ethical sense, and there are
 aspects that I think are simply bad choices from a technical perspective.
 
@@ -45,8 +45,7 @@ come with a subscription fee.
 - Open: No telemetry, AI or privacy-invading third party integrations.
 - Performance: Focuses on helping you with your programming tasks instead of
   spending CPU and GPU cycles on communicating with AI services, sending your
-  keystrokes to an American company server or convincing you to sign up for a
+  keystrokes to a company server in the US or convincing you to sign up for a
   subscription.
 - Language-aware: Aims to support many major and many minor programming languages
   and tools out of the box.
-
