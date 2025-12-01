@@ -2879,7 +2879,7 @@ async fn test_delete_to_bracket(cx: &mut TestAppContext) {
     );
 
     let mut cx = EditorTestContext::new(cx).await;
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(language), cx));
 
     cx.set_state(r#"macro!("// ˇCOMMENT");"#);
     cx.update_editor(|editor, window, cx| {
@@ -3110,7 +3110,7 @@ async fn test_newline_yaml(cx: &mut TestAppContext) {
 
     let mut cx = EditorTestContext::new(cx).await;
     let yaml_language = languages::language("yaml", tree_sitter_yaml::LANGUAGE.into());
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(yaml_language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(yaml_language), cx));
 
     // Object (between 2 fields)
     cx.set_state(indoc! {"
@@ -3273,7 +3273,7 @@ async fn test_newline_above(cx: &mut TestAppContext) {
     );
 
     let mut cx = EditorTestContext::new(cx).await;
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(language), cx));
     cx.set_state(indoc! {"
         const a: ˇA = (
             (ˇ
@@ -3321,7 +3321,7 @@ async fn test_newline_below(cx: &mut TestAppContext) {
     );
 
     let mut cx = EditorTestContext::new(cx).await;
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(language), cx));
     cx.set_state(indoc! {"
         const a: ˇA = (
             (ˇ
@@ -3368,7 +3368,7 @@ async fn test_newline_comments(cx: &mut TestAppContext) {
     ));
     {
         let mut cx = EditorTestContext::new(cx).await;
-        cx.update_buffer(|buffer, cx| buffer.set_language(Some(language), cx));
+        cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(language), cx));
         cx.set_state(indoc! {"
         // Fooˇ
     "});
@@ -3440,7 +3440,7 @@ async fn test_newline_comments_with_multiple_delimiters(cx: &mut TestAppContext)
     ));
     {
         let mut cx = EditorTestContext::new(cx).await;
-        cx.update_buffer(|buffer, cx| buffer.set_language(Some(language), cx));
+        cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(language), cx));
         cx.set_state(indoc! {"
         //ˇ
     "});
@@ -3487,7 +3487,7 @@ async fn test_newline_documentation_comments(cx: &mut TestAppContext) {
 
     {
         let mut cx = EditorTestContext::new(cx).await;
-        cx.update_buffer(|buffer, cx| buffer.set_language(Some(language), cx));
+        cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(language), cx));
         cx.set_state(indoc! {"
         /**ˇ
     "});
@@ -3696,7 +3696,7 @@ async fn test_newline_comments_with_block_comment(cx: &mut TestAppContext) {
     ));
 
     let mut cx = EditorTestContext::new(cx).await;
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(lua_language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(lua_language), cx));
 
     // Line with line comment should extend
     cx.set_state(indoc! {"
@@ -3817,7 +3817,7 @@ async fn test_tab_in_leading_whitespace_auto_indents_lines(cx: &mut TestAppConte
         .with_indents_query(r#"(_ "(" ")" @end) @indent"#)
         .unwrap(),
     );
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(language), cx));
 
     // test when all cursors are not at suggested indent
     // then simply move to their suggested indent location
@@ -4041,7 +4041,7 @@ async fn test_tab_with_mixed_whitespace_rust(cx: &mut TestAppContext) {
     );
 
     let mut cx = EditorTestContext::new(cx).await;
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(language), cx));
     cx.set_state(indoc! {"
         fn a() {
             if b {
@@ -4140,7 +4140,7 @@ async fn test_indent_yaml_comments_with_multiple_cursors(cx: &mut TestAppContext
 
     let mut cx = EditorTestContext::new(cx).await;
     let yaml_language = languages::language("yaml", tree_sitter_yaml::LANGUAGE.into());
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(yaml_language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(yaml_language), cx));
 
     cx.set_state(
         r#"ˇ#     ingress:
@@ -4175,7 +4175,7 @@ async fn test_indent_yaml_non_comments_with_multiple_cursors(cx: &mut TestAppCon
 
     let mut cx = EditorTestContext::new(cx).await;
     let yaml_language = languages::language("yaml", tree_sitter_yaml::LANGUAGE.into());
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(yaml_language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(yaml_language), cx));
 
     cx.set_state(
         r#"ˇingress:
@@ -4330,9 +4330,10 @@ fn test_indent_outdent_with_excerpts(cx: &mut TestAppContext) {
     ));
 
     let toml_buffer =
-        cx.new(|cx| Buffer::local("a = 1\nb = 2\n", cx).with_language(toml_language, cx));
-    let rust_buffer =
-        cx.new(|cx| Buffer::local("const c: usize = 3;\n", cx).with_language(rust_language, cx));
+        cx.new(|cx| Buffer::local("a = 1\nb = 2\n", cx).with_language_immediate(toml_language, cx));
+    let rust_buffer = cx.new(|cx| {
+        Buffer::local("const c: usize = 3;\n", cx).with_language_immediate(rust_language, cx)
+    });
     let multibuffer = cx.new(|cx| {
         let mut multibuffer = MultiBuffer::new(ReadWrite);
         multibuffer.push_excerpts(
@@ -5031,7 +5032,7 @@ async fn test_wrap_in_tag_single_selection(cx: &mut TestAppContext) {
         None,
     ));
 
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(js_language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(js_language), cx));
 
     cx.set_state(indoc! {"
         «testˇ»
@@ -5080,7 +5081,7 @@ async fn test_wrap_in_tag_multi_selection(cx: &mut TestAppContext) {
         None,
     ));
 
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(js_language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(js_language), cx));
 
     cx.set_state(indoc! {"
         «testˇ»
@@ -5123,7 +5124,7 @@ async fn test_wrap_in_tag_does_nothing_in_unsupported_languages(cx: &mut TestApp
         None,
     ));
 
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(plaintext_language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(plaintext_language), cx));
 
     cx.set_state(indoc! {"
         «testˇ»
@@ -6569,7 +6570,7 @@ async fn test_rewrap(cx: &mut TestAppContext) {
         language: Arc<Language>,
         cx: &mut EditorTestContext,
     ) {
-        cx.update_buffer(|buffer, cx| buffer.set_language(Some(language), cx));
+        cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(language), cx));
         cx.set_state(unwrapped_text);
         cx.update_editor(|e, window, cx| e.rewrap(&Rewrap, window, cx));
         cx.assert_editor_state(wrapped_text);
@@ -6974,7 +6975,7 @@ async fn test_rewrap_block_comments(cx: &mut TestAppContext) {
         language: Arc<Language>,
         cx: &mut EditorTestContext,
     ) {
-        cx.update_buffer(|buffer, cx| buffer.set_language(Some(language), cx));
+        cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(language), cx));
         cx.set_state(unwrapped_text);
         cx.update_editor(|e, window, cx| e.rewrap(&Rewrap, window, cx));
         cx.assert_editor_state(wrapped_text);
@@ -6986,7 +6987,7 @@ async fn test_hard_wrap(cx: &mut TestAppContext) {
     init_test(cx, |_| {});
     let mut cx = EditorTestContext::new(cx).await;
 
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(git_commit_lang()), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(git_commit_lang()), cx));
     cx.update_editor(|editor, _, cx| {
         editor.set_hard_wrap(Some(14), cx);
     });
@@ -7425,7 +7426,7 @@ async fn test_paste_multiline(cx: &mut TestAppContext) {
     init_test(cx, |_| {});
 
     let mut cx = EditorTestContext::new(cx).await;
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(rust_lang()), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(rust_lang()), cx));
 
     // Cut an indented block, without the leading whitespace.
     cx.set_state(indoc! {"
@@ -7567,7 +7568,7 @@ async fn test_paste_content_from_other_app(cx: &mut TestAppContext) {
     ));
 
     let mut cx = EditorTestContext::new(cx).await;
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(rust_lang()), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(rust_lang()), cx));
 
     cx.set_state(indoc! {"
         fn a() {
@@ -8879,7 +8880,7 @@ async fn test_select_larger_smaller_syntax_node(cx: &mut TestAppContext) {
     "#
     .unindent();
 
-    let buffer = cx.new(|cx| Buffer::local(text, cx).with_language(language, cx));
+    let buffer = cx.new(|cx| Buffer::local(text, cx).with_language_immediate(language, cx));
     let buffer = cx.new(|cx| MultiBuffer::singleton(buffer, cx));
     let (editor, cx) = cx.add_window_view(|window, cx| build_editor(buffer, window, cx));
 
@@ -9064,7 +9065,7 @@ async fn test_select_larger_syntax_node_for_cursor_at_end(cx: &mut TestAppContex
 
     let text = "let a = 2;";
 
-    let buffer = cx.new(|cx| Buffer::local(text, cx).with_language(language, cx));
+    let buffer = cx.new(|cx| Buffer::local(text, cx).with_language_immediate(language, cx));
     let buffer = cx.new(|cx| MultiBuffer::singleton(buffer, cx));
     let (editor, cx) = cx.add_window_view(|window, cx| build_editor(buffer, window, cx));
 
@@ -9134,7 +9135,7 @@ async fn test_select_larger_syntax_node_for_cursor_at_symbol(cx: &mut TestAppCon
     "#
     .unindent();
 
-    let buffer = cx.new(|cx| Buffer::local(text, cx).with_language(language, cx));
+    let buffer = cx.new(|cx| Buffer::local(text, cx).with_language_immediate(language, cx));
     let buffer = cx.new(|cx| MultiBuffer::singleton(buffer, cx));
     let (editor, cx) = cx.add_window_view(|window, cx| build_editor(buffer, window, cx));
 
@@ -9311,7 +9312,7 @@ async fn test_select_larger_smaller_syntax_node_for_string(cx: &mut TestAppConte
     "#
     .unindent();
 
-    let buffer = cx.new(|cx| Buffer::local(text, cx).with_language(language, cx));
+    let buffer = cx.new(|cx| Buffer::local(text, cx).with_language_immediate(language, cx));
     let buffer = cx.new(|cx| MultiBuffer::singleton(buffer, cx));
     let (editor, cx) = cx.add_window_view(|window, cx| build_editor(buffer, window, cx));
 
@@ -9485,7 +9486,7 @@ async fn test_unwrap_syntax_nodes(cx: &mut gpui::TestAppContext) {
     ));
 
     cx.update_buffer(|buffer, cx| {
-        buffer.set_language(Some(language), cx);
+        buffer.set_language_immediate(Some(language), cx);
     });
 
     cx.set_state(indoc! { r#"use mod1::{mod2::{«mod3ˇ», mod4}, mod5::{mod6, «mod7ˇ»}};"# });
@@ -9698,7 +9699,7 @@ async fn test_autoindent(cx: &mut TestAppContext) {
 
     let text = "fn a() {}";
 
-    let buffer = cx.new(|cx| Buffer::local(text, cx).with_language(language, cx));
+    let buffer = cx.new(|cx| Buffer::local(text, cx).with_language_immediate(language, cx));
     let buffer = cx.new(|cx| MultiBuffer::singleton(buffer, cx));
     let (editor, cx) = cx.add_window_view(|window, cx| build_editor(buffer, window, cx));
     editor
@@ -9767,7 +9768,7 @@ async fn test_autoindent_disabled(cx: &mut TestAppContext) {
 
     let text = "fn a() {}";
 
-    let buffer = cx.new(|cx| Buffer::local(text, cx).with_language(language, cx));
+    let buffer = cx.new(|cx| Buffer::local(text, cx).with_language_immediate(language, cx));
     let buffer = cx.new(|cx| MultiBuffer::singleton(buffer, cx));
     let (editor, cx) = cx.add_window_view(|window, cx| build_editor(buffer, window, cx));
     editor
@@ -9906,7 +9907,7 @@ async fn test_autoindent_disabled_with_nested_language(cx: &mut TestAppContext) 
     cx.language_registry().add(language.clone());
 
     cx.update_buffer(|buffer, cx| {
-        buffer.set_language(Some(language), cx);
+        buffer.set_language_immediate(Some(language), cx);
     });
 
     cx.set_state(r#"struct A {ˇ}"#);
@@ -9993,7 +9994,9 @@ async fn test_autoindent_selections(cx: &mut TestAppContext) {
             let buffer = editor.buffer().update(cx, |buffer, _| {
                 buffer.all_buffers().iter().next().unwrap().clone()
             });
-            buffer.update(cx, |buffer, cx| buffer.set_language(Some(rust_lang()), cx));
+            buffer.update(cx, |buffer, cx| {
+                buffer.set_language_immediate(Some(rust_lang()), cx)
+            });
             buffer
         });
 
@@ -10086,7 +10089,7 @@ async fn test_autoclose_and_auto_surround_pairs(cx: &mut TestAppContext) {
 
     cx.language_registry().add(language.clone());
     cx.update_buffer(|buffer, cx| {
-        buffer.set_language(Some(language), cx);
+        buffer.set_language_immediate(Some(language), cx);
     });
 
     cx.set_state(
@@ -10275,7 +10278,7 @@ async fn test_always_treat_brackets_as_autoclosed_skip_over(cx: &mut TestAppCont
 
     cx.language_registry().add(language.clone());
     cx.update_buffer(|buffer, cx| {
-        buffer.set_language(Some(language), cx);
+        buffer.set_language_immediate(Some(language), cx);
     });
 
     cx.set_state(
@@ -10418,7 +10421,7 @@ async fn test_autoclose_with_embedded_language(cx: &mut TestAppContext) {
     cx.executor().run_until_parked();
 
     cx.update_buffer(|buffer, cx| {
-        buffer.set_language(Some(html_language), cx);
+        buffer.set_language_immediate(Some(html_language), cx);
     });
 
     cx.set_state(
@@ -10596,7 +10599,7 @@ async fn test_autoclose_with_overrides(cx: &mut TestAppContext) {
 
     cx.language_registry().add(rust_language.clone());
     cx.update_buffer(|buffer, cx| {
-        buffer.set_language(Some(rust_language), cx);
+        buffer.set_language_immediate(Some(rust_language), cx);
     });
 
     cx.set_state(
@@ -10703,7 +10706,7 @@ async fn test_surround_with_pair(cx: &mut TestAppContext) {
     "#
     .unindent();
 
-    let buffer = cx.new(|cx| Buffer::local(text, cx).with_language(language, cx));
+    let buffer = cx.new(|cx| Buffer::local(text, cx).with_language_immediate(language, cx));
     let buffer = cx.new(|cx| MultiBuffer::singleton(buffer, cx));
     let (editor, cx) = cx.add_window_view(|window, cx| build_editor(buffer, window, cx));
     editor
@@ -10853,7 +10856,7 @@ async fn test_delete_autoclose_pair(cx: &mut TestAppContext) {
     "#
     .unindent();
 
-    let buffer = cx.new(|cx| Buffer::local(text, cx).with_language(language, cx));
+    let buffer = cx.new(|cx| Buffer::local(text, cx).with_language_immediate(language, cx));
     let buffer = cx.new(|cx| MultiBuffer::singleton(buffer, cx));
     let (editor, cx) = cx.add_window_view(|window, cx| build_editor(buffer, window, cx));
     editor
@@ -10981,7 +10984,7 @@ async fn test_always_treat_brackets_as_autoclosed_delete(cx: &mut TestAppContext
 
     cx.language_registry().add(language.clone());
     cx.update_buffer(|buffer, cx| {
-        buffer.set_language(Some(language), cx);
+        buffer.set_language_immediate(Some(language), cx);
     });
 
     cx.set_state(
@@ -11049,7 +11052,7 @@ async fn test_auto_replace_emoji_shortcode(cx: &mut TestAppContext) {
         Some(tree_sitter_rust::LANGUAGE.into()),
     ));
 
-    let buffer = cx.new(|cx| Buffer::local("", cx).with_language(language, cx));
+    let buffer = cx.new(|cx| Buffer::local("", cx).with_language_immediate(language, cx));
     let buffer = cx.new(|cx| MultiBuffer::singleton(buffer, cx));
     let (editor, cx) = cx.add_window_view(|window, cx| build_editor(buffer, window, cx));
     editor
@@ -13086,7 +13089,7 @@ async fn test_handle_input_for_show_signature_help_auto_signature_help_true(
 
     cx.language_registry().add(language.clone());
     cx.update_buffer(|buffer, cx| {
-        buffer.set_language(Some(language), cx);
+        buffer.set_language_immediate(Some(language), cx);
     });
 
     cx.set_state(
@@ -13227,7 +13230,7 @@ async fn test_handle_input_with_different_show_signature_settings(cx: &mut TestA
 
     cx.language_registry().add(language.clone());
     cx.update_buffer(|buffer, cx| {
-        buffer.set_language(Some(language), cx);
+        buffer.set_language_immediate(Some(language), cx);
     });
 
     // Ensure that signature_help is not called when no signature help is enabled.
@@ -15809,7 +15812,7 @@ async fn test_toggle_comment(cx: &mut TestAppContext) {
         },
         Some(tree_sitter_rust::LANGUAGE.into()),
     ));
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(language), cx));
 
     // If multiple selections intersect a line, the line is only toggled once.
     cx.set_state(indoc! {"
@@ -15930,7 +15933,7 @@ async fn test_toggle_comment_ignore_indent(cx: &mut TestAppContext) {
         },
         Some(tree_sitter_rust::LANGUAGE.into()),
     ));
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(language), cx));
 
     let toggle_comments = &ToggleComments {
         advance_downwards: false,
@@ -16060,7 +16063,7 @@ async fn test_advance_downward_on_toggle_comment(cx: &mut TestAppContext) {
 
     cx.language_registry().add(language.clone());
     cx.update_buffer(|buffer, cx| {
-        buffer.set_language(Some(language), cx);
+        buffer.set_language_immediate(Some(language), cx);
     });
 
     let toggle_comments = &ToggleComments {
@@ -16218,7 +16221,7 @@ async fn test_toggle_block_comment(cx: &mut TestAppContext) {
     cx.language_registry().add(html_language.clone());
     cx.language_registry().add(javascript_language);
     cx.update_buffer(|buffer, cx| {
-        buffer.set_language(Some(html_language), cx);
+        buffer.set_language_immediate(Some(html_language), cx);
     });
 
     // Toggle comments for empty selections
@@ -16653,7 +16656,7 @@ async fn test_extra_newline_insertion(cx: &mut TestAppContext) {
         "{{} }\n",     //
     );
 
-    let buffer = cx.new(|cx| Buffer::local(text, cx).with_language(language, cx));
+    let buffer = cx.new(|cx| Buffer::local(text, cx).with_language_immediate(language, cx));
     let buffer = cx.new(|cx| MultiBuffer::singleton(buffer, cx));
     let (editor, cx) = cx.add_window_view(|window, cx| build_editor(buffer, window, cx));
     editor
@@ -17378,7 +17381,7 @@ async fn test_move_to_enclosing_bracket_in_markdown_code_block(cx: &mut TestAppC
             cx,
         );
         buffer.set_language_registry(language_registry.clone());
-        buffer.set_language(Some(markdown_lang()), cx);
+        buffer.set_language_immediate(Some(markdown_lang()), cx);
         buffer
     });
     let buffer = cx.new(|cx| MultiBuffer::singleton(buffer, cx));
@@ -22190,7 +22193,7 @@ async fn test_find_enclosing_node_with_task(cx: &mut TestAppContext) {
     let project = Project::test(fs, ["/a".as_ref()], cx).await;
     let workspace = cx.add_window(|window, cx| Workspace::test_new(project.clone(), window, cx));
     let cx = &mut VisualTestContext::from_window(*workspace.deref(), cx);
-    let buffer = cx.new(|cx| Buffer::local(text, cx).with_language(language, cx));
+    let buffer = cx.new(|cx| Buffer::local(text, cx).with_language_immediate(language, cx));
     let multi_buffer = cx.new(|cx| MultiBuffer::singleton(buffer.clone(), cx));
 
     let editor = cx.new_window_entity(|window, cx| {
@@ -23478,7 +23481,7 @@ async fn test_tree_sitter_brackets_newline_insertion(cx: &mut TestAppContext) {
         )
         .unwrap(),
     );
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(language), cx));
 
     cx.set_state(indoc! {"
         <span>ˇ</span>
@@ -24363,7 +24366,7 @@ async fn test_linked_edits_on_typing_punctuation(cx: &mut TestAppContext) {
         },
         Some(tree_sitter_typescript::LANGUAGE_TSX.into()),
     ));
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(language), cx));
 
     // Test typing > does not extend linked pair
     cx.set_state("<divˇ<div></div>");
@@ -24563,7 +24566,7 @@ async fn test_tab_in_leading_whitespace_auto_indents_for_python(cx: &mut TestApp
 
     let mut cx = EditorTestContext::new(cx).await;
     let language = languages::language("python", tree_sitter_python::LANGUAGE.into());
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(language), cx));
 
     // test cursor move to start of each line on tab
     // for `if`, `elif`, `else`, `while`, `with` and `for`
@@ -24673,7 +24676,7 @@ async fn test_outdent_after_input_for_python(cx: &mut TestAppContext) {
 
     let mut cx = EditorTestContext::new(cx).await;
     let language = languages::language("python", tree_sitter_python::LANGUAGE.into());
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(language), cx));
 
     // test `else` auto outdents when typed inside `if` block
     cx.set_state(indoc! {"
@@ -24905,7 +24908,7 @@ async fn test_indent_on_newline_for_python(cx: &mut TestAppContext) {
     });
     let mut cx = EditorTestContext::new(cx).await;
     let language = languages::language("python", tree_sitter_python::LANGUAGE.into());
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(language), cx));
 
     // test correct indent after newline on comment
     cx.set_state(indoc! {"
@@ -24966,7 +24969,7 @@ async fn test_tab_in_leading_whitespace_auto_indents_for_bash(cx: &mut TestAppCo
 
     let mut cx = EditorTestContext::new(cx).await;
     let language = languages::language("bash", tree_sitter_bash::LANGUAGE.into());
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(language), cx));
 
     // test cursor move to start of each line on tab
     // for `if`, `elif`, `else`, `while`, `for`, `case` and `function`
@@ -25060,7 +25063,7 @@ async fn test_indent_after_input_for_bash(cx: &mut TestAppContext) {
 
     let mut cx = EditorTestContext::new(cx).await;
     let language = languages::language("bash", tree_sitter_bash::LANGUAGE.into());
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(language), cx));
 
     // test indents on comment insert
     cx.set_state(indoc! {"
@@ -25102,7 +25105,7 @@ async fn test_outdent_after_input_for_bash(cx: &mut TestAppContext) {
 
     let mut cx = EditorTestContext::new(cx).await;
     let language = languages::language("bash", tree_sitter_bash::LANGUAGE.into());
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(language), cx));
 
     // test `else` auto outdents when typed inside `if` block
     cx.set_state(indoc! {"
@@ -25255,7 +25258,7 @@ async fn test_indent_on_newline_for_bash(cx: &mut TestAppContext) {
     });
     let mut cx = EditorTestContext::new(cx).await;
     let language = languages::language("bash", tree_sitter_bash::LANGUAGE.into());
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(language), cx));
 
     // test correct indent after newline on comment
     cx.set_state(indoc! {"
@@ -26554,7 +26557,7 @@ async fn test_select_next_prev_syntax_node(cx: &mut TestAppContext) {
         }
     "#;
 
-    let buffer = cx.new(|cx| Buffer::local(text, cx).with_language(language, cx));
+    let buffer = cx.new(|cx| Buffer::local(text, cx).with_language_immediate(language, cx));
     let buffer = cx.new(|cx| MultiBuffer::singleton(buffer, cx));
     let (editor, cx) = cx.add_window_view(|window, cx| build_editor(buffer, window, cx));
 
@@ -26746,7 +26749,7 @@ async fn test_paste_url_from_other_app_creates_markdown_link_over_selected_text(
     ));
 
     let mut cx = EditorTestContext::new(cx).await;
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(markdown_language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(markdown_language), cx));
     cx.set_state("Hello, «editorˇ».\nTehanu is «ˇgreat» (see this link: ˇ)");
 
     cx.update_editor(|editor, window, cx| {
@@ -26776,7 +26779,7 @@ async fn test_paste_url_from_tehanu_copy_creates_markdown_link_over_selected_tex
     ));
 
     let mut cx = EditorTestContext::new(cx).await;
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(markdown_language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(markdown_language), cx));
     cx.set_state(&format!(
         "Hello, editor.\nTehanu is great (see this link: )\n«{url}ˇ»"
     ));
@@ -26815,7 +26818,7 @@ async fn test_paste_url_from_other_app_replaces_existing_url_without_creating_ma
     ));
 
     let mut cx = EditorTestContext::new(cx).await;
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(markdown_language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(markdown_language), cx));
     cx.set_state("Please visit zed's homepage: «https://www.apple.comˇ»");
 
     cx.update_editor(|editor, window, cx| {
@@ -26843,7 +26846,7 @@ async fn test_paste_plain_text_from_other_app_replaces_selection_without_creatin
     ));
 
     let mut cx = EditorTestContext::new(cx).await;
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(markdown_language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(markdown_language), cx));
     cx.set_state("Hello, «editorˇ».\nTehanu is «ˇgreat»");
 
     cx.update_editor(|editor, window, cx| {
@@ -26871,7 +26874,7 @@ async fn test_paste_url_from_other_app_without_creating_markdown_link_in_non_mar
     ));
 
     let mut cx = EditorTestContext::new(cx).await;
-    cx.update_buffer(|buffer, cx| buffer.set_language(Some(markdown_language), cx));
+    cx.update_buffer(|buffer, cx| buffer.set_language_immediate(Some(markdown_language), cx));
     cx.set_state("// Hello, «editorˇ».\n// Tehanu is «ˇgreat» (see this link: ˇ)");
 
     cx.update_editor(|editor, window, cx| {
@@ -26923,7 +26926,7 @@ async fn test_paste_url_from_other_app_creates_markdown_link_selectively_in_mult
             .unwrap();
         let first_buffer = multi_buffer.read(cx).buffer(first_buffer_id).unwrap();
         first_buffer.update(cx, |buffer, cx| {
-            buffer.set_language(Some(markdown_language.clone()), cx);
+            buffer.set_language_immediate(Some(markdown_language.clone()), cx);
         });
 
         editor
@@ -27226,7 +27229,7 @@ async fn test_sticky_scroll(cx: &mut TestAppContext) {
             .as_singleton()
             .unwrap()
             .update(cx, |buffer, cx| {
-                buffer.set_language(Some(rust_lang()), cx);
+                buffer.set_language_immediate(Some(rust_lang()), cx);
             })
     });
 
@@ -27316,7 +27319,7 @@ async fn test_scroll_by_clicking_sticky_header(cx: &mut TestAppContext) {
             .as_singleton()
             .unwrap()
             .update(cx, |buffer, cx| {
-                buffer.set_language(Some(rust_lang()), cx);
+                buffer.set_language_immediate(Some(rust_lang()), cx);
             })
     });
 
