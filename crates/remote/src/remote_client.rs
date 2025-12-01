@@ -1478,7 +1478,7 @@ impl ProtoClient for ChannelClient {
 
 #[cfg(any(test, feature = "test-support"))]
 mod fake {
-    use super::{ChannelClient, RemoteClientDelegate, RemoteConnection, RemotePlatform};
+    use super::{ChannelClient, RemoteClientDelegate, RemoteConnection};
     use crate::remote_client::{CommandTemplate, RemoteConnectionOptions};
     use anyhow::Result;
     use askpass::EncryptedPassword;
@@ -1492,8 +1492,7 @@ mod fake {
         },
         select_biased,
     };
-    use gpui::{App, AppContext as _, AsyncApp, SemanticVersion, Task, TestAppContext};
-    use release_channel::ReleaseChannel;
+    use gpui::{App, AppContext as _, AsyncApp, Task, TestAppContext};
     use rpc::proto::Envelope;
     use std::{path::PathBuf, sync::Arc};
     use util::paths::{PathStyle, RemotePathBuf};

@@ -2,10 +2,8 @@
 /// The tests in this file assume that server_cx is running on Windows too.
 /// We neead to find a way to test Windows-Non-Windows interactions.
 use crate::headless_project::HeadlessProject;
-use agent::{AgentTool, ReadFileTool, ReadFileToolInput, Templates, Thread, ToolCallEventStream};
 use client::{Client, UserStore};
-use clock::FakeSystemClock;
-use collections::{HashMap, HashSet};
+use collections::HashSet;
 
 use extension::ExtensionHostProxy;
 use fs::{FakeFs, Fs};
@@ -19,7 +17,6 @@ use lsp::{CompletionContext, CompletionResponse, CompletionTriggerKind, Language
 use node_runtime::NodeRuntime;
 use project::{
     ProgressToken, Project,
-    agent_server_store::AgentServerCommand,
     search::{SearchQuery, SearchResult},
 };
 use remote::RemoteClient;
@@ -1813,13 +1810,7 @@ fn build_project(ssh: Entity<RemoteClient>, cx: &mut TestAppContext) -> Entity<P
         }
     });
 
-    let client = cx.update(|cx| {
-        Client::new(
-            Arc::new(FakeSystemClock::new()),
-            FakeHttpClient::with_404_response(),
-            cx,
-        )
-    });
+    let client = cx.update(|cx| Client::new(FakeHttpClient::with_404_response(), cx));
 
     let node = NodeRuntime::unavailable();
     let user_store = cx.new(|cx| UserStore::new(client.clone(), cx));
