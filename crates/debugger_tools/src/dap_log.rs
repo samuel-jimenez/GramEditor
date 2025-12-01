@@ -829,7 +829,7 @@ impl DapLogView {
                         async move |buffer, cx| {
                             let language = language.await.ok();
                             buffer.update(cx, |buffer, cx| {
-                                buffer.set_language_immediate(language, cx);
+                                buffer.set_language(language, cx);
                             })
                         }
                     })
@@ -900,7 +900,7 @@ impl DapLogView {
                         async move |_, cx| {
                             let language = language.await.ok();
                             buffer.update(cx, |buffer, cx| {
-                                buffer.set_language_immediate(language, cx);
+                                buffer.set_language(language, cx);
                             })
                         }
                     })
