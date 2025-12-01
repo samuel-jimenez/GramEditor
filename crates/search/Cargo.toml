@@ -41,6 +41,7 @@ util.workspace = true
 util_macros.workspace = true
 workspace.workspace = true
 app_actions.workspace = true
+itertools.workspace = true
 
 [dev-dependencies]
 editor = { workspace = true, features = ["test-support"] }
