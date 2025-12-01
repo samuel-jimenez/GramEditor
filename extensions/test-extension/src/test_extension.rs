@@ -1,6 +1,6 @@
 use std::fs;
-use tehanu::lsp::CompletionKind;
-use tehanu::{CodeLabel, CodeLabelSpan, LanguageServerId};
+use zed::lsp::CompletionKind;
+use zed::{CodeLabel, CodeLabelSpan, LanguageServerId};
 use zed_extension_api::process::Command;
 use zed_extension_api::{self as zed, Result};
 
@@ -12,9 +12,9 @@ impl TestExtension {
     fn language_server_binary_path(
         &mut self,
         language_server_id: &LanguageServerId,
-        _worktree: &tehanu::Worktree,
+        _worktree: &zed::Worktree,
     ) -> Result<String> {
-        let (platform, arch) = tehanu::current_platform();
+        let (platform, arch) = zed::current_platform();
 
         let current_dir = std::env::current_dir().unwrap();
         println!("current_dir: {}", current_dir.display());
@@ -41,8 +41,8 @@ impl TestExtension {
         );
 
         let command = match platform {
-            tehanu::Os::Linux | tehanu::Os::Mac => Command::new("echo"),
-            tehanu::Os::Windows => Command::new("cmd").args(["/C", "echo"]),
+            zed::Os::Linux | zed::Os::Mac => Command::new("echo"),
+            zed::Os::Windows => Command::new("cmd").args(["/C", "echo"]),
         };
         let output = command.arg("hello from a child process!").output()?;
         println!(
@@ -56,40 +56,40 @@ impl TestExtension {
             return Ok(path.clone());
         }
 
-        tehanu::set_language_server_installation_status(
+        zed::set_language_server_installation_status(
             language_server_id,
-            &tehanu::LanguageServerInstallationStatus::CheckingForUpdate,
+            &zed::LanguageServerInstallationStatus::CheckingForUpdate,
         );
-        let release = tehanu::latest_github_release(
+        let release = zed::latest_github_release(
             "gleam-lang/gleam",
-            tehanu::GithubReleaseOptions {
+            zed::GithubReleaseOptions {
                 require_assets: true,
                 pre_release: false,
             },
         )?;
 
         let ext = "tar.gz";
-        let download_type = tehanu::DownloadedFileType::GzipTar;
+        let download_type = zed::DownloadedFileType::GzipTar;
 
         // Do this if you want to actually run this extension -
         // the actual asset is a .zip. But the integration test is simpler
         // if every platform uses .tar.gz.
         //
         // ext = "zip";
-        // download_type = tehanu::DownloadedFileType::Zip;
+        // download_type = zed::DownloadedFileType::Zip;
 
         let asset_name = format!(
             "gleam-{version}-{arch}-{os}.{ext}",
             version = release.version,
             arch = match arch {
-                tehanu::Architecture::Aarch64 => "aarch64",
-                tehanu::Architecture::X86 => "x86",
-                tehanu::Architecture::X8664 => "x86_64",
+                zed::Architecture::Aarch64 => "aarch64",
+                zed::Architecture::X86 => "x86",
+                zed::Architecture::X8664 => "x86_64",
             },
             os = match platform {
-                tehanu::Os::Mac => "apple-darwin",
-                tehanu::Os::Linux => "unknown-linux-musl",
-                tehanu::Os::Windows => "pc-windows-msvc",
+                zed::Os::Mac => "apple-darwin",
+                zed::Os::Linux => "unknown-linux-musl",
+                zed::Os::Windows => "pc-windows-msvc",
             },
         );
 
@@ -103,17 +103,17 @@ impl TestExtension {
         let binary_path = format!("{version_dir}/gleam");
 
         if !fs::metadata(&binary_path).is_ok_and(|stat| stat.is_file()) {
-            tehanu::set_language_server_installation_status(
+            zed::set_language_server_installation_status(
                 language_server_id,
-                &tehanu::LanguageServerInstallationStatus::Downloading,
+                &zed::LanguageServerInstallationStatus::Downloading,
             );
 
-            tehanu::download_file(&asset.download_url, &version_dir, download_type)
+            zed::download_file(&asset.download_url, &version_dir, download_type)
                 .map_err(|e| format!("failed to download file: {e}"))?;
 
-            tehanu::set_language_server_installation_status(
+            zed::set_language_server_installation_status(
                 language_server_id,
-                &tehanu::LanguageServerInstallationStatus::None,
+                &zed::LanguageServerInstallationStatus::None,
             );
 
             let entries =
@@ -133,7 +133,7 @@ impl TestExtension {
     }
 }
 
-impl tehanu::Extension for TestExtension {
+impl zed::Extension for TestExtension {
     fn new() -> Self {
         Self {
             cached_binary_path: None,
@@ -143,9 +143,9 @@ impl tehanu::Extension for TestExtension {
     fn language_server_command(
         &mut self,
         language_server_id: &LanguageServerId,
-        worktree: &tehanu::Worktree,
-    ) -> Result<tehanu::Command> {
-        Ok(tehanu::Command {
+        worktree: &zed::Worktree,
+    ) -> Result<zed::Command> {
+        Ok(zed::Command {
             command: self.language_server_binary_path(language_server_id, worktree)?,
             args: vec!["lsp".to_string()],
             env: Default::default(),
@@ -155,8 +155,8 @@ impl tehanu::Extension for TestExtension {
     fn label_for_completion(
         &self,
         _language_server_id: &LanguageServerId,
-        completion: tehanu::lsp::Completion,
-    ) -> Option<tehanu::CodeLabel> {
+        completion: zed::lsp::Completion,
+    ) -> Option<zed::CodeLabel> {
         let name = &completion.label;
         let ty = strip_newlines_from_detail(&completion.detail?);
         let let_binding = "let a";
@@ -189,7 +189,7 @@ impl tehanu::Extension for TestExtension {
     }
 }
 
-tehanu::register_extension!(TestExtension);
+zed::register_extension!(TestExtension);
 
 /// Removes newlines from the completion detail.
 ///

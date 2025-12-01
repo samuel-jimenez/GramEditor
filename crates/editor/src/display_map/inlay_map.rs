@@ -1208,7 +1208,6 @@ mod tests {
     use sum_tree::TreeMap;
     use text::{Patch, Rope};
     use util::RandomCharIter;
-    use util::post_inc;
 
     #[test]
     fn test_inlay_properties_label_padding() {

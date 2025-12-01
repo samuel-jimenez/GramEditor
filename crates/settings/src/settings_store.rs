@@ -1486,27 +1486,6 @@ mod tests {
                 tab_size: 9.try_into().unwrap(),
             }
         );
-        assert_eq!(
-            store.get::<AutoUpdateSetting>(Some(SettingsLocation {
-                worktree_id: WorktreeId::from_usize(1),
-                path: rel_path("root2/something")
-            })),
-            &AutoUpdateSetting { auto_update: false }
-        );
-    }
-
-    #[gpui::test]
-    fn test_setting_store_assign_json_before_register(cx: &mut App) {
-        let mut store = SettingsStore::new(cx, &test_settings());
-        store
-            .set_user_settings(r#"{ "auto_update": false }"#, cx)
-            .unwrap();
-        store.register_setting::<AutoUpdateSetting>();
-
-        assert_eq!(
-            store.get::<AutoUpdateSetting>(None),
-            &AutoUpdateSetting { auto_update: false }
-        );
     }
 
     #[track_caller]

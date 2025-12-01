@@ -872,14 +872,12 @@ mod tests {
     use super::*;
     use crate::{
         Buffer, DisplayMap, DisplayRow, ExcerptRange, FoldPlaceholder, MultiBuffer,
-        inlays::Inlay,
         test::{editor_test_context::EditorTestContext, marked_display_snapshot},
     };
     use gpui::{AppContext as _, font, px};
     use language::Capability;
     use project::project_settings::DiagnosticSeverity;
     use settings::SettingsStore;
-    use util::post_inc;
 
     #[gpui::test]
     fn test_previous_word_start(cx: &mut gpui::App) {

@@ -129,7 +129,7 @@ mod tests {
         "#;
         let parsed: VsCodeDebugTaskFile =
             serde_json_lenient::from_str(raw).expect("deserializing launch.json");
-        let zed = DebugTaskFile::try_from(parsed).expect("converting to Tehanu debug templates");
+        let tehanu = DebugTaskFile::try_from(parsed).expect("converting to Tehanu debug templates");
         pretty_assertions::assert_eq!(
             tehanu,
             DebugTaskFile(vec![DebugScenario {
@@ -174,7 +174,7 @@ mod tests {
         "#;
         let parsed: VsCodeDebugTaskFile =
             serde_json_lenient::from_str(raw).expect("deserializing launch.json");
-        let zed = DebugTaskFile::try_from(parsed).expect("converting to Tehanu debug templates");
+        let tehanu = DebugTaskFile::try_from(parsed).expect("converting to Tehanu debug templates");
 
         let expected_placeholder = format!("${{{}}}", VariableName::PickProcessId);
         pretty_assertions::assert_eq!(

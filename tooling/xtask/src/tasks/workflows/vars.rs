@@ -22,16 +22,12 @@ secret!(APPLE_NOTARIZATION_KEY_ID);
 secret!(AZURE_SIGNING_CLIENT_ID);
 secret!(AZURE_SIGNING_CLIENT_SECRET);
 secret!(AZURE_SIGNING_TENANT_ID);
-secret!(CACHIX_AUTH_TOKEN);
 secret!(DIGITALOCEAN_SPACES_ACCESS_KEY);
 secret!(DIGITALOCEAN_SPACES_SECRET_KEY);
 secret!(GITHUB_TOKEN);
 secret!(MACOS_CERTIFICATE);
 secret!(MACOS_CERTIFICATE_PASSWORD);
 secret!(SENTRY_AUTH_TOKEN);
-secret!(SLACK_APP_ZED_UNIT_EVALS_BOT_TOKEN);
-secret!(DISCORD_WEBHOOK_RELEASE_NOTES);
-secret!(WINGET_TOKEN);
 secret!(SLACK_WEBHOOK_WORKFLOW_FAILURES);
 
 // todo(ci) make these secrets too...
@@ -66,12 +62,6 @@ pub fn bundle_envs(platform: Platform) -> Env {
 pub fn one_workflow_per_non_main_branch() -> Concurrency {
     Concurrency::default()
         .group("${{ github.workflow }}-${{ github.ref_name }}-${{ github.ref_name == 'main' && github.sha || 'anysha' }}")
-        .cancel_in_progress(true)
-}
-
-pub(crate) fn allow_concurrent_runs() -> Concurrency {
-    Concurrency::default()
-        .group("${{ github.workflow }}-${{ github.ref_name }}-${{ github.run_id }}")
         .cancel_in_progress(true)
 }
 

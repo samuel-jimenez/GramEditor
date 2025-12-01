@@ -947,6 +947,7 @@ async fn test_debug_panel_item_thread_status_reset_on_failure(
                 show_user: None,
                 url: None,
                 url_label: None,
+                send_telemetry: None,
             }),
         })
     });
@@ -960,6 +961,7 @@ async fn test_debug_panel_item_thread_status_reset_on_failure(
                 show_user: None,
                 url: None,
                 url_label: None,
+                send_telemetry: None,
             }),
         })
     });
@@ -973,6 +975,7 @@ async fn test_debug_panel_item_thread_status_reset_on_failure(
                 show_user: None,
                 url: None,
                 url_label: None,
+                send_telemetry: None,
             }),
         })
     });
@@ -986,6 +989,7 @@ async fn test_debug_panel_item_thread_status_reset_on_failure(
                 show_user: None,
                 url: None,
                 url_label: None,
+                send_telemetry: None,
             }),
         })
     });
@@ -999,6 +1003,7 @@ async fn test_debug_panel_item_thread_status_reset_on_failure(
                 show_user: None,
                 url: None,
                 url_label: None,
+                send_telemetry: None,
             }),
         })
     });
@@ -1386,6 +1391,7 @@ async fn test_debug_session_is_shutdown_when_attach_and_launch_request_fails(
                     show_user: None,
                     url: None,
                     url_label: None,
+                    send_telemetry: None,
                 }),
             })
         });

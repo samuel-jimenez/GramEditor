@@ -1,5 +1,5 @@
 use std::{env, fs};
-use tehanu::settings::LspSettings;
+use zed::settings::LspSettings;
 use zed_extension_api::{self as zed, LanguageServerId, Result, serde_json::json};
 
 const BINARY_NAME: &str = "vscode-html-language-server";
@@ -22,20 +22,20 @@ impl HtmlExtension {
             return Ok(SERVER_PATH.to_string());
         }
 
-        tehanu::set_language_server_installation_status(
+        zed::set_language_server_installation_status(
             language_server_id,
-            &tehanu::LanguageServerInstallationStatus::CheckingForUpdate,
+            &zed::LanguageServerInstallationStatus::CheckingForUpdate,
         );
-        let version = tehanu::npm_package_latest_version(PACKAGE_NAME)?;
+        let version = zed::npm_package_latest_version(PACKAGE_NAME)?;
 
         if !server_exists
-            || tehanu::npm_package_installed_version(PACKAGE_NAME)?.as_ref() != Some(&version)
+            || zed::npm_package_installed_version(PACKAGE_NAME)?.as_ref() != Some(&version)
         {
-            tehanu::set_language_server_installation_status(
+            zed::set_language_server_installation_status(
                 language_server_id,
-                &tehanu::LanguageServerInstallationStatus::Downloading,
+                &zed::LanguageServerInstallationStatus::Downloading,
             );
-            let result = tehanu::npm_install_package(PACKAGE_NAME, &version);
+            let result = zed::npm_install_package(PACKAGE_NAME, &version);
             match result {
                 Ok(()) => {
                     if !self.server_exists() {
@@ -55,7 +55,7 @@ impl HtmlExtension {
     }
 }
 
-impl tehanu::Extension for HtmlExtension {
+impl zed::Extension for HtmlExtension {
     fn new() -> Self {
         Self {
             cached_binary_path: None,
@@ -65,10 +65,10 @@ impl tehanu::Extension for HtmlExtension {
     fn language_server_command(
         &mut self,
         language_server_id: &LanguageServerId,
-        worktree: &tehanu::Worktree,
-    ) -> Result<tehanu::Command> {
+        worktree: &zed::Worktree,
+    ) -> Result<zed::Command> {
         let server_path = if let Some(path) = worktree.which(BINARY_NAME) {
-            return Ok(tehanu::Command {
+            return Ok(zed::Command {
                 command: path,
                 args: vec!["--stdio".to_string()],
                 env: Default::default(),
@@ -83,8 +83,8 @@ impl tehanu::Extension for HtmlExtension {
         };
         self.cached_binary_path = Some(server_path.clone());
 
-        Ok(tehanu::Command {
-            command: tehanu::node_binary_path()?,
+        Ok(zed::Command {
+            command: zed::node_binary_path()?,
             args: vec![server_path, "--stdio".to_string()],
             env: Default::default(),
         })
@@ -93,8 +93,8 @@ impl tehanu::Extension for HtmlExtension {
     fn language_server_workspace_configuration(
         &mut self,
         server_id: &LanguageServerId,
-        worktree: &tehanu::Worktree,
-    ) -> Result<Option<tehanu::serde_json::Value>> {
+        worktree: &zed::Worktree,
+    ) -> Result<Option<zed::serde_json::Value>> {
         let settings = LspSettings::for_worktree(server_id.as_ref(), worktree)
             .ok()
             .and_then(|lsp_settings| lsp_settings.settings)
@@ -112,4 +112,4 @@ impl tehanu::Extension for HtmlExtension {
     }
 }
 
-tehanu::register_extension!(HtmlExtension);
+zed::register_extension!(HtmlExtension);

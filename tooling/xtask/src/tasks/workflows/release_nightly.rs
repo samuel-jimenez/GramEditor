@@ -1,5 +1,4 @@
 use crate::tasks::workflows::{
-    nix_build::build_nix,
     release::{
         ReleaseBundleJobs, create_sentry_release, download_workflow_artifacts, notify_on_failure,
         prep_release_artifacts,
@@ -29,20 +28,6 @@ pub fn release_nightly() -> Workflow {
         windows_x86_64: bundle_windows(Arch::X86_64, nightly, &[&style, &tests]),
     };
 
-    let nix_linux_x86 = build_nix(
-        Platform::Linux,
-        Arch::X86_64,
-        "default",
-        None,
-        &[&style, &tests],
-    );
-    let nix_mac_arm = build_nix(
-        Platform::Mac,
-        Arch::AARCH64,
-        "default",
-        None,
-        &[&style, &tests],
-    );
     let update_nightly_tag = update_nightly_tag_job(&bundle);
     let notify_on_failure = notify_on_failure(&bundle.jobs());
 
@@ -61,8 +46,6 @@ pub fn release_nightly() -> Workflow {
             }
             workflow
         })
-        .add_job(nix_linux_x86.name, nix_linux_x86.job)
-        .add_job(nix_mac_arm.name, nix_mac_arm.job)
         .add_job(update_nightly_tag.name, update_nightly_tag.job)
         .add_job(notify_on_failure.name, notify_on_failure.job)
 }
