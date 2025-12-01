@@ -21,9 +21,8 @@ use std::{ops::Range, sync::Arc};
 use strum::IntoEnumIterator as _;
 use theme::ThemeSettings;
 use ui::{
-    Banner, Chip, ContextMenu, Divider, PopoverMenu, ScrollableHandle, Switch, ToggleButtonGroup,
-    ToggleButtonGroupSize, ToggleButtonGroupStyle, ToggleButtonSimple, Tooltip, WithScrollbar,
-    prelude::*,
+    Banner, Chip, ContextMenu, Divider, PopoverMenu, ScrollableHandle, Switch, Tooltip,
+    WithScrollbar, prelude::*,
 };
 use vim_mode_setting::VimModeSetting;
 use workspace::{
@@ -266,22 +265,6 @@ pub enum ExtensionStatus {
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
-enum ExtensionFilter {
-    All,
-    Installed,
-    NotInstalled,
-}
-
-impl ExtensionFilter {
-    pub fn include_dev_extensions(&self) -> bool {
-        match self {
-            Self::All | Self::Installed => true,
-            Self::NotInstalled => false,
-        }
-    }
-}
-
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
 enum Feature {
     ExtensionBasedpyright,
     ExtensionRuff,
@@ -352,7 +335,6 @@ pub struct ExtensionsPage {
     list: UniformListScrollHandle,
     is_fetching_extensions: bool,
     fetch_failed: bool,
-    filter: ExtensionFilter,
     remote_extension_entries: Vec<ExtensionMetadata>,
     dev_extension_entries: Vec<Arc<ExtensionManifest>>,
     filtered_remote_extension_indices: Vec<usize>,
@@ -408,12 +390,11 @@ impl ExtensionsPage {
 
             let scroll_handle = UniformListScrollHandle::new();
 
-            let this = Self {
+            let mut this = Self {
                 workspace: workspace.weak_handle(),
                 list: scroll_handle,
                 is_fetching_extensions: false,
                 fetch_failed: false,
-                filter: ExtensionFilter::All,
                 dev_extension_entries: Vec::new(),
                 filtered_remote_extension_indices: Vec::new(),
                 remote_extension_entries: Vec::new(),
@@ -424,6 +405,12 @@ impl ExtensionsPage {
                 query_editor,
                 upsells: BTreeSet::default(),
             };
+            this.fetch_extensions(
+                this.search_query(cx),
+                Some(BTreeSet::from_iter(this.provides_filter)),
+                None,
+                cx,
+            );
             this
         })
     }
@@ -431,7 +418,7 @@ impl ExtensionsPage {
     fn fetch_extensions(
         &mut self,
         search: Option<String>,
-        _provides_filter: Option<BTreeSet<ExtensionProvides>>,
+        provides_filter: Option<BTreeSet<ExtensionProvides>>,
         on_complete: Option<Box<dyn FnOnce(&mut Self, &mut Context<Self>) + Send>>,
         cx: &mut Context<Self>,
     ) {
@@ -440,12 +427,22 @@ impl ExtensionsPage {
         cx.notify();
 
         let extension_store = ExtensionStore::global(cx);
+        let provides_filter = provides_filter.clone().unwrap_or(BTreeSet::default());
 
         let dev_extensions = extension_store
             .read(cx)
             .dev_extensions()
             .cloned()
+            .filter(|ext| {
+                provides_filter.is_empty()
+                    || extension_provides(ext)
+                        .intersection(&provides_filter)
+                        .count()
+                        > 0
+            })
             .collect::<Vec<_>>();
+
+        log::info!("dev_extensions: {:?}", dev_extensions);
 
         cx.spawn(async move |this, cx| {
             let dev_extensions = if let Some(search) = search {
@@ -486,6 +483,7 @@ impl ExtensionsPage {
         })
         .detach_and_log_err(cx);
     }
+
     fn fetch_extensions_debounced(
         &mut self,
         on_complete: Option<Box<dyn FnOnce(&mut Self, &mut Context<Self>) + Send>>,
@@ -596,25 +594,8 @@ impl ExtensionsPage {
             self.remote_extension_entries
                 .iter()
                 .enumerate()
-                .filter(|(_, extension)| match self.filter {
-                    ExtensionFilter::All => true,
-                    ExtensionFilter::Installed => {
-                        let status = Self::extension_status(&extension.id, cx);
-                        matches!(status, ExtensionStatus::Installed(_))
-                    }
-                    ExtensionFilter::NotInstalled => {
-                        let status = Self::extension_status(&extension.id, cx);
-
-                        matches!(status, ExtensionStatus::NotInstalled)
-                    }
-                })
                 .map(|(ix, _)| ix),
         );
-        cx.notify();
-    }
-
-    fn scroll_to_top(&mut self, cx: &mut Context<Self>) {
-        self.list.set_offset(point(px(0.), px(0.)));
         cx.notify();
     }
 
@@ -624,11 +605,7 @@ impl ExtensionsPage {
         _: &mut Window,
         cx: &mut Context<Self>,
     ) -> Vec<ExtensionCard> {
-        let dev_extension_entries_len = if self.filter.include_dev_extensions() {
-            self.dev_extension_entries.len()
-        } else {
-            0
-        };
+        let dev_extension_entries_len = self.dev_extension_entries.len();
         range
             .map(|ix| {
                 if ix < dev_extension_entries_len {
@@ -1114,9 +1091,19 @@ impl ExtensionsPage {
     }
 
     fn refresh_search(&mut self, cx: &mut Context<Self>) {
+        self.fetch_extensions_debounced(
+            Some(Box::new(|this, cx| {
+                this.scroll_to_top(cx);
+            })),
+            cx,
+        );
         self.refresh_feature_upsells(cx);
     }
 
+    fn scroll_to_top(&mut self, cx: &mut Context<Self>) {
+        self.list.set_offset(point(px(0.), px(0.)));
+        cx.notify();
+    }
     pub fn focus_extension(&mut self, id: &str, window: &mut Window, cx: &mut Context<Self>) {
         self.query_editor.update(cx, |editor, cx| {
             editor.set_text(format!("id:{id}"), window, cx)
@@ -1149,30 +1136,10 @@ impl ExtensionsPage {
             "Loading extensions…"
         } else if self.fetch_failed {
             "Failed to load extensions. Please check your connection and try again."
+        } else if has_search {
+            "No installed extensions that match your search."
         } else {
-            match self.filter {
-                ExtensionFilter::All => {
-                    if has_search {
-                        "No extensions that match your search."
-                    } else {
-                        "No extensions."
-                    }
-                }
-                ExtensionFilter::Installed => {
-                    if has_search {
-                        "No installed extensions that match your search."
-                    } else {
-                        "No installed extensions."
-                    }
-                }
-                ExtensionFilter::NotInstalled => {
-                    if has_search {
-                        "No not installed extensions that match your search."
-                    } else {
-                        "No not installed extensions."
-                    }
-                }
-            }
+            "No installed extensions."
         };
 
         h_flex()
@@ -1441,18 +1408,23 @@ impl Render for ExtensionsPage {
                                 h_flex()
                                     .gap_1p5()
                                     .child(
-                                        Button::new("install-dev-extension", "Install From URL")
-                                            .style(ButtonStyle::Outlined)
-                                            .size(ButtonSize::Medium)
-                                            .on_click(|_event, window, cx| {
+                                        Button::new(
+                                            "install-extension-from-url",
+                                            "Install From URL",
+                                        )
+                                        .style(ButtonStyle::Outlined)
+                                        .size(ButtonSize::Medium)
+                                        .on_click(
+                                            |_event, window, cx| {
                                                 window.dispatch_action(
                                                     Box::new(InstallExtensionFromUrl),
                                                     cx,
                                                 )
-                                            }),
+                                            },
+                                        ),
                                     )
                                     .child(
-                                        Button::new("install-dev-extension", "Install Local")
+                                        Button::new("install-local-extension", "Install Local")
                                             .style(ButtonStyle::Outlined)
                                             .size(ButtonSize::Medium)
                                             .on_click(|_event, window, cx| {
@@ -1469,50 +1441,7 @@ impl Render for ExtensionsPage {
                             .w_full()
                             .flex_wrap()
                             .gap_2()
-                            .child(self.render_search(cx))
-                            .child(
-                                div().child(
-                                    ToggleButtonGroup::single_row(
-                                        "filter-buttons",
-                                        [
-                                            ToggleButtonSimple::new(
-                                                "All",
-                                                cx.listener(|this, _event, _, cx| {
-                                                    this.filter = ExtensionFilter::All;
-                                                    this.filter_extension_entries(cx);
-                                                    this.scroll_to_top(cx);
-                                                }),
-                                            ),
-                                            ToggleButtonSimple::new(
-                                                "Installed",
-                                                cx.listener(|this, _event, _, cx| {
-                                                    this.filter = ExtensionFilter::Installed;
-                                                    this.filter_extension_entries(cx);
-                                                    this.scroll_to_top(cx);
-                                                }),
-                                            ),
-                                            ToggleButtonSimple::new(
-                                                "Not Installed",
-                                                cx.listener(|this, _event, _, cx| {
-                                                    this.filter = ExtensionFilter::NotInstalled;
-                                                    this.filter_extension_entries(cx);
-                                                    this.scroll_to_top(cx);
-                                                }),
-                                            ),
-                                        ],
-                                    )
-                                    .style(ToggleButtonGroupStyle::Outlined)
-                                    .size(ToggleButtonGroupSize::Custom(rems_from_px(30.))) // Perfectly matches the input
-                                    .label_size(LabelSize::Default)
-                                    .auto_width()
-                                    .selected_index(match self.filter {
-                                        ExtensionFilter::All => 0,
-                                        ExtensionFilter::Installed => 1,
-                                        ExtensionFilter::NotInstalled => 2,
-                                    })
-                                    .into_any_element(),
-                                ),
-                            ),
+                            .child(self.render_search(cx)),
                     ),
             )
             .child(
@@ -1564,10 +1493,8 @@ impl Render for ExtensionsPage {
             )
             .child(self.render_feature_upsells(cx))
             .child(v_flex().px_4().size_full().overflow_y_hidden().map(|this| {
-                let mut count = self.filtered_remote_extension_indices.len();
-                if self.filter.include_dev_extensions() {
-                    count += self.dev_extension_entries.len();
-                }
+                let count =
+                    self.filtered_remote_extension_indices.len() + self.dev_extension_entries.len();
 
                 if count == 0 {
                     this.child(self.render_empty_state(cx)).into_any_element()
@@ -1608,4 +1535,38 @@ impl Item for ExtensionsPage {
     fn to_item_events(event: &Self::Event, mut f: impl FnMut(workspace::item::ItemEvent)) {
         f(*event)
     }
+}
+
+/// Returns the set of features provided by the extension.
+fn extension_provides(manifest: &ExtensionManifest) -> BTreeSet<ExtensionProvides> {
+    let mut provides = BTreeSet::default();
+    if !manifest.themes.is_empty() {
+        provides.insert(ExtensionProvides::Themes);
+    }
+
+    if !manifest.icon_themes.is_empty() {
+        provides.insert(ExtensionProvides::IconThemes);
+    }
+
+    if !manifest.languages.is_empty() {
+        provides.insert(ExtensionProvides::Languages);
+    }
+
+    if !manifest.grammars.is_empty() {
+        provides.insert(ExtensionProvides::Grammars);
+    }
+
+    if !manifest.language_servers.is_empty() {
+        provides.insert(ExtensionProvides::LanguageServers);
+    }
+
+    if manifest.snippets.is_some() {
+        provides.insert(ExtensionProvides::Snippets);
+    }
+
+    if !manifest.debug_adapters.is_empty() {
+        provides.insert(ExtensionProvides::DebugAdapters);
+    }
+
+    provides
 }
