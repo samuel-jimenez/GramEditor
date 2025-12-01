@@ -36,6 +36,7 @@ mod persistence;
 mod rust_analyzer_ext;
 pub mod scroll;
 mod selections_collection;
+mod split;
 pub mod tasks;
 
 #[cfg(test)]
@@ -66,6 +67,7 @@ pub use multi_buffer::{
     MultiBufferOffset, MultiBufferOffsetUtf16, MultiBufferSnapshot, PathKey, RowInfo, ToOffset,
     ToPoint,
 };
+pub use split::SplittableEditor;
 pub use text::Bias;
 pub use workspace::searchable::Direction;
 
@@ -1066,6 +1068,7 @@ pub struct Editor {
     applicable_language_settings: HashMap<Option<LanguageName>, LanguageSettings>,
     accent_overrides: Vec<SharedString>,
     fetched_tree_sitter_chunks: HashMap<ExcerptId, HashSet<Range<BufferRow>>>,
+    use_base_text_line_numbers: bool,
 }
 
 fn debounce_value(debounce_ms: u64) -> Option<Duration> {
@@ -1493,7 +1496,7 @@ pub(crate) struct FocusedBlock {
     focus_handle: WeakFocusHandle,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 enum JumpData {
     MultiBufferRow {
         row: MultiBufferRow,
@@ -2185,6 +2188,7 @@ impl Editor {
             applicable_language_settings: HashMap::default(),
             accent_overrides: Vec::new(),
             fetched_tree_sitter_chunks: HashMap::default(),
+            use_base_text_line_numbers: false,
         };
 
         if is_minimap {
@@ -16891,6 +16895,10 @@ impl Editor {
 
     pub fn default_fold_placeholder(&self, cx: &App) -> FoldPlaceholder {
         self.display_map.read(cx).fold_placeholder.clone()
+    }
+
+    pub fn set_use_base_text_line_numbers(&mut self, show: bool, _cx: &mut Context<Self>) {
+        self.use_base_text_line_numbers = show;
     }
 
     pub fn set_expand_all_diff_hunks(&mut self, cx: &mut App) {
