@@ -1621,15 +1621,6 @@ mod tests {
             cx,
         );
 
-        // single-line formatting, other keys
-        check_settings_update(
-            &mut store,
-            r#"{ "one": 1, "two": 2 }"#.to_owned(),
-            |settings| settings.auto_update = Some(true),
-            r#"{ "auto_update": true, "one": 1, "two": 2 }"#.to_owned(),
-            cx,
-        );
-
         // empty object
         check_settings_update(
             &mut store,
@@ -1690,7 +1681,6 @@ mod tests {
         let mut store = SettingsStore::new(cx, &test_settings());
         store.register_setting::<DefaultLanguageSettings>();
         store.register_setting::<ItemSettings>();
-        store.register_setting::<AutoUpdateSetting>();
         store.register_setting::<ThemeSettings>();
 
         // create settings that werent present
@@ -1953,7 +1943,6 @@ mod tests {
     fn test_get_value_for_field_local_worktrees_dont_interfere(cx: &mut App) {
         let mut store = SettingsStore::new(cx, &test_settings());
         store.register_setting::<DefaultLanguageSettings>();
-        store.register_setting::<AutoUpdateSetting>();
 
         let local_1 = (WorktreeId::from_usize(0), RelPath::empty().into_arc());
 

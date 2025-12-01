@@ -16,7 +16,7 @@ use buffer_diff::{BufferDiff, DiffHunkSecondaryStatus, DiffHunkStatus, DiffHunkS
 use collections::HashMap;
 use futures::{StreamExt, channel::oneshot};
 use gpui::{
-    BackgroundExecutor, DismissEvent, Path, Rgba, SemanticVersion, TestAppContext, UpdateGlobal,
+    BackgroundExecutor, DismissEvent, Rgba, SemanticVersion, TestAppContext, UpdateGlobal,
     VisualTestContext, WindowBounds, WindowOptions, div,
 };
 use indoc::indoc;
@@ -49,7 +49,9 @@ use settings::{
     AllLanguageSettingsContent, EditorSettingsContent, IndentGuideBackgroundColoring,
     IndentGuideColoring, ProjectSettingsContent, SearchSettingsContent,
 };
-use std::{cell::RefCell, future::Future, rc::Rc, sync::atomic::AtomicBool, time::Instant};
+use std::{
+    cell::RefCell, future::Future, path::Path, rc::Rc, sync::atomic::AtomicBool, time::Instant,
+};
 use std::{
     iter,
     sync::atomic::{self, AtomicUsize},
@@ -65,7 +67,7 @@ use util::{
 };
 use workspace::{
     CloseActiveItem, CloseAllItems, CloseOtherItems, MoveItemToPaneInDirection, NavigationEntry,
-    OpenOptions, ViewId,
+    OpenOptions,
     invalid_item_view::InvalidItemView,
     item::{FollowEvent, FollowableItem, Item, ItemHandle, SaveOptions},
     register_project_item,
