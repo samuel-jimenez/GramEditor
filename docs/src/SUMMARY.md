@@ -56,6 +56,10 @@
 - [Theme Extensions](./extensions/themes.md)
 - [Icon Theme Extensions](./extensions/icon-themes.md)
 
+# Migrate
+
+- [VS Code](./migrate/vs-code.md)
+
 # Language Support
 
 - [All Languages](./languages.md)
