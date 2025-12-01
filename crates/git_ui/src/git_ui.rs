@@ -856,7 +856,7 @@ impl Render for GitCloneModal {
                     .rounded_b_sm()
                     .bg(cx.theme().colors().editor_background)
                     .child(
-                        Label::new("Clone a repository from GitHub or other sources.")
+                        Label::new("Clone a repository from Codeberg or other sources.")
                             .color(Color::Muted)
                             .size(LabelSize::Small),
                     )
@@ -866,7 +866,7 @@ impl Render for GitCloneModal {
                             .icon(IconName::ArrowUpRight)
                             .icon_size(IconSize::XSmall)
                             .on_click(|_, _, cx| {
-                                cx.open_url("https://github.com/git-guides/git-clone");
+                                cx.open_url("https://docs.codeberg.org/git/clone-commit-via-web/");
                             }),
                     ),
             )

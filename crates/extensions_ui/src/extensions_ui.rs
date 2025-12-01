@@ -8,10 +8,11 @@ use editor::{Editor, EditorElement, EditorStyle};
 use extension_host::{ExtensionManifest, ExtensionOperation, ExtensionStore};
 use fuzzy::{StringMatchCandidate, match_strings};
 use gpui::{
-    Action, App, ClipboardItem, Context, Corner, Entity, EventEmitter, Flatten, Focusable,
-    InteractiveElement, KeyContext, ParentElement, Point, Render, Styled, Task, TextStyle,
-    UniformListScrollHandle, WeakEntity, Window, actions, point, uniform_list,
+    Action, App, ClipboardItem, Context, Corner, DismissEvent, Entity, EventEmitter, Flatten,
+    FocusHandle, Focusable, InteractiveElement, KeyContext, ParentElement, Point, Render, Styled,
+    Task, TextStyle, UniformListScrollHandle, WeakEntity, Window, actions, point, uniform_list,
 };
+use menu;
 use num_format::{Locale, ToFormattedString};
 use project::DirectoryLister;
 use settings::{Settings, SettingsContent};
@@ -21,10 +22,11 @@ use std::{ops::Range, sync::Arc};
 use strum::IntoEnumIterator as _;
 use theme::ThemeSettings;
 use ui::{
-    Banner, Chip, ContextMenu, Divider, PopoverMenu, ScrollableHandle, Switch, Tooltip,
-    WithScrollbar, prelude::*,
+    Banner, Chip, ContextMenu, Divider, Modal, ModalHeader, PopoverMenu, ScrollableHandle, Section,
+    Switch, Tooltip, WithScrollbar, prelude::*,
 };
 use vim_mode_setting::VimModeSetting;
+use workspace::ModalView;
 use workspace::{
     Workspace,
     item::{Item, ItemEvent},
@@ -167,69 +169,16 @@ pub fn init(cx: &mut App) {
                 },
             )
             .register_action(move |workspace, _: &InstallExtensionFromUrl, window, cx| {
-                // TODO: display dialog to enter URL
-                let store = ExtensionStore::global(cx);
-                let prompt = workspace.prompt_for_open_path(
-                    gpui::PathPromptOptions {
-                        files: false,
-                        directories: true,
-                        multiple: false,
-                        prompt: None,
-                    },
-                    DirectoryLister::Local(
-                        workspace.project().clone(),
-                        workspace.app_state().fs.clone(),
-                    ),
-                    window,
-                    cx,
-                );
-
-                let workspace_handle = cx.entity().downgrade();
-                window
-                    .spawn(cx, async move |cx| {
-                        let extension_path =
-                            match Flatten::flatten(prompt.await.map_err(|e| e.into())) {
-                                Ok(Some(mut paths)) => paths.pop()?,
-                                Ok(None) => return None,
-                                Err(err) => {
-                                    workspace_handle
-                                        .update(cx, |workspace, cx| {
-                                            workspace.show_portal_error(err.to_string(), cx);
-                                        })
-                                        .ok();
-                                    return None;
-                                }
-                            };
-
-                        let install_task = store
-                            .update(cx, |store, cx| {
-                                store.install_dev_extension(extension_path, cx)
-                            })
-                            .ok()?;
-
-                        match install_task.await {
-                            Ok(_) => {}
-                            Err(err) => {
-                                log::error!("Failed to install URL extension(144): {:?}", err);
-                                workspace_handle
-                                    .update(cx, |workspace, cx| {
-                                        workspace.show_error(
-                                            // NOTE: using `anyhow::context` here ends up not printing
-                                            // the error
-                                            &format!(
-                                                "Failed to install URL extension(150): {}",
-                                                err
-                                            ),
-                                            cx,
-                                        );
-                                    })
-                                    .ok();
-                            }
-                        }
-
-                        Some(())
-                    })
-                    .detach();
+                let existing = workspace
+                    .active_pane()
+                    .read(cx)
+                    .items()
+                    .find_map(|item| item.downcast::<ExtensionsPage>());
+                if let Some(page) = existing {
+                    workspace.toggle_modal(window, cx, |window, cx| {
+                        GitCloneModal::show(page, window, cx)
+                    });
+                }
             });
 
         cx.subscribe_in(workspace.project(), window, |_, _, event, window, cx| {
@@ -1385,6 +1334,16 @@ impl ExtensionsPage {
 
         container
     }
+
+    fn install_extension_from_repo(
+        &mut self,
+        repo: String,
+        _window: &mut Window,
+        _cx: &mut Context<'_, ExtensionsPage>,
+    ) -> () {
+        log::info!("install_extension_from_repo: {:?}", repo);
+        todo!()
+    }
 }
 
 impl Render for ExtensionsPage {
@@ -1536,6 +1495,110 @@ impl Item for ExtensionsPage {
         f(*event)
     }
 }
+
+struct GitCloneModal {
+    page: Entity<ExtensionsPage>,
+    repo_input: Entity<Editor>,
+    focus_handle: FocusHandle,
+}
+
+impl GitCloneModal {
+    pub fn show(page: Entity<ExtensionsPage>, window: &mut Window, cx: &mut Context<Self>) -> Self {
+        let repo_input = cx.new(|cx| {
+            let mut editor = Editor::single_line(window, cx);
+            editor.set_placeholder_text("Enter repository URL…", window, cx);
+            editor
+        });
+        let focus_handle = repo_input.focus_handle(cx);
+
+        window.focus(&focus_handle);
+
+        Self {
+            page,
+            repo_input,
+            focus_handle,
+        }
+    }
+}
+
+impl Focusable for GitCloneModal {
+    fn focus_handle(&self, _: &App) -> FocusHandle {
+        self.focus_handle.clone()
+    }
+}
+
+impl Render for GitCloneModal {
+    fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        let theme = cx.theme().colors();
+        div()
+            .elevation_3(cx)
+            .w(rems(34.))
+            .flex_1()
+            .overflow_hidden()
+            .child(
+                Modal::new("extension_git_clone_modal", None)
+                    .header(
+                        ModalHeader::new().child(
+                            v_flex()
+                                .w_full()
+                                .pb_1p5()
+                                .mb_1()
+                                .gap_0p5()
+                                .border_b_1()
+                                .border_color(theme.border_variant)
+                                .child(Label::new("Install Extension From Git Repository")),
+                        ),
+                    )
+                    .section(
+                        Section::new()
+                            .child(
+                                v_flex()
+                                    .gap_2p5()
+                                    .child(v_flex().gap_1().child(self.repo_input.clone())),
+                            )
+                            .child(
+                                h_flex()
+                                    .w_full()
+                                    .p_2()
+                                    .gap_0p5()
+                                    .rounded_b_sm()
+                                    .child(
+                                        Label::new(
+                                            "Clone a repository from Codeberg or other sources.",
+                                        )
+                                        .color(Color::Muted)
+                                        .size(LabelSize::Small),
+                                    )
+                                    .child(
+                                        Button::new("learn-more", "Learn More")
+                                            .label_size(LabelSize::Small)
+                                            .icon(IconName::ArrowUpRight)
+                                            .icon_size(IconSize::XSmall)
+                                            .on_click(|_, _, cx| {
+                                                cx.open_url(
+                                                    "https://docs.codeberg.org/git/clone-commit-via-web/",
+                                                );
+                                            }),
+                                    ),
+                            ),
+                    ),
+            )
+            .on_action(cx.listener(|_, _: &menu::Cancel, _, cx| {
+                cx.emit(DismissEvent);
+            }))
+            .on_action(cx.listener(|this, _: &menu::Confirm, window, cx| {
+                let repo = this.repo_input.read(cx).text(cx);
+                this.page.update(cx, |page, cx| {
+                    page.install_extension_from_repo(repo, window, cx);
+                });
+                cx.emit(DismissEvent);
+            }))
+    }
+}
+
+impl EventEmitter<DismissEvent> for GitCloneModal {}
+
+impl ModalView for GitCloneModal {}
 
 /// Returns the set of features provided by the extension.
 fn extension_provides(manifest: &ExtensionManifest) -> BTreeSet<ExtensionProvides> {
