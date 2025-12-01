@@ -283,11 +283,13 @@ pub fn main() {
     let app = Application::new().with_assets(Assets);
 
     let session_id = Uuid::new_v4().to_string();
-    let session = app.background_executor().block(Session::new());
+    let session = app
+        .background_executor()
+        .spawn(Session::new(session_id.clone()));
 
     app.background_executor()
         .spawn(crashes::init(InitCrashHandler {
-            session_id: session_id.clone(),
+            session_id,
             tehanu_version: app_version.to_string(),
             binary: "tehanu".to_string(),
             release_channel: release_channel::RELEASE_CHANNEL_NAME.clone(),
@@ -502,6 +504,7 @@ pub fn main() {
         debugger_tools::init(cx);
         client::init(&client, cx);
 
+        let session = cx.background_executor().block(session);
         let app_session = cx.new(|cx| AppSession::new(session, cx));
 
         let app_state = Arc::new(AppState {
