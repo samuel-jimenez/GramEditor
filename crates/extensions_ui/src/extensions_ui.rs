@@ -214,8 +214,10 @@ impl ExtensionFilter {
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
 enum Feature {
+    ExtensionBasedpyright,
     ExtensionRuff,
     ExtensionTailwind,
+    ExtensionTy,
     Git,
     LanguageBash,
     LanguageC,
@@ -233,8 +235,13 @@ fn keywords_by_feature() -> &'static BTreeMap<Feature, Vec<&'static str>> {
     static KEYWORDS_BY_FEATURE: OnceLock<BTreeMap<Feature, Vec<&'static str>>> = OnceLock::new();
     KEYWORDS_BY_FEATURE.get_or_init(|| {
         BTreeMap::from_iter([
+            (
+                Feature::ExtensionBasedpyright,
+                vec!["basedpyright", "pyright"],
+            ),
             (Feature::ExtensionRuff, vec!["ruff"]),
             (Feature::ExtensionTailwind, vec!["tail", "tailwind"]),
+            (Feature::ExtensionTy, vec!["ty"]),
             (Feature::Git, vec!["git"]),
             (Feature::LanguageBash, vec!["sh", "bash"]),
             (Feature::LanguageC, vec!["c", "clang"]),
@@ -1138,6 +1145,23 @@ impl ExtensionsPage {
             return;
         };
 
+        if let Some(id) = search.strip_prefix("id:") {
+            self.upsells.clear();
+
+            let upsell = match id.to_lowercase().as_str() {
+                "ruff" => Some(Feature::ExtensionRuff),
+                "basedpyright" => Some(Feature::ExtensionBasedpyright),
+                "ty" => Some(Feature::ExtensionTy),
+                _ => None,
+            };
+
+            if let Some(upsell) = upsell {
+                self.upsells.insert(upsell);
+            }
+
+            return;
+        }
+
         let search = search.to_lowercase();
         let search_terms = search
             .split_whitespace()
@@ -1225,16 +1249,28 @@ impl ExtensionsPage {
 
         for feature in &self.upsells {
             let banner = match feature {
+                Feature::ExtensionBasedpyright => self.render_feature_upsell_banner(
+                    "Basedpyright (Python language server) support is built-in!".into(),
+                    "https://tehanu.liten.app/docs/languages/python#basedpyright".into(),
+                    false,
+                    cx,
+                ),
                 Feature::ExtensionRuff => self.render_feature_upsell_banner(
-                    "Ruff (linter for Python) support is built-in to Tehanu!".into(),
+                    "Ruff (linter for Python) support is built-in!".into(),
                     "https://tehanu.liten.app/docs/languages/python#code-formatting--linting"
                         .into(),
                     false,
                     cx,
                 ),
                 Feature::ExtensionTailwind => self.render_feature_upsell_banner(
-                    "Tailwind CSS support is built-in to Tehanu!".into(),
+                    "Tailwind CSS support is built-in!".into(),
                     "https://tehanu.liten.app/docs/languages/tailwindcss".into(),
+                    false,
+                    cx,
+                ),
+                Feature::ExtensionTy => self.render_feature_upsell_banner(
+                    "Ty (Python language server) support is built-in!".into(),
+                    "https://zed.dev/docs/languages/python".into(),
                     false,
                     cx,
                 ),
@@ -1246,49 +1282,49 @@ impl ExtensionsPage {
                     cx,
                 ),
                 Feature::LanguageBash => self.render_feature_upsell_banner(
-                    "Shell support is built-in to Tehanu!".into(),
+                    "Shell support is built-in!".into(),
                     "https://tehanu.liten.app/docs/languages/bash".into(),
                     false,
                     cx,
                 ),
                 Feature::LanguageC => self.render_feature_upsell_banner(
-                    "C support is built-in to Tehanu!".into(),
+                    "C support is built-in!".into(),
                     "https://tehanu.liten.app/docs/languages/c".into(),
                     false,
                     cx,
                 ),
                 Feature::LanguageCpp => self.render_feature_upsell_banner(
-                    "C++ support is built-in to Tehanu!".into(),
+                    "C++ support is built-in!".into(),
                     "https://tehanu.liten.app/docs/languages/cpp".into(),
                     false,
                     cx,
                 ),
                 Feature::LanguageGo => self.render_feature_upsell_banner(
-                    "Go support is built-in to Tehanu!".into(),
+                    "Go support is built-in!".into(),
                     "https://tehanu.liten.app/docs/languages/go".into(),
                     false,
                     cx,
                 ),
                 Feature::LanguagePython => self.render_feature_upsell_banner(
-                    "Python support is built-in to Tehanu!".into(),
+                    "Python support is built-in!".into(),
                     "https://tehanu.liten.app/docs/languages/python".into(),
                     false,
                     cx,
                 ),
                 Feature::LanguageReact => self.render_feature_upsell_banner(
-                    "React support is built-in to Tehanu!".into(),
+                    "React support is built-in!".into(),
                     "https://tehanu.liten.app/docs/languages/typescript".into(),
                     false,
                     cx,
                 ),
                 Feature::LanguageRust => self.render_feature_upsell_banner(
-                    "Rust support is built-in to Tehanu!".into(),
+                    "Rust support is built-in!".into(),
                     "https://tehanu.liten.app/docs/languages/rust".into(),
                     false,
                     cx,
                 ),
                 Feature::LanguageTypescript => self.render_feature_upsell_banner(
-                    "Typescript support is built-in to Tehanu!".into(),
+                    "Typescript support is built-in!".into(),
                     "https://tehanu.liten.app/docs/languages/typescript".into(),
                     false,
                     cx,
@@ -1300,7 +1336,7 @@ impl ExtensionsPage {
                     cx,
                 ),
                 Feature::Vim => self.render_feature_upsell_banner(
-                    "Vim support is built-in to Tehanu!".into(),
+                    "Vim support is built-in!".into(),
                     "https://tehanu.liten.app/docs/vim".into(),
                     true,
                     cx,
