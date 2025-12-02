@@ -1010,6 +1010,13 @@
   "tab_size": 4,
   // What debuggers are preferred by default for all languages.
   "debuggers": [],
+  // Whether to enable word diff highlighting in the editor.
+  //
+  // When enabled, changed words within modified lines are highlighted
+  // to show exactly what changed.
+  //
+  // Default: true
+  "word_diff_enabled": true,
   // How to render LSP `textDocument/documentColor` colors in the editor.
   //
   // Possible values:
