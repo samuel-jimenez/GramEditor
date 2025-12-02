@@ -1915,7 +1915,7 @@ impl GitPanel {
             .lines()
             .map(|line| {
                 if line.len() > 256 {
-                    format!("{}...[truncated]\n", &line[..256])
+                    format!("{}...[truncated]\n", &line[..line.floor_char_boundary(256)])
                 } else {
                     format!("{}\n", line)
                 }
@@ -5476,7 +5476,7 @@ mod tests {
 
     #[test]
     fn test_compress_diff_truncate_long_lines() {
-        let long_line = "a".repeat(300);
+        let long_line = "🦀".repeat(300);
         let diff = indoc::formatdoc! {"
             --- a/file.txt
             +++ b/file.txt
