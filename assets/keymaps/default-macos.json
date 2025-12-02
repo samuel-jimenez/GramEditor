@@ -47,7 +47,8 @@
       "cmd-m": "tehanu::Minimize",
       "fn-f": "tehanu::ToggleFullScreen",
       "ctrl-cmd-f": "tehanu::ToggleFullScreen",
-      "ctrl-cmd-l": "lsp_tool::ToggleMenu"
+      "ctrl-cmd-l": "lsp_tool::ToggleMenu",
+      "ctrl-cmd-c": "editor::DisplayCursorNames"
     }
   },
   {
@@ -411,8 +412,7 @@
       "cmd-.": "editor::ToggleCodeActions",
       "cmd-k r": "editor::RevealInFileManager",
       "cmd-k p": "editor::CopyPath",
-      "cmd-\\": "pane::SplitRight",
-      "ctrl-cmd-c": "editor::DisplayCursorNames"
+      "cmd-\\": "pane::SplitRight"
     }
   },
   {
@@ -550,7 +550,8 @@
     "context": "Workspace && debugger_running",
     "use_key_equivalents": true,
     "bindings": {
-      "f5": "tehanu::NoAction"
+      "f5": "tehanu::NoAction",
+      "f11": "debugger::StepInto"
     }
   },
   {
