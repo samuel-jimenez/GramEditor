@@ -120,7 +120,11 @@ impl Vim {
                     });
                 });
                 if objects_found {
-                    vim.copy_selections_content(editor, MotionKind::Exclusive, window, cx);
+                    let kind = match object.target_visual_mode(vim.mode, around) {
+                        Mode::VisualLine => MotionKind::Linewise,
+                        _ => MotionKind::Exclusive,
+                    };
+                    vim.copy_selections_content(editor, kind, window, cx);
                     editor.insert("", window, cx);
                 }
             });
