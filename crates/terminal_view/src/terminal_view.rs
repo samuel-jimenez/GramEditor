@@ -1415,6 +1415,7 @@ impl SearchableItem for TerminalView {
     fn update_matches(
         &mut self,
         matches: &[Self::Match],
+        _active_match_index: Option<usize>,
         _window: &mut Window,
         cx: &mut Context<Self>,
     ) {
