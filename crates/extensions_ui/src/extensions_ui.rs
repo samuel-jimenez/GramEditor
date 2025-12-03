@@ -678,7 +678,7 @@ impl ExtensionsPage {
         extension: &ExtensionMetadata,
         cx: &mut Context<Self>,
     ) -> ExtensionCard {
-        let this = cx.entity();
+        let this = cx.weak_entity();
         let status = Self::extension_status(&extension.id, cx);
         let has_dev_extension = Self::dev_extension_exists(&extension.id, cx);
 
@@ -827,13 +827,15 @@ impl ExtensionsPage {
                                     y: px(2.0),
                                 })
                                 .menu(move |window, cx| {
-                                    Some(Self::render_remote_extension_context_menu(
-                                        &this,
-                                        extension_id.clone(),
-                                        authors.clone(),
-                                        window,
-                                        cx,
-                                    ))
+                                    this.upgrade().map(|this| {
+                                        Self::render_remote_extension_context_menu(
+                                            &this,
+                                            extension_id.clone(),
+                                            authors.clone(),
+                                            window,
+                                            cx,
+                                        )
+                                    })
                                 }),
                             ),
                     ),
