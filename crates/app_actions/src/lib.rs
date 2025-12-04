@@ -208,6 +208,10 @@ pub mod git {
             Switch,
             /// Selects a different repository.
             SelectRepo,
+            /// Filter remotes.
+            FilterRemotes,
+            /// Create a git remote.
+            CreateRemote,
             /// Opens the git branch selector.
             #[action(deprecated_aliases = ["branches::OpenRecent"])]
             Branch,

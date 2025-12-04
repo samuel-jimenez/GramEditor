@@ -82,8 +82,6 @@ actions!(
         FocusEditor,
         /// Focuses on the changes list.
         FocusChanges,
-        /// Toggles automatic co-author suggestions.
-        ToggleFillCoAuthors,
         /// Toggles sorting entries by path vs status.
         ToggleSortByPath,
     ]
@@ -4338,7 +4336,6 @@ impl RenderOnce for PanelRepoFooter {
         const MAX_REPO_LEN: usize = 16;
         const LABEL_CHARACTER_BUDGET: usize = MAX_BRANCH_LEN + MAX_REPO_LEN;
         const MAX_SHORT_SHA_LEN: usize = 8;
-
         let branch_name = self
             .branch
             .as_ref()
