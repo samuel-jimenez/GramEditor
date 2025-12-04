@@ -3,7 +3,6 @@ pub mod terminal_element;
 pub mod terminal_panel;
 mod terminal_path_like_target;
 pub mod terminal_scrollbar;
-pub mod terminal_tab_tooltip;
 
 use editor::{EditorSettings, actions::SelectAll, blink_manager::BlinkManager};
 use gpui::{
@@ -31,7 +30,7 @@ use terminal_path_like_target::{hover_path_like_target, open_path_like_target};
 use terminal_scrollbar::TerminalScrollHandle;
 use terminal_tab_tooltip::TerminalTooltip;
 use ui::{
-    ContextMenu, Icon, IconName, Label, ScrollAxes, Scrollbars, Tooltip, WithScrollbar, h_flex,
+    ContextMenu, Divider, ScrollAxes, Scrollbars, Tooltip, WithScrollbar,
     prelude::*,
     scrollbars::{self, GlobalSetting, ScrollbarVisibility},
 };
@@ -1125,14 +1124,24 @@ impl Item for TerminalView {
     type Event = ItemEvent;
 
     fn tab_tooltip_content(&self, cx: &App) -> Option<TabTooltipContent> {
-        let terminal = self.terminal().read(cx);
-        let title = terminal.title(false);
-        let pid = terminal.pid_getter()?.fallback_pid();
+        Some(TabTooltipContent::Custom(Box::new(Tooltip::element({
+            let terminal = self.terminal().read(cx);
+            let title = terminal.title(false);
+            let pid = terminal.pid_getter()?.fallback_pid();
 
-        Some(TabTooltipContent::Custom(Box::new(move |_window, cx| {
-            cx.new(|_| TerminalTooltip::new(title.clone(), pid.as_u32()))
-                .into()
-        })))
+            move |_, _| {
+                v_flex()
+                    .gap_1()
+                    .child(Label::new(title.clone()))
+                    .child(h_flex().flex_grow().child(Divider::horizontal()))
+                    .child(
+                        Label::new(format!("Process ID (PID): {}", pid))
+                            .color(Color::Muted)
+                            .size(LabelSize::Small),
+                    )
+                    .into_any_element()
+            }
+        }))))
     }
 
     fn tab_content(&self, params: TabContentParams, _window: &Window, cx: &App) -> AnyElement {
