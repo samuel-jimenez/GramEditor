@@ -260,9 +260,9 @@ async fn build_remote_server_from_source(
     {
         // On Windows, we use 7z to compress the binary
 
-        let seven_zip = which("7z.exe",cx)
-            .await?
-            .context("7z.exe not found on $PATH, install it (e.g. with `winget install -e --id 7zip.7zip`) or, if you don't want this behaviour, set $env:TEHANU_BUILD_REMOTE_SERVER=\"nocompress\"")?;
+        let seven_zip = which("7z.exe", cx).await?.context(
+            "7z.exe not found on $PATH, install it (e.g. with `winget install -e --id 7zip.7zip`)",
+        )?;
         let gz_path = format!("target/remote_server/{}/debug/remote_server.gz", triple);
         if smol::fs::metadata(&gz_path).await.is_ok() {
             smol::fs::remove_file(&gz_path).await?;
