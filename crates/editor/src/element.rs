@@ -3763,6 +3763,8 @@ impl EditorElement {
     ) -> impl IntoElement {
         let editor = self.editor.read(cx);
         let multi_buffer = editor.buffer.read(cx);
+        let is_read_only = self.editor.read(cx).read_only(cx);
+
         let file_status = multi_buffer
             .all_diff_hunks_expanded()
             .then(|| editor.status_for_buffer_id(for_excerpt.buffer_id, cx))
@@ -3815,7 +3817,7 @@ impl EditorElement {
                     .gap_1p5()
                     .when(is_sticky, |el| el.shadow_md())
                     .border_1()
-                    .map(|div| {
+                    .map(|border| {
                         let border_color = if is_selected
                             && is_folded
                             && focus_handle.contains_focused(window, cx)
@@ -3824,7 +3826,7 @@ impl EditorElement {
                         } else {
                             colors.border
                         };
-                        div.border_color(border_color)
+                        border.border_color(border_color)
                     })
                     .bg(colors.editor_subheader_background)
                     .hover(|style| style.bg(colors.element_hover))
@@ -3904,13 +3906,15 @@ impl EditorElement {
                             })
                             .take(1),
                     )
-                    .child(
-                        h_flex()
-                            .size_3()
-                            .justify_center()
-                            .flex_shrink_0()
-                            .children(indicator),
-                    )
+                    .when(!is_read_only, |this| {
+                        this.child(
+                            h_flex()
+                                .size_3()
+                                .justify_center()
+                                .flex_shrink_0()
+                                .children(indicator),
+                        )
+                    })
                     .child(
                         h_flex()
                             .cursor_pointer()
