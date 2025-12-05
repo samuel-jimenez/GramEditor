@@ -1120,7 +1120,8 @@
     "context": "GitBranchSelector || (GitBranchSelector > Picker > Editor)",
     "use_key_equivalents": true,
     "bindings": {
-      "cmd-shift-backspace": "branch_picker::DeleteBranch"
+      "cmd-shift-backspace": "branch_picker::DeleteBranch",
+      "cmd-shift-i": "branch_picker::FilterRemotes"
     }
   }
 ]
