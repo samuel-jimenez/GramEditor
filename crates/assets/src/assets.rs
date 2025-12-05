@@ -58,7 +58,7 @@ impl Assets {
     pub fn load_test_fonts(&self, cx: &App) {
         cx.text_system()
             .add_fonts(vec![
-                self.load("fonts/lilex/Lilex-Regular.ttf").unwrap().unwrap(),
+                self.load("fonts/fira-code/fira-code.ttf").unwrap().unwrap(),
             ])
             .unwrap()
     }
