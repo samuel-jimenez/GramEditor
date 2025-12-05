@@ -4395,7 +4395,6 @@ mod tests {
                 "app_actions",
                 #[cfg(not(target_os = "macos"))]
                 "app_menu",
-                "bedrock",
                 "branch_picker",
                 "branches",
                 "buffer_search",
@@ -4403,12 +4402,10 @@ mod tests {
                 "client",
                 "command_palette",
                 "console",
-                "context_server",
                 "debug_panel",
                 "debugger",
                 "dev",
                 "diagnostics",
-                "edit_prediction",
                 "editor",
                 "feedback",
                 "file_finder",
@@ -4426,7 +4423,6 @@ mod tests {
                 "markdown",
                 "menu",
                 "notebook",
-                "notification_panel",
                 "onboarding",
                 "outline",
                 "outline_panel",
@@ -4474,11 +4470,11 @@ mod tests {
         cx.text_system()
             .add_fonts(vec![
                 Assets
-                    .load("fonts/lilex/Lilex-Regular.ttf")
+                    .load("fonts/fira-code/fira-code.ttf")
                     .unwrap()
                     .unwrap(),
                 Assets
-                    .load("fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf")
+                    .load("fonts/fira-sans/FiraSans-Regular.ttf")
                     .unwrap()
                     .unwrap(),
             ])
@@ -4679,14 +4675,14 @@ mod tests {
             .insert_tree(
                 Path::new("/root"),
                 json!({
-                    ".zed": {
+                    ".tehanu": {
                         "settings.json": settings_init
                     }
                 }),
             )
             .await;
 
-        eprintln!("Created project with .zed/settings.json containing UNIQUEVALUE");
+        eprintln!("Created project with .tehanu/settings.json containing UNIQUEVALUE");
 
         // 2. Create a project with the file system and load it
         let project = Project::test(app_state.fs.clone(), [Path::new("/root")], cx).await;
@@ -4711,31 +4707,35 @@ mod tests {
         cx.update_global::<SettingsStore, _>(|store, cx| {
             store.update_user_settings(cx, |worktree_settings| {
                 worktree_settings.project.worktree.file_scan_exclusions =
-                    Some(vec![".zed".to_string()]);
+                    Some(vec![".tehanu".to_string()]);
             });
         });
 
-        eprintln!("Added .zed to file_scan_exclusions in settings");
+        eprintln!("Added .tehanu to file_scan_exclusions in settings");
 
         // 4. Run tasks to apply settings
         cx.background_executor.run_until_parked();
 
-        // 5. Critical: Verify .zed is actually excluded from worktree
+        // 5. Critical: Verify .tehanu is actually excluded from worktree
         let worktree = cx.update(|cx| project.read(cx).worktrees(cx).next().unwrap());
 
-        let has_zed_entry =
-            cx.update(|cx| worktree.read(cx).entry_for_path(rel_path(".zed")).is_some());
+        let has_entry = cx.update(|cx| {
+            worktree
+                .read(cx)
+                .entry_for_path(rel_path(".tehanu"))
+                .is_some()
+        });
 
         eprintln!(
-            "Is .zed directory visible in worktree after exclusion: {}",
-            has_zed_entry
+            "Is .tehanu directory visible in worktree after exclusion: {}",
+            has_entry
         );
 
         // This assertion verifies the test is set up correctly to show the bug
-        // If .zed is not excluded, the test will fail here
+        // If .tehanu is not excluded, the test will fail here
         assert!(
-            !has_zed_entry,
-            "Test precondition failed: .zed directory should be excluded but was found in worktree"
+            !has_entry,
+            "Test precondition failed: .tehanu directory should be excluded but was found in worktree"
         );
 
         // 6. Create workspace and trigger the actual function that causes the bug
