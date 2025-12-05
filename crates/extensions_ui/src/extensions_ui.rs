@@ -376,12 +376,11 @@ impl ExtensionsPage {
         cx.notify();
 
         let extension_store = ExtensionStore::global(cx);
-        let provides_filter = provides_filter.clone().unwrap_or(BTreeSet::default());
+        let provides_filter = provides_filter.unwrap_or(BTreeSet::default());
 
         let dev_extensions = extension_store
             .read(cx)
             .dev_extensions()
-            .cloned()
             .filter(|ext| {
                 provides_filter.is_empty()
                     || extension_provides(ext)
@@ -389,7 +388,8 @@ impl ExtensionsPage {
                         .count()
                         > 0
             })
-            .collect::<Vec<_>>();
+            .cloned()
+            .collect::<Vec<Arc<ExtensionManifest>>>();
 
         log::info!("dev_extensions: {:?}", dev_extensions);
 
@@ -1334,16 +1334,6 @@ impl ExtensionsPage {
 
         container
     }
-
-    fn install_extension_from_repo(
-        &mut self,
-        repo: String,
-        _window: &mut Window,
-        _cx: &mut Context<'_, ExtensionsPage>,
-    ) -> () {
-        log::info!("install_extension_from_repo: {:?}", repo);
-        todo!()
-    }
 }
 
 impl Render for ExtensionsPage {
@@ -1586,10 +1576,14 @@ impl Render for GitCloneModal {
             .on_action(cx.listener(|_, _: &menu::Cancel, _, cx| {
                 cx.emit(DismissEvent);
             }))
-            .on_action(cx.listener(|this, _: &menu::Confirm, window, cx| {
+            .on_action(cx.listener(|this, _: &menu::Confirm, _window, cx| {
                 let repo = this.repo_input.read(cx).text(cx);
-                this.page.update(cx, |page, cx| {
-                    page.install_extension_from_repo(repo, window, cx);
+                this.page.update(cx, |_page, cx| {
+                    log::info!("install_extension_from_repo: {:?}", repo);
+                    let extension_store = ExtensionStore::global(cx);
+                    extension_store.update(cx, move |store, cx| {
+                        store.install_dev_extension_from_url(repo, cx);
+                    });
                 });
                 cx.emit(DismissEvent);
             }))

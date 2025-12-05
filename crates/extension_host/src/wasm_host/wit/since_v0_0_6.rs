@@ -15,10 +15,10 @@ wasmtime::component::bindgen!({
     path: "../extension_api/wit/since_v0.0.6",
     with: {
          "worktree": ExtensionWorktree,
-         "tehanu:extension/github": latest::tehanu::extension::github,
-         "tehanu:extension/lsp": since_v0_1_0::tehanu::extension::lsp,
-         "tehanu:extension/nodejs": latest::tehanu::extension::nodejs,
-         "tehanu:extension/platform": latest::tehanu::extension::platform,
+         "zed:extension/github": latest::zed::extension::github,
+         "zed:extension/lsp": since_v0_1_0::zed::extension::lsp,
+         "zed:extension/nodejs": latest::zed::extension::nodejs,
+         "zed:extension/platform": latest::zed::extension::platform,
     },
 });
 

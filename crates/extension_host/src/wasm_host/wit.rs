@@ -31,7 +31,7 @@ use wasmtime::{
 pub use latest::CodeLabelSpanLiteral;
 pub use latest::{
     CodeLabel, CodeLabelSpan, Command, DebugAdapterBinary, ExtensionProject, Range,
-    tehanu::extension::lsp::{
+    zed::extension::lsp::{
         Completion, CompletionKind, CompletionLabelDetails, InsertTextFormat, Symbol, SymbolKind,
     },
 };

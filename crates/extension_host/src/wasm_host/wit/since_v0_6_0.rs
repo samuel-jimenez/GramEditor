@@ -44,11 +44,11 @@ wasmtime::component::bindgen!({
          "worktree": ExtensionWorktree,
          "project": ExtensionProject,
          "key-value-store": ExtensionKeyValueStore,
-         "tehanu:extension/http-client/http-response-stream": ExtensionHttpResponseStream
+         "zed:extension/http-client/http-response-stream": ExtensionHttpResponseStream
     },
 });
 
-pub use self::tehanu::extension::*;
+pub use self::zed::extension::*;
 
 mod settings {
     #![allow(dead_code)]

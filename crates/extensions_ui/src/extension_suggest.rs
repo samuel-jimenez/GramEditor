@@ -79,6 +79,65 @@ const SUGGESTIONS_BY_EXTENSION_ID: &[(&str, &[&str])] = &[
     ("zig", &["zig"]),
 ];
 
+const EXTENSION_URL: &[(&str, &str)] = &[
+    ("astro", "https://github.com/zed-extensions/astro"),
+    ("beancount", "https://github.com/zed-extensions/beancount"),
+    ("clojure", "https://github.com/zed-extensions/clojure"),
+    ("neocmake", "https://github.com/zed-extensions/neocmake"),
+    ("csharp", "https://github.com/zed-extensions/csharp"),
+    ("cython", "https://github.com/zed-extensions/cython"),
+    ("dart", "https://github.com/zed-extensions/dart"),
+    ("dockerfile", "https://github.com/zed-extensions/dockerfile"),
+    ("elisp", "https://github.com/zed-extensions/elisp"),
+    ("elixir", "https://github.com/zed-extensions/elixir"),
+    ("elm", "https://github.com/zed-extensions/elm"),
+    ("erlang", "https://github.com/zed-extensions/erlang"),
+    ("fish", "https://github.com/zed-extensions/fish"),
+    (
+        "git-firefly",
+        "https://github.com/zed-extensions/git-firefly",
+    ),
+    ("gleam", "https://github.com/gleam-lang/zed-gleam"),
+    ("glsl", "https://github.com/zed-extensions/glsl"),
+    ("graphql", "https://github.com/zed-extensions/graphql"),
+    ("haskell", "https://github.com/zed-extensions/haskell"),
+    ("html", "https://github.com/zed-extensions/html"),
+    ("java", "https://github.com/zed-extensions/java"),
+    ("kotlin", "https://github.com/zed-extensions/kotlin"),
+    ("latex", "https://github.com/zed-extensions/latex"),
+    ("log", "https://github.com/zed-extensions/log"),
+    ("lua", "https://github.com/zed-extensions/lua"),
+    ("make", "https://github.com/zed-extensions/make"),
+    ("nim", "https://github.com/zed-extensions/nim"),
+    ("nix", "https://github.com/zed-extensions/nix"),
+    ("nu", "https://github.com/zed-extensions/nu"),
+    ("ocaml", "https://github.com/zed-extensions/ocaml"),
+    ("php", "https://github.com/zed-extensions/php"),
+    ("powershell", "https://github.com/zed-extensions/powershell"),
+    ("prisma", "https://github.com/zed-extensions/prisma"),
+    ("proto", "https://github.com/zed-extensions/proto"),
+    ("purescript", "https://github.com/zed-extensions/purescript"),
+    ("r", "https://github.com/zed-extensions/r"),
+    ("racket", "https://github.com/zed-extensions/racket"),
+    ("rescript", "https://github.com/zed-extensions/rescript"),
+    ("rst", "https://github.com/zed-extensions/rst"),
+    ("ruby", "https://github.com/zed-extensions/ruby"),
+    ("scheme", "https://github.com/zed-extensions/scheme"),
+    ("scss", "https://github.com/zed-extensions/scss"),
+    ("sql", "https://github.com/zed-extensions/sql"),
+    ("svelte", "https://github.com/zed-extensions/svelte"),
+    ("swift", "https://github.com/zed-extensions/swift"),
+    ("templ", "https://github.com/zed-extensions/templ"),
+    ("terraform", "https://github.com/zed-extensions/terraform"),
+    ("toml", "https://github.com/zed-extensions/toml"),
+    ("typst", "https://github.com/zed-extensions/typst"),
+    ("vue", "https://github.com/zed-extensions/vue"),
+    ("wgsl", "https://github.com/zed-extensions/wgsl"),
+    ("wit", "https://github.com/zed-extensions/wit"),
+    ("xml", "https://github.com/zed-extensions/xml"),
+    ("zig", "https://github.com/zed-extensions/zig"),
+];
+
 fn suggested_extensions() -> &'static HashMap<&'static str, Arc<str>> {
     static SUGGESTIONS_BY_PATH_SUFFIX: OnceLock<HashMap<&str, Arc<str>>> = OnceLock::new();
     SUGGESTIONS_BY_PATH_SUFFIX.get_or_init(|| {
@@ -184,7 +243,10 @@ pub(crate) fn suggest(buffer: Entity<Buffer>, window: &mut Window, cx: &mut Cont
                         let extension_id = extension_id.clone();
                         let extension_store = ExtensionStore::global(cx);
                         extension_store.update(cx, move |store, cx| {
-                            store.install_dev_extension_by_name(extension_id, cx);
+                            let url = EXTENSION_URL.iter().find(|eu| *eu.0 == *extension_id);
+                            if let Some(url) = url {
+                                store.install_dev_extension_from_url(url.1.into(), cx);
+                            }
                         });
                     }
                 })

@@ -18,15 +18,15 @@ wasmtime::component::bindgen!({
          "worktree": ExtensionWorktree,
          "project": ExtensionProject,
          "key-value-store": ExtensionKeyValueStore,
-         "tehanu:extension/github": latest::tehanu::extension::github,
-         "tehanu:extension/http-client": latest::tehanu::extension::http_client,
-         "tehanu:extension/lsp": latest::tehanu::extension::lsp,
-         "tehanu:extension/nodejs": latest::tehanu::extension::nodejs,
-         "tehanu:extension/platform": latest::tehanu::extension::platform,
+         "zed:extension/github": latest::zed::extension::github,
+         "zed:extension/http-client": latest::zed::extension::http_client,
+         "zed:extension/lsp": latest::zed::extension::lsp,
+         "zed:extension/nodejs": latest::zed::extension::nodejs,
+         "zed:extension/platform": latest::zed::extension::platform,
     },
 });
 
-pub use self::tehanu::extension::*;
+pub use self::zed::extension::*;
 
 mod settings {
     #![allow(dead_code)]

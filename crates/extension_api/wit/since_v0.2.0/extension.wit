@@ -1,4 +1,4 @@
-package tehanu:extension;
+package zed:extension;
 
 world extension {
     import github;

@@ -32,14 +32,14 @@ wasmtime::component::bindgen!({
     with: {
          "worktree": ExtensionWorktree,
          "key-value-store": ExtensionKeyValueStore,
-         "tehanu:extension/http-client/http-response-stream": ExtensionHttpResponseStream,
-         "tehanu:extension/github": latest::tehanu::extension::github,
-         "tehanu:extension/nodejs": latest::tehanu::extension::nodejs,
-         "tehanu:extension/platform": latest::tehanu::extension::platform,
+         "zed:extension/http-client/http-response-stream": ExtensionHttpResponseStream,
+         "zed:extension/github": latest::zed::extension::github,
+         "zed:extension/nodejs": latest::zed::extension::nodejs,
+         "zed:extension/platform": latest::zed::extension::platform,
     },
 });
 
-pub use self::tehanu::extension::*;
+pub use self::zed::extension::*;
 
 mod settings {
     include!(concat!(env!("OUT_DIR"), "/since_v0.1.0/settings.rs"));
