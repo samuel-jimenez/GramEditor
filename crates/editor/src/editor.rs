@@ -213,6 +213,7 @@ use crate::{
         inlay_hints::{LspInlayHintData, inlay_hint_settings},
     },
     scroll::ScrollOffset,
+    selections_collection::resolve_selections_wrapping_blocks,
     signature_help::{SignatureHelpHiddenBy, SignatureHelpState},
 };
 
@@ -4202,7 +4203,23 @@ impl Editor {
                     buffer.edit(edits, None, cx);
                 })
             }
+
+            let new_anchor_selections = new_selections.iter().map(|e| &e.0);
+            let new_selection_deltas = new_selections.iter().map(|e| e.1);
             let map = this.display_map.update(cx, |map, cx| map.snapshot(cx));
+            let new_selections = resolve_selections_wrapping_blocks::<MultiBufferOffset, _>(
+                new_anchor_selections,
+                &map,
+            )
+            .zip(new_selection_deltas)
+            .map(|(selection, delta)| Selection {
+                id: selection.id,
+                start: selection.start + delta,
+                end: selection.end + delta,
+                reversed: selection.reversed,
+                goal: SelectionGoal::None,
+            })
+            .collect::<Vec<_>>();
 
             let mut i = 0;
             for (position, delta, selection_id, pair) in new_autoclose_regions {
@@ -4235,6 +4252,13 @@ impl Editor {
                     },
                 );
             }
+
+            this.change_selections(
+                SelectionEffects::scroll(Autoscroll::fit()).completions(false),
+                window,
+                cx,
+                |s| s.select(new_selections),
+            );
 
             if !bracket_inserted
                 && let Some(on_type_format_task) =
