@@ -1,5 +1,6 @@
 mod icon_theme_selector;
 
+use app_actions::{ExtensionCategoryFilter, Extensions};
 use fs::Fs;
 use fuzzy::{StringMatch, StringMatchCandidate, match_strings};
 use gpui::{
@@ -16,7 +17,6 @@ use theme::{
 use ui::{ListItem, ListItemSpacing, prelude::*, v_flex};
 use util::ResultExt;
 use workspace::{ModalView, Workspace, ui::HighlightedLabel, with_active_or_new_workspace};
-use app_actions::{ExtensionCategoryFilter, Extensions};
 
 use crate::icon_theme_selector::{IconThemeSelector, IconThemeSelectorDelegate};
 
@@ -155,13 +155,8 @@ impl ThemeSelectorDelegate {
             })
             .collect::<Vec<_>>();
 
-        // Sort by dark vs light, then by name.
-        themes.sort_unstable_by(|a, b| {
-            a.appearance
-                .is_light()
-                .cmp(&b.appearance.is_light())
-                .then(a.name.cmp(&b.name))
-        });
+        // Sort by name
+        themes.sort_unstable_by(|a, b| a.name.cmp(&b.name));
 
         let matches: Vec<StringMatch> = themes
             .iter()
