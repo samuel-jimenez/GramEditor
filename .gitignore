@@ -36,6 +36,7 @@ vendor/*/grammars
 DerivedData/
 Packages
 xcuserdata/
+**/*~lock~
 
 # Don't commit any secrets to the repo.
 .env
