@@ -169,13 +169,13 @@
   //
   // Default: true
   "zoomed_padding": true,
-  // What draws Zed's window decorations (titlebar):
-  // 1. Client application (Zed) draws its own window decorations
+  // What draws Tehanu's window decorations (titlebar):
+  // 1. Client application draws its own window decorations
   //    "client"
   // 2. Display server draws the window decorations. Not supported by GNOME Wayland.
   //    "server"
   //
-  // This requires restarting Zed for changes to take effect.
+  // This requires restarting Tehanu for changes to take effect.
   //
   // Default: "client"
   "window_decorations": "client",

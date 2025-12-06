@@ -2,7 +2,7 @@
 
 Welcome to Tehanu's documentation.
 
-This is built on push to `main` and published automatically to [https://tehanu.liten.app/docs](https://tehanu.liten.app/docs).
+This is published to [https://tehanu.liten.app/docs](https://tehanu.liten.app/docs).
 
 To preview the docs locally you will need to install [mdBook](https://rust-lang.github.io/mdBook/) (`cargo install mdbook@0.4.40`) and then run:
 

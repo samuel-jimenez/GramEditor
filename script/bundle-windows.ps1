@@ -104,11 +104,10 @@ function GenerateLicenses {
 
 function BuildTehanuAndItsFriends {
     Write-Output "Building Tehanu and its friends, for channel: $channel"
-    # Build tehanu.exe, cli.exe and auto_update_helper.exe
-    cargo build --release --package tehanu --package cli --package auto_update_helper --target $target
+    # Build tehanu.exe, cli.exe
+    cargo build --release --package tehanu --package cli --target $target
     Copy-Item -Path ".\$CargoOutDir\tehanu.exe" -Destination "$innoDir\Tehanu.exe" -Force
     Copy-Item -Path ".\$CargoOutDir\cli.exe" -Destination "$innoDir\cli.exe" -Force
-    Copy-Item -Path ".\$CargoOutDir\auto_update_helper.exe" -Destination "$innoDir\auto_update_helper.exe" -Force
     # Build explorer_command_injector.dll
     switch ($channel) {
         "stable" {
@@ -128,26 +127,10 @@ function ZipTehanuAndItsFriendsDebug {
     $items = @(
         ".\$CargoOutDir\tehanu.pdb",
         ".\$CargoOutDir\cli.pdb",
-        ".\$CargoOutDir\auto_update_helper.pdb",
         ".\$CargoOutDir\explorer_command_injector.pdb"
     )
 
     Compress-Archive -Path $items -DestinationPath ".\$CargoOutDir\tehanu-$env:RELEASE_VERSION-$env:TEHANU_RELEASE_CHANNEL.dbg.zip" -Force
-}
-
-
-function UploadToSentry {
-    if (-not (Get-Command "sentry-cli" -ErrorAction SilentlyContinue)) {
-        Write-Output "sentry-cli not found. skipping sentry upload."
-        Write-Output "install with: 'winget install -e --id=Sentry.sentry-cli'"
-        return
-    }
-    if (-not (Test-Path "env:SENTRY_AUTH_TOKEN")) {
-        Write-Output "missing SENTRY_AUTH_TOKEN. skipping sentry upload."
-        return
-    }
-    Write-Output "Uploading tehanu debug symbols to sentry..."
-    sentry-cli debug-files upload --include-sources --wait -p tehanu -o tehanu-dev $CargoOutDir
 }
 
 function MakeAppx {
@@ -174,7 +157,7 @@ function SignTehanuAndItsFriends {
         return
     }
 
-    $files = "$innoDir\Tehanu.exe,$innoDir\cli.exe,$innoDir\auto_update_helper.exe,$innoDir\tehanu_explorer_command_injector.dll,$innoDir\tehanu_explorer_command_injector.appx"
+    $files = "$innoDir\Tehanu.exe,$innoDir\cli.exe,$innoDir\tehanu_explorer_command_injector.dll,$innoDir\tehanu_explorer_command_injector.appx"
     & "$innoDir\sign.ps1" $files
 }
 
@@ -200,7 +183,6 @@ function CollectFiles {
     Move-Item -Path "$innoDir\tehanu_explorer_command_injector.dll" -Destination "$innoDir\appx\tehanu_explorer_command_injector.dll" -Force
     Move-Item -Path "$innoDir\cli.exe" -Destination "$innoDir\bin\tehanu.exe" -Force
     Move-Item -Path "$innoDir\tehanu.sh" -Destination "$innoDir\bin\tehanu" -Force
-    Move-Item -Path "$innoDir\auto_update_helper.exe" -Destination "$innoDir\tools\auto_update_helper.exe" -Force
     if($Architecture -eq "aarch64") {
         New-Item -Type Directory -Path "$innoDir\arm64" -Force
         Move-Item -Path ".\conpty\build\native\runtimes\arm64\OpenConsole.exe" -Destination "$innoDir\arm64\OpenConsole.exe" -Force
@@ -220,7 +202,7 @@ function BuildInstaller {
     $issFilePath = "$innoDir\tehanu.iss"
     switch ($channel) {
         "stable" {
-            $appId = "{{2DB0DA96-CA55-49BB-AF4F-64AF36A86712}"
+            $appId = "{{E62BA84E-40DF-471F-97EF-B85924F488FB}"
             $appIconName = "app-icon"
             $appName = "Tehanu"
             $appDisplayName = "Tehanu"
@@ -229,12 +211,12 @@ function BuildInstaller {
             $appMutex = "Tehanu-Stable-Instance-Mutex"
             $appExeName = "Tehanu"
             $regValueName = "Tehanu"
-            $appUserId = "TehanuIndustries.Tehanu"
-            $appShellNameShort = "Z&ed"
-            $appAppxFullName = "TehanuIndustries.Tehanu_1.0.0.0_neutral__japxn1gcva8rg"
+            $appUserId = "Tehanu.Tehanu"
+            $appShellNameShort = "T&ehanu"
+            $appAppxFullName = "Tehanu.Tehanu_1.0.0.0_neutral__mspublisherid"
         }
         "preview" {
-            $appId = "{{F70E4811-D0E2-4D88-AC99-D63752799F95}"
+            $appId = "{{85A6F569-DD2C-4850-B9E7-4FAC667B0D0C}"
             $appIconName = "app-icon-preview"
             $appName = "Tehanu Preview"
             $appDisplayName = "Tehanu Preview"
@@ -243,12 +225,12 @@ function BuildInstaller {
             $appMutex = "Tehanu-Preview-Instance-Mutex"
             $appExeName = "Tehanu"
             $regValueName = "TehanuPreview"
-            $appUserId = "TehanuIndustries.Tehanu.Preview"
-            $appShellNameShort = "Z&ed Preview"
-            $appAppxFullName = "TehanuIndustries.Tehanu.Preview_1.0.0.0_neutral__japxn1gcva8rg"
+            $appUserId = "Tehanu.Tehanu.Preview"
+            $appShellNameShort = "T&ehanu Preview"
+            $appAppxFullName = "Tehanu.Tehanu.Preview_1.0.0.0_neutral__mspublisherid"
         }
         "nightly" {
-            $appId = "{{1BDB21D3-14E7-433C-843C-9C97382B2FE0}"
+            $appId = "{{A57C51AA-9E45-403E-A0E0-6D4DA22FACF6}"
             $appIconName = "app-icon-nightly"
             $appName = "Tehanu Nightly"
             $appDisplayName = "Tehanu Nightly"
@@ -257,12 +239,12 @@ function BuildInstaller {
             $appMutex = "Tehanu-Nightly-Instance-Mutex"
             $appExeName = "Tehanu"
             $regValueName = "TehanuNightly"
-            $appUserId = "TehanuIndustries.Tehanu.Nightly"
-            $appShellNameShort = "Z&ed Editor Nightly"
-            $appAppxFullName = "TehanuIndustries.Tehanu.Nightly_1.0.0.0_neutral__japxn1gcva8rg"
+            $appUserId = "Tehanu.Tehanu.Nightly"
+            $appShellNameShort = "T&ehanu Editor Nightly"
+            $appAppxFullName = "Tehanu.Tehanu.Nightly_1.0.0.0_neutral__mspublisherid"
         }
         "dev" {
-            $appId = "{{8357632E-24A4-4F32-BA97-E575B4D1FE5D}"
+            $appId = "{{4FEF353A-EA46-468C-95DD-2B343A71416F}"
             $appIconName = "app-icon-dev"
             $appName = "Tehanu Dev"
             $appDisplayName = "Tehanu Dev"
@@ -271,9 +253,9 @@ function BuildInstaller {
             $appMutex = "Tehanu-Dev-Instance-Mutex"
             $appExeName = "Tehanu"
             $regValueName = "TehanuDev"
-            $appUserId = "TehanuIndustries.Tehanu.Dev"
-            $appShellNameShort = "Z&ed Dev"
-            $appAppxFullName = "TehanuIndustries.Tehanu.Dev_1.0.0.0_neutral__japxn1gcva8rg"
+            $appUserId = "Tehanu.Tehanu.Dev"
+            $appShellNameShort = "T&ehanu Dev"
+            $appAppxFullName = "Tehanu.Tehanu.Dev_1.0.0.0_neutral__mspublisherid"
         }
         default {
             Write-Error "can't bundle installer for $channel."
@@ -346,10 +328,6 @@ DownloadAMDGpuServices
 DownloadConpty
 CollectFiles
 BuildInstaller
-
-if($env:CI) {
-    UploadToSentry
-}
 
 if ($buildSuccess) {
     Write-Output "Build successful"

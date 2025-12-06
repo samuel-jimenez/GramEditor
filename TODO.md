@@ -1,13 +1,5 @@
 # TODO
 
-- I broke the dev extension installation..
-
-- Add back support for downloading extensions (but still building them locally)
-
-- No extensions show up in the UI...
-
-- Sort themes alphabetically in the theme picker
-
 - Replace the icons with https://github.com/cotyhamilton/zed-emoji-icon-theme
 
 - Sniff out all the AI-written text and get rid of it

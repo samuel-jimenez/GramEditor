@@ -1,6 +1,6 @@
 // documentation: https://tehanu.liten.app/docs/key-bindings
 //
-// To see the default key bindings run `zed: open default keymap`
+// To see the default key bindings run `tehanu: open default keymap`
 // from the command palette.
 [
   {
@@ -175,7 +175,7 @@
     //  so override with null for compound sequences (e.g. ctrl-x ctrl-c).
     "context": "Terminal",
     "bindings": {
-      // If you want to perfect your emacs-in-zed setup, also consider the following.
+      // If you want to perfect your emacs-in-tehanu setup, also consider the following.
       // You may need to enable "option_as_meta" from the Tehanu settings for "alt-x" to work.
       // "alt-x": ["terminal::SendKeystroke", "alt-x"],
       // "ctrl-x": ["terminal::SendKeystroke", "ctrl-x"],

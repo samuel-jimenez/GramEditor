@@ -18,7 +18,7 @@ fi
 # Rerun as root
 [ "$UID" -eq 0 ] || exec sudo bash -e "$0" "$@"
 
-snap remove zed || true
+snap remove tehanu || true
 mkdir -p snap
 rm -rf snap/unpacked
 unsquashfs -dest snap/unpacked "tehanu_$1_amd64.snap"
