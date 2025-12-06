@@ -394,7 +394,7 @@ impl CommitView {
             time_format::TimestampFormat::MediumAbsolute,
         );
 
-        let github_url = self.remote.as_ref().map(|remote| {
+        let forge_url = self.remote.as_ref().map(|remote| {
             format!(
                 "{}/{}/{}/commit/{}",
                 remote.host.base_url(),
@@ -464,9 +464,9 @@ impl CommitView {
                                     .children(commit_diff_stat),
                             ),
                     )
-                    .children(github_url.map(|url| {
-                        Button::new("view_on_github", "View on GitHub")
-                            .icon(IconName::Github)
+                    .children(forge_url.map(|url| {
+                        Button::new("view_on_forge", "View on Git Forge")
+                            .icon(IconName::Forge)
                             .icon_color(Color::Muted)
                             .icon_size(IconSize::Small)
                             .icon_position(IconPosition::Start)

@@ -653,7 +653,7 @@ impl ExtensionsPage {
                     .children(repository_url.map(|repository_url| {
                         IconButton::new(
                             SharedString::from(format!("repository-{}", extension.id)),
-                            IconName::Github,
+                            IconName::Forge,
                         )
                         .icon_color(Color::Accent)
                         .icon_size(IconSize::Small)
@@ -787,7 +787,7 @@ impl ExtensionsPage {
 
                                 IconButton::new(
                                     SharedString::from(format!("repository-{}", extension.id)),
-                                    IconName::Github,
+                                    IconName::Forge,
                                 )
                                 .icon_size(IconSize::Small)
                                 .tooltip(move |_, cx| {

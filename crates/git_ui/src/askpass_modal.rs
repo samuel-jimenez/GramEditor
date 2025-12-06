@@ -87,7 +87,7 @@ impl AskPassModal {
                 .child(
                     h_flex().gap_2()
                         .child(
-                            Icon::new(IconName::Github).size(IconSize::Small)
+                            Icon::new(IconName::Forge).size(IconSize::Small)
                         )
                         .child(
                             Label::new("You may need to configure git for Github.")

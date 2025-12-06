@@ -26,7 +26,7 @@ pub fn init(cx: &mut App) {
     provider_registry.register_hosting_provider(Arc::new(Gitee));
     provider_registry.register_hosting_provider(Arc::new(Github::public_instance()));
     provider_registry.register_hosting_provider(Arc::new(Gitlab::public_instance()));
-    provider_registry.register_hosting_provider(Arc::new(Sourcehut));
+    provider_registry.register_hosting_provider(Arc::new(Sourcehut::public_instance()));
 }
 
 /// Registers additional Git hosting providers.
@@ -82,11 +82,11 @@ mod tests {
                 Some("github.com".to_string()),
             ),
             (
-                "git@github.com:zed-industries/zed.git",
+                "git@github.com:westeros/oldtown.git",
                 Some("github.com".to_string()),
             ),
             (
-                "git@my.super.long.subdomain.com:zed-industries/zed.git",
+                "git@my.super.long.subdomain.com:westeros/oldtown.git",
                 Some("my.super.long.subdomain.com".to_string()),
             ),
         ];

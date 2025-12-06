@@ -141,7 +141,7 @@ Tehanu currently supports links to the hosted versions of
 [GitHub](https://github.com),
 [GitLab](https://gitlab.com),
 [Bitbucket](https://bitbucket.org),
-[SourceHut](https://sr.ht) and
+[Sourcehut](https://sr.ht) and
 [Codeberg](https://codeberg.org).
 
 For self-hosted GitHub, GitLab, or Bitbucket instances, add them to the `git_hosting_providers` setting so commit hashes and permalinks resolve to your domain:

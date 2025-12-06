@@ -1,5 +1,6 @@
 use std::str::FromStr;
 
+use anyhow::{Result, bail};
 use url::Url;
 
 use git::{
@@ -7,15 +8,50 @@ use git::{
     RemoteUrl,
 };
 
-pub struct Sourcehut;
+use crate::get_host_from_git_remote_url;
+
+#[derive(Debug)]
+pub struct Sourcehut {
+    name: String,
+    base_url: Url,
+}
+
+impl Sourcehut {
+    pub fn new(name: impl Into<String>, base_url: Url) -> Self {
+        Self {
+            name: name.into(),
+            base_url,
+        }
+    }
+
+    pub fn public_instance() -> Self {
+        Self::new("Sourcehut", Url::parse("https://git.sr.ht").unwrap())
+    }
+
+    pub fn from_remote_url(remote_url: &str) -> Result<Self> {
+        let host = get_host_from_git_remote_url(remote_url)?;
+        if host == "git.sr.ht" {
+            bail!("the Sourcehut instance is not self-hosted");
+        }
+
+        if !host.contains("git.sr.ht") {
+            bail!("not a Sourcehut URL");
+        }
+
+        Ok(Self::new(
+            "Sourcehut Self-Hosted",
+            Url::parse(&format!("https://{}", host))?,
+        ))
+    }
+}
 
 impl GitHostingProvider for Sourcehut {
     fn name(&self) -> String {
-        "SourceHut".to_string()
+        self.name.clone()
     }
 
     fn base_url(&self) -> Url {
-        Url::parse("https://git.sr.ht").unwrap()
+        self.base_url.clone()
     }
 
     fn supports_avatars(&self) -> bool {
@@ -34,7 +70,7 @@ impl GitHostingProvider for Sourcehut {
         let url = RemoteUrl::from_str(url).ok()?;
 
         let host = url.host_str()?;
-        if host != "git.sr.ht" {
+        if host != self.base_url.host_str()? {
             return None;
         }
 
@@ -96,8 +132,8 @@ mod tests {
 
     #[test]
     fn test_parse_remote_url_given_ssh_url() {
-        let parsed_remote = Sourcehut
-            .parse_remote_url("git@git.sr.ht:~zed-industries/zed")
+        let parsed_remote = Sourcehut::public_instance()
+            .parse_remote_url("git@git.sr.ht:~krig/tehanu")
             .unwrap();
 
         assert_eq!(
@@ -111,23 +147,23 @@ mod tests {
 
     #[test]
     fn test_parse_remote_url_given_ssh_url_with_git_suffix() {
-        let parsed_remote = Sourcehut
-            .parse_remote_url("git@git.sr.ht:~zed-industries/zed.git")
+        let parsed_remote = Sourcehut::public_instance()
+            .parse_remote_url("git@git.sr.ht:~krig/tehanu.git")
             .unwrap();
 
         assert_eq!(
             parsed_remote,
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "zed.git".into(),
+                repo: "tehanu.git".into(),
             }
         );
     }
 
     #[test]
     fn test_parse_remote_url_given_https_url() {
-        let parsed_remote = Sourcehut
-            .parse_remote_url("https://git.sr.ht/~zed-industries/zed")
+        let parsed_remote = Sourcehut::public_instance()
+            .parse_remote_url("https://git.sr.ht/~krig/tehanu")
             .unwrap();
 
         assert_eq!(
@@ -141,7 +177,7 @@ mod tests {
 
     #[test]
     fn test_build_sourcehut_permalink() {
-        let permalink = Sourcehut.build_permalink(
+        let permalink = Sourcehut::public_instance().build_permalink(
             ParsedGitRemote {
                 owner: "krig".into(),
                 repo: "tehanu".into(),
@@ -153,16 +189,16 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://git.sr.ht/~zed-industries/zed/tree/faa6f979be417239b2e070dbbf6392b909224e0b/item/crates/editor/src/git/permalink.rs";
+        let expected_url = "https://git.sr.ht/~krig/tehanu/tree/faa6f979be417239b2e070dbbf6392b909224e0b/item/crates/editor/src/git/permalink.rs";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
     #[test]
     fn test_build_sourcehut_permalink_with_git_suffix() {
-        let permalink = Sourcehut.build_permalink(
+        let permalink = Sourcehut::public_instance().build_permalink(
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "zed.git".into(),
+                repo: "tehanu.git".into(),
             },
             BuildPermalinkParams::new(
                 "faa6f979be417239b2e070dbbf6392b909224e0b",
@@ -171,13 +207,13 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://git.sr.ht/~zed-industries/zed.git/tree/faa6f979be417239b2e070dbbf6392b909224e0b/item/crates/editor/src/git/permalink.rs";
+        let expected_url = "https://git.sr.ht/~krig/tehanu.git/tree/faa6f979be417239b2e070dbbf6392b909224e0b/item/crates/editor/src/git/permalink.rs";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
     #[test]
     fn test_build_sourcehut_permalink_with_single_line_selection() {
-        let permalink = Sourcehut.build_permalink(
+        let permalink = Sourcehut::public_instance().build_permalink(
             ParsedGitRemote {
                 owner: "krig".into(),
                 repo: "tehanu".into(),
@@ -189,13 +225,13 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://git.sr.ht/~zed-industries/zed/tree/faa6f979be417239b2e070dbbf6392b909224e0b/item/crates/editor/src/git/permalink.rs#L7";
+        let expected_url = "https://git.sr.ht/~krig/tehanu/tree/faa6f979be417239b2e070dbbf6392b909224e0b/item/crates/editor/src/git/permalink.rs#L7";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
     #[test]
     fn test_build_sourcehut_permalink_with_multi_line_selection() {
-        let permalink = Sourcehut.build_permalink(
+        let permalink = Sourcehut::public_instance().build_permalink(
             ParsedGitRemote {
                 owner: "krig".into(),
                 repo: "tehanu".into(),
@@ -207,7 +243,7 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://git.sr.ht/~zed-industries/zed/tree/faa6f979be417239b2e070dbbf6392b909224e0b/item/crates/editor/src/git/permalink.rs#L24-48";
+        let expected_url = "https://git.sr.ht/~krig/tehanu/tree/faa6f979be417239b2e070dbbf6392b909224e0b/item/crates/editor/src/git/permalink.rs#L24-48";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 }

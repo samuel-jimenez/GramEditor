@@ -267,7 +267,7 @@ mod tests {
 
     #[test]
     fn test_remote_url_with_root_slash() {
-        let remote_url = "git@github.com:/zed-industries/zed";
+        let remote_url = "git@github.com:/krig/tehanu";
         let parsed_remote = Github::public_instance()
             .parse_remote_url(remote_url)
             .unwrap();

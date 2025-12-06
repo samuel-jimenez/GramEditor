@@ -95,7 +95,7 @@ impl Forgejo {
         // TODO: detecting self hosted instances by checking whether "forgejo" is in the url or not
         // is not very reliable. See https://github.com/zed-industries/zed/issues/26393 for more
         // information.
-        if !host.contains("forgejo") {
+        if !host.contains("forgejo") && !host.contains("git.liten.app") {
             bail!("not a Forgejo URL");
         }
 
