@@ -1,18 +1,24 @@
 # Getting Started
 
-Welcome to Tehanu! We are excited to have you. Tehanu is a powerful multiplayer code editor designed to stay out of your way and help you build what's next.
+Welcome!
 
 ## Key Features
 
-- [Smooth Editing](./configuring-zed.md): Built in Rust, Tehanu is responsive and intuitive, with a minimalistic aesthetic and pixel-level editing controls.
+- [Open](./mission.md): No telemetry, no AI, no proprietary server components.
+- [Smooth Editing](./configuring-tehanu.md): Built in Rust with concurrency and
+  performance in mind.
 - [Debugger](./debugger.md): Debug your code in seconds, not hours, with minimal setup required.
-- [Remote Development](./remote-development.md): Offload the heavy lifting to the cloud, so you can focus on writing code.
-- [Extensions](./extensions.md): Leverage Tehanu's extensions to customize how you work.
+- [Remote Development](./remote-development.md): Connect to remote servers and
+  edit as if you were working on a project on your local machine.
+- [Extensions](./extensions.md): Add support for additional languages, themes
+  and icons using the extension system.
 
-## Join the Tehanu Community
+## You are the community
 
-Tehanu is proudly open source, and we get better with every contribution. Join us on GitHub or in Discord to contribute code, report bugs, or suggest features.
+Tehanu is proudly open source, in spirit, not just in words. That said, we have
+strong opinions about what we want to include in the editor. For example, the
+main reason for this fork from Zed is to remove certain "features" that we
+disagree with, morally. However, you are of course free to make it your own in
+any way you see fit.
 
-- [Join Discord](https://discord.com/invite/zedindustries)
-- [GitHub Discussions](https://github.com/zed-industries/zed/discussions)
-- [Tehanu Reddit](https://www.reddit.com/r/TehanuEditor)
+There is no official discord or reddit community.

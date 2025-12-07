@@ -4,14 +4,12 @@
 
 - [The Mission](./mission.md)
 - [Getting Started](./getting-started.md)
-- [Installation](./installation.md)
-  - [Update](./update.md)
-  - [Uninstall](./uninstall.md)
+- [Uninstall](./uninstall.md)
 - [Troubleshooting](./troubleshooting.md)
 
 # Configuration
 
-- [Configuring Tehanu](./configuring-zed.md)
+- [Configuring Tehanu](./configuring-tehanu.md)
 - [Configuring Languages](./configuring-languages.md)
   - [Toolchains](./toolchains.md)
 - [Key bindings](./key-bindings.md)

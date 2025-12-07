@@ -2,9 +2,7 @@
 
 ## Installing Tehanu
 
-Get the latest stable builds via [the download page](https://tehanu.liten.app/download). If you want to download our preview build, you can find it on its [releases page](https://tehanu.liten.app/releases/preview). After the first manual installation, Tehanu will periodically check for install updates.
-
-You can also build zed from source, see [these docs](https://tehanu.liten.app/docs/development/windows) for instructions.
+To install, you can build Tehanu [from source](https://tehanu.liten.app/docs/development/windows).
 
 ## Uninstall
 

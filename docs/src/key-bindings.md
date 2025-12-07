@@ -1,11 +1,10 @@
 # Key bindings
 
-Tehanu has a very customizable key binding system—you can tweak everything to work exactly how your fingers expect!
-
 ## Predefined Keymaps
 
 If you're used to a specific editor's defaults, you can change your `base_keymap` through the settings window ({#kb tehanu::OpenSettings}) or directly through your `settings.json` file ({#kb tehanu::OpenSettingsFile}).
-We currently support:
+
+The following keymap styles are currently supported:
 
 - VS Code (default)
 - Atom
@@ -68,14 +67,7 @@ For example:
 ]
 ```
 
-You can see all of Tehanu's default bindings for each platform in the default keymaps files:
-
-- [macOS](https://github.com/zed-industries/zed/blob/main/assets/keymaps/default-macos.json)
-- [Windows](https://github.com/zed-industries/zed/blob/main/assets/keymaps/default-windows.json)
-- [Linux](https://github.com/zed-industries/zed/blob/main/assets/keymaps/default-linux.json).
-
 If you want to debug problems with custom keymaps, you can use `dev: Open Key Context View` from the command palette.
-Please file [an issue](https://github.com/zed-industries/zed) if you run into something you think should work but isn't.
 
 ### Keybinding Syntax
 
@@ -152,7 +144,6 @@ If you're using Vim mode, we have information on how [vim modes influence the co
 ### Actions
 
 Almost all of Tehanu's functionality is exposed as actions.
-Although there is no explicitly documented list, you can find most of them by searching in the command palette, by looking in the default keymaps for [macOS](https://github.com/zed-industries/zed/blob/main/assets/keymaps/default-macos.json), [Windows](https://github.com/zed-industries/zed/blob/main/assets/keymaps/default-windows.json) or [Linux](https://github.com/zed-industries/zed/blob/main/assets/keymaps/default-linux.json), or by using Tehanu's autocomplete in your keymap file.
 
 Most actions do not require any arguments, and so you can bind them as strings: `"ctrl-a": "language_selector::Toggle"`. Some require a single argument and must be bound as an array: `"cmd-1": ["workspace::ActivatePane", 0]`. Some actions require multiple arguments and are bound as an array of a string and an object: `"ctrl-a": ["pane::DeploySearch", { "replace_enabled": true }]`.
 

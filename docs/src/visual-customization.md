@@ -2,7 +2,7 @@
 
 Various aspects of Tehanu's visual layout can be configured via either the settings window or the `settings.json` file, which you can access via {#action tehanu::OpenSettings} ({#kb tehanu::OpenSettings}) and {#action tehanu::OpenSettingsFile} ({#kb tehanu::OpenSettingsFile}) respectively.
 
-See [Configuring Tehanu](./configuring-zed.md) for additional information and other non-visual settings.
+See [Configuring Tehanu](./configuring-tehanu.md) for additional information and other non-visual settings.
 
 ## Themes
 
@@ -483,7 +483,7 @@ Project panel can be shown/hidden with {#action project_panel::ToggleFocus} ({#k
   }
 ```
 
-See [Terminal settings](./configuring-zed.md#terminal) for additional non-visual customization options.
+See [Terminal settings](./configuring-tehanu.md#terminal) for additional non-visual customization options.
 
 ### Other Panels
 

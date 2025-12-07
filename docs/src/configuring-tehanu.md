@@ -1,27 +1,24 @@
-# Configuring Tehanu
+# Configuration
 
-Tehanu is designed to be configured: we want to fit your workflow and preferences exactly. We provide default settings that are designed to be a comfortable starting point for as many people as possible, but we hope you will enjoy tweaking it to make it feel incredible.
+There are separate pages describing how to configure these aspects of the
+editor:
 
-In addition to the settings described here, you may also want to change your [theme](./themes.md), configure your [key bindings](./key-bindings.md), set up [tasks](./tasks.md) or install [extensions](https://github.com/zed-industries/extensions).
+- [Theme](./themes.md)
+- [Key bindings](./key-bindings.md)
+- [Tasks](./tasks.md)
+- [Extensions](./extensions.md)
 
 ## Settings Editor
 
-You can browse through many of the supported settings via the Settings Editor, which can be opened with the {#kb tehanu::OpenSettings} keybinding, or through the `zed: open settings` action in the command palette. Through it, you can customize your local, user settings as well as project settings.
+You can browse through many of the supported settings via the Settings Editor, which can be opened with the {#kb tehanu::OpenSettings} keybinding, or through the `tehanu: open settings` action in the command palette. Through it, you can customize your local, user settings as well as project settings.
 
 > Note that not all settings that Tehanu supports are available through the Settings Editor yet.
 > Some more intricate ones, such as language formatters, can only be changed through the JSON settings file {#kb tehanu::OpenSettingsFile}.
 
 ## User Settings File
 
-<!--
-TBD: Settings files. Rewrite with "remote settings" in mind (e.g. `local settings` on the remote host).
-Consider renaming `zed: Open Local Settings` to `zed: Open Project Settings`.
-
-TBD: Add settings documentation about how settings are merged as overlays. E.g. project>local>default. Note how settings that are maps are merged, but settings that are arrays are replaced and must include the defaults.
--->
-
 Your settings JSON file can be opened with {#kb tehanu::OpenSettingsFile}.
-By default it is located at `~/.config/tehanu/settings.json`, though if you have `XDG_CONFIG_HOME` in your environment on Linux it will be at `$XDG_CONFIG_HOME/zed/settings.json` instead.
+By default it is located at `~/.config/tehanu/settings.json`, though if you have `XDG_CONFIG_HOME` in your environment on Linux it will be at `$XDG_CONFIG_HOME/tehanu/settings.json` instead.
 
 Whatever you have added to your user settings file gets merged with any local configuration inside your projects.
 
@@ -35,7 +32,7 @@ Extensions that provide language servers may also provide default settings for t
 ## Project Settings File
 
 Similarly to user files, you can open your project settings file by running {#action tehanu::OpenProjectSettings} from the command palette.
-This will create a `.zed` directory containing`.zed/settings.json`.
+This will create a `.tehanu` directory containing`.tehanu/settings.json`.
 
 Although most projects will only need one settings file at the root, you can add more local settings files for subdirectories as needed.
 Not all settings can be set in local files, just those that impact the behavior of the editor and language tooling.
@@ -58,12 +55,12 @@ They are merged into the base configuration with settings from these keys taking
     "vim_mode": true
   },
   "preview": {
-    "theme": "zed-dark"
+    "theme": "tehanu-dark"
   }
 }
 ```
 
-With this configuration, Stable keeps all base preferences, Preview switches to `zed-dark`, and Nightly enables Vim mode with a different theme.
+With this configuration, Stable keeps all base preferences, Preview switches to `tehanu-dark`, and Nightly enables Vim mode with a different theme.
 
 Changing settings in the Settings Editorwill always apply the change across all channels.
 
@@ -215,7 +212,7 @@ ls ~/Library/Application\ Support/Tehanu/extensions/installed/
 On Linux:
 
 ```sh
-ls ~/.local/share/zed/extensions/installed
+ls ~/.local/share/tehanu/extensions/installed
 ```
 
 ## Autosave
@@ -1695,7 +1692,7 @@ Note, specifying `file_scan_exclusions` in settings.json will override the defau
 
 ```json [settings]
 "file_types": {
-  "JSONC": ["**/.tehanu/**/*.json", "**/zed/**/*.json", "**/Tehanu/**/*.json", "**/.vscode/**/*.json"],
+  "JSONC": ["**/.tehanu/**/*.json", "**/tehanu/**/*.json", "**/Tehanu/**/*.json", "**/.vscode/**/*.json"],
   "Shell Script": [".env.*"]
 }
 ```
@@ -3904,7 +3901,7 @@ Example command to set the title: `echo -e "\e]2;New Title\007";`
   "terminal": {
     "working_directory": {
       "always": {
-        "directory": "~/zed/projects/"
+        "directory": "~/tehanu/projects/"
       }
     }
   }

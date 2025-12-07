@@ -1,15 +1,13 @@
 # Configuring supported languages
 
-Tehanu offers powerful customization options for each programming language it supports. This guide will walk you through the various ways you can tailor your coding experience to your preferences and project requirements.
-
-Tehanu's language support is built on two main technologies:
+The language support is built on two main technologies:
 
 1. Tree-sitter: This handles syntax highlighting and structure-based features like the outline panel.
 2. Language Server Protocol (LSP): This provides semantic features such as code completion and diagnostics.
 
-These components work together to provide Tehanu's language capabilities.
+These components work together to provide language capabilities.
 
-In this guide, we'll cover:
+## Topics
 
 - Language-specific settings
 - File associations
@@ -18,13 +16,15 @@ In this guide, we'll cover:
 - Customizing syntax highlighting and themes
 - Advanced language features
 
-By the end of this guide, you should know how to configure and customize supported languages in Tehanu.
-
-For a comprehensive list of languages supported by Tehanu and their specific configurations, see our [Supported Languages](./languages.md) page. To go further, you could explore developing your own extensions to add support for additional languages or enhance existing functionality. For more information on creating language extensions, see our [Language Extensions](./extensions/languages.md) guide.
+See the list of [Supported Languages](./languages.md) for details on specific
+configurations. To add support for additional languages, see the guide on how
+to create new [Language Extensions](./extensions/languages.md).
 
 ## Language-specific Settings
 
-Tehanu allows you to override global settings for individual languages. These custom configurations are defined in your `settings.json` file under the `languages` key.
+It is possible to override global settings for individual languages. These
+custom configurations are defined in the `settings.json` file under the
+`languages` key.
 
 Here's an example of language-specific settings:
 
@@ -47,26 +47,24 @@ Here's an example of language-specific settings:
 }
 ```
 
-You can customize a wide range of settings for each language, including:
+Some of the settings that can be customized include:
 
-- [`tab_size`](./configuring-zed.md#tab-size): The number of spaces for each indentation level
-- [`formatter`](./configuring-zed.md#formatter): The tool used for code formatting
-- [`format_on_save`](./configuring-zed.md#format-on-save): Whether to automatically format code when saving
-- [`enable_language_server`](./configuring-zed.md#enable-language-server): Toggle language server support
-- [`hard_tabs`](./configuring-zed.md#hard-tabs): Use tabs instead of spaces for indentation
-- [`preferred_line_length`](./configuring-zed.md#preferred-line-length): The recommended maximum line length
-- [`soft_wrap`](./configuring-zed.md#soft-wrap): How to wrap long lines of code
-- [`show_completions_on_input`](./configuring-zed.md#show-completions-on-input): Whether or not to show completions as you type
-- [`show_completion_documentation`](./configuring-zed.md#show-completion-documentation): Whether to display inline and alongside documentation for items in the completions menu
-- [`colorize_brackets`](./configuring-zed.md#colorize-brackets): Whether to use tree-sitter bracket queries to detect and colorize the brackets in the editor (also known as "rainbow brackets")
-
-These settings allow you to maintain specific coding styles across different languages and projects.
+- [`tab_size`](./configuring-tehanu.md#tab-size): The number of spaces for each indentation level
+- [`formatter`](./configuring-tehanu.md#formatter): The tool used for code formatting
+- [`format_on_save`](./configuring-tehanu.md#format-on-save): Whether to automatically format code when saving
+- [`enable_language_server`](./configuring-tehanu.md#enable-language-server): Toggle language server support
+- [`hard_tabs`](./configuring-tehanu.md#hard-tabs): Use tabs instead of spaces for indentation
+- [`preferred_line_length`](./configuring-tehanu.md#preferred-line-length): The recommended maximum line length
+- [`soft_wrap`](./configuring-tehanu.md#soft-wrap): How to wrap long lines of code
+- [`show_completions_on_input`](./configuring-tehanu.md#show-completions-on-input): Whether or not to show completions as you type
+- [`show_completion_documentation`](./configuring-tehanu.md#show-completion-documentation): Whether to display inline and alongside documentation for items in the completions menu
+- [`colorize_brackets`](./configuring-tehanu.md#colorize-brackets): Whether to use tree-sitter bracket queries to detect and colorize the brackets in the editor (also known as "rainbow brackets")
 
 ## File Associations
 
-Tehanu automatically detects file types based on their extensions, but you can customize these associations to fit your workflow.
+Tehanu automatically detects file types based on their extensions, but you can customize these associations.
 
-To set up custom file associations, use the [`file_types`](./configuring-zed.md#file-types) setting in your `settings.json`:
+To set up custom file associations, use the [`file_types`](./configuring-tehanu.md#file-types) setting in your `settings.json`:
 
 ```json [settings]
 "file_types": {
@@ -86,11 +84,14 @@ You can use glob patterns for more flexible matching, allowing you to handle com
 
 ## Working with Language Servers
 
-Language servers are a crucial part of Tehanu's intelligent coding features, providing capabilities like auto-completion, go-to-definition, and real-time error checking.
+Language servers provide capabilities like auto-completion, go-to-definition, and real-time error checking.
 
 ### What are Language Servers?
 
-Language servers implement the Language Server Protocol (LSP), which standardizes communication between the editor and language-specific tools. This allows Tehanu to support advanced features for multiple programming languages without implementing each feature separately.
+Language servers implement the Language Server Protocol (LSP), which
+standardizes communication between the editor and language-specific tools. This
+allows editors to support advanced features for multiple programming languages
+without implementing each feature separately.
 
 Some key features provided by language servers include:
 
@@ -105,20 +106,23 @@ Some key features provided by language servers include:
 
 Tehanu simplifies language server management for users:
 
-1. Automatic Download: When you open a file with a matching file type, Tehanu automatically downloads the appropriate language server. Tehanu may prompt you to install an extension for known file types.
+1. Suggested extensions: When you open a file with a known file type, you may be
+   prompted to install the associated extension. For the installation to work,
+   you will need to have [rustup](https://rustup.rs) configured correctly.
 
 2. Storage Location:
 
    - macOS: `~/Library/Application Support/Tehanu/languages`
-   - Linux: `$XDG_DATA_HOME/zed/languages`, `$FLATPAK_XDG_DATA_HOME/zed/languages`, or `$HOME/.local/share/zed/languages`
-
-3. Automatic Updates: Tehanu keeps your language servers up-to-date, ensuring you always have the latest features and improvements.
+   - Linux: `$XDG_DATA_HOME/tehanu/languages`, `$FLATPAK_XDG_DATA_HOME/tehanu/languages`, or `$HOME/.local/share/tehanu/languages`
 
 ### Choosing Language Servers
 
-Some languages in Tehanu offer multiple language server options. You might have multiple extensions installed that bundle language servers targeting the same language, potentially leading to overlapping capabilities. To ensure you get the functionality you prefer, Tehanu allows you to prioritize which language servers are used and in what order.
+Some languages offer multiple language server options. You might have multiple
+extensions installed that bundle language servers targeting the same language,
+potentially leading to overlapping capabilities. Tehanu allows you to prioritize
+which language servers are used and in what order.
 
-You can specify your preference using the `language_servers` setting:
+Specify preferences using the `language_servers` setting:
 
 ```json [settings]
   "languages": {
@@ -134,17 +138,23 @@ In this example:
 - `phpactor` is disabled (note the `!` prefix)
 - `...` expands to the rest of the language servers that are registered for PHP
 
-This configuration allows you to tailor the language server setup to your specific needs, ensuring that you get the most suitable functionality for your development workflow.
-
 ### Toolchains
 
-Some language servers need to be configured with a current "toolchain", which is an installation of a specific version of a programming language compiler or/and interpreter, which can possibly include a full set of dependencies of a project.
+Some language servers need to be configured with a current "toolchain", which is
+an installation of a specific version of a programming language compiler or/and
+interpreter, which can possibly include a full set of dependencies of a project.
+
 An example of what Tehanu considers a toolchain is a virtual environment in Python.
-Not all languages in Tehanu support toolchain discovery and selection, but for those that do, you can specify the toolchain from a toolchain picker (via {#action toolchain::Select}). To learn more about toolchains in Tehanu, see [`toolchains`](./toolchains.md).
+
+Not all languages in Tehanu support toolchain discovery and selection, but for
+those that do, you can specify the toolchain from a toolchain picker (via
+{#action toolchain::Select}). To learn more about toolchains, see
+[`toolchains`](./toolchains.md).
 
 ### Configuring Language Servers
 
-Many language servers accept custom configuration options. You can set these in the `lsp` section of your `settings.json`:
+Custom configuration options for language servers are configured using the `lsp`
+section of `settings.json`:
 
 ```json [settings]
   "lsp": {
@@ -158,18 +168,22 @@ Many language servers accept custom configuration options. You can set these in 
   }
 ```
 
-This example configures the Rust Analyzer to use Clippy for additional linting when saving files.
+This example configures the Rust Analyzer to use Clippy for additional linting
+when saving files.
 
 #### Nested objects
 
-When configuring language server options in Tehanu, it's important to use nested objects rather than dot-delimited strings. This is particularly relevant when working with more complex configurations. Let's look at a real-world example using the TypeScript language server:
+When configuring language server options it's important to use nested objects
+rather than dot-delimited strings. This is particularly relevant when working
+with more complex configurations. Let's look at a real-world example using the
+TypeScript language server:
 
 Suppose you want to configure the following settings for TypeScript:
 
 - Enable strict null checks
 - Set the target ECMAScript version to ES2020
 
-Here's how you would structure these settings in Tehanu's `settings.json`:
+Here's how you would structure these settings in `settings.json`:
 
 ```json [settings]
 "lsp": {
@@ -191,13 +205,15 @@ Here's how you would structure these settings in Tehanu's `settings.json`:
 
 #### Possible configuration options
 
-Depending on how a particular language server is implemented, they may depend on different configuration options, both specified in the LSP.
+Depending on how a particular language server is implemented, they may depend on
+initialization options specified in the LSP.
 
 - [initializationOptions](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#version_3_17_0)
 
-Sent once during language server startup, requires server's restart to reapply changes.
+These options are sent during language server startup and require the server to
+be restarted for changes to be applied.
 
-For example, rust-analyzer and clangd rely on this way of configuring only.
+For example, rust-analyzer and clangd are configured this way.
 
 ```json [settings]
   "lsp": {
@@ -211,8 +227,7 @@ For example, rust-analyzer and clangd rely on this way of configuring only.
 
 - [Configuration Request](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#workspace_configuration)
 
-May be queried by the server multiple times.
-Most of the servers would rely on this way of configuring only.
+Most language servers use settings that can be updated without restarting.
 
 ```json [settings]
 "lsp": {
@@ -226,9 +241,12 @@ Most of the servers would rely on this way of configuring only.
 }
 ```
 
-Apart of the LSP-related server configuration options, certain servers in Tehanu allow configuring the way binary is launched by Tehanu.
+Some language servers allow configuring how the language server binary is
+launched. Language servers are automatically downloaded or launched if found in your path.
 
-Language servers are automatically downloaded or launched if found in your path, if you wish to specify an explicit alternate binary you can specify that in settings:
+TODO: This should be opt in.
+
+If you wish to specify an explicit alternate binary you can specify that in settings:
 
 ```json [settings]
   "lsp": {
@@ -258,15 +276,18 @@ You can toggle language server support globally or per-language:
   }
 ```
 
-This disables the language server for Markdown files, which can be useful for performance in large documentation projects. You can configure this globally in your `~/.config/tehanu/settings.json` or inside a `.zed/settings.json` in your project directory.
+This disables the language server for Markdown files, which can be useful for
+performance in large documentation projects. You can configure this globally in
+your `~/.config/tehanu/settings.json` or inside a `.tehanu/settings.json` in your
+project directory.
 
 ## Formatting and Linting
 
-Tehanu provides support for code formatting and linting to maintain consistent code style and catch potential issues early.
-
 ### Configuring Formatters
 
-Tehanu supports both built-in and external formatters. See [`formatter`](./configuring-zed.md#formatter) docs for more. You can configure formatters globally or per-language in your `settings.json`:
+Tehanu supports both built-in and external formatters. See
+[`formatter`](./configuring-tehanu.md#formatter) docs for more.
+Configure formatters globally or per-language in `settings.json`:
 
 ```json [settings]
 "languages": {
@@ -300,7 +321,9 @@ To disable formatting for a specific language:
 
 ### Setting Up Linters
 
-Linting in Tehanu is typically handled by language servers. Many language servers allow you to configure linting rules:
+Linting is typically handled by language servers.
+
+Many language servers allow you to configure linting rules:
 
 ```json [settings]
 "lsp": {
@@ -330,7 +353,8 @@ To run linter fixes automatically on save:
 
 ### Integrating Formatting and Linting
 
-Tehanu allows you to run both formatting and linting on save. Here's an example that uses Prettier for formatting and ESLint for linting JavaScript files:
+Here's an example that uses Prettier for formatting and ESLint for linting
+JavaScript files automatically on save:
 
 ```json [settings]
 "languages": {
@@ -355,13 +379,11 @@ Tehanu allows you to run both formatting and linting on save. Here's an example 
 
 If you encounter issues with formatting or linting:
 
-1. Check Tehanu's log file for error messages (Use the command palette: `zed: open log`)
-2. Ensure external tools (formatters, linters) are correctly installed and in your PATH
+1. Check the editor log file for error messages (Use the command palette: `tehanu: open log`)
+2. Ensure external tools (formatters, linters) are correctly installed and in your PATH.
 3. Verify configurations in both Tehanu settings and language-specific config files (e.g., `.eslintrc`, `.prettierrc`)
 
 ## Syntax Highlighting and Themes
-
-Tehanu offers customization options for syntax highlighting and themes, allowing you to tailor the visual appearance of your code.
 
 ### Customizing Syntax Highlighting
 
@@ -386,10 +408,10 @@ This example makes comments italic and changes the color of strings:
 
 ### Selecting and Customizing Themes
 
-Change your theme:
+To change the editor theme:
 
 1. Use the theme selector ({#kb theme_selector::Toggle})
-2. Or set it in your `settings.json`:
+2. Or set it in `settings.json`:
 
 ```json [settings]
 "theme": {
@@ -403,7 +425,8 @@ Create custom themes by creating a JSON file in `~/.config/tehanu/themes/`. Teha
 
 ### Using Theme Extensions
 
-Tehanu supports theme extensions. Browse and install theme extensions from the Extensions panel ({#kb tehanu::Extensions}).
+Tehanu supports theme extensions. Find the URL for the theme you want to install
+and install it from the Extensions panel ({#kb tehanu::Extensions}).
 
 To create your own theme extension, refer to the [Developing Theme Extensions](./extensions/themes.md) guide.
 
@@ -411,7 +434,7 @@ To create your own theme extension, refer to the [Developing Theme Extensions](.
 
 ### Inlay Hints
 
-Inlay hints provide additional information inline in your code, such as parameter names or inferred types. Configure inlay hints in your `settings.json`:
+Inlay hints provide additional information inline in code, such as parameter names or inferred types. Configure inlay hints in `settings.json`:
 
 ```json [settings]
 "inlay_hints": {
@@ -426,11 +449,11 @@ For language-specific inlay hint settings, refer to the documentation for each l
 
 ### Code Actions
 
-Code actions provide quick fixes and refactoring options. Access code actions using the `editor: Toggle Code Actions` command or by clicking the lightbulb icon that appears next to your cursor when actions are available.
+Code actions provide quick fixes and refactoring options. Access code actions using the `editor: Toggle Code Actions` command or by clicking the lightbulb icon that appears next to the cursor when actions are available.
 
 ### Go To Definition and References
 
-Use these commands to navigate your codebase:
+Use these commands to navigate the codebase:
 
 - `editor: Go to Definition` (<kbd>f12|f12</kbd>)
 - `editor: Go to Type Definition` (<kbd>cmd-f12|ctrl-f12</kbd>)
@@ -438,15 +461,19 @@ Use these commands to navigate your codebase:
 
 ### Rename Symbol
 
-To rename a symbol across your project:
+To rename a symbol across a project:
 
-1. Place your cursor on the symbol
+1. Place the cursor on the symbol
 2. Use the `editor: Rename Symbol` command (<kbd>f2|f2</kbd>)
 3. Enter the new name and press Enter
 
 These features depend on the capabilities of the language server for each language.
 
-When renaming a symbol that spans multiple files, Tehanu will open a preview in a multibuffer. This allows you to review all the changes across your project before applying them. To confirm the rename, simply save the multibuffer. If you decide not to proceed with the rename, you can undo the changes or close the multibuffer without saving.
+When renaming a symbol that spans multiple files, Tehanu will open a preview in
+a multibuffer. Here you can review all the changes before applying them. To
+confirm the rename, simply save the multibuffer. If you decide not to proceed
+with the rename, you can undo the changes or close the multibuffer without
+saving.
 
 ### Hover Information
 
@@ -458,7 +485,7 @@ The `workspace: Open Symbol` command allows you to search for symbols (functions
 
 ### Code Completion
 
-Tehanu provides intelligent code completion suggestions as you type. You can manually trigger completion with the `editor: Show Completions` command. Use <kbd>tab|tab</kbd> or <kbd>enter|enter</kbd> to accept suggestions.
+Tehanu provides code completion suggestions as you type. You can manually trigger completion with the `editor: Show Completions` command. Use <kbd>tab|tab</kbd> or <kbd>enter|enter</kbd> to accept suggestions.
 
 ### Diagnostics
 

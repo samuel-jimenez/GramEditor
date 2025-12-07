@@ -4,28 +4,15 @@ This guide covers how to uninstall Tehanu on different operating systems.
 
 ## macOS
 
-### Standard Installation
+### Bundle compilation
 
-If you installed Tehanu by downloading it from the website:
+If you installed Tehanu by compiling it using the `script/bundle-mac`
+command:
 
 1. Quit Tehanu if it's running
 2. Open Finder and go to your Applications folder
 3. Drag Tehanu to the Trash (or right-click and select "Move to Trash")
 4. Empty the Trash
-
-### Homebrew Installation
-
-If you installed Tehanu using Homebrew, use the following command:
-
-```sh
-brew uninstall --cask zed
-```
-
-Or for the preview version:
-
-```sh
-brew uninstall --cask zed@preview
-```
 
 ### Removing User Data (Optional)
 
@@ -46,12 +33,12 @@ To completely remove all Tehanu configuration files and data:
 If Tehanu was installed using the default installation script, run:
 
 ```sh
-zed --uninstall
+tehanu --uninstall
 ```
 
 You'll be prompted whether to keep or delete your preferences. After making a choice, you should see a message that Tehanu was successfully uninstalled.
 
-If the `zed` command is not found in your PATH, try:
+If the `tehanu` command is not found in your PATH, try:
 
 ```sh
 $HOME/.local/bin/tehanu --uninstall
@@ -110,4 +97,4 @@ If you encounter issues during uninstallation:
 - **Linux**: If the uninstall script fails, check the error message and consider manual removal of the directories listed above.
 - **All platforms**: If you want to start fresh while keeping Tehanu installed, you can delete the configuration directories instead of uninstalling the application entirely.
 
-For additional help, see our [Linux-specific documentation](./linux.md) or visit the [Tehanu community](https://tehanu.liten.app/community-links).
+For additional help, see the [Linux-specific documentation](./linux.md).

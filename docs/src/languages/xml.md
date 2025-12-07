@@ -6,7 +6,7 @@ XML support is available through the [XML extension](https://github.com/sweetppr
 
 ## Configuration
 
-If you have additional file extensions that are not being automatically recognized as XML just add them to [file_types](../configuring-zed.md#file-types) in your Tehanu settings:
+If you have additional file extensions that are not being automatically recognized as XML just add them to [file_types](../configuring-tehanu.md#file-types) in your Tehanu settings:
 
 ```json [settings]
   "file_types": {
