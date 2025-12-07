@@ -1,6 +1,6 @@
 # TODO
 
-- Replace the icons with https://github.com/cotyhamilton/zed-emoji-icon-theme
+- Reintroduce collab editing using https://github.com/teamtype/teamtype
 
 - Sniff out all the AI-written text and get rid of it
 
