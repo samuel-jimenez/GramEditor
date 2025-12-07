@@ -1,15 +1,13 @@
-# Performance, but at what cost?
+# The Mission
 
-> "What cannot be mended must be transcended."
->
-> Maybe the change coming into Earthsea has something to do with no longer
-> identifying freedom with power, with separating being free from being in
-> control. There is a kind of refusal to serve power that isn't a revolt or a
-> rebellion, but a revolution in the sense of reversing meanings, of changing
-> how things are understood. Anyone who has been able to break from the grip of
-> a controlling, crippling belief or bigotry or enforced ignorance knows the
-> sense of coming out into the light and air, of release, being set free to fly,
-> to transcend.
+> “I come with empty hands and the desire to unbuild walls.”
+
+― Ursula K. Le Guin, The Dispossessed
+
+The Tehanu text editor is an opinionated fork of the Zed text editor. This
+document tries to explain why this fork exists.
+
+## Performance, but at what cost?
 
 Coding is more than just productivity. We need tools that are fit for purpose,
 that aren't beholden to investors or share holders. There are aspects of the Zed
@@ -35,12 +33,11 @@ time. Assigning one person to think is a good thing.
 I don't want my software to update itself automatically, or to download binaries
 without me explicitly asking it to.
 
-I don't want to sign in, or sign up, or join the community.
+I don't want to sign in, or sign up, or join the community. I want my tools to
+be hammers, screwdrivers and saws. I don't need my hammer to come with a
+subscription fee.
 
-I want my tools to be hammers, screwdrivers and saws. I don't need my hammer to
-come with a subscription fee.
-
-## Features:
+## Features
 
 - Open: No telemetry, AI or privacy-invading third party integrations.
 - Performance: Focuses on helping you with your programming tasks instead of
@@ -49,3 +46,17 @@ come with a subscription fee.
   subscription.
 - Language-aware: Aims to support many major and many minor programming languages
   and tools out of the box.
+
+## Other options
+
+If you don't want to use an editor that has gone down the AI route but do want a
+capable, general-purpose, open source text editor, what other options are there?
+
+Here are some other editors that I have used and would consider reasonable
+alternatives.
+
+- [Flow Editor](https://flow-control.dev) - A TUI-based and very promising
+  editor with planned collaboration features.
+- [Neovim](https://neovim.io)
+- [Emacs](https://www.gnu.org/software/emacs/)
+- [Kate](https://kate-editor.org/)

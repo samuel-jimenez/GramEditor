@@ -2,6 +2,7 @@
 
 # Getting Started
 
+- [The Mission](./mission.md)
 - [Getting Started](./getting-started.md)
 - [Installation](./installation.md)
   - [Update](./update.md)
@@ -21,9 +22,6 @@
 - [Visual Customization](./visual-customization.md)
 - [Vim Mode](./vim.md)
 - [Helix Mode](./helix.md)
-
-<!-- - [Globs](./globs.md) -->
-<!-- - [Fonts](./fonts.md) -->
 
 # Using Tehanu
 
@@ -47,6 +45,14 @@
 - [Linux](./linux.md)
 
 # Extensions
+
+> [!NOTE]
+> The Zed extension system relies on a closed-source server
+> component, which is stripped from Tehanu. Instead, all
+> extensions have to be built from source.
+> Currently, there is no extension registry so the extensions
+> have to be installed either via the suggestion popups or
+> an URL.
 
 - [Overview](./extensions.md)
 - [Installing Extensions](./extensions/installing-extensions.md)
