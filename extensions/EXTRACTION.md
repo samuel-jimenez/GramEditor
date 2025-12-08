@@ -178,4 +178,4 @@ git commit -m "Bump ${LANGNAME} to v${NEW_VERSION}"
 git push
 ```
 
-Create PR and reference the Tehanu PR with removal from tree.
+Create PR and reference the Gram PR with removal from tree.

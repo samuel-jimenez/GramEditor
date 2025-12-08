@@ -314,8 +314,8 @@ mod tests {
 
         let response = client
             .request::<Initialize>(InitializeRequestArguments {
-                client_id: Some("tehanu".to_owned()),
-                client_name: Some("Tehanu".to_owned()),
+                client_id: Some("gram".to_owned()),
+                client_name: Some("Gram".to_owned()),
                 adapter_id: "fake-adapter".to_owned(),
                 locale: Some("en-US".to_owned()),
                 path_format: Some(InitializeRequestArgumentsPathFormat::Path),

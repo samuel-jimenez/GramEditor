@@ -1,6 +1,6 @@
 # Kotlin
 
-Kotlin language support in Tehanu is provided by the community-maintained [Kotlin extension](https://github.com/zed-extensions/kotlin).
+Kotlin language support in Gram is provided by the community-maintained [Kotlin extension](https://github.com/zed-extensions/kotlin).
 Report issues to: [https://github.com/zed-extensions/kotlin/issues](https://github.com/zed-extensions/kotlin/issues)
 
 - Tree-sitter: [fwcd/tree-sitter-kotlin](https://github.com/fwcd/tree-sitter-kotlin)

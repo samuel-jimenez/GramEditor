@@ -8,14 +8,14 @@ use crate::{
     ThemeFamily, ThemeStyles, default_color_scales,
 };
 
-/// The default theme family for Tehanu.
+/// The default theme family for Gram.
 ///
 /// This is used to construct the default theme fallback values, as well as to
 /// have a theme available at compile time for tests.
 pub fn zed_default_themes() -> ThemeFamily {
     ThemeFamily {
         id: "zed-default".to_string(),
-        name: "Tehanu Default".into(),
+        name: "Gram Default".into(),
         author: "".into(),
         themes: vec![zed_default_dark()],
         scales: default_color_scales(),

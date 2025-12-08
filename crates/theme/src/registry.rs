@@ -94,7 +94,7 @@ impl ThemeRegistry {
             assets,
         };
 
-        // We're loading the Tehanu default theme, as we need a theme to be loaded
+        // We're loading the Gram default theme, as we need a theme to be loaded
         // for tests.
         registry.insert_theme_families([crate::fallback_themes::zed_default_themes()]);
 
@@ -183,7 +183,7 @@ impl ThemeRegistry {
             .cloned()
     }
 
-    /// Loads the themes bundled with the Tehanu binary and adds them to the registry.
+    /// Loads the themes bundled with the Gram binary and adds them to the registry.
     pub fn load_bundled_themes(&self) {
         let theme_paths = self
             .assets

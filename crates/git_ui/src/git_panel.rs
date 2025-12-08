@@ -4640,7 +4640,7 @@ impl Component for PanelRepoFooter {
                                     .w(example_width)
                                     .overflow_hidden()
                                     .child(PanelRepoFooter::new_preview(
-                                        SharedString::from("tehanu"),
+                                        SharedString::from("gram"),
                                         Some(custom("main", behind_upstream)),
                                     ))
                                     .into_any_element(),
@@ -4651,7 +4651,7 @@ impl Component for PanelRepoFooter {
                                     .w(example_width)
                                     .overflow_hidden()
                                     .child(PanelRepoFooter::new_preview(
-                                        SharedString::from("tehanu"),
+                                        SharedString::from("gram"),
                                         Some(custom(
                                             "redesign-and-update-git-ui-list-entry-style",
                                             behind_upstream,
@@ -4701,7 +4701,7 @@ impl Component for PanelRepoFooter {
                                     .w(example_width)
                                     .overflow_hidden()
                                     .child(PanelRepoFooter::new_preview(
-                                        SharedString::from("tehanu"),
+                                        SharedString::from("gram"),
                                         Some(custom("update-README", behind_upstream)),
                                     ))
                                     .into_any_element(),
@@ -4809,7 +4809,7 @@ mod tests {
         fs.insert_tree(
             "/root",
             json!({
-                "tehanu": {
+                "gram": {
                     ".git": {},
                     "crates": {
                         "gpui": {

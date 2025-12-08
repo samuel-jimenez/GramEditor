@@ -77,7 +77,7 @@ pub struct ProcessInfo {
     pub argv: Vec<String>,
 }
 
-/// Fetches Tehanu-relevant Pseudo-Terminal (PTY) process information
+/// Fetches Gram-relevant Pseudo-Terminal (PTY) process information
 pub struct PtyProcessInfo {
     system: System,
     refresh_kind: ProcessRefreshKind,
@@ -150,7 +150,7 @@ impl PtyProcessInfo {
         Some(info)
     }
 
-    /// Updates the cached process info, returns whether the Tehanu-relevant info has changed
+    /// Updates the cached process info, returns whether the Gram-relevant info has changed
     pub fn has_changed(&mut self) -> bool {
         let current = self.load();
         let has_changed = match (self.current.as_ref(), current.as_ref()) {

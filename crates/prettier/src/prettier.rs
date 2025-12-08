@@ -686,7 +686,7 @@ mod tests {
             "/root",
             json!({
                 ".config": {
-                    "tehanu": {
+                    "gram": {
                         "settings.json": r#"{ "formatter": "auto" }"#,
                     },
                 },
@@ -721,7 +721,7 @@ mod tests {
             Prettier::locate_prettier_installation(
                 fs.as_ref(),
                 &HashSet::default(),
-                Path::new("/root/.config/tehanu/settings.json"),
+                Path::new("/root/.config/gram/settings.json"),
             )
             .await
             .unwrap(),

@@ -1,6 +1,6 @@
 # R
 
-R support is available via multiple R Tehanu extensions:
+R support is available via multiple R Gram extensions:
 
 - [ocsmit/zed-r](https://github.com/ocsmit/zed-r)
 
@@ -20,9 +20,9 @@ install.packages("languageserver")
 install.packages("lintr")
 ```
 
-3. Install the [R](https://github.com/ocsmit/zed-r) extension through Tehanu's extensions manager for basic R language support (syntax highlighting, tree-sitter support) and for [REditorSupport/languageserver](https://github.com/REditorSupport/languageserver) support.
+3. Install the [R](https://github.com/ocsmit/zed-r) extension through Gram's extensions manager for basic R language support (syntax highlighting, tree-sitter support) and for [REditorSupport/languageserver](https://github.com/REditorSupport/languageserver) support.
 
-4. Install the [Air](https://posit-dev.github.io/air/) extension through Tehanu's extensions manager for R code formatting via Air.
+4. Install the [Air](https://posit-dev.github.io/air/) extension through Gram's extensions manager for R code formatting via Air.
 
 ## Linting
 
@@ -52,9 +52,9 @@ See [Using lintr](https://lintr.r-lib.org/articles/lintr.html) for a complete li
 
 ### Air
 
-[Air](https://posit-dev.github.io/air/) provides code formatting for R, including support for format-on-save. The [Air documentation for Tehanu](https://posit-dev.github.io/air/editor-zed.html) contains the most up-to-date advice for running Air in Tehanu.
+[Air](https://posit-dev.github.io/air/) provides code formatting for R, including support for format-on-save. The [Air documentation for Gram](https://posit-dev.github.io/air/editor-zed.html) contains the most up-to-date advice for running Air in Gram.
 
-Ensure that you have installed both the [ocsmit/zed-r](https://github.com/ocsmit/zed-r) extension (for general R language awareness in Tehanu) and the [Air](https://posit-dev.github.io/air/) extension.
+Ensure that you have installed both the [ocsmit/zed-r](https://github.com/ocsmit/zed-r) extension (for general R language awareness in Gram) and the [Air](https://posit-dev.github.io/air/) extension.
 
 Enable Air in your `settings.json`:
 
@@ -106,7 +106,7 @@ TBD: Get this working
 
 ### REditorSupport/languageserver Configuration
 
-You can configure the [R languageserver settings](https://github.com/REditorSupport/languageserver#settings) via Tehanu Project Settings `.zed/settings.json` or Tehanu User Settings `~/.config/tehanu/settings.json`:
+You can configure the [R languageserver settings](https://github.com/REditorSupport/languageserver#settings) via Gram Project Settings `.zed/settings.json` or Gram User Settings `~/.config/gram/settings.json`:
 
 For example to disable Lintr linting and suppress code snippet suggestions (both enabled by default):
 
@@ -136,7 +136,7 @@ TBD: R REPL Docs
 
 ### Ark Installation
 
-To use the Tehanu REPL with R you need to install [Ark](https://github.com/posit-dev/ark), an R Kernel for Jupyter applications.
+To use the Gram REPL with R you need to install [Ark](https://github.com/posit-dev/ark), an R Kernel for Jupyter applications.
 You can down the latest version from the [Ark GitHub Releases](https://github.com/posit-dev/ark/releases) and then extract the `ark` binary to a directory in your `PATH`.
 
 For example to install the latest non-debug build:

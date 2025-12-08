@@ -111,9 +111,9 @@
       "g s": "outline::Toggle",
       "g shift-o": "outline::Toggle",
       "g shift-s": "project_symbols::Toggle",
-      "g .": "editor::ToggleCodeActions", // tehanu specific
-      "g shift-a": "editor::FindAllReferences", // tehanu specific
-      "g space": "editor::OpenExcerpts", // tehanu specific
+      "g .": "editor::ToggleCodeActions", // gram specific
+      "g shift-a": "editor::FindAllReferences", // gram specific
+      "g space": "editor::OpenExcerpts", // gram specific
       "g *": ["vim::MoveToNext", { "partial_word": true }],
       "g #": ["vim::MoveToPrevious", { "partial_word": true }],
       "g j": ["vim::Down", { "display_lines": true }],
@@ -353,7 +353,7 @@
       "escape": "vim::NormalBefore",
       "ctrl-x": null,
       "ctrl-x ctrl-o": "editor::ShowCompletions",
-      "ctrl-x ctrl-l": "editor::ToggleCodeActions", // tehanu specific
+      "ctrl-x ctrl-l": "editor::ToggleCodeActions", // gram specific
       "ctrl-x ctrl-z": "editor::Cancel",
       "ctrl-x ctrl-e": "vim::LineDown",
       "ctrl-x ctrl-y": "vim::LineUp",
@@ -484,7 +484,7 @@
       "g t": "vim::WindowTop",
       "g c": "vim::WindowMiddle",
       "g b": "vim::WindowBottom",
-      "g r": "editor::FindAllReferences", // tehanu specific
+      "g r": "editor::FindAllReferences", // gram specific
       "g n": "pane::ActivateNextItem",
       "shift-l": "pane::ActivateNextItem",
       "g p": "pane::ActivatePreviousItem",
@@ -670,7 +670,7 @@
     "bindings": {
       "c": "vim::CurrentLine",
       "x": "vim::Exchange",
-      "d": "editor::Rename", // tehanu specific
+      "d": "editor::Rename", // gram specific
       "s": ["vim::PushChangeSurrounds", {}]
     }
   },
@@ -820,7 +820,7 @@
       "escape": ["vim::Literal", ["escape", "\u001B"]],
       "enter": ["vim::Literal", ["enter", "\u000D"]],
       "tab": ["vim::Literal", ["tab", "\u0009"]],
-      // tehanu extensions:
+      // gram extensions:
       "backspace": ["vim::Literal", ["backspace", "\u0008"]],
       "delete": ["vim::Literal", ["delete", "\u007F"]]
     }

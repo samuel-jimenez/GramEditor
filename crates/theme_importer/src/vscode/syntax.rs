@@ -25,7 +25,7 @@ pub struct VsCodeTokenColorSettings {
 }
 
 #[derive(Debug, PartialEq, Copy, Clone, EnumIter)]
-pub enum TehanuSyntaxToken {
+pub enum GramSyntaxToken {
     Attribute,
     Boolean,
     Comment,
@@ -67,57 +67,57 @@ pub enum TehanuSyntaxToken {
     Variant,
 }
 
-impl std::fmt::Display for TehanuSyntaxToken {
+impl std::fmt::Display for GramSyntaxToken {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
             "{}",
             match self {
-                TehanuSyntaxToken::Attribute => "attribute",
-                TehanuSyntaxToken::Boolean => "boolean",
-                TehanuSyntaxToken::Comment => "comment",
-                TehanuSyntaxToken::CommentDoc => "comment.doc",
-                TehanuSyntaxToken::Constant => "constant",
-                TehanuSyntaxToken::Constructor => "constructor",
-                TehanuSyntaxToken::Embedded => "embedded",
-                TehanuSyntaxToken::Emphasis => "emphasis",
-                TehanuSyntaxToken::EmphasisStrong => "emphasis.strong",
-                TehanuSyntaxToken::Enum => "enum",
-                TehanuSyntaxToken::Function => "function",
-                TehanuSyntaxToken::Hint => "hint",
-                TehanuSyntaxToken::Keyword => "keyword",
-                TehanuSyntaxToken::Label => "label",
-                TehanuSyntaxToken::LinkText => "link_text",
-                TehanuSyntaxToken::LinkUri => "link_uri",
-                TehanuSyntaxToken::Number => "number",
-                TehanuSyntaxToken::Operator => "operator",
-                TehanuSyntaxToken::Predictive => "predictive",
-                TehanuSyntaxToken::Preproc => "preproc",
-                TehanuSyntaxToken::Primary => "primary",
-                TehanuSyntaxToken::Property => "property",
-                TehanuSyntaxToken::Punctuation => "punctuation",
-                TehanuSyntaxToken::PunctuationBracket => "punctuation.bracket",
-                TehanuSyntaxToken::PunctuationDelimiter => "punctuation.delimiter",
-                TehanuSyntaxToken::PunctuationListMarker => "punctuation.list_marker",
-                TehanuSyntaxToken::PunctuationSpecial => "punctuation.special",
-                TehanuSyntaxToken::String => "string",
-                TehanuSyntaxToken::StringEscape => "string.escape",
-                TehanuSyntaxToken::StringRegex => "string.regex",
-                TehanuSyntaxToken::StringSpecial => "string.special",
-                TehanuSyntaxToken::StringSpecialSymbol => "string.special.symbol",
-                TehanuSyntaxToken::Tag => "tag",
-                TehanuSyntaxToken::TextLiteral => "text.literal",
-                TehanuSyntaxToken::Title => "title",
-                TehanuSyntaxToken::Type => "type",
-                TehanuSyntaxToken::Variable => "variable",
-                TehanuSyntaxToken::VariableSpecial => "variable.special",
-                TehanuSyntaxToken::Variant => "variant",
+                GramSyntaxToken::Attribute => "attribute",
+                GramSyntaxToken::Boolean => "boolean",
+                GramSyntaxToken::Comment => "comment",
+                GramSyntaxToken::CommentDoc => "comment.doc",
+                GramSyntaxToken::Constant => "constant",
+                GramSyntaxToken::Constructor => "constructor",
+                GramSyntaxToken::Embedded => "embedded",
+                GramSyntaxToken::Emphasis => "emphasis",
+                GramSyntaxToken::EmphasisStrong => "emphasis.strong",
+                GramSyntaxToken::Enum => "enum",
+                GramSyntaxToken::Function => "function",
+                GramSyntaxToken::Hint => "hint",
+                GramSyntaxToken::Keyword => "keyword",
+                GramSyntaxToken::Label => "label",
+                GramSyntaxToken::LinkText => "link_text",
+                GramSyntaxToken::LinkUri => "link_uri",
+                GramSyntaxToken::Number => "number",
+                GramSyntaxToken::Operator => "operator",
+                GramSyntaxToken::Predictive => "predictive",
+                GramSyntaxToken::Preproc => "preproc",
+                GramSyntaxToken::Primary => "primary",
+                GramSyntaxToken::Property => "property",
+                GramSyntaxToken::Punctuation => "punctuation",
+                GramSyntaxToken::PunctuationBracket => "punctuation.bracket",
+                GramSyntaxToken::PunctuationDelimiter => "punctuation.delimiter",
+                GramSyntaxToken::PunctuationListMarker => "punctuation.list_marker",
+                GramSyntaxToken::PunctuationSpecial => "punctuation.special",
+                GramSyntaxToken::String => "string",
+                GramSyntaxToken::StringEscape => "string.escape",
+                GramSyntaxToken::StringRegex => "string.regex",
+                GramSyntaxToken::StringSpecial => "string.special",
+                GramSyntaxToken::StringSpecialSymbol => "string.special.symbol",
+                GramSyntaxToken::Tag => "tag",
+                GramSyntaxToken::TextLiteral => "text.literal",
+                GramSyntaxToken::Title => "title",
+                GramSyntaxToken::Type => "type",
+                GramSyntaxToken::Variable => "variable",
+                GramSyntaxToken::VariableSpecial => "variable.special",
+                GramSyntaxToken::Variant => "variant",
             }
         )
     }
 }
 
-impl TehanuSyntaxToken {
+impl GramSyntaxToken {
     pub fn find_best_token_color_match<'a>(
         &self,
         token_colors: &'a [VsCodeTokenColor],
@@ -175,49 +175,49 @@ impl TehanuSyntaxToken {
 
     pub fn fallbacks(&self) -> &[Self] {
         match self {
-            TehanuSyntaxToken::CommentDoc => &[TehanuSyntaxToken::Comment],
-            TehanuSyntaxToken::Number => &[TehanuSyntaxToken::Constant],
-            TehanuSyntaxToken::VariableSpecial => &[TehanuSyntaxToken::Variable],
-            TehanuSyntaxToken::PunctuationBracket
-            | TehanuSyntaxToken::PunctuationDelimiter
-            | TehanuSyntaxToken::PunctuationListMarker
-            | TehanuSyntaxToken::PunctuationSpecial => &[TehanuSyntaxToken::Punctuation],
-            TehanuSyntaxToken::StringEscape
-            | TehanuSyntaxToken::StringRegex
-            | TehanuSyntaxToken::StringSpecial
-            | TehanuSyntaxToken::StringSpecialSymbol => &[TehanuSyntaxToken::String],
+            GramSyntaxToken::CommentDoc => &[GramSyntaxToken::Comment],
+            GramSyntaxToken::Number => &[GramSyntaxToken::Constant],
+            GramSyntaxToken::VariableSpecial => &[GramSyntaxToken::Variable],
+            GramSyntaxToken::PunctuationBracket
+            | GramSyntaxToken::PunctuationDelimiter
+            | GramSyntaxToken::PunctuationListMarker
+            | GramSyntaxToken::PunctuationSpecial => &[GramSyntaxToken::Punctuation],
+            GramSyntaxToken::StringEscape
+            | GramSyntaxToken::StringRegex
+            | GramSyntaxToken::StringSpecial
+            | GramSyntaxToken::StringSpecialSymbol => &[GramSyntaxToken::String],
             _ => &[],
         }
     }
 
     fn to_vscode(self) -> Vec<&'static str> {
         match self {
-            TehanuSyntaxToken::Attribute => vec!["entity.other.attribute-name"],
-            TehanuSyntaxToken::Boolean => vec!["constant.language"],
-            TehanuSyntaxToken::Comment => vec!["comment"],
-            TehanuSyntaxToken::CommentDoc => vec!["comment.block.documentation"],
-            TehanuSyntaxToken::Constant => vec!["constant", "constant.language", "constant.character"],
-            TehanuSyntaxToken::Constructor => {
+            GramSyntaxToken::Attribute => vec!["entity.other.attribute-name"],
+            GramSyntaxToken::Boolean => vec!["constant.language"],
+            GramSyntaxToken::Comment => vec!["comment"],
+            GramSyntaxToken::CommentDoc => vec!["comment.block.documentation"],
+            GramSyntaxToken::Constant => vec!["constant", "constant.language", "constant.character"],
+            GramSyntaxToken::Constructor => {
                 vec![
                     "entity.name.tag",
                     "entity.name.function.definition.special.constructor",
                 ]
             }
-            TehanuSyntaxToken::Embedded => vec!["meta.embedded"],
-            TehanuSyntaxToken::Emphasis => vec!["markup.italic"],
-            TehanuSyntaxToken::EmphasisStrong => vec![
+            GramSyntaxToken::Embedded => vec!["meta.embedded"],
+            GramSyntaxToken::Emphasis => vec!["markup.italic"],
+            GramSyntaxToken::EmphasisStrong => vec![
                 "markup.bold",
                 "markup.italic markup.bold",
                 "markup.bold markup.italic",
             ],
-            TehanuSyntaxToken::Enum => vec!["support.type.enum"],
-            TehanuSyntaxToken::Function => vec![
+            GramSyntaxToken::Enum => vec!["support.type.enum"],
+            GramSyntaxToken::Function => vec![
                 "entity.function",
                 "entity.name.function",
                 "variable.function",
             ],
-            TehanuSyntaxToken::Hint => vec![],
-            TehanuSyntaxToken::Keyword => vec![
+            GramSyntaxToken::Hint => vec![],
+            GramSyntaxToken::Keyword => vec![
                 "keyword",
                 "keyword.other.fn.rust",
                 "keyword.control",
@@ -226,63 +226,63 @@ impl TehanuSyntaxToken {
                 "punctuation.accessor",
                 "entity.name.tag",
             ],
-            TehanuSyntaxToken::Label => vec![
+            GramSyntaxToken::Label => vec![
                 "label",
                 "entity.name",
                 "entity.name.import",
                 "entity.name.package",
             ],
-            TehanuSyntaxToken::LinkText => vec!["markup.underline.link", "string.other.link"],
-            TehanuSyntaxToken::LinkUri => vec!["markup.underline.link", "string.other.link"],
-            TehanuSyntaxToken::Number => vec!["constant.numeric", "number"],
-            TehanuSyntaxToken::Operator => vec!["operator", "keyword.operator"],
-            TehanuSyntaxToken::Predictive => vec![],
-            TehanuSyntaxToken::Preproc => vec![
+            GramSyntaxToken::LinkText => vec!["markup.underline.link", "string.other.link"],
+            GramSyntaxToken::LinkUri => vec!["markup.underline.link", "string.other.link"],
+            GramSyntaxToken::Number => vec!["constant.numeric", "number"],
+            GramSyntaxToken::Operator => vec!["operator", "keyword.operator"],
+            GramSyntaxToken::Predictive => vec![],
+            GramSyntaxToken::Preproc => vec![
                 "preproc",
                 "meta.preprocessor",
                 "punctuation.definition.preprocessor",
             ],
-            TehanuSyntaxToken::Primary => vec![],
-            TehanuSyntaxToken::Property => vec![
+            GramSyntaxToken::Primary => vec![],
+            GramSyntaxToken::Property => vec![
                 "variable.member",
                 "support.type.property-name",
                 "variable.object.property",
                 "variable.other.field",
             ],
-            TehanuSyntaxToken::Punctuation => vec![
+            GramSyntaxToken::Punctuation => vec![
                 "punctuation",
                 "punctuation.section",
                 "punctuation.accessor",
                 "punctuation.separator",
                 "punctuation.definition.tag",
             ],
-            TehanuSyntaxToken::PunctuationBracket => vec![
+            GramSyntaxToken::PunctuationBracket => vec![
                 "punctuation.bracket",
                 "punctuation.definition.tag.begin",
                 "punctuation.definition.tag.end",
             ],
-            TehanuSyntaxToken::PunctuationDelimiter => vec![
+            GramSyntaxToken::PunctuationDelimiter => vec![
                 "punctuation.delimiter",
                 "punctuation.separator",
                 "punctuation.terminator",
             ],
-            TehanuSyntaxToken::PunctuationListMarker => {
+            GramSyntaxToken::PunctuationListMarker => {
                 vec!["markup.list punctuation.definition.list.begin"]
             }
-            TehanuSyntaxToken::PunctuationSpecial => vec!["punctuation.special"],
-            TehanuSyntaxToken::String => vec!["string"],
-            TehanuSyntaxToken::StringEscape => {
+            GramSyntaxToken::PunctuationSpecial => vec!["punctuation.special"],
+            GramSyntaxToken::String => vec!["string"],
+            GramSyntaxToken::StringEscape => {
                 vec!["string.escape", "constant.character", "constant.other"]
             }
-            TehanuSyntaxToken::StringRegex => vec!["string.regex"],
-            TehanuSyntaxToken::StringSpecial => vec!["string.special", "constant.other.symbol"],
-            TehanuSyntaxToken::StringSpecialSymbol => {
+            GramSyntaxToken::StringRegex => vec!["string.regex"],
+            GramSyntaxToken::StringSpecial => vec!["string.special", "constant.other.symbol"],
+            GramSyntaxToken::StringSpecialSymbol => {
                 vec!["string.special.symbol", "constant.other.symbol"]
             }
-            TehanuSyntaxToken::Tag => vec!["tag", "entity.name.tag", "meta.tag.sgml"],
-            TehanuSyntaxToken::TextLiteral => vec!["text.literal", "string"],
-            TehanuSyntaxToken::Title => vec!["title", "entity.name"],
-            TehanuSyntaxToken::Type => vec![
+            GramSyntaxToken::Tag => vec!["tag", "entity.name.tag", "meta.tag.sgml"],
+            GramSyntaxToken::TextLiteral => vec!["text.literal", "string"],
+            GramSyntaxToken::Title => vec!["title", "entity.name"],
+            GramSyntaxToken::Type => vec![
                 "entity.name.type",
                 "entity.name.type.primitive",
                 "entity.name.type.numeric",
@@ -291,20 +291,20 @@ impl TehanuSyntaxToken {
                 "support.type.primitive",
                 "support.class",
             ],
-            TehanuSyntaxToken::Variable => vec![
+            GramSyntaxToken::Variable => vec![
                 "variable",
                 "variable.language",
                 "variable.member",
                 "variable.parameter",
                 "variable.parameter.function-call",
             ],
-            TehanuSyntaxToken::VariableSpecial => vec![
+            GramSyntaxToken::VariableSpecial => vec![
                 "variable.special",
                 "variable.member",
                 "variable.annotation",
                 "variable.language",
             ],
-            TehanuSyntaxToken::Variant => vec!["variant"],
+            GramSyntaxToken::Variant => vec!["variant"],
         }
     }
 }

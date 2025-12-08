@@ -17,7 +17,7 @@ which haskell-language-server-wrapper
 
 ## Configuring HLS
 
-If you need to configure haskell-language-server (hls) you can add configuration options to your Tehanu settings.json:
+If you need to configure haskell-language-server (hls) you can add configuration options to your Gram settings.json:
 
 ```json [settings]
 {

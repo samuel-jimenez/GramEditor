@@ -44,15 +44,15 @@ struct ExplorerCommandInjector;
 impl IExplorerCommand_Impl for ExplorerCommandInjector_Impl {
     fn GetTitle(&self, _: Ref<IShellItemArray>) -> Result<windows_core::PWSTR> {
         let command_description =
-            retrieve_command_description().unwrap_or(HSTRING::from("Open with Tehanu"));
+            retrieve_command_description().unwrap_or(HSTRING::from("Open with Gram"));
         unsafe { SHStrDupW(&command_description) }
     }
 
     fn GetIcon(&self, _: Ref<IShellItemArray>) -> Result<windows_core::PWSTR> {
-        let Some(tehanu_exe) = get_tehanu_exe_path() else {
+        let Some(gram_exe) = get_gram_exe_path() else {
             return Err(E_FAIL.into());
         };
-        unsafe { SHStrDupW(&HSTRING::from(tehanu_exe)) }
+        unsafe { SHStrDupW(&HSTRING::from(gram_exe)) }
     }
 
     fn GetToolTip(&self, _: Ref<IShellItemArray>) -> Result<windows_core::PWSTR> {
@@ -69,7 +69,7 @@ impl IExplorerCommand_Impl for ExplorerCommandInjector_Impl {
 
     fn Invoke(&self, psiitemarray: Ref<IShellItemArray>, _: Ref<IBindCtx>) -> Result<()> {
         let items = psiitemarray.ok()?;
-        let Some(tehanu_exe) = get_tehanu_exe_path() else {
+        let Some(gram_exe) = get_gram_exe_path() else {
             return Ok(());
         };
 
@@ -78,7 +78,7 @@ impl IExplorerCommand_Impl for ExplorerCommandInjector_Impl {
             let item = unsafe { items.GetItemAt(idx)? };
             let item_path = unsafe { item.GetDisplayName(SIGDN_FILESYSPATH)?.to_string()? };
             #[allow(clippy::disallowed_methods, reason = "no async context in sight..")]
-            std::process::Command::new(&tehanu_exe)
+            std::process::Command::new(&gram_exe)
                 .arg(&item_path)
                 .spawn()
                 .map_err(|_| E_INVALIDARG)?;
@@ -180,22 +180,22 @@ fn get_zed_install_folder() -> Option<PathBuf> {
 }
 
 #[inline]
-fn get_tehanu_exe_path() -> Option<String> {
-    get_zed_install_folder().map(|path| path.join("Tehanu.exe").to_string_lossy().into_owned())
+fn get_gram_exe_path() -> Option<String> {
+    get_zed_install_folder().map(|path| path.join("Gram.exe").to_string_lossy().into_owned())
 }
 
 #[inline]
 fn retrieve_command_description() -> Result<HSTRING> {
     #[cfg(all(feature = "stable", not(feature = "preview"), not(feature = "nightly")))]
-    const REG_PATH: &str = "Software\\Classes\\TehanuEditorContextMenu";
+    const REG_PATH: &str = "Software\\Classes\\GramEditorContextMenu";
     #[cfg(all(feature = "preview", not(feature = "stable"), not(feature = "nightly")))]
-    const REG_PATH: &str = "Software\\Classes\\TehanuEditorPreviewContextMenu";
+    const REG_PATH: &str = "Software\\Classes\\GramEditorPreviewContextMenu";
     #[cfg(all(feature = "nightly", not(feature = "stable"), not(feature = "preview")))]
-    const REG_PATH: &str = "Software\\Classes\\TehanuEditorNightlyContextMenu";
+    const REG_PATH: &str = "Software\\Classes\\GramEditorNightlyContextMenu";
 
     // Make cargo clippy happy
     #[cfg(all(feature = "nightly", feature = "stable", feature = "preview"))]
-    const REG_PATH: &str = "Software\\Classes\\TehanuEditorClippyContextMenu";
+    const REG_PATH: &str = "Software\\Classes\\GramEditorClippyContextMenu";
 
     let key = windows_registry::CURRENT_USER.open(REG_PATH)?;
     key.get_hstring("Title")

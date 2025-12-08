@@ -1,4 +1,4 @@
-//! Renders a div with deep children hierarchy. This example is useful to exemplify that Tehanu can
+//! Renders a div with deep children hierarchy. This example is useful to exemplify that Gram can
 //! handle deep hierarchies (even though it cannot just yet!).
 use std::sync::LazyLock;
 

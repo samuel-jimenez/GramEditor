@@ -2,7 +2,7 @@
 
 _Work in progress! Not all Helix keybindings are implemented yet._
 
-Tehanu's Helix mode is an emulation layer that brings Helix-style keybindings and modal editing to Tehanu. It builds upon Tehanu's [Vim mode](./vim.md), so much of the core functionality is shared. Enabling `helix_mode` will also enable `vim_mode`.
+Gram's Helix mode is an emulation layer that brings Helix-style keybindings and modal editing to Gram. It builds upon Gram's [Vim mode](./vim.md), so much of the core functionality is shared. Enabling `helix_mode` will also enable `vim_mode`.
 
 For a guide on Vim-related features that are also available in Helix mode, please refer to our [Vim mode documentation](./vim.md).
 

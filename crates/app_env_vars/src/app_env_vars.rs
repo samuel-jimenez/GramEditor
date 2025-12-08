@@ -1,9 +1,9 @@
 use gpui::SharedString;
 use std::sync::LazyLock;
 
-/// Whether Tehanu is running in stateless mode.
-/// When true, Tehanu will use in-memory databases instead of persistent storage.
-pub static TEHANU_STATELESS: LazyLock<bool> = bool_env_var!("TEHANU_STATELESS");
+/// Whether Gram is running in stateless mode.
+/// When true, Gram will use in-memory databases instead of persistent storage.
+pub static GRAM_STATELESS: LazyLock<bool> = bool_env_var!("GRAM_STATELESS");
 
 pub struct EnvVar {
     pub name: SharedString,

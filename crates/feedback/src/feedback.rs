@@ -1,26 +1,26 @@
-use app_actions::feedback::{EmailTehanu, FileBugReport, RequestFeature};
+use app_actions::feedback::{EmailGram, FileBugReport, RequestFeature};
 use gpui::{App, ClipboardItem, PromptLevel, actions};
 use system_specs::{CopySystemSpecsIntoClipboard, SystemSpecs};
 use util::ResultExt;
 use workspace::Workspace;
 
 actions!(
-    tehanu,
+    gram,
     [
-        /// Opens the Tehanu repository on GitHub.
-        OpenTehanuRepo,
+        /// Opens the Gram repository on GitHub.
+        OpenGramRepo,
     ]
 );
 
-const TEHANU_REPO_URL: &str = "https://codeberg.org/krig/tehanu";
+const GRAM_REPO_URL: &str = "https://codeberg.org/krig/gram";
 
-const REQUEST_FEATURE_URL: &str = "https://codeberg.org/krig/tehanu";
+const REQUEST_FEATURE_URL: &str = "https://codeberg.org/krig/gram";
 
 fn file_bug_report_url(_specs: &SystemSpecs) -> String {
-    "https://codeberg.org/krig/tehanu".into()
+    "https://codeberg.org/krig/gram".into()
 }
 
-fn email_tehanu_url(specs: &SystemSpecs) -> String {
+fn email_gram_url(specs: &SystemSpecs) -> String {
     format!(
         concat!("mailto:k@ziran.se", "?", "body={}"),
         email_body(specs)
@@ -70,19 +70,19 @@ pub fn init(cx: &mut App) {
                 })
                 .detach();
             })
-            .register_action(move |_, _: &EmailTehanu, window, cx| {
+            .register_action(move |_, _: &EmailGram, window, cx| {
                 let specs = SystemSpecs::new(window, cx);
                 cx.spawn_in(window, async move |_, cx| {
                     let specs = specs.await;
                     cx.update(|_, cx| {
-                        cx.open_url(&email_tehanu_url(&specs));
+                        cx.open_url(&email_gram_url(&specs));
                     })
                     .log_err();
                 })
                 .detach();
             })
-            .register_action(move |_, _: &OpenTehanuRepo, _, cx| {
-                cx.open_url(TEHANU_REPO_URL);
+            .register_action(move |_, _: &OpenGramRepo, _, cx| {
+                cx.open_url(GRAM_REPO_URL);
             });
     })
     .detach();

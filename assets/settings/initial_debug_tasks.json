@@ -1,28 +1,28 @@
 // Some example tasks for common languages.
 //
 // For more documentation on how to configure debug tasks,
-// see: https://tehanu.liten.app/docs/debugger
+// see: https://gram.liten.app/docs/debugger
 [
   {
     "label": "Debug active Python file",
     "adapter": "Debugpy",
-    "program": "$TEHANU_FILE",
+    "program": "$GRAM_FILE",
     "request": "launch",
-    "cwd": "$TEHANU_WORKTREE_ROOT"
+    "cwd": "$GRAM_WORKTREE_ROOT"
   },
   {
     "label": "Debug active JavaScript file",
     "adapter": "JavaScript",
-    "program": "$TEHANU_FILE",
+    "program": "$GRAM_FILE",
     "request": "launch",
-    "cwd": "$TEHANU_WORKTREE_ROOT",
+    "cwd": "$GRAM_WORKTREE_ROOT",
     "type": "pwa-node"
   },
   {
     "label": "JavaScript debug terminal",
     "adapter": "JavaScript",
     "request": "launch",
-    "cwd": "$TEHANU_WORKTREE_ROOT",
+    "cwd": "$GRAM_WORKTREE_ROOT",
     "console": "integratedTerminal",
     "type": "pwa-node"
   }

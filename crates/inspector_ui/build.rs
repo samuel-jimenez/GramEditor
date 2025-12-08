@@ -16,5 +16,5 @@ fn main() {
     }
     path.pop();
 
-    println!("cargo:rustc-env=TEHANU_REPO_DIR={}", path.display());
+    println!("cargo:rustc-env=GRAM_REPO_DIR={}", path.display());
 }

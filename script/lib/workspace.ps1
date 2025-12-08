@@ -1,6 +1,6 @@
 
-function ParseTehanuWorkspace {
+function ParseGramWorkspace {
     $metadata = cargo metadata --no-deps --offline | ConvertFrom-Json
-    $env:TEHANU_WORKSPACE = $metadata.workspace_root
-    $env:RELEASE_VERSION = $metadata.packages | Where-Object { $_.name -eq "tehanu" } | Select-Object -ExpandProperty version
+    $env:GRAM_WORKSPACE = $metadata.workspace_root
+    $env:RELEASE_VERSION = $metadata.packages | Where-Object { $_.name -eq "gram" } | Select-Object -ExpandProperty version
 }

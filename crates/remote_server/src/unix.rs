@@ -49,9 +49,9 @@ use std::{
 use thiserror::Error;
 
 pub static VERSION: LazyLock<&str> = LazyLock::new(|| match *RELEASE_CHANNEL {
-    ReleaseChannel::Stable | ReleaseChannel::Preview => env!("TEHANU_PKG_VERSION"),
+    ReleaseChannel::Stable | ReleaseChannel::Preview => env!("GRAM_PKG_VERSION"),
     ReleaseChannel::Nightly | ReleaseChannel::Dev => {
-        option_env!("TEHANU_COMMIT_SHA").unwrap_or("missing-zed-commit-sha")
+        option_env!("GRAM_COMMIT_SHA").unwrap_or("missing-zed-commit-sha")
     }
 });
 
@@ -139,7 +139,7 @@ fn handle_crash_files_requests(project: &Entity<HeadlessProject>, client: &AnyPr
                         continue;
                     };
 
-                    if !filename.starts_with("tehanu") {
+                    if !filename.starts_with("gram") {
                         continue;
                     }
 
@@ -353,10 +353,10 @@ pub fn execute_run(
     app.background_executor()
         .spawn(crashes::init(crashes::InitCrashHandler {
             session_id: id,
-            tehanu_version: VERSION.to_owned(),
-            binary: "tehanu-remote-server".to_string(),
+            gram_version: VERSION.to_owned(),
+            binary: "gram-remote-server".to_string(),
             release_channel: release_channel::RELEASE_CHANNEL_NAME.clone(),
-            commit_sha: option_env!("TEHANU_COMMIT_SHA").unwrap_or("no_sha").to_owned(),
+            commit_sha: option_env!("GRAM_COMMIT_SHA").unwrap_or("no_sha").to_owned(),
         }))
         .detach();
     let log_rx = init_logging_server(log_file)?;
@@ -391,7 +391,7 @@ pub fn execute_run(
     let git_hosting_provider_registry = Arc::new(GitHostingProviderRegistry::new());
     app.run(move |cx| {
         settings::init(cx);
-        let app_version = AppVersion::load(env!("TEHANU_PKG_VERSION"));
+        let app_version = AppVersion::load(env!("GRAM_PKG_VERSION"));
         release_channel::init(app_version, cx);
         gpui_tokio::init(cx);
 
@@ -428,7 +428,7 @@ pub fn execute_run(
                     ReqwestClient::proxy_and_user_agent(
                         proxy_url,
                         &format!(
-                            "Tehanu-Server/{} ({}; {})",
+                            "Gram-Server/{} ({}; {})",
                             env!("CARGO_PKG_VERSION"),
                             std::env::consts::OS,
                             std::env::consts::ARCH
@@ -572,10 +572,10 @@ pub(crate) fn execute_proxy(
     let id = std::process::id().to_string();
     smol::spawn(crashes::init(crashes::InitCrashHandler {
         session_id: id,
-        tehanu_version: VERSION.to_owned(),
-        binary: "tehanu-remote-server".to_string(),
+        gram_version: VERSION.to_owned(),
+        binary: "gram-remote-server".to_string(),
         release_channel: release_channel::RELEASE_CHANNEL_NAME.clone(),
-        commit_sha: option_env!("TEHANU_COMMIT_SHA").unwrap_or("no_sha").to_owned(),
+        commit_sha: option_env!("GRAM_COMMIT_SHA").unwrap_or("no_sha").to_owned(),
     }))
     .detach();
 
@@ -991,7 +991,7 @@ unsafe fn redirect_standard_streams() -> Result<()> {
 fn cleanup_old_binaries() -> Result<()> {
     let server_dir = paths::remote_server_dir_relative();
     let release_channel = release_channel::RELEASE_CHANNEL.dev_name();
-    let prefix = format!("tehanu-remote-server-{}-", release_channel);
+    let prefix = format!("gram-remote-server-{}-", release_channel);
 
     for entry in std::fs::read_dir(server_dir.as_std_path())? {
         let path = entry?.path();
@@ -1012,7 +1012,7 @@ fn cleanup_old_binaries() -> Result<()> {
 fn is_new_version(version: &str) -> bool {
     SemanticVersion::from_str(version)
         .ok()
-        .zip(SemanticVersion::from_str(env!("TEHANU_PKG_VERSION")).ok())
+        .zip(SemanticVersion::from_str(env!("GRAM_PKG_VERSION")).ok())
         .is_some_and(|(version, current_version)| version >= current_version)
 }
 

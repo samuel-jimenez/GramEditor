@@ -417,7 +417,7 @@ enum RemoteEntry {
 }
 
 impl RemoteEntry {
-    fn is_from_tehanu(&self) -> bool {
+    fn is_from_gram(&self) -> bool {
         matches!(self, Self::Project { .. })
     }
 
@@ -1229,7 +1229,7 @@ impl RemoteServerProjects {
         cx: &mut Context<Self>,
     ) -> impl IntoElement {
         let create_new_window = self.create_new_window;
-        let is_from_tehanu = server.is_from_tehanu();
+        let is_from_gram = server.is_from_gram();
         let element_id_base = SharedString::from(format!(
             "remote-project-{}",
             match server_ix {
@@ -1321,7 +1321,7 @@ impl RemoteServerProjects {
                         let secondary_confirm = e.modifiers().platform;
                         callback(this, secondary_confirm, window, cx)
                     }))
-                    .when(is_from_tehanu, |server_list_item| {
+                    .when(is_from_gram, |server_list_item| {
                         server_list_item.end_hover_slot::<AnyElement>(Some(
                             div()
                                 .mr_2()
@@ -1513,7 +1513,7 @@ impl RemoteServerProjects {
                                             .icon_size(IconSize::XSmall)
                                             .on_click(|_, _, cx| {
                                                 cx.open_url(
-                                                    "https://tehanu.liten.app/docs/remote-development",
+                                                    "https://gram.liten.app/docs/remote-development",
                                                 );
                                             }),
                                     ),

@@ -159,7 +159,7 @@ pub enum Motion {
     // we don't have a good way to run a search synchronously, so
     // we handle search motions by running the search async and then
     // calling back into motion with this
-    TehanuSearchResult {
+    GramSearchResult {
         prior_selections: Vec<Range<Anchor>>,
         new_selections: Vec<Range<Anchor>>,
     },
@@ -672,7 +672,7 @@ pub fn register(editor: &mut Editor, cx: &mut Context<Vim>) {
 
 impl Vim {
     pub(crate) fn search_motion(&mut self, m: Motion, window: &mut Window, cx: &mut Context<Self>) {
-        if let Motion::TehanuSearchResult {
+        if let Motion::GramSearchResult {
             prior_selections, ..
         } = &m
         {
@@ -801,7 +801,7 @@ impl Motion {
             | Sneak { .. }
             | SneakBackward { .. }
             | Jump { .. }
-            | TehanuSearchResult { .. } => MotionKind::Exclusive,
+            | GramSearchResult { .. } => MotionKind::Exclusive,
             RepeatFind { last_find: motion } | RepeatFindReversed { last_find: motion } => {
                 motion.default_kind()
             }
@@ -875,7 +875,7 @@ impl Motion {
             | WindowBottom
             | WindowMiddle
             | WindowTop
-            | TehanuSearchResult { .. } => true,
+            | GramSearchResult { .. } => true,
         }
     }
 
@@ -923,7 +923,7 @@ impl Motion {
             | WindowBottom
             | NextLineStart
             | PreviousLineStart
-            | TehanuSearchResult { .. }
+            | GramSearchResult { .. }
             | NextSectionStart
             | NextSectionEnd
             | PreviousSectionStart
@@ -1235,7 +1235,7 @@ impl Motion {
             WindowMiddle => window_middle(map, point, text_layout_details),
             WindowBottom => window_bottom(map, point, text_layout_details, times - 1),
             Jump { line, anchor } => mark::jump_motion(map, *anchor, *line),
-            TehanuSearchResult { new_selections, .. } => {
+            GramSearchResult { new_selections, .. } => {
                 // There will be only one selection, as
                 // Search::SelectNextMatch selects a single match.
                 if let Some(new_selection) = new_selections.first() {
@@ -1325,7 +1325,7 @@ impl Motion {
         text_layout_details: &TextLayoutDetails,
         forced_motion: bool,
     ) -> Option<(Range<DisplayPoint>, MotionKind)> {
-        if let Motion::TehanuSearchResult {
+        if let Motion::GramSearchResult {
             prior_selections,
             new_selections,
         } = self

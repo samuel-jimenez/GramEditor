@@ -1,6 +1,6 @@
 # Tailwind CSS
 
-Tehanu has built-in support for Tailwind CSS autocomplete, linting, and hover previews.
+Gram has built-in support for Tailwind CSS autocomplete, linting, and hover previews.
 
 - Language Server: [tailwindlabs/tailwindcss-intellisense](https://github.com/tailwindlabs/tailwindcss-intellisense)
 
@@ -23,7 +23,7 @@ To configure the Tailwind CSS language server, refer [to the extension settings]
 }
 ```
 
-Languages which can be used with Tailwind CSS in Tehanu:
+Languages which can be used with Tailwind CSS in Gram:
 
 - [Astro](./astro.md)
 - [CSS](./css.md)
@@ -39,7 +39,7 @@ Languages which can be used with Tailwind CSS in Tehanu:
 
 ### Prettier Plugin
 
-Tehanu supports Prettier out of the box, which means that if you have the [Tailwind CSS Prettier plugin](https://github.com/tailwindlabs/prettier-plugin-tailwindcss) installed, adding it to your Prettier configuration will make it work automatically:
+Gram supports Prettier out of the box, which means that if you have the [Tailwind CSS Prettier plugin](https://github.com/tailwindlabs/prettier-plugin-tailwindcss) installed, adding it to your Prettier configuration will make it work automatically:
 
 ```json [settings]
 // .prettierrc

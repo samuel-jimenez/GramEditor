@@ -26,7 +26,7 @@ use std::{
     str::FromStr,
     sync::{Arc, OnceLock},
 };
-use task::{SpawnInTerminal, TehanuDebugConfig};
+use task::{SpawnInTerminal, GramDebugConfig};
 use url::Url;
 use util::{
     archive::extract_zip, fs::make_file_executable, maybe, paths::PathStyle, rel_path::RelPath,
@@ -200,8 +200,8 @@ impl From<AttachRequest> for task::AttachRequest {
     }
 }
 
-impl From<TehanuDebugConfig> for DebugConfig {
-    fn from(value: TehanuDebugConfig) -> Self {
+impl From<GramDebugConfig> for DebugConfig {
+    fn from(value: GramDebugConfig) -> Self {
         Self {
             label: value.label.into(),
             adapter: value.adapter.into(),

@@ -1,6 +1,6 @@
 # Nim
 
-Nim language support in Tehanu is provided by the community-maintained [Nim extension](https://github.com/foxoman/zed-nim).
+Nim language support in Gram is provided by the community-maintained [Nim extension](https://github.com/foxoman/zed-nim).
 Report issues to: [https://github.com/foxoman/zed-nim/issues](https://github.com/foxoman/zed-nim/issues)
 
 - Tree-sitter: [alaviss/tree-sitter-nim](https://github.com/alaviss/tree-sitter-nim)
@@ -8,7 +8,7 @@ Report issues to: [https://github.com/foxoman/zed-nim/issues](https://github.com
 
 ## Formatting
 
-To use [arnetheduck/nph](https://github.com/arnetheduck/nph) as a formatter, follow the [nph installation instructions](https://github.com/arnetheduck/nph?tab=readme-ov-file#installation) and add this to your Tehanu `settings.json`:
+To use [arnetheduck/nph](https://github.com/arnetheduck/nph) as a formatter, follow the [nph installation instructions](https://github.com/arnetheduck/nph?tab=readme-ov-file#installation) and add this to your Gram `settings.json`:
 
 ```json [settings]
   "languages": {

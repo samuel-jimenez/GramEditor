@@ -174,7 +174,7 @@ mod tests {
             parsed_remote,
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu".into(),
+                repo: "gram".into(),
             }
         );
     }
@@ -189,7 +189,7 @@ mod tests {
             parsed_remote,
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu".into(),
+                repo: "gram".into(),
             }
         );
     }
@@ -199,7 +199,7 @@ mod tests {
         let permalink = Gitee.build_permalink(
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu".into(),
+                repo: "gram".into(),
             },
             BuildPermalinkParams::new(
                 "e5fe811d7ad0fc26934edd76f891d20bdc3bb194",
@@ -217,7 +217,7 @@ mod tests {
         let permalink = Gitee.build_permalink(
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu".into(),
+                repo: "gram".into(),
             },
             BuildPermalinkParams::new(
                 "e5fe811d7ad0fc26934edd76f891d20bdc3bb194",
@@ -235,7 +235,7 @@ mod tests {
         let permalink = Gitee.build_permalink(
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu".into(),
+                repo: "gram".into(),
             },
             BuildPermalinkParams::new(
                 "e5fe811d7ad0fc26934edd76f891d20bdc3bb194",

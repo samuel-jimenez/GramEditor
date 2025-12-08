@@ -141,7 +141,7 @@ pub struct LanguageSettingsContent {
     ///
     /// Default: auto
     pub formatter: Option<FormatterList>,
-    /// Tehanu's Prettier integration settings.
+    /// Gram's Prettier integration settings.
     /// Allows to enable/disable formatting with Prettier
     /// and configure default Prettier, used when no project-level Prettier installation is found.
     ///
@@ -182,12 +182,12 @@ pub struct LanguageSettingsContent {
     /// Inlay hint related settings.
     pub inlay_hints: Option<InlayHintSettingsContent>,
     /// Whether to automatically type closing characters for you. For example,
-    /// when you type '(', Tehanu will automatically add a closing ')' at the correct position.
+    /// when you type '(', Gram will automatically add a closing ')' at the correct position.
     ///
     /// Default: true
     pub use_autoclose: Option<bool>,
     /// Whether to automatically surround text with characters for you. For example,
-    /// when you select text and type '(', Tehanu will automatically surround text with ().
+    /// when you select text and type '(', Gram will automatically surround text with ().
     ///
     /// Default: true
     pub use_auto_surround: Option<bool>,
@@ -564,11 +564,11 @@ impl AsRef<[Formatter]> for FormatterList {
 #[derive(Clone, Default, Debug, Serialize, Deserialize, PartialEq, Eq, JsonSchema, MergeFrom)]
 #[serde(rename_all = "snake_case")]
 pub enum Formatter {
-    /// Format files using Tehanu's Prettier integration (if applicable),
+    /// Format files using Gram's Prettier integration (if applicable),
     /// or falling back to formatting via language server.
     #[default]
     Auto,
-    /// Format code using Tehanu's Prettier integration.
+    /// Format code using Gram's Prettier integration.
     Prettier,
     /// Format code using an external command.
     External {
@@ -681,13 +681,13 @@ pub struct LanguageTaskSettingsContent {
     /// Extra task variables to set for a particular language.
     pub variables: Option<HashMap<String, String>>,
     pub enabled: Option<bool>,
-    /// Use LSP tasks over Tehanu language extension ones.
+    /// Use LSP tasks over Gram language extension ones.
     /// If no LSP tasks are returned due to error/timeout or regular execution,
-    /// Tehanu language extension tasks will be used instead.
+    /// Gram language extension tasks will be used instead.
     ///
-    /// Other Tehanu tasks will still be shown:
-    /// * Tehanu task from either of the task config file
-    /// * Tehanu task from history (e.g. one-off task was spawned before)
+    /// Other Gram tasks will still be shown:
+    /// * Gram task from either of the task config file
+    /// * Gram task from history (e.g. one-off task was spawned before)
     pub prefer_lsp: Option<bool>,
 }
 

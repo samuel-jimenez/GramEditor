@@ -126,7 +126,7 @@ impl DebugAdapter for GoDebugAdapter {
             "cwd": {
                 "type": "string",
                 "description": "Workspace relative or absolute path to the working directory of the program being debugged.",
-                "default": "${TEHANU_WORKTREE_ROOT}"
+                "default": "${GRAM_WORKTREE_ROOT}"
             },
             "dlvFlags": {
                 "type": "array",
@@ -222,7 +222,7 @@ impl DebugAdapter for GoDebugAdapter {
             "program": {
                 "type": "string",
                 "description": "Path to the program folder or file to debug.",
-                "default": "${TEHANU_WORKTREE_ROOT}"
+                "default": "${GRAM_WORKTREE_ROOT}"
             },
             "args": {
                 "type": ["array", "string"],
@@ -361,8 +361,8 @@ impl DebugAdapter for GoDebugAdapter {
         })
     }
 
-    async fn config_from_tehanu_format(&self, tehanu_scenario: TehanuDebugConfig) -> Result<DebugScenario> {
-        let mut args = match &tehanu_scenario.request {
+    async fn config_from_gram_format(&self, gram_scenario: GramDebugConfig) -> Result<DebugScenario> {
+        let mut args = match &gram_scenario.request {
             dap::DebugRequest::Attach(attach_config) => {
                 json!({
                     "request": "attach",
@@ -390,13 +390,13 @@ impl DebugAdapter for GoDebugAdapter {
 
         let map = args.as_object_mut().unwrap();
 
-        if let Some(stop_on_entry) = tehanu_scenario.stop_on_entry {
+        if let Some(stop_on_entry) = gram_scenario.stop_on_entry {
             map.insert("stopOnEntry".into(), stop_on_entry.into());
         }
 
         Ok(DebugScenario {
-            adapter: tehanu_scenario.adapter,
-            label: tehanu_scenario.label,
+            adapter: gram_scenario.adapter,
+            label: gram_scenario.label,
             build: None,
             config: args,
             tcp_connection: None,

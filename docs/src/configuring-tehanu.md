@@ -10,29 +10,29 @@ editor:
 
 ## Settings Editor
 
-You can browse through many of the supported settings via the Settings Editor, which can be opened with the {#kb tehanu::OpenSettings} keybinding, or through the `tehanu: open settings` action in the command palette. Through it, you can customize your local, user settings as well as project settings.
+You can browse through many of the supported settings via the Settings Editor, which can be opened with the {#kb gram::OpenSettings} keybinding, or through the `gram: open settings` action in the command palette. Through it, you can customize your local, user settings as well as project settings.
 
-> Note that not all settings that Tehanu supports are available through the Settings Editor yet.
-> Some more intricate ones, such as language formatters, can only be changed through the JSON settings file {#kb tehanu::OpenSettingsFile}.
+> Note that not all settings that Gram supports are available through the Settings Editor yet.
+> Some more intricate ones, such as language formatters, can only be changed through the JSON settings file {#kb gram::OpenSettingsFile}.
 
 ## User Settings File
 
-Your settings JSON file can be opened with {#kb tehanu::OpenSettingsFile}.
-By default it is located at `~/.config/tehanu/settings.json`, though if you have `XDG_CONFIG_HOME` in your environment on Linux it will be at `$XDG_CONFIG_HOME/tehanu/settings.json` instead.
+Your settings JSON file can be opened with {#kb gram::OpenSettingsFile}.
+By default it is located at `~/.config/gram/settings.json`, though if you have `XDG_CONFIG_HOME` in your environment on Linux it will be at `$XDG_CONFIG_HOME/gram/settings.json` instead.
 
 Whatever you have added to your user settings file gets merged with any local configuration inside your projects.
 
 ### Default Settings
 
 In the Settings Editor, the values you see set are the default ones.
-You can also verify them in JSON by running {#action tehanu::OpenDefaultSettings} from the command palette.
+You can also verify them in JSON by running {#action gram::OpenDefaultSettings} from the command palette.
 
 Extensions that provide language servers may also provide default settings for those language servers.
 
 ## Project Settings File
 
-Similarly to user files, you can open your project settings file by running {#action tehanu::OpenProjectSettings} from the command palette.
-This will create a `.tehanu` directory containing`.tehanu/settings.json`.
+Similarly to user files, you can open your project settings file by running {#action gram::OpenProjectSettings} from the command palette.
+This will create a `.gram` directory containing`.gram/settings.json`.
 
 Although most projects will only need one settings file at the root, you can add more local settings files for subdirectories as needed.
 Not all settings can be set in local files, just those that impact the behavior of the editor and language tooling.
@@ -42,7 +42,7 @@ The syntax for configuration files is a super-set of JSON that allows `//` comme
 
 ## Per-release Channel Overrides
 
-Tehanu reads the same `settings.json` across all release channels (Stable, Preview or Nightly).
+Gram reads the same `settings.json` across all release channels (Stable, Preview or Nightly).
 However, you can scope overrides to a specific channel by adding top-level `stable`, `preview`, `nightly` or `dev` objects.
 They are merged into the base configuration with settings from these keys taking precedence upon launching the specified build. For example:
 
@@ -55,18 +55,18 @@ They are merged into the base configuration with settings from these keys taking
     "vim_mode": true
   },
   "preview": {
-    "theme": "tehanu-dark"
+    "theme": "gram-dark"
   }
 }
 ```
 
-With this configuration, Stable keeps all base preferences, Preview switches to `tehanu-dark`, and Nightly enables Vim mode with a different theme.
+With this configuration, Stable keeps all base preferences, Preview switches to `gram-dark`, and Nightly enables Vim mode with a different theme.
 
 Changing settings in the Settings Editorwill always apply the change across all channels.
 
 # Settings
 
-Find below an extensive run-through of many supported settings by Tehanu.
+Find below an extensive run-through of many supported settings by Gram.
 
 ## Active Pane Modifiers
 
@@ -206,13 +206,13 @@ You can find the names of your currently installed extensions by listing the sub
 On macOS:
 
 ```sh
-ls ~/Library/Application\ Support/Tehanu/extensions/installed/
+ls ~/Library/Application\ Support/Gram/extensions/installed/
 ```
 
 On Linux:
 
 ```sh
-ls ~/.local/share/tehanu/extensions/installed
+ls ~/.local/share/gram/extensions/installed
 ```
 
 ## Autosave
@@ -351,11 +351,11 @@ Note that a save will be triggered when an unsaved tab is closed, even if this i
 
 - Description: The name of a font to use for rendering text in the editor.
 - Setting: `buffer_font_family`
-- Default: `.TehanuMono`. This currently aliases to [Lilex](https://lilex.myrt.co).
+- Default: `.GramMono`. This currently aliases to [Lilex](https://lilex.myrt.co).
 
 **Options**
 
-The name of any font family installed on the user's system, or `".TehanuMono"`.
+The name of any font family installed on the user's system, or `".GramMono"`.
 
 ## Buffer Font Features
 
@@ -366,7 +366,7 @@ The name of any font family installed on the user's system, or `".TehanuMono"`.
 
 **Options**
 
-Tehanu supports all OpenType features that can be enabled or disabled for a given buffer or terminal font, as well as setting values for font features.
+Gram supports all OpenType features that can be enabled or disabled for a given buffer or terminal font, as well as setting values for font features.
 
 For example, to disable font ligatures, add the following to your settings:
 
@@ -1364,7 +1364,7 @@ Each option controls displaying of a particular toolbar element. If all elements
 
 **Options**
 
-This setting enables integration with macOS’s native window tabbing feature. When set to `true`, Tehanu windows can be grouped together as tabs in a single macOS window, following the system-wide tabbing preferences set by the user (such as "Always", "In Full Screen", or "Never"). This setting is only available on macOS.
+This setting enables integration with macOS’s native window tabbing feature. When set to `true`, Gram windows can be grouped together as tabs in a single macOS window, following the system-wide tabbing preferences set by the user (such as "Always", "In Full Screen", or "Never"). This setting is only available on macOS.
 
 ## Enable Language Server
 
@@ -1430,7 +1430,7 @@ Positive `integer` value between 1 and 32. Values outside of this range will be 
 },
 ```
 
-There is an experimental setting that completely hides the status bar. This causes major usability problems (you will be unable to use many of Tehanu's features), but is provided for those who value screen real-estate above all else.
+There is an experimental setting that completely hides the status bar. This causes major usability problems (you will be unable to use many of Gram's features), but is provided for those who value screen real-estate above all else.
 
 ```json
 "status_bar": {
@@ -1655,7 +1655,7 @@ The result is still `)))` and not `))))))`, which is what it would be by default
 ## File Scan Exclusions
 
 - Setting: `file_scan_exclusions`
-- Description: Files or globs of files that will be excluded by Tehanu entirely. They will be skipped during file scans, file searches, and not be displayed in the project file tree. Overrides `file_scan_inclusions`.
+- Description: Files or globs of files that will be excluded by Gram entirely. They will be skipped during file scans, file searches, and not be displayed in the project file tree. Overrides `file_scan_inclusions`.
 - Default:
 
 ```json [settings]
@@ -1677,7 +1677,7 @@ Note, specifying `file_scan_exclusions` in settings.json will override the defau
 ## File Scan Inclusions
 
 - Setting: `file_scan_inclusions`
-- Description: Files or globs of files that will be included by Tehanu, even when ignored by git. This is useful for files that are not tracked by git, but are still important to your project. Note that globs that are overly broad can slow down Tehanu's file scanning. `file_scan_exclusions` takes precedence over these inclusions.
+- Description: Files or globs of files that will be included by Gram, even when ignored by git. This is useful for files that are not tracked by git, but are still important to your project. Note that globs that are overly broad can slow down Gram's file scanning. `file_scan_exclusions` takes precedence over these inclusions.
 - Default:
 
 ```json [settings]
@@ -1687,12 +1687,12 @@ Note, specifying `file_scan_exclusions` in settings.json will override the defau
 ## File Types
 
 - Setting: `file_types`
-- Description: Configure how Tehanu selects a language for a file based on its filename or extension. Supports glob entries.
+- Description: Configure how Gram selects a language for a file based on its filename or extension. Supports glob entries.
 - Default:
 
 ```json [settings]
 "file_types": {
-  "JSONC": ["**/.tehanu/**/*.json", "**/tehanu/**/*.json", "**/Tehanu/**/*.json", "**/.vscode/**/*.json"],
+  "JSONC": ["**/.gram/**/*.json", "**/gram/**/*.json", "**/Gram/**/*.json", "**/.vscode/**/*.json"],
   "Shell Script": [".env.*"]
 }
 ```
@@ -2165,9 +2165,9 @@ Example:
 
 ## Icon Theme
 
-- Description: The icon theme setting can be specified in two forms - either as the name of an icon theme or as an object containing the `mode`, `dark`, and `light` icon themes for files/folders inside Tehanu.
+- Description: The icon theme setting can be specified in two forms - either as the name of an icon theme or as an object containing the `mode`, `dark`, and `light` icon themes for files/folders inside Gram.
 - Setting: `icon_theme`
-- Default: `Tehanu (Default)`
+- Default: `Gram (Default)`
 
 ### Icon Theme Object
 
@@ -2178,8 +2178,8 @@ Example:
 ```json [settings]
 "icon_theme": {
   "mode": "system",
-  "dark": "Tehanu (Default)",
-  "light": "Tehanu (Default)"
+  "dark": "Gram (Default)",
+  "light": "Gram (Default)"
 },
 ```
 
@@ -2219,7 +2219,7 @@ Example:
 
 - Description: The name of the dark icon theme.
 - Setting: `dark`
-- Default: `Tehanu (Default)`
+- Default: `Gram (Default)`
 
 **Options**
 
@@ -2229,7 +2229,7 @@ Run the {#action icon_theme_selector::Toggle} action in the command palette to s
 
 - Description: The name of the light icon theme.
 - Setting: `light`
-- Default: `Tehanu (Default)`
+- Default: `Gram (Default)`
 
 **Options**
 
@@ -2304,16 +2304,16 @@ Inlay hints querying consists of two parts: editor (client) and LSP server.
 With the inlay settings above are changed to enable the hints, editor will start to query certain types of hints and react on LSP hint refresh request from the server.
 At this point, the server may or may not return hints depending on its implementation, further configuration might be needed, refer to the corresponding LSP server documentation.
 
-The following languages have inlay hints preconfigured by Tehanu:
+The following languages have inlay hints preconfigured by Gram:
 
-- [Go](https://docs.tehanu.liten.app/languages/go)
-- [Rust](https://docs.tehanu.liten.app/languages/rust)
-- [Svelte](https://docs.tehanu.liten.app/languages/svelte)
-- [TypeScript](https://docs.tehanu.liten.app/languages/typescript)
+- [Go](https://docs.gram.liten.app/languages/go)
+- [Rust](https://docs.gram.liten.app/languages/rust)
+- [Svelte](https://docs.gram.liten.app/languages/svelte)
+- [TypeScript](https://docs.gram.liten.app/languages/typescript)
 
 Use the `lsp` section for the server configuration. Examples are provided in the corresponding language documentation.
 
-Hints are not instantly queried in Tehanu, two kinds of debounces are used, either may be set to 0 to be disabled.
+Hints are not instantly queried in Gram, two kinds of debounces are used, either may be set to 0 to be disabled.
 Settings-related hint updates are not debounced.
 
 All possible config values for `toggle_on_modifiers_press` are:
@@ -2551,7 +2551,7 @@ Positive `integer` values or `null` for unlimited tabs
 
 ## Network Proxy
 
-- Description: Configure a network proxy for Tehanu.
+- Description: Configure a network proxy for Gram.
 - Setting: `proxy`
 - Default: `null`
 
@@ -2570,7 +2570,7 @@ The following URI schemes are supported:
 
 `http` will be used when no scheme is specified.
 
-By default no proxy will be used, or Tehanu will attempt to retrieve proxy settings from environment variables, such as `http_proxy`, `HTTP_PROXY`, `https_proxy`, `HTTPS_PROXY`, `all_proxy`, `ALL_PROXY`, `no_proxy` and `NO_PROXY`.
+By default no proxy will be used, or Gram will attempt to retrieve proxy settings from environment variables, such as `http_proxy`, `HTTP_PROXY`, `https_proxy`, `HTTPS_PROXY`, `all_proxy`, `ALL_PROXY`, `no_proxy` and `NO_PROXY`.
 
 For example, to set an `http` proxy, add the following to your settings:
 
@@ -2915,7 +2915,7 @@ List of strings containing any combination of:
 
 **Options**
 
-1. Restore all workspaces that were open when quitting Tehanu:
+1. Restore all workspaces that were open when quitting Gram:
 
 ```json [settings]
 {
@@ -3268,7 +3268,7 @@ Positive integer values
 
 ## Use Auto Surround
 
-- Description: Whether to automatically surround selected text when typing opening parenthesis, bracket, brace, single or double quote characters. For example, when you select text and type '(', Tehanu will surround the text with ().
+- Description: Whether to automatically surround selected text when typing opening parenthesis, bracket, brace, single or double quote characters. For example, when you select text and type '(', Gram will surround the text with ().
 - Setting: `use_auto_surround`
 - Default: `true`
 
@@ -3278,7 +3278,7 @@ Positive integer values
 
 ## Use System Path Prompts
 
-- Description: Whether to use the system provided dialogs for Open and Save As. When set to false, Tehanu will use the built-in keyboard-first pickers.
+- Description: Whether to use the system provided dialogs for Open and Save As. When set to false, Gram will use the built-in keyboard-first pickers.
 - Setting: `use_system_path_prompts`
 - Default: `true`
 
@@ -3288,7 +3288,7 @@ Positive integer values
 
 ## Use System Prompts
 
-- Description: Whether to use the system provided dialogs for prompts, such as confirmation prompts. When set to false, Tehanu will use its built-in prompts. Note that on Linux, this option is ignored and Tehanu will always use the built-in prompts.
+- Description: Whether to use the system provided dialogs for prompts, such as confirmation prompts. When set to false, Gram will use its built-in prompts. Note that on Linux, this option is ignored and Gram will always use the built-in prompts.
 - Setting: `use_system_prompts`
 - Default: `true`
 
@@ -3318,7 +3318,7 @@ List of `integer` column numbers
 
 ## Tasks
 
-- Description: Configuration for tasks that can be run within Tehanu
+- Description: Configuration for tasks that can be run within Gram
 - Setting: `tasks`
 - Default:
 
@@ -3336,7 +3336,7 @@ List of `integer` column numbers
 
 - `variables`: Custom variables for task configuration
 - `enabled`: Whether tasks are enabled
-- `prefer_lsp`: Whether to prefer LSP-provided tasks over Tehanu language extension ones
+- `prefer_lsp`: Whether to prefer LSP-provided tasks over Gram language extension ones
 
 ### Diagnostics
 
@@ -3567,7 +3567,7 @@ List of `integer` column numbers
 {
   "terminal": {
     "env": {
-      "TEHANU": "1",
+      "GRAM": "1",
       "KEY": "value1:value2"
     }
   }
@@ -3901,7 +3901,7 @@ Example command to set the title: `echo -e "\e]2;New Title\007";`
   "terminal": {
     "working_directory": {
       "always": {
-        "directory": "~/tehanu/projects/"
+        "directory": "~/gram/projects/"
       }
     }
   }
@@ -3974,7 +3974,7 @@ Example command to set the title: `echo -e "\e]2;New Title\007";`
 
 ## Theme
 
-- Description: The theme setting can be specified in two forms - either as the name of a theme or as an object containing the `mode`, `dark`, and `light` themes for the Tehanu UI.
+- Description: The theme setting can be specified in two forms - either as the name of a theme or as an object containing the `mode`, `dark`, and `light` themes for the Gram UI.
 - Setting: `theme`
 - Default: `One Dark`
 
@@ -4026,7 +4026,7 @@ Example command to set the title: `echo -e "\e]2;New Title\007";`
 
 ### Dark
 
-- Description: The name of the dark Tehanu theme to use for the UI.
+- Description: The name of the dark Gram theme to use for the UI.
 - Setting: `dark`
 - Default: `One Dark`
 
@@ -4036,7 +4036,7 @@ Run the {#action theme_selector::Toggle} action in the command palette to see a 
 
 ### Light
 
-- Description: The name of the light Tehanu theme to use for the UI.
+- Description: The name of the light Gram theme to use for the UI.
 - Setting: `light`
 - Default: `One Light`
 
@@ -4424,7 +4424,7 @@ Run the {#action theme_selector::Toggle} action in the command palette to see a 
 }
 ```
 
-See the [debugger page](./debugger.md) for more information about debugging support within Tehanu.
+See the [debugger page](./debugger.md) for more information about debugging support within Gram.
 
 ## Git Panel
 
@@ -4566,11 +4566,11 @@ Float values between `0.0` and `0.9`, where:
 
 - Description: The name of the font to use for text in the UI.
 - Setting: `ui_font_family`
-- Default: `.TehanuSans`. This currently aliases to [IBM Plex](https://www.ibm.com/plex/).
+- Default: `.GramSans`. This currently aliases to [IBM Plex](https://www.ibm.com/plex/).
 
 **Options**
 
-The name of any font family installed on the system, `".TehanuSans"` to use the Tehanu-provided default, or `".SystemUIFont"` to use the system's default UI font (on macOS and Windows).
+The name of any font family installed on the system, `".GramSans"` to use the Gram-provided default, or `".SystemUIFont"` to use the system's default UI font (on macOS and Windows).
 
 ## UI Font Features
 
@@ -4588,7 +4588,7 @@ The name of any font family installed on the system, `".TehanuSans"` to use the 
 
 **Options**
 
-Tehanu supports all OpenType features that can be enabled or disabled for a given UI font, as well as setting values for font features.
+Gram supports all OpenType features that can be enabled or disabled for a given UI font, as well as setting values for font features.
 
 For example, to disable font ligatures, add the following to your settings:
 
@@ -4654,7 +4654,7 @@ For example, to use `Nerd Font` as a fallback, add the following to your setting
 - Default: `{}`
 
 In your `settings.json` file, add the `profiles` object.
-Each key within this object is the name of a settings profile, and each value is an object that can include any of Tehanu's settings.
+Each key within this object is the name of a settings profile, and each value is an object that can include any of Gram's settings.
 
 Example:
 
@@ -4685,7 +4685,7 @@ To preview and enable a settings profile, open the command palette via {#kb comm
 ## An example configuration:
 
 ```json [settings]
-// ~/.config/tehanu/settings.json
+// ~/.config/gram/settings.json
 {
   "theme": "cave-light",
   "tab_size": 2,
@@ -4693,7 +4693,7 @@ To preview and enable a settings profile, open the command palette via {#kb comm
   "soft_wrap": "none",
 
   "buffer_font_size": 18,
-  "buffer_font_family": ".TehanuMono",
+  "buffer_font_family": ".GramMono",
 
   "autosave": "on_focus_change",
   "format_on_save": "off",

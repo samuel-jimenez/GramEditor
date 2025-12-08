@@ -26,12 +26,12 @@ use util::paths::PathWithPosition;
 #[cfg(any(target_os = "linux", target_os = "freebsd"))]
 use std::io::IsTerminal;
 
-const URL_PREFIX: [&'static str; 5] = ["tehanu://", "http://", "https://", "file://", "ssh://"];
+const URL_PREFIX: [&'static str; 5] = ["gram://", "http://", "https://", "file://", "ssh://"];
 
 struct Detect;
 
 trait InstalledApp {
-    fn tehanu_version_string(&self) -> String;
+    fn gram_version_string(&self) -> String;
     fn launch(&self, ipc_url: String) -> anyhow::Result<()>;
     fn run_foreground(
         &self,
@@ -43,21 +43,21 @@ trait InstalledApp {
 
 #[derive(Parser, Debug)]
 #[command(
-    name = "tehanu",
+    name = "gram",
     disable_version_flag = true,
-    before_help = "The Tehanu CLI binary.
-This CLI is a separate binary that invokes Tehanu.
+    before_help = "The Gram CLI binary.
+This CLI is a separate binary that invokes Gram.
 
 Examples:
-    `tehanu`
-          Simply opens Tehanu
-    `tehanu --foreground`
+    `gram`
+          Simply opens Gram
+    `gram --foreground`
           Runs in foreground (shows all logs)
-    `tehanu path-to-your-project`
-          Open your project in Tehanu
-    `tehanu -n path-to-file `
+    `gram path-to-your-project`
+          Open your project in Gram
+    `gram -n path-to-file `
           Open file/folder in a new window",
-    after_help = "To read from stdin, append '-', e.g. 'ps axf | tehanu -'"
+    after_help = "To read from stdin, append '-', e.g. 'ps axf | gram -'"
 )]
 struct Args {
     /// Wait for all of the given paths to be opened/closed before exiting.
@@ -74,32 +74,32 @@ struct Args {
     reuse: bool,
     /// Sets a custom directory for all user data (e.g., database, extensions, logs).
     /// This overrides the default platform-specific data directory location:
-    #[cfg_attr(target_os = "macos", doc = "`~/Library/Application Support/Tehanu`.")]
-    #[cfg_attr(target_os = "windows", doc = "`%LOCALAPPDATA%\\Tehanu`.")]
+    #[cfg_attr(target_os = "macos", doc = "`~/Library/Application Support/Gram`.")]
+    #[cfg_attr(target_os = "windows", doc = "`%LOCALAPPDATA%\\Gram`.")]
     #[cfg_attr(
         not(any(target_os = "windows", target_os = "macos")),
-        doc = "`$XDG_DATA_HOME/tehanu`."
+        doc = "`$XDG_DATA_HOME/gram`."
     )]
     #[arg(long, value_name = "DIR")]
     user_data_dir: Option<String>,
-    /// The paths to open in Tehanu (space-separated).
+    /// The paths to open in Gram (space-separated).
     ///
     /// Use `path:line:column` syntax to open a file at the given line and column.
     paths_with_position: Vec<String>,
-    /// Print Tehanu's version and the app path.
+    /// Print Gram's version and the app path.
     #[arg(short, long)]
     version: bool,
-    /// Run tehanu in the foreground (useful for debugging)
+    /// Run gram in the foreground (useful for debugging)
     #[arg(long)]
     foreground: bool,
-    /// Custom path to Tehanu.app or the editor binary
+    /// Custom path to Gram.app or the editor binary
     #[arg(long)]
-    tehanu: Option<PathBuf>,
-    /// Run tehanu in dev-server mode
+    gram: Option<PathBuf>,
+    /// Run gram in dev-server mode
     #[arg(long)]
     dev_server_token: Option<String>,
     /// The username and WSL distribution to use when opening paths. If not specified,
-    /// Tehanu will attempt to open the paths directly.
+    /// Gram will attempt to open the paths directly.
     ///
     /// The username is optional, and if not specified, the default user for the distribution
     /// will be used.
@@ -110,14 +110,14 @@ struct Args {
     #[cfg(target_os = "windows")]
     #[arg(long, value_name = "USER@DISTRO")]
     wsl: Option<String>,
-    /// Not supported in Tehanu CLI, only supported on Tehanu binary
+    /// Not supported in Gram CLI, only supported on Gram binary
     /// Will attempt to give the correct command to run
     #[arg(long)]
     system_specs: bool,
     /// Pairs of file paths to diff. Can be specified multiple times.
     #[arg(long, action = clap::ArgAction::Append, num_args = 2, value_names = ["OLD_PATH", "NEW_PATH"])]
     diff: Vec<String>,
-    /// Uninstall Tehanu from user system
+    /// Uninstall Gram from user system
     #[cfg(all(
         any(target_os = "linux", target_os = "macos"),
         not(feature = "no-bundled-uninstall")
@@ -126,7 +126,7 @@ struct Args {
     uninstall: bool,
 
     /// Used for SSH/Git password authentication, to remove the need for netcat as a dependency,
-    /// by having Tehanu act like netcat communicating over a Unix socket.
+    /// by having Gram act like netcat communicating over a Unix socket.
     #[arg(long, hide = true)]
     askpass: Option<String>,
 }
@@ -368,7 +368,7 @@ fn main() -> Result<()> {
     }
     let args = Args::parse();
 
-    // `tehanu --askpass` Makes tehanu operate in nc/netcat mode for use with askpass
+    // `gram --askpass` Makes gram operate in nc/netcat mode for use with askpass
     if let Some(socket) = &args.askpass {
         askpass::main(socket);
         return Ok(());
@@ -383,17 +383,17 @@ fn main() -> Result<()> {
     #[cfg(target_os = "linux")]
     let args = flatpak::set_bin_if_no_escape(args);
 
-    let app = Detect::detect(args.tehanu.as_deref()).context("Bundle detection")?;
+    let app = Detect::detect(args.gram.as_deref()).context("Bundle detection")?;
 
     if args.version {
-        println!("{}", app.tehanu_version_string());
+        println!("{}", app.gram_version_string());
         return Ok(());
     }
 
     if args.system_specs {
         let path = app.path();
         let msg = [
-            "The `--system-specs` argument is not supported in the Tehanu CLI, only on Tehanu binary.",
+            "The `--system-specs` argument is not supported in the Gram CLI, only on Gram binary.",
             "To retrieve the system specs on the command line, run the following command:",
             &format!("{} --system-specs", path.display()),
         ];
@@ -416,7 +416,7 @@ fn main() -> Result<()> {
 
         let status = std::process::Command::new("sh")
             .arg(&script_path)
-            .env("TEHANU_CHANNEL", &*release_channel::RELEASE_CHANNEL_NAME)
+            .env("GRAM_CHANNEL", &*release_channel::RELEASE_CHANNEL_NAME)
             .status()
             .context("Failed to execute uninstall script")?;
 
@@ -424,8 +424,8 @@ fn main() -> Result<()> {
     }
 
     let (server, server_name) =
-        IpcOneShotServer::<IpcHandshake>::new().context("Handshake before Tehanu spawn")?;
-    let url = format!("tehanu-cli://{server_name}");
+        IpcOneShotServer::<IpcHandshake>::new().context("Handshake before Gram spawn")?;
+    let url = format!("gram-cli://{server_name}");
 
     let open_new_workspace = if args.new {
         Some(true)
@@ -440,7 +440,7 @@ fn main() -> Result<()> {
         {
             use collections::HashMap;
 
-            // On Linux, the desktop entry uses `cli` to spawn `tehanu`.
+            // On Linux, the desktop entry uses `cli` to spawn `gram`.
             // We need to handle env vars correctly since std::env::vars() may not contain
             // project-specific vars (e.g. those set by direnv).
             // By setting env to None here, the LSP will use worktree env vars instead,
@@ -508,7 +508,7 @@ fn main() -> Result<()> {
 
     anyhow::ensure!(
         args.dev_server_token.is_none(),
-        "Dev servers were removed in v0.157.x please upgrade to SSH remoting: https://tehanu.liten.app/docs/remote-development"
+        "Dev servers were removed in v0.157.x please upgrade to SSH remoting: https://gram.liten.app/docs/remote-development"
     );
 
     rayon::ThreadPoolBuilder::new()
@@ -524,7 +524,7 @@ fn main() -> Result<()> {
             let exit_status = exit_status.clone();
             let user_data_dir_for_thread = user_data_dir.clone();
             move || {
-                let (_, handshake) = server.accept().context("Handshake after Tehanu spawn")?;
+                let (_, handshake) = server.accept().context("Handshake after Gram spawn")?;
                 let (tx, rx) = (handshake.requests, handshake.responses);
 
                 #[cfg(target_os = "windows")]
@@ -675,12 +675,12 @@ mod linux {
                 let cli = env::current_exe()?;
                 let dir = cli.parent().context("no parent path for cli")?;
 
-                // libexec is the standard, lib/tehanu is for Arch (and other non-libexec distros),
-                // ./tehanu is for the target directory in development builds.
+                // libexec is the standard, lib/gram is for Arch (and other non-libexec distros),
+                // ./gram is for the target directory in development builds.
                 let possible_locations = [
-                    "../libexec/tehanu-editor",
-                    "../lib/tehanu/tehanu-editor",
-                    "./tehanu",
+                    "../libexec/gram-editor",
+                    "../lib/gram/gram-editor",
+                    "./gram",
                 ];
                 possible_locations
                     .iter()
@@ -695,16 +695,16 @@ mod linux {
     }
 
     impl InstalledApp for App {
-        fn tehanu_version_string(&self) -> String {
+        fn gram_version_string(&self) -> String {
             format!(
-                "Tehanu {}{}{} – {}",
+                "Gram {}{}{} – {}",
                 if *release_channel::RELEASE_CHANNEL_NAME == "stable" {
                     "".to_string()
                 } else {
                     format!("{} ", *release_channel::RELEASE_CHANNEL_NAME)
                 },
                 option_env!("RELEASE_VERSION").unwrap_or_default(),
-                match option_env!("TEHANU_COMMIT_SHA") {
+                match option_env!("GRAM_COMMIT_SHA") {
                     Some(commit_sha) => format!(" {commit_sha} "),
                     None => "".to_string(),
                 },
@@ -714,7 +714,7 @@ mod linux {
 
         fn launch(&self, ipc_url: String) -> anyhow::Result<()> {
             let sock_path = paths::data_dir().join(format!(
-                "tehanu-{}.sock",
+                "gram-{}.sock",
                 *release_channel::RELEASE_CHANNEL_NAME
             ));
             let sock = UnixDatagram::unbound()?;
@@ -792,8 +792,8 @@ mod flatpak {
     use std::process::Command;
     use std::{env, process};
 
-    const EXTRA_LIB_ENV_NAME: &str = "TEHANU_FLATPAK_LIB_PATH";
-    const NO_ESCAPE_ENV_NAME: &str = "TEHANU_FLATPAK_NO_ESCAPE";
+    const EXTRA_LIB_ENV_NAME: &str = "GRAM_FLATPAK_LIB_PATH";
+    const NO_ESCAPE_ENV_NAME: &str = "GRAM_FLATPAK_NO_ESCAPE";
 
     /// Adds bundled libraries to LD_LIBRARY_PATH if running under flatpak
     pub fn ld_extra_libs() {
@@ -815,7 +815,7 @@ mod flatpak {
         if let Some(flatpak_dir) = get_flatpak_dir() {
             let mut args = vec!["/usr/bin/flatpak-spawn".into(), "--host".into()];
             args.append(&mut get_xdg_env_args());
-            args.push("--env=TEHANU_UPDATE_EXPLANATION=Please use flatpak to update tehanu".into());
+            args.push("--env=GRAM_UPDATE_EXPLANATION=Please use flatpak to update gram".into());
             args.push(
                 format!(
                     "--env={EXTRA_LIB_ENV_NAME}={}",
@@ -823,17 +823,17 @@ mod flatpak {
                 )
                 .into(),
             );
-            args.push(flatpak_dir.join("bin").join("tehanu").into());
+            args.push(flatpak_dir.join("bin").join("gram").into());
 
             let mut is_app_location_set = false;
             for arg in &env::args_os().collect::<Vec<_>>()[1..] {
                 args.push(arg.clone());
-                is_app_location_set |= arg == "--tehanu";
+                is_app_location_set |= arg == "--gram";
             }
 
             if !is_app_location_set {
-                args.push("--tehanu".into());
-                args.push(flatpak_dir.join("libexec").join("tehanu-editor").into());
+                args.push("--gram".into());
+                args.push(flatpak_dir.join("libexec").join("gram-editor").into());
             }
 
             let error = exec::execvp("/usr/bin/flatpak-spawn", args);
@@ -844,14 +844,14 @@ mod flatpak {
 
     pub fn set_bin_if_no_escape(mut args: super::Args) -> super::Args {
         if env::var(NO_ESCAPE_ENV_NAME).is_ok()
-            && env::var("FLATPAK_ID").is_ok_and(|id| id.starts_with("se.ziran.Tehanu"))
-            && args.tehanu.is_none()
+            && env::var("FLATPAK_ID").is_ok_and(|id| id.starts_with("se.ziran.Gram"))
+            && args.gram.is_none()
         {
-            args.tehanu = Some("/app/libexec/tehanu-editor".into());
+            args.gram = Some("/app/libexec/gram-editor".into());
             unsafe {
                 env::set_var(
-                    "TEHANU_UPDATE_EXPLANATION",
-                    "Please use flatpak to update tehanu",
+                    "GRAM_UPDATE_EXPLANATION",
+                    "Please use flatpak to update gram",
                 )
             };
         }
@@ -864,7 +864,7 @@ mod flatpak {
         }
 
         if let Ok(flatpak_id) = env::var("FLATPAK_ID") {
-            if !flatpak_id.starts_with("se.ziran.Tehanu") {
+            if !flatpak_id.starts_with("se.ziran.Gram") {
                 return None;
             }
 
@@ -934,16 +934,16 @@ mod windows {
     struct App(PathBuf);
 
     impl InstalledApp for App {
-        fn tehanu_version_string(&self) -> String {
+        fn gram_version_string(&self) -> String {
             format!(
-                "Tehanu {}{}{} – {}",
+                "Gram {}{}{} – {}",
                 if *release_channel::RELEASE_CHANNEL_NAME == "stable" {
                     "".to_string()
                 } else {
                     format!("{} ", *release_channel::RELEASE_CHANNEL_NAME)
                 },
                 option_env!("RELEASE_VERSION").unwrap_or_default(),
-                match option_env!("TEHANU_COMMIT_SHA") {
+                match option_env!("GRAM_COMMIT_SHA") {
                     Some(commit_sha) => format!(" {commit_sha} "),
                     None => "".to_string(),
                 },
@@ -1002,12 +1002,12 @@ mod windows {
                 let cli = std::env::current_exe()?;
                 let dir = cli.parent().context("no parent path for cli")?;
 
-                // ../Tehanu.exe is the standard, lib/tehanu is for MSYS2, ./tehanu.exe is for the target
+                // ../Gram.exe is the standard, lib/gram is for MSYS2, ./gram.exe is for the target
                 // directory in development builds.
                 let possible_locations = [
-                    "../Tehanu.exe",
-                    "../lib/tehanu/tehanu-editor.exe",
-                    "./tehanu.exe",
+                    "../Gram.exe",
+                    "../lib/gram/gram-editor.exe",
+                    "./gram.exe",
                 ];
                 possible_locations
                     .iter()
@@ -1104,8 +1104,8 @@ mod mac_os {
     }
 
     impl InstalledApp for Bundle {
-        fn tehanu_version_string(&self) -> String {
-            format!("Tehanu {} – {}", self.version(), self.path().display(),)
+        fn gram_version_string(&self) -> String {
+            format!("Gram {} – {}", self.version(), self.path().display(),)
         }
 
         fn launch(&self, url: String) -> anyhow::Result<()> {
@@ -1123,7 +1123,7 @@ mod mac_os {
                             kCFStringEncodingUTF8,
                             ptr::null(),
                         ));
-                        // equivalent to: open tehanu-cli:... -a /Applications/Tehanu\ Preview.app
+                        // equivalent to: open gram-cli:... -a /Applications/Gram\ Preview.app
                         let urls_to_open =
                             CFArray::from_copyable(&[url_to_open.as_concrete_TypeRef()]);
                         LSOpenFromURLSpec(
@@ -1141,7 +1141,7 @@ mod mac_os {
                     anyhow::ensure!(
                         status == 0,
                         "cannot start app bundle {}",
-                        self.tehanu_version_string()
+                        self.gram_version_string()
                     );
                 }
 
@@ -1150,7 +1150,7 @@ mod mac_os {
                         .parent()
                         .with_context(|| format!("Executable {executable:?} path has no parent"))?;
                     let subprocess_stdout_file = fs::File::create(
-                        executable_parent.join("tehanu_dev.log"),
+                        executable_parent.join("gram_dev.log"),
                     )
                     .with_context(|| format!("Log file creation in {executable_parent:?}"))?;
                     let subprocess_stdin_file =
@@ -1179,7 +1179,7 @@ mod mac_os {
             user_data_dir: Option<&str>,
         ) -> io::Result<ExitStatus> {
             let path = match self {
-                Bundle::App { app_bundle, .. } => app_bundle.join("Contents/MacOS/tehanu"),
+                Bundle::App { app_bundle, .. } => app_bundle.join("Contents/MacOS/gram"),
                 Bundle::LocalPath { executable, .. } => executable.clone(),
             };
 
@@ -1193,7 +1193,7 @@ mod mac_os {
 
         fn path(&self) -> PathBuf {
             match self {
-                Bundle::App { app_bundle, .. } => app_bundle.join("Contents/MacOS/tehanu"),
+                Bundle::App { app_bundle, .. } => app_bundle.join("Contents/MacOS/gram"),
                 Bundle::LocalPath { executable, .. } => executable.clone(),
             }
         }

@@ -17,7 +17,7 @@ use theme::{Appearance, AppearanceContent};
 use crate::vscode::VsCodeTheme;
 use crate::vscode::VsCodeThemeConverter;
 
-const TEHANU_THEME_SCHEMA_URL: &str = "https://liten.app/schema/themes/v0.2.0.json";
+const GRAM_THEME_SCHEMA_URL: &str = "https://liten.app/schema/themes/v0.2.0.json";
 
 #[derive(Debug, Clone, Copy, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -113,7 +113,7 @@ fn main() -> Result<()> {
     let mut theme = serde_json::to_value(theme).unwrap();
     theme.as_object_mut().unwrap().insert(
         "$schema".to_string(),
-        serde_json::Value::String(TEHANU_THEME_SCHEMA_URL.to_string()),
+        serde_json::Value::String(GRAM_THEME_SCHEMA_URL.to_string()),
     );
     let theme_json = serde_json::to_string_pretty(&theme).unwrap();
 

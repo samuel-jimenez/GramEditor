@@ -1,4 +1,4 @@
-//! Vim support for Tehanu.
+//! Vim support for Gram.
 
 #[cfg(test)]
 mod test;

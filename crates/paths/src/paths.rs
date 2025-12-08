@@ -1,4 +1,4 @@
-//! Paths to locations used by Tehanu.
+//! Paths to locations used by Gram.
 
 use std::env;
 use std::path::{Path, PathBuf};
@@ -17,29 +17,29 @@ static CUSTOM_DATA_DIR: OnceLock<PathBuf> = OnceLock::new();
 
 /// The resolved data directory, combining custom override or platform defaults.
 /// This is set once and cached for subsequent calls.
-/// On macOS, this is `~/Library/Application Support/Tehanu`.
-/// On Linux/FreeBSD, this is `$XDG_DATA_HOME/tehanu`.
-/// On Windows, this is `%LOCALAPPDATA%\Tehanu`.
+/// On macOS, this is `~/Library/Application Support/Gram`.
+/// On Linux/FreeBSD, this is `$XDG_DATA_HOME/gram`.
+/// On Windows, this is `%LOCALAPPDATA%\Gram`.
 static CURRENT_DATA_DIR: OnceLock<PathBuf> = OnceLock::new();
 
 /// The resolved config directory, combining custom override or platform defaults.
 /// This is set once and cached for subsequent calls.
-/// On macOS, this is `~/.config/tehanu`.
-/// On Linux/FreeBSD, this is `$XDG_CONFIG_HOME/tehanu`.
-/// On Windows, this is `%APPDATA%\Tehanu`.
+/// On macOS, this is `~/.config/gram`.
+/// On Linux/FreeBSD, this is `$XDG_CONFIG_HOME/gram`.
+/// On Windows, this is `%APPDATA%\Gram`.
 static CONFIG_DIR: OnceLock<PathBuf> = OnceLock::new();
 
-/// Returns the relative path to the tehanu_server directory on the ssh host.
+/// Returns the relative path to the gram_server directory on the ssh host.
 pub fn remote_server_dir_relative() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::unix(".tehanu_server").unwrap());
+        LazyLock::new(|| RelPath::unix(".gram_server").unwrap());
     *CACHED
 }
 
-/// Returns the relative path to the tehanu_wsl_server directory on the wsl host.
+/// Returns the relative path to the gram_wsl_server directory on the wsl host.
 pub fn remote_wsl_server_dir_relative() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::unix(".tehanu_wsl_server").unwrap());
+        LazyLock::new(|| RelPath::unix(".gram_wsl_server").unwrap());
     *CACHED
 }
 
@@ -80,7 +80,7 @@ pub fn set_custom_data_dir(dir: &str) -> &'static PathBuf {
     })
 }
 
-/// Returns the path to the configuration directory used by Tehanu.
+/// Returns the path to the configuration directory used by Gram.
 pub fn config_dir() -> &'static PathBuf {
     CONFIG_DIR.get_or_init(|| {
         if let Some(custom_dir) = CUSTOM_DATA_DIR.get() {
@@ -88,58 +88,58 @@ pub fn config_dir() -> &'static PathBuf {
         } else if cfg!(target_os = "windows") {
             dirs::config_dir()
                 .expect("failed to determine RoamingAppData directory")
-                .join("Tehanu")
+                .join("Gram")
         } else if cfg!(any(target_os = "linux", target_os = "freebsd")) {
             if let Ok(flatpak_xdg_config) = std::env::var("FLATPAK_XDG_CONFIG_HOME") {
                 flatpak_xdg_config.into()
             } else {
                 dirs::config_dir().expect("failed to determine XDG_CONFIG_HOME directory")
             }
-            .join("tehanu")
+            .join("gram")
         } else {
-            home_dir().join(".config").join("tehanu")
+            home_dir().join(".config").join("gram")
         }
     })
 }
 
-/// Returns the path to the data directory used by Tehanu.
+/// Returns the path to the data directory used by Gram.
 pub fn data_dir() -> &'static PathBuf {
     CURRENT_DATA_DIR.get_or_init(|| {
         if let Some(custom_dir) = CUSTOM_DATA_DIR.get() {
             custom_dir.clone()
         } else if cfg!(target_os = "macos") {
-            home_dir().join("Library/Application Support/Tehanu")
+            home_dir().join("Library/Application Support/Gram")
         } else if cfg!(any(target_os = "linux", target_os = "freebsd")) {
             if let Ok(flatpak_xdg_data) = std::env::var("FLATPAK_XDG_DATA_HOME") {
                 flatpak_xdg_data.into()
             } else {
                 dirs::data_local_dir().expect("failed to determine XDG_DATA_HOME directory")
             }
-            .join("tehanu")
+            .join("gram")
         } else if cfg!(target_os = "windows") {
             dirs::data_local_dir()
                 .expect("failed to determine LocalAppData directory")
-                .join("Tehanu")
+                .join("Gram")
         } else {
             config_dir().clone() // Fallback
         }
     })
 }
 
-/// Returns the path to the temp directory used by Tehanu.
+/// Returns the path to the temp directory used by Gram.
 pub fn temp_dir() -> &'static PathBuf {
     static TEMP_DIR: OnceLock<PathBuf> = OnceLock::new();
     TEMP_DIR.get_or_init(|| {
         if cfg!(target_os = "macos") {
             return dirs::cache_dir()
                 .expect("failed to determine cachesDirectory directory")
-                .join("Tehanu");
+                .join("Gram");
         }
 
         if cfg!(target_os = "windows") {
             return dirs::cache_dir()
                 .expect("failed to determine LocalAppData directory")
-                .join("Tehanu");
+                .join("Gram");
         }
 
         if cfg!(any(target_os = "linux", target_os = "freebsd")) {
@@ -148,10 +148,10 @@ pub fn temp_dir() -> &'static PathBuf {
             } else {
                 dirs::cache_dir().expect("failed to determine XDG_CACHE_HOME directory")
             }
-            .join("tehanu");
+            .join("gram");
         }
 
-        home_dir().join(".cache").join("tehanu")
+        home_dir().join(".cache").join("gram")
     })
 }
 
@@ -166,29 +166,29 @@ pub fn logs_dir() -> &'static PathBuf {
     static LOGS_DIR: OnceLock<PathBuf> = OnceLock::new();
     LOGS_DIR.get_or_init(|| {
         if cfg!(target_os = "macos") {
-            home_dir().join("Library/Logs/Tehanu")
+            home_dir().join("Library/Logs/Gram")
         } else {
             data_dir().join("logs")
         }
     })
 }
 
-/// Returns the path to the Tehanu server directory on this SSH host.
+/// Returns the path to the Gram server directory on this SSH host.
 pub fn remote_server_state_dir() -> &'static PathBuf {
     static REMOTE_SERVER_STATE: OnceLock<PathBuf> = OnceLock::new();
     REMOTE_SERVER_STATE.get_or_init(|| data_dir().join("server_state"))
 }
 
-/// Returns the path to the `Tehanu.log` file.
+/// Returns the path to the `Gram.log` file.
 pub fn log_file() -> &'static PathBuf {
     static LOG_FILE: OnceLock<PathBuf> = OnceLock::new();
-    LOG_FILE.get_or_init(|| logs_dir().join("Tehanu.log"))
+    LOG_FILE.get_or_init(|| logs_dir().join("Gram.log"))
 }
 
-/// Returns the path to the `Tehanu.log.old` file.
+/// Returns the path to the `Gram.log.old` file.
 pub fn old_log_file() -> &'static PathBuf {
     static OLD_LOG_FILE: OnceLock<PathBuf> = OnceLock::new();
-    OLD_LOG_FILE.get_or_init(|| logs_dir().join("Tehanu.log.old"))
+    OLD_LOG_FILE.get_or_init(|| logs_dir().join("Gram.log.old"))
 }
 
 /// Returns the path to the database directory.
@@ -325,7 +325,7 @@ pub fn prompts_dir() -> &'static PathBuf {
 ///
 /// # Arguments
 ///
-/// * `dev_mode` - If true, assumes the current working directory is the Tehanu repository.
+/// * `dev_mode` - If true, assumes the current working directory is the Gram repository.
 pub fn prompt_overrides_dir(repo_path: Option<&Path>) -> PathBuf {
     if let Some(path) = repo_path {
         let dev_path = path.join("assets").join("prompts");
@@ -362,7 +362,7 @@ pub fn embeddings_dir() -> &'static PathBuf {
 
 /// Returns the path to the languages directory.
 ///
-/// This is where language servers are downloaded to for languages built-in to Tehanu.
+/// This is where language servers are downloaded to for languages built-in to Gram.
 pub fn languages_dir() -> &'static PathBuf {
     static LANGUAGES_DIR: OnceLock<PathBuf> = OnceLock::new();
     LANGUAGES_DIR.get_or_init(|| data_dir().join("languages"))
@@ -370,7 +370,7 @@ pub fn languages_dir() -> &'static PathBuf {
 
 /// Returns the path to the debug adapters directory
 ///
-/// This is where debug adapters are downloaded to for DAPs that are built-in to Tehanu.
+/// This is where debug adapters are downloaded to for DAPs that are built-in to Gram.
 pub fn debug_adapters_dir() -> &'static PathBuf {
     static DEBUG_ADAPTERS_DIR: OnceLock<PathBuf> = OnceLock::new();
     DEBUG_ADAPTERS_DIR.get_or_init(|| data_dir().join("debug_adapters"))
@@ -388,9 +388,9 @@ pub fn remote_servers_dir() -> &'static PathBuf {
     REMOTE_SERVERS_DIR.get_or_init(|| data_dir().join("remote_servers"))
 }
 
-/// Returns the relative path to a `.tehanu` folder within a project.
+/// Returns the relative path to a `.gram` folder within a project.
 pub fn local_settings_folder_name() -> &'static str {
-    ".tehanu"
+    ".gram"
 }
 
 /// Returns the relative path to a `.vscode` folder within a project.
@@ -401,14 +401,14 @@ pub fn local_vscode_folder_name() -> &'static str {
 /// Returns the relative path to a `settings.json` file within a project.
 pub fn local_settings_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::unix(".tehanu/settings.json").unwrap());
+        LazyLock::new(|| RelPath::unix(".gram/settings.json").unwrap());
     *CACHED
 }
 
 /// Returns the relative path to a `tasks.json` file within a project.
 pub fn local_tasks_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::unix(".tehanu/tasks.json").unwrap());
+        LazyLock::new(|| RelPath::unix(".gram/tasks.json").unwrap());
     *CACHED
 }
 
@@ -428,10 +428,10 @@ pub fn task_file_name() -> &'static str {
 }
 
 /// Returns the relative path to a `debug.json` file within a project.
-/// .tehanu/debug.json
+/// .gram/debug.json
 pub fn local_debug_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::unix(".tehanu/debug.json").unwrap());
+        LazyLock::new(|| RelPath::unix(".gram/debug.json").unwrap());
     *CACHED
 }
 

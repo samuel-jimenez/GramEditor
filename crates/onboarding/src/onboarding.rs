@@ -32,7 +32,7 @@ mod welcome;
 
 /// Imports settings from Visual Studio Code.
 #[derive(Copy, Clone, Debug, Default, PartialEq, Deserialize, JsonSchema, Action)]
-#[action(namespace = tehanu)]
+#[action(namespace = gram)]
 #[serde(deny_unknown_fields)]
 pub struct ImportVsCodeSettings {
     #[serde(default)]
@@ -40,10 +40,10 @@ pub struct ImportVsCodeSettings {
 }
 
 pub const FIRST_OPEN: &str = "first_open";
-pub const DOCS_URL: &str = "https://tehanu.liten.app/docs/";
+pub const DOCS_URL: &str = "https://gram.liten.app/docs/";
 
 actions!(
-    tehanu,
+    gram,
     [
         /// Opens the onboarding view.
         OpenOnboarding
@@ -262,7 +262,7 @@ impl Render for Onboarding {
                                             .child(
                                                 v_flex()
                                                     .child(
-                                                        Headline::new("TEHANU")
+                                                        Headline::new("GRAM")
                                                             .size(HeadlineSize::Small),
                                                     )
                                                     .child(

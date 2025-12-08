@@ -1,2 +1,2 @@
-psql postgres -c "DROP DATABASE tehanu WITH (FORCE);"
+psql postgres -c "DROP DATABASE gram WITH (FORCE);"
 script/bootstrap

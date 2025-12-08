@@ -162,7 +162,7 @@ pub(crate) fn settings_data(cx: &App) -> Vec<SettingsPage> {
                 }),
                 SettingsPageItem::SettingItem(SettingItem {
                     title: "Restore On Startup",
-                    description: "What to restore from the previous session when opening Tehanu.",
+                    description: "What to restore from the previous session when opening Gram.",
                     field: Box::new(SettingField {
                         json_path: Some("restore_on_startup"),
                         pick: |settings_content| {
@@ -179,7 +179,7 @@ pub(crate) fn settings_data(cx: &App) -> Vec<SettingsPage> {
                 SettingsPageItem::SettingItem(SettingItem {
                     files: USER,
                     title: "Preview Channel",
-                    description: "Which settings should be activated only in Preview build of Tehanu.",
+                    description: "Which settings should be activated only in Preview build of Gram.",
                     field: Box::new(
                         SettingField {
                             json_path: Some("preview_channel_settings"),
@@ -391,7 +391,7 @@ pub(crate) fn settings_data(cx: &App) -> Vec<SettingsPage> {
                     discriminant: SettingItem {
                         files: USER,
                         title: "Icon Theme",
-                        description: "The custom set of icons Tehanu will associate with files and directories.",
+                        description: "The custom set of icons Gram will associate with files and directories.",
                         field: Box::new(SettingField {
                             json_path: Some("icon_theme$"),
                             pick: |settings_content| {
@@ -2498,7 +2498,7 @@ pub(crate) fn settings_data(cx: &App) -> Vec<SettingsPage> {
                 SettingsPageItem::SectionHeader("File Scan"),
                 SettingsPageItem::SettingItem(SettingItem {
                     title: "File Scan Exclusions",
-                    description: "Files or globs of files that will be excluded by Tehanu entirely. They will be skipped during file scans, file searches, and not be displayed in the project file tree. Takes precedence over \"File Scan Inclusions\"",
+                    description: "Files or globs of files that will be excluded by Gram entirely. They will be skipped during file scans, file searches, and not be displayed in the project file tree. Takes precedence over \"File Scan Inclusions\"",
                     field: Box::new(
                         SettingField {
                             json_path: Some("file_scan_exclusions"),
@@ -2520,7 +2520,7 @@ pub(crate) fn settings_data(cx: &App) -> Vec<SettingsPage> {
                 }),
                 SettingsPageItem::SettingItem(SettingItem {
                     title: "File Scan Inclusions",
-                    description: "Files or globs of files that will be included by Tehanu, even when ignored by git. This is useful for files that are not tracked by git, but are still important to your project. Note that globs that are overly broad can slow down Tehanu's file scanning. \"File Scan Exclusions\" takes precedence over these inclusions",
+                    description: "Files or globs of files that will be included by Gram, even when ignored by git. This is useful for files that are not tracked by git, but are still important to your project. Note that globs that are overly broad can slow down Gram's file scanning. \"File Scan Exclusions\" takes precedence over these inclusions",
                     field: Box::new(
                         SettingField {
                             json_path: Some("file_scan_inclusions"),
@@ -4292,7 +4292,7 @@ pub(crate) fn settings_data(cx: &App) -> Vec<SettingsPage> {
                 }),
                 SettingsPageItem::SettingItem(SettingItem {
                     title: "Save Breakpoints",
-                    description: "Whether breakpoints should be reused across Tehanu sessions.",
+                    description: "Whether breakpoints should be reused across Gram sessions.",
                     field: Box::new(SettingField {
                         json_path: Some("debugger.save_breakpoints"),
                         pick: |settings_content| {
@@ -4329,7 +4329,7 @@ pub(crate) fn settings_data(cx: &App) -> Vec<SettingsPage> {
                 }),
                 SettingsPageItem::SettingItem(SettingItem {
                     title: "Log DAP Communications",
-                    description: "Whether to log messages between active debug adapters and Tehanu.",
+                    description: "Whether to log messages between active debug adapters and Gram.",
                     field: Box::new(SettingField {
                         json_path: Some("debugger.log_dap_communications"),
                         pick: |settings_content| {
@@ -5851,7 +5851,7 @@ fn language_settings_data() -> Vec<SettingsPageItem> {
         SettingsPageItem::SectionHeader("Autoclose"),
         SettingsPageItem::SettingItem(SettingItem {
             title: "Use Autoclose",
-            description: "Whether to automatically type closing characters for you. For example, when you type '(', Tehanu will automatically add a closing ')' at the correct position.",
+            description: "Whether to automatically type closing characters for you. For example, when you type '(', Gram will automatically add a closing ')' at the correct position.",
             field: Box::new(SettingField {
                 json_path: Some("languages.$(language).use_autoclose"),
                 pick: |settings_content| {
@@ -5870,7 +5870,7 @@ fn language_settings_data() -> Vec<SettingsPageItem> {
         }),
         SettingsPageItem::SettingItem(SettingItem {
             title: "Use Auto Surround",
-            description: "Whether to automatically surround text with characters for you. For example, when you select text and type '(', Tehanu will automatically surround text with ().",
+            description: "Whether to automatically surround text with characters for you. For example, when you select text and type '(', Gram will automatically surround text with ().",
             field: Box::new(SettingField {
                 json_path: Some("languages.$(language).use_auto_surround"),
                 pick: |settings_content| {
@@ -6343,7 +6343,7 @@ fn language_settings_data() -> Vec<SettingsPageItem> {
         }),
         SettingsPageItem::SettingItem(SettingItem {
             title: "Prefer LSP",
-            description: "Use LSP tasks over Tehanu language extension tasks.",
+            description: "Use LSP tasks over Gram language extension tasks.",
             field: Box::new(SettingField {
                 json_path: Some("languages.$(language).tasks.prefer_lsp"),
                 pick: |settings_content| {

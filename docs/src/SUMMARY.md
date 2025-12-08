@@ -9,7 +9,7 @@
 
 # Configuration
 
-- [Configuring Tehanu](./configuring-tehanu.md)
+- [Configuring Gram](./configuring-gram.md)
 - [Configuring Languages](./configuring-languages.md)
   - [Toolchains](./toolchains.md)
 - [Key bindings](./key-bindings.md)
@@ -21,7 +21,7 @@
 - [Vim Mode](./vim.md)
 - [Helix Mode](./helix.md)
 
-# Using Tehanu
+# Using Gram
 
 - [Multibuffers](./multibuffers.md)
 - [Command Palette](./command-palette.md)
@@ -46,7 +46,7 @@
 
 > [!NOTE]
 > The Zed extension system relies on a closed-source server
-> component, which is stripped from Tehanu. Instead, all
+> component, which is stripped from Gram. Instead, all
 > extensions have to be built from source.
 > Currently, there is no extension registry so the extensions
 > have to be installed either via the suggestion popups or
@@ -139,9 +139,9 @@
 - [Yarn](./languages/yarn.md)
 - [Zig](./languages/zig.md)
 
-# Developing Tehanu
+# Developing Gram
 
-- [Developing Tehanu](./development.md)
+- [Developing Gram](./development.md)
   - [macOS](./development/macos.md)
   - [Linux](./development/linux.md)
   - [Windows](./development/windows.md)

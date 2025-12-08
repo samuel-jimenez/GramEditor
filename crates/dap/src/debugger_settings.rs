@@ -7,7 +7,7 @@ pub struct DebuggerSettings {
     ///
     /// Default: line
     pub stepping_granularity: SteppingGranularity,
-    /// Whether the breakpoints should be reused across Tehanu sessions.
+    /// Whether the breakpoints should be reused across Gram sessions.
     ///
     /// Default: true
     pub save_breakpoints: bool,
@@ -19,7 +19,7 @@ pub struct DebuggerSettings {
     ///
     /// Default: 2000ms
     pub timeout: u64,
-    /// Whether to log messages between active debug adapters and Tehanu
+    /// Whether to log messages between active debug adapters and Gram
     ///
     /// Default: true
     pub log_dap_communications: bool,

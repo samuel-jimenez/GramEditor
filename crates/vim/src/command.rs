@@ -1599,7 +1599,7 @@ fn generate_commands(_: &App) -> Vec<VimCommand> {
         VimCommand::new(("0", ""), StartOfDocument),
         VimCommand::new(("ex", ""), editor::actions::ReloadFile).bang(editor::actions::ReloadFile),
         VimCommand::new(("cpp", "link"), editor::actions::CopyPermalinkToLine).range(act_on_range),
-        VimCommand::str(("opt", "ions"), "tehanu::OpenDefaultSettings"),
+        VimCommand::str(("opt", "ions"), "gram::OpenDefaultSettings"),
         VimCommand::str(("map", ""), "vim::OpenDefaultKeymap"),
         VimCommand::new(("h", "elp"), OpenDocs),
     ]
@@ -1887,7 +1887,7 @@ pub(crate) struct OnMatchingLines {
 }
 
 impl OnMatchingLines {
-    // convert a vim query into something more usable by tehanu.
+    // convert a vim query into something more usable by gram.
     // we don't attempt to fully convert between the two regex syntaxes,
     // but we do flip \( and \) to ( and ) (and vice-versa) in the pattern,
     // and convert \0..\9 to $0..$9 in the replacement so that common idioms work.

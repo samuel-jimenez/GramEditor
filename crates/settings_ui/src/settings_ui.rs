@@ -587,7 +587,7 @@ pub fn open_settings_editor(
         let scaled_bounds: gpui::Size<Pixels> = default_bounds.map(|axis| axis * scale_factor);
 
         let app_id = ReleaseChannel::global(cx).app_id();
-        let window_decorations = match std::env::var("TEHANU_WINDOW_DECORATIONS") {
+        let window_decorations = match std::env::var("GRAM_WINDOW_DECORATIONS") {
             Ok(val) if val == "server" => gpui::WindowDecorations::Server,
             Ok(val) if val == "client" => gpui::WindowDecorations::Client,
             _ => gpui::WindowDecorations::Client,
@@ -596,7 +596,7 @@ pub fn open_settings_editor(
         cx.open_window(
             WindowOptions {
                 titlebar: Some(TitlebarOptions {
-                    title: Some("Tehanu — Settings".into()),
+                    title: Some("Gram — Settings".into()),
                     appears_transparent: true,
                     traffic_light_position: Some(point(px(12.0), px(12.0))),
                 }),
@@ -983,7 +983,7 @@ fn render_settings_item(
         .and_then(|entry| entry.text())
         .map_or(false, |maybe_url| {
             setting_item.field.json_path().is_some()
-                && maybe_url.strip_prefix("tehanu://settings/") == setting_item.field.json_path()
+                && maybe_url.strip_prefix("gram://settings/") == setting_item.field.json_path()
         });
 
     let (link_icon, link_icon_color) = if clipboard_has_link {
@@ -1077,7 +1077,7 @@ fn render_settings_item(
                             .tooltip(Tooltip::text("Copy Link"))
                             .when_some(setting_item.field.json_path(), |this, path| {
                                 this.on_click(cx.listener(move |_, _, _, cx| {
-                                    let link = format!("tehanu://settings/{}", path);
+                                    let link = format!("gram://settings/{}", path);
                                     cx.write_to_clipboard(ClipboardItem::new_string(link));
                                     cx.notify();
                                 }))
@@ -1193,7 +1193,7 @@ fn all_language_names(cx: &App) -> Vec<SharedString> {
                 .languages
                 .language_names()
                 .into_iter()
-                .filter(|name| name.as_ref() != "Tehanu Keybind Context")
+                .filter(|name| name.as_ref() != "Gram Keybind Context")
                 .map(Into::into)
                 .collect()
         })
@@ -3116,7 +3116,7 @@ impl SettingsWindow {
 
                 let worktree_id = *worktree_id;
 
-                // TODO: move tehanu::open_local_file() APIs to this crate, and
+                // TODO: move gram::open_local_file() APIs to this crate, and
                 // re-implement the "initial_contents" behavior
                 corresponding_workspace
                     .update(cx, |_, window, cx| {

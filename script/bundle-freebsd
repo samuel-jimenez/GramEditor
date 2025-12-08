@@ -23,12 +23,12 @@ while getopts 'h' flag; do
     esac
 done
 
-export TEHANU_BUNDLE=true
+export GRAM_BUNDLE=true
 
-channel=$(<crates/tehanu/RELEASE_CHANNEL)
+channel=$(<crates/gram/RELEASE_CHANNEL)
 target_dir="${CARGO_TARGET_DIR:-target}"
 
-version="$(script/get-crate-version tehanu)"
+version="$(script/get-crate-version gram)"
 # Set RELEASE_VERSION so it's compiled into GPUI and it knows about the version.
 export RELEASE_VERSION="${version}"
 
@@ -54,7 +54,7 @@ remote_server_triple=${REMOTE_SERVER_TARGET:-"${target_triple}"}
 
 # Build binary in release mode
 export RUSTFLAGS="${RUSTFLAGS:-} -C link-args=-Wl,--disable-new-dtags,-rpath,\$ORIGIN/../lib"
-# cargo build --release --target "${target_triple}" --package tehanu --package cli
+# cargo build --release --target "${target_triple}" --package gram --package cli
 
 # Build remote_server in separate invocation to prevent feature unification from other crates
 # from influencing dynamic libraries required by it.
@@ -64,22 +64,22 @@ export RUSTFLAGS="${RUSTFLAGS:-} -C link-args=-Wl,--disable-new-dtags,-rpath,\$O
 cargo build --release --target "${remote_server_triple}" --package remote_server
 
 # Strip debug symbols and save them for upload to DigitalOcean
-# objcopy --only-keep-debug "${target_dir}/${target_triple}/release/tehanu" "${target_dir}/${target_triple}/release/tehanu.dbg"
+# objcopy --only-keep-debug "${target_dir}/${target_triple}/release/gram" "${target_dir}/${target_triple}/release/gram.dbg"
 # objcopy --only-keep-debug "${target_dir}/${remote_server_triple}/release/remote_server" "${target_dir}/${remote_server_triple}/release/remote_server.dbg"
-# objcopy --strip-debug "${target_dir}/${target_triple}/release/tehanu"
+# objcopy --strip-debug "${target_dir}/${target_triple}/release/gram"
 # objcopy --strip-debug "${target_dir}/${target_triple}/release/cli"
 # objcopy --strip-debug "${target_dir}/${remote_server_triple}/release/remote_server"
 
-# gzip -f "${target_dir}/${target_triple}/release/tehanu.dbg"
+# gzip -f "${target_dir}/${target_triple}/release/gram.dbg"
 # gzip -f "${target_dir}/${remote_server_triple}/release/remote_server.dbg"
 
 # if [[ -n "${DIGITALOCEAN_SPACES_SECRET_KEY:-}" && -n "${DIGITALOCEAN_SPACES_ACCESS_KEY:-}" ]]; then
 #     upload_to_blob_store_public \
-#         "tehanu-debug-symbols" \
-#         "${target_dir}/${target_triple}/release/tehanu.dbg.gz" \
-#         "$channel/tehanu-$version-${target_triple}.dbg.gz"
+#         "gram-debug-symbols" \
+#         "${target_dir}/${target_triple}/release/gram.dbg.gz" \
+#         "$channel/gram-$version-${target_triple}.dbg.gz"
 #     upload_to_blob_store_public \
-#         "tehanu-debug-symbols" \
+#         "gram-debug-symbols" \
 #         "${target_dir}/${remote_server_triple}/release/remote_server.dbg.gz" \
 #         "$channel/remote_server-$version-${remote_server_triple}.dbg.gz"
 # fi
@@ -97,65 +97,65 @@ fi
 # Move everything that should end up in the final package
 # into a temp directory.
 # temp_dir=$(mktemp -d)
-# tehanu_dir="${temp_dir}/tehanu$suffix.app"
+# gram_dir="${temp_dir}/gram$suffix.app"
 
 # Binary
-# mkdir -p "${tehanu_dir}/bin" "${tehanu_dir}/libexec"
-# cp "${target_dir}/${target_triple}/release/tehanu" "${tehanu_dir}/libexec/tehanu-editor"
-# cp "${target_dir}/${target_triple}/release/cli" "${tehanu_dir}/bin/tehanu"
+# mkdir -p "${gram_dir}/bin" "${gram_dir}/libexec"
+# cp "${target_dir}/${target_triple}/release/gram" "${gram_dir}/libexec/gram-editor"
+# cp "${target_dir}/${target_triple}/release/cli" "${gram_dir}/bin/gram"
 
 # Libs
 # find_libs() {
-#     ldd ${target_dir}/${target_triple}/release/tehanu |
+#     ldd ${target_dir}/${target_triple}/release/gram |
 #         cut -d' ' -f3 |
 #         grep -v '\<\(libstdc++.so\|libc.so\|libgcc_s.so\|libm.so\|libpthread.so\|libdl.so\|libasound.so\)'
 # }
 
-# mkdir -p "${tehanu_dir}/lib"
-# rm -rf "${tehanu_dir}/lib/*"
-# cp $(find_libs) "${tehanu_dir}/lib"
+# mkdir -p "${gram_dir}/lib"
+# rm -rf "${gram_dir}/lib/*"
+# cp $(find_libs) "${gram_dir}/lib"
 
 # Icons
-# mkdir -p "${tehanu_dir}/share/icons/hicolor/512x512/apps"
-# cp "crates/tehanu/resources/app-icon$suffix.png" "${tehanu_dir}/share/icons/hicolor/512x512/apps/tehanu.png"
-# mkdir -p "${tehanu_dir}/share/icons/hicolor/1024x1024/apps"
-# cp "crates/tehanu/resources/app-icon$suffix@2x.png" "${tehanu_dir}/share/icons/hicolor/1024x1024/apps/tehanu.png"
+# mkdir -p "${gram_dir}/share/icons/hicolor/512x512/apps"
+# cp "crates/gram/resources/app-icon$suffix.png" "${gram_dir}/share/icons/hicolor/512x512/apps/gram.png"
+# mkdir -p "${gram_dir}/share/icons/hicolor/1024x1024/apps"
+# cp "crates/gram/resources/app-icon$suffix@2x.png" "${gram_dir}/share/icons/hicolor/1024x1024/apps/gram.png"
 
 # .desktop
 # export DO_STARTUP_NOTIFY="true"
-# export APP_CLI="tehanu"
-# export APP_ICON="tehanu"
+# export APP_CLI="gram"
+# export APP_ICON="gram"
 # export APP_ARGS="%U"
 # if [[ "$channel" == "preview" ]]; then
-#     export APP_NAME="Tehanu Preview"
+#     export APP_NAME="Gram Preview"
 # elif [[ "$channel" == "nightly" ]]; then
-#     export APP_NAME="Tehanu Nightly"
+#     export APP_NAME="Gram Nightly"
 # elif [[ "$channel" == "dev" ]]; then
-#     export APP_NAME="Tehanu Devel"
+#     export APP_NAME="Gram Devel"
 # else
-#     export APP_NAME="Tehanu"
+#     export APP_NAME="Gram"
 # fi
 
-# mkdir -p "${tehanu_dir}/share/applications"
-# envsubst <"crates/tehanu/resources/tehanu.desktop.in" >"${tehanu_dir}/share/applications/tehanu$suffix.desktop"
-# chmod +x "${tehanu_dir}/share/applications/tehanu$suffix.desktop"
+# mkdir -p "${gram_dir}/share/applications"
+# envsubst <"crates/gram/resources/gram.desktop.in" >"${gram_dir}/share/applications/gram$suffix.desktop"
+# chmod +x "${gram_dir}/share/applications/gram$suffix.desktop"
 
 # Copy generated licenses so they'll end up in archive too
-# cp "assets/licenses.md" "${tehanu_dir}/licenses.md"
+# cp "assets/licenses.md" "${gram_dir}/licenses.md"
 
 # Create archive out of everything that's in the temp directory
 arch=$(uname -m)
 # target="freebsd-${arch}"
 # if [[ "$channel" == "dev" ]]; then
-#     archive="tehanu-${commit}-${target}.tar.gz"
+#     archive="gram-${commit}-${target}.tar.gz"
 # else
-#     archive="tehanu-${target}.tar.gz"
+#     archive="gram-${target}.tar.gz"
 # fi
 
 # rm -rf "${archive}"
-# remove_match="tehanu(-[a-zA-Z0-9]+)?-linux-$(uname -m)\.tar\.gz"
+# remove_match="gram(-[a-zA-Z0-9]+)?-linux-$(uname -m)\.tar\.gz"
 # ls "${target_dir}/release" | grep -E ${remove_match} | xargs -d "\n" -I {} rm -f "${target_dir}/release/{}" || true
-# tar -czvf "${target_dir}/release/$archive" -C ${temp_dir} "tehanu$suffix.app"
+# tar -czvf "${target_dir}/release/$archive" -C ${temp_dir} "gram$suffix.app"
 
 gzip -f --stdout --best "${target_dir}/${remote_server_triple}/release/remote_server" \
-    > "${target_dir}/tehanu-remote-server-freebsd-x86_64.gz"
+    > "${target_dir}/gram-remote-server-freebsd-x86_64.gz"

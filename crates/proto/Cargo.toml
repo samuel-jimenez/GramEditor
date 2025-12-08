@@ -1,5 +1,5 @@
 [package]
-description = "Shared protocol for communication between the Tehanu app and the remote editing server"
+description = "Shared protocol for communication between the Gram app and the remote editing server"
 edition.workspace = true
 name = "proto"
 version = "0.1.0"

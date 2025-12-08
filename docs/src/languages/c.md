@@ -1,6 +1,6 @@
 # C
 
-C support is available natively in Tehanu.
+C support is available natively in Gram.
 
 - Tree-sitter: [tree-sitter/tree-sitter-c](https://github.com/tree-sitter/tree-sitter-c)
 - Language Server: [clangd/clangd](https://github.com/clangd/clangd)
@@ -16,7 +16,7 @@ CompileFlags:
   Add: [-xc]
 ```
 
-By default clang and gcc will recognize `*.C` and `*.H` (uppercase extensions) as C++ and not C and so Tehanu too follows this convention. If you are working with a C-only project (perhaps one with legacy uppercase pathing like `FILENAME.C`) you can override this behavior by adding this to your settings:
+By default clang and gcc will recognize `*.C` and `*.H` (uppercase extensions) as C++ and not C and so Gram too follows this convention. If you are working with a C-only project (perhaps one with legacy uppercase pathing like `FILENAME.C`) you can override this behavior by adding this to your settings:
 
 ```json [settings]
 {
@@ -40,7 +40,7 @@ IndentWidth: 2
 
 See [Clang-Format Style Options](https://clang.llvm.org/docs/ClangFormatStyleOptions.html) for a complete list of options.
 
-You can trigger formatting via {#kb editor::Format} or the `editor: format` action from the command palette or by adding `format_on_save` to your Tehanu settings:
+You can trigger formatting via {#kb editor::Format} or the `editor: format` action from the command palette or by adding `format_on_save` to your Gram settings:
 
 ```json [settings]
   "languages": {
@@ -81,9 +81,9 @@ You can use CodeLLDB or GDB to debug native binaries. (Make sure that your build
     "build": {
       "command": "make",
       "args": ["-j8"],
-      "cwd": "$TEHANU_WORKTREE_ROOT"
+      "cwd": "$GRAM_WORKTREE_ROOT"
     },
-    "program": "$TEHANU_WORKTREE_ROOT/build/prog",
+    "program": "$GRAM_WORKTREE_ROOT/build/prog",
     "request": "launch",
     "adapter": "CodeLLDB"
   }

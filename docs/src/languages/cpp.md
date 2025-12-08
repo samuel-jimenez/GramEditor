@@ -1,17 +1,17 @@
 # C++
 
-C++ support is available natively in Tehanu.
+C++ support is available natively in Gram.
 
 - Tree-sitter: [tree-sitter/tree-sitter-cpp](https://github.com/tree-sitter/tree-sitter-cpp)
 - Language Server: [clangd/clangd](https://github.com/clangd/clangd)
 
 ## Binary
 
-You can configure which `clangd` binary Tehanu should use.
+You can configure which `clangd` binary Gram should use.
 
-By default, Tehanu will try to find a `clangd` in your `$PATH` and try to use that. If that binary successfully executes, it's used. Otherwise, Tehanu will fall back to installing its own `clangd` version and use that.
+By default, Gram will try to find a `clangd` in your `$PATH` and try to use that. If that binary successfully executes, it's used. Otherwise, Gram will fall back to installing its own `clangd` version and use that.
 
-If you want to install a pre-release `clangd` version instead you can instruct Tehanu to do so by setting `pre_release` to `true` in your `settings.json`:
+If you want to install a pre-release `clangd` version instead you can instruct Gram to do so by setting `pre_release` to `true` in your `settings.json`:
 
 ```json [settings]
 {
@@ -25,7 +25,7 @@ If you want to install a pre-release `clangd` version instead you can instruct T
 }
 ```
 
-If you want to disable Tehanu looking for a `clangd` binary, you can set `ignore_system_version` to `true` in your `settings.json`:
+If you want to disable Gram looking for a `clangd` binary, you can set `ignore_system_version` to `true` in your `settings.json`:
 
 ```json [settings]
 {
@@ -75,7 +75,7 @@ You can pass any number of arguments to clangd. To see a full set of available o
 
 ## Formatting
 
-By default Tehanu will use the `clangd` language server for formatting C++ code. The Clangd is the same as the `clang-format` CLI tool. To configure this you can add a `.clang-format` file. For example:
+By default Gram will use the `clangd` language server for formatting C++ code. The Clangd is the same as the `clang-format` CLI tool. To configure this you can add a `.clang-format` file. For example:
 
 ```yaml
 # yaml-language-server: $schema=https://json.schemastore.org/clang-format-21.x.json
@@ -92,7 +92,7 @@ PointerAlignment: Left
 
 See [Clang-Format Style Options](https://clang.llvm.org/docs/ClangFormatStyleOptions.html) for a complete list of options.
 
-You can trigger formatting via {#kb editor::Format} or the `editor: format` action from the command palette or by adding `format_on_save` to your Tehanu settings:
+You can trigger formatting via {#kb editor::Format} or the `editor: format` action from the command palette or by adding `format_on_save` to your Gram settings:
 
 ```json [settings]
   "languages": {
@@ -150,9 +150,9 @@ You can use CodeLLDB or GDB to debug native binaries. (Make sure that your build
     "build": {
       "command": "make",
       "args": ["-j8"],
-      "cwd": "$TEHANU_WORKTREE_ROOT"
+      "cwd": "$GRAM_WORKTREE_ROOT"
     },
-    "program": "$TEHANU_WORKTREE_ROOT/build/prog",
+    "program": "$GRAM_WORKTREE_ROOT/build/prog",
     "request": "launch",
     "adapter": "CodeLLDB"
   }

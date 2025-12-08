@@ -2,7 +2,7 @@ use gpui::{Action, Entity, Global, Render, SharedString};
 use ui::{ButtonLike, Tooltip, prelude::*};
 use util::ResultExt;
 
-/// Prompts the user to try newly released Tehanu's features
+/// Prompts the user to try newly released Gram's features
 pub struct OnboardingBanner {
     dismissed: bool,
     source: String,

@@ -19,8 +19,8 @@
   {
     "context": "Editor",
     "bindings": {
-      "ctrl->": ["tehanu::IncreaseBufferFontSize", { "persist": true }],
-      "ctrl-<": ["tehanu::DecreaseBufferFontSize", { "persist": true }],
+      "ctrl->": ["gram::IncreaseBufferFontSize", { "persist": true }],
+      "ctrl-<": ["gram::DecreaseBufferFontSize", { "persist": true }],
       "ctrl-shift-j": "editor::JoinLines",
       "cmd-d": "editor::DuplicateSelection",
       "cmd-backspace": "editor::DeleteLine",

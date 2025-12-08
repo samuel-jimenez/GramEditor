@@ -1,9 +1,9 @@
-// Tehanu keymap
+// Gram keymap
 //
-// For information on binding keys, see the Tehanu
-// documentation: https://tehanu.liten.app/docs/key-bindings
+// For information on binding keys, see the Gram
+// documentation: https://gram.liten.app/docs/key-bindings
 //
-// To see the default key bindings run `tehanu: open default keymap`
+// To see the default key bindings run `gram: open default keymap`
 // from the command palette.
 [
   {

@@ -1,6 +1,6 @@
 # Extension Capabilities
 
-The operations that Tehanu extensions are able to perform are governed by a capability system.
+The operations that Gram extensions are able to perform are governed by a capability system.
 
 ## Restricting capabilities
 

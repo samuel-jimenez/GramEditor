@@ -1,6 +1,6 @@
 # Themes
 
-Tehanu comes with a number of built-in themes, with more themes available as extensions.
+Gram comes with a number of built-in themes, with more themes available as extensions.
 
 ## Selecting a Theme
 
@@ -10,16 +10,16 @@ Navigating through the theme list by moving up and down will change the theme in
 
 ## Installing more Themes
 
-More themes are available from the Extensions page, which you can access via the command palette with `zed: extensions` or the [Tehanu website](https://tehanu.liten.app/extensions?filter=themes).
+More themes are available from the Extensions page, which you can access via the command palette with `zed: extensions` or the [Gram website](https://gram.liten.app/extensions?filter=themes).
 
-Many popular themes have been ported to Tehanu, and if you're struggling to choose one, visit [zed-themes.com](https://zed-themes.com), a third-party gallery with visible previews for many of them.
+Many popular themes have been ported to Gram, and if you're struggling to choose one, visit [zed-themes.com](https://zed-themes.com), a third-party gallery with visible previews for many of them.
 
 ## Configuring a Theme
 
 Your selected theme is stored in your settings file.
-You can open your settings file from the command palette with {#action tehanu::OpenSettingsFile} (bound to {#kb tehanu::OpenSettingsFile}).
+You can open your settings file from the command palette with {#action gram::OpenSettingsFile} (bound to {#kb gram::OpenSettingsFile}).
 
-By default, Tehanu maintains two themes: one for light mode and one for dark mode.
+By default, Gram maintains two themes: one for light mode and one for dark mode.
 You can set the mode to `"dark"` or `"light"` to ignore the current system mode.
 
 ```json [settings]
@@ -72,11 +72,11 @@ For example, [assets/themes/one/one.json](https://github.com/zed-industries/zed/
 
 ## Local Themes
 
-Store new themes locally by placing them in the `~/.config/tehanu/themes` directory (macOS and Linux) or `%USERPROFILE%\AppData\Roaming\Tehanu\themes\` (Windows).
+Store new themes locally by placing them in the `~/.config/gram/themes` directory (macOS and Linux) or `%USERPROFILE%\AppData\Roaming\Gram\themes\` (Windows).
 
 For example, to create a new theme called `my-cool-theme`, create a file called `my-cool-theme.json` in that directory.
-It will be available in the theme selector the next time Tehanu loads.
+It will be available in the theme selector the next time Gram loads.
 
 ## Theme Development
 
-See: [Developing Tehanu Themes](./extensions/themes.md)
+See: [Developing Gram Themes](./extensions/themes.md)

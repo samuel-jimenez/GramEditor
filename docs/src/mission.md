@@ -4,7 +4,7 @@
 
 ― Ursula K. Le Guin, The Dispossessed
 
-The Tehanu text editor is an opinionated fork of the Zed text editor. This
+The Gram text editor is an opinionated fork of the Zed text editor. This
 document tries to explain why this fork exists.
 
 ## Performance, but at what cost?

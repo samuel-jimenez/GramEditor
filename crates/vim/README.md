@@ -1,14 +1,14 @@
-This contains the code for Tehanu's Vim emulation mode.
+This contains the code for Gram's Vim emulation mode.
 
-Vim mode in Tehanu is supposed to primarily "do what you expect": it mostly tries to copy vim exactly, but will use Tehanu-specific functionality when available to make things smoother. This means Tehanu will never be 100% vim compatible, but should be 100% vim familiar!
+Vim mode in Gram is supposed to primarily "do what you expect": it mostly tries to copy vim exactly, but will use Gram-specific functionality when available to make things smoother. This means Gram will never be 100% vim compatible, but should be 100% vim familiar!
 
 The backlog is maintained in the `#vim` channel notes.
 
 ## Testing against Neovim
 
-If you are making a change to make Tehanu's behavior more closely match vim/nvim, you can create a test using the `NeovimBackedTestContext`.
+If you are making a change to make Gram's behavior more closely match vim/nvim, you can create a test using the `NeovimBackedTestContext`.
 
-For example, the following test checks that Tehanu and Neovim have the same behavior when running `*` in visual mode:
+For example, the following test checks that Gram and Neovim have the same behavior when running `*` in visual mode:
 
 ```rust
 #[gpui::test]
@@ -33,4 +33,4 @@ This will run your keystrokes against a headless neovim and cache the results in
 
 ## Testing zed-only behavior
 
-Tehanu does more than vim/neovim in their default modes. The `VimTestContext` can be used instead. This lets you test integration with the language server and other parts of zed's UI that don't have a NeoVim equivalent.
+Gram does more than vim/neovim in their default modes. The `VimTestContext` can be used instead. This lets you test integration with the language server and other parts of zed's UI that don't have a NeoVim equivalent.

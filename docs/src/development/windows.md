@@ -1,10 +1,10 @@
-# Building Tehanu for Windows
+# Building Gram for Windows
 
 > The following commands may be executed in any shell.
 
 ## Repository
 
-Clone down the [Tehanu repository](https://github.com/zed-industries/zed).
+Clone down the [Gram repository](https://github.com/zed-industries/zed).
 
 ## Dependencies
 
@@ -16,7 +16,7 @@ Clone down the [Tehanu repository](https://github.com/zed-industries/zed).
 - Install Windows 11 or 10 SDK depending on your system, but ensure that at least `Windows 10 SDK version 2104 (10.0.20348.0)` is installed on your machine. You can download it from the [Windows SDK Archive](https://developer.microsoft.com/windows/downloads/windows-sdk/)
 - Install [CMake](https://cmake.org/download) (required by [a dependency](https://docs.rs/wasmtime-c-api-impl/latest/wasmtime_c_api/)). Or you can install it through Visual Studio Installer, then manually add the `bin` directory to your `PATH`, for example: `C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin`.
 
-If you can't compile Tehanu, make sure that you have at least the following components installed in case of a Visual Studio installation:
+If you can't compile Gram, make sure that you have at least the following components installed in case of a Visual Studio installation:
 
 ```json [settings]
 {
@@ -88,7 +88,7 @@ After this, you should restart the `postgresql` service. Press the `win` key + `
 
 ## Building from source
 
-Once you have the dependencies installed, you can build Tehanu using [Cargo](https://doc.rust-lang.org/cargo/).
+Once you have the dependencies installed, you can build Gram using [Cargo](https://doc.rust-lang.org/cargo/).
 
 For a debug build:
 
@@ -110,7 +110,7 @@ cargo test --workspace
 
 ## Installing from msys2
 
-Tehanu does not support unofficial MSYS2 Tehanu packages built for Mingw-w64. Please report any issues you may have with [mingw-w64-zed](https://packages.msys2.org/base/mingw-w64-zed) to [msys2/MINGW-packages/issues](https://github.com/msys2/MINGW-packages/issues?q=is%3Aissue+is%3Aopen+zed).
+Gram does not support unofficial MSYS2 Gram packages built for Mingw-w64. Please report any issues you may have with [mingw-w64-zed](https://packages.msys2.org/base/mingw-w64-zed) to [msys2/MINGW-packages/issues](https://github.com/msys2/MINGW-packages/issues?q=is%3Aissue+is%3Aopen+zed).
 
 Please refer to [MSYS2 documentation](https://www.msys2.org/docs/ides-editors/#zed) first.
 
@@ -118,7 +118,7 @@ Please refer to [MSYS2 documentation](https://www.msys2.org/docs/ides-editors/#z
 
 ### Setting `RUSTFLAGS` env var breaks builds
 
-If you set the `RUSTFLAGS` env var, it will override the `rustflags` settings in `.cargo/config.toml` which is required to properly build Tehanu.
+If you set the `RUSTFLAGS` env var, it will override the `rustflags` settings in `.cargo/config.toml` which is required to properly build Gram.
 
 Since these settings can vary from time to time, the build errors you receive may vary from linker errors, to other stranger errors.
 
@@ -143,7 +143,7 @@ rustflags = [
 ]
 ```
 
-Or, you can create a new `.cargo/config.toml` in the same folder as the Tehanu repo (see below). This is particularly useful if you are doing CI builds since you don't have to edit the original `.cargo/config.toml`.
+Or, you can create a new `.cargo/config.toml` in the same folder as the Gram repo (see below). This is particularly useful if you are doing CI builds since you don't have to edit the original `.cargo/config.toml`.
 
 ```
 upper_dir
@@ -171,13 +171,13 @@ Try `cargo clean` and `cargo build`.
 
 This error can happen if you are using the "rust-lld.exe" linker. Consider trying a different linker.
 
-If you are using a global config, consider moving the Tehanu repository to a nested directory and add a `.cargo/config.toml` with a custom linker config in the parent directory.
+If you are using a global config, consider moving the Gram repository to a nested directory and add a `.cargo/config.toml` with a custom linker config in the parent directory.
 
 See this issue for more information [#12041](https://github.com/zed-industries/zed/issues/12041)
 
 ### Invalid RC path selected
 
-Sometimes, depending on the security rules applied to your laptop, you may get the following error while compiling Tehanu:
+Sometimes, depending on the security rules applied to your laptop, you may get the following error while compiling Gram:
 
 ```
 error: failed to run custom build command for `zed(C:\Users\USER\src\zed\crates\zed)`
@@ -186,7 +186,7 @@ Caused by:
   process didn't exit successfully: `C:\Users\USER\src\zed\target\debug\build\zed-b24f1e9300107efc\build-script-build` (exit code: 1)
   --- stdout
   cargo:rerun-if-changed=../../.git/logs/HEAD
-  cargo:rustc-env=TEHANU_COMMIT_SHA=25e2e9c6727ba9b77415588cfa11fd969612adb7
+  cargo:rustc-env=GRAM_COMMIT_SHA=25e2e9c6727ba9b77415588cfa11fd969612adb7
   cargo:rustc-link-arg=/stack:8388608
   cargo:rerun-if-changed=resources/windows/app-icon.ico
   package.metadata.winresource does not exist
@@ -197,7 +197,7 @@ Caused by:
 warning: build failed, waiting for other jobs to finish...
 ```
 
-In order to fix this issue, you can manually set the `TEHANU_RC_TOOLKIT_PATH` environment variable to the RC toolkit path. Usually, you can set it to:
+In order to fix this issue, you can manually set the `GRAM_RC_TOOLKIT_PATH` environment variable to the RC toolkit path. Usually, you can set it to:
 `C:\Program Files (x86)\Windows Kits\10\bin\<SDK_version>\x64`.
 
 See this [issue](https://github.com/zed-industries/zed/issues/18393) for more information.
@@ -235,20 +235,20 @@ For more information on this, please see [win32 docs](https://learn.microsoft.co
 
 ### Graphics issues
 
-#### Tehanu fails to launch
+#### Gram fails to launch
 
-Currently, Tehanu uses Vulkan as its graphics API on Windows. However, Vulkan isn't always the most reliable on Windows, so if Tehanu fails to launch, it's likely a Vulkan-related issue.
+Currently, Gram uses Vulkan as its graphics API on Windows. However, Vulkan isn't always the most reliable on Windows, so if Gram fails to launch, it's likely a Vulkan-related issue.
 
-You can check the Tehanu log at:
-`C:\Users\YOU\AppData\Local\Tehanu\logs\Tehanu.log`
+You can check the Gram log at:
+`C:\Users\YOU\AppData\Local\Gram\logs\Gram.log`
 
 If you see messages like:
 
-- `Tehanu failed to open a window: NoSupportedDeviceFound`
+- `Gram failed to open a window: NoSupportedDeviceFound`
 - `ERROR_INITIALIZATION_FAILED`
 - `GPU Crashed`
 - `ERROR_SURFACE_LOST_KHR`
 
 Then Vulkan might not be working properly on your system. In most cases, updating your GPU drivers may help resolve this.
 
-If there's nothing Vulkan-related in the logs and you happen to have Bandicam installed, try uninstalling it. Tehanu is currently not compatible with Bandicam.
+If there's nothing Vulkan-related in the logs and you happen to have Bandicam installed, try uninstalling it. Gram is currently not compatible with Bandicam.

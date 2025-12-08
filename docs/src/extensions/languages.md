@@ -1,6 +1,6 @@
 # Language Extensions
 
-Language support in Tehanu has several components:
+Language support in Gram has several components:
 
 - Language metadata and configuration
 - Grammar
@@ -9,7 +9,7 @@ Language support in Tehanu has several components:
 
 ## Language Metadata
 
-Each language supported by Tehanu must be defined in a subdirectory inside the `languages` directory of your extension.
+Each language supported by Gram must be defined in a subdirectory inside the `languages` directory of your extension.
 
 This subdirectory must contain a file called `config.toml` file with the following structure:
 
@@ -26,8 +26,8 @@ line_comments = ["# "]
 - `line_comments` is an array of strings that are used to identify line comments in the language. This is used for the `editor::ToggleComments` keybind: {#kb editor::ToggleComments} for toggling lines of code.
 - `tab_size` defines the indentation/tab size used for this language (default is `4`).
 - `hard_tabs` whether to indent with tabs (`true`) or spaces (`false`, the default).
-- `first_line_pattern` is a regular expression, that in addition to `path_suffixes` (above) or `file_types` in settings can be used to match files which should use this language. For example Tehanu uses this to identify Shell Scripts by matching the [shebangs lines](https://github.com/zed-industries/zed/blob/main/crates/languages/src/bash/config.toml) in the first line of a script.
-- `debuggers` is an array of strings that are used to identify debuggers in the language. When launching a debugger's `New Process Modal`, Tehanu will order available debuggers by the order of entries in this array.
+- `first_line_pattern` is a regular expression, that in addition to `path_suffixes` (above) or `file_types` in settings can be used to match files which should use this language. For example Gram uses this to identify Shell Scripts by matching the [shebangs lines](https://github.com/zed-industries/zed/blob/main/crates/languages/src/bash/config.toml) in the first line of a script.
+- `debuggers` is an array of strings that are used to identify debuggers in the language. When launching a debugger's `New Process Modal`, Gram will order available debuggers by the order of entries in this array.
 
 <!--
 TBD: Document `language_name/config.toml` keys
@@ -47,7 +47,7 @@ TBD: Document `language_name/config.toml` keys
 
 ## Grammar
 
-Tehanu uses the [Tree-sitter](https://tree-sitter.github.io) parsing library to provide built-in language-specific features. There are grammars available for many languages, and you can also [develop your own grammar](https://tree-sitter.github.io/tree-sitter/creating-parsers#writing-the-grammar). A growing list of Tehanu features are built using pattern matching over syntax trees with Tree-sitter queries. As mentioned above, every language that is defined in an extension must specify the name of a Tree-sitter grammar that is used for parsing. These grammars are then registered separately in extensions' `extension.toml` file, like this:
+Gram uses the [Tree-sitter](https://tree-sitter.github.io) parsing library to provide built-in language-specific features. There are grammars available for many languages, and you can also [develop your own grammar](https://tree-sitter.github.io/tree-sitter/creating-parsers#writing-the-grammar). A growing list of Gram features are built using pattern matching over syntax trees with Tree-sitter queries. As mentioned above, every language that is defined in an extension must specify the name of a Tree-sitter grammar that is used for parsing. These grammars are then registered separately in extensions' `extension.toml` file, like this:
 
 ```toml
 [grammars.gleam]
@@ -59,7 +59,7 @@ The `repository` field must specify a repository where the Tree-sitter grammar s
 
 ## Tree-sitter Queries
 
-Tehanu uses the syntax tree produced by the [Tree-sitter](https://tree-sitter.github.io) query language to implement
+Gram uses the syntax tree produced by the [Tree-sitter](https://tree-sitter.github.io) query language to implement
 several features:
 
 - Syntax highlighting
@@ -73,7 +73,7 @@ several features:
 - Selecting classes, functions, etc.
 
 The following sections elaborate on how [Tree-sitter queries](https://tree-sitter.github.io/tree-sitter/using-parsers#query-syntax) enable these
-features in Tehanu, using [JSON syntax](https://www.json.org/json-en.html) as a guiding example.
+features in Gram, using [JSON syntax](https://www.json.org/json-en.html) as a guiding example.
 
 ### Syntax highlighting
 
@@ -154,7 +154,7 @@ This query identifies opening and closing brackets, braces, and quotation marks.
 | @open   | Captures opening brackets, braces, and quotes |
 | @close  | Captures closing brackets, braces, and quotes |
 
-Tehanu uses these to highlight matching brackets: painting each bracket pair with a different color ("rainbow brackets") and highlighting the brackets if the cursor is inside the bracket pair.
+Gram uses these to highlight matching brackets: painting each bracket pair with a different color ("rainbow brackets") and highlighting the brackets if the cursor is inside the bracket pair.
 
 To opt out of rainbow brackets colorization, add the following to the corresponding `brackets.scm` entry:
 
@@ -273,15 +273,15 @@ For example, in JavaScript, we also disable auto-closing of single quotes within
 
 ### Text objects
 
-The `textobjects.scm` file defines rules for navigating by text objects. This was added in Tehanu v0.165 and is currently used only in Vim mode.
+The `textobjects.scm` file defines rules for navigating by text objects. This was added in Gram v0.165 and is currently used only in Vim mode.
 
 Vim provides two levels of granularity for navigating around files. Section-by-section with `[]` etc., and method-by-method with `]m` etc. Even languages that don't support functions and classes can work well by defining similar concepts. For example CSS defines a rule-set as a method, and a media-query as a class.
 
-For languages with closures, these typically should not count as functions in Tehanu. This is best-effort however, as languages like JavaScript do not syntactically differentiate syntactically between closures and top-level function declarations.
+For languages with closures, these typically should not count as functions in Gram. This is best-effort however, as languages like JavaScript do not syntactically differentiate syntactically between closures and top-level function declarations.
 
 For languages with declarations like C, provide queries that match `@class.around` or `@function.around`. The `if` and `ic` text objects will default to these if there is no inside.
 
-If you are not sure what to put in textobjects.scm, both [nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects), and the [Helix editor](https://github.com/helix-editor/helix) have queries for many languages. You can refer to the Tehanu [built-in languages](https://github.com/zed-industries/zed/tree/main/crates/languages/src) to see how to adapt these.
+If you are not sure what to put in textobjects.scm, both [nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects), and the [Helix editor](https://github.com/helix-editor/helix) have queries for many languages. You can refer to the Gram [built-in languages](https://github.com/zed-industries/zed/tree/main/crates/languages/src) to see how to adapt these.
 
 | Capture          | Description                                                             | Vim mode                                         |
 | ---------------- | ----------------------------------------------------------------------- | ------------------------------------------------ |
@@ -339,7 +339,7 @@ Here's an example from a `runnables.scm` file for JSON:
 
 This query detects runnable scripts in package.json and composer.json files.
 
-The `@run` capture specifies where the run button should appear in the editor. Other captures, except those prefixed with an underscore, are exposed as environment variables with a prefix of `TEHANU_CUSTOM_$(capture_name)` when running the code.
+The `@run` capture specifies where the run button should appear in the editor. Other captures, except those prefixed with an underscore, are exposed as environment variables with a prefix of `GRAM_CUSTOM_$(capture_name)` when running the code.
 
 | Capture | Description                                            |
 | ------- | ------------------------------------------------------ |
@@ -353,7 +353,7 @@ TBD: `#set! tag`
 
 ## Language Servers
 
-Tehanu uses the [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) to provide advanced language support.
+Gram uses the [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) to provide advanced language support.
 
 An extension may provide any number of language servers. To provide a language server from your extension, add an entry to your `extension.toml` with the name of your language server and the language(s) it applies to. The entry in the list of `languages` has to match the `name` field from the `config.toml` file for that language:
 
@@ -366,13 +366,13 @@ languages = ["My Language"]
 Then, in the Rust code for your extension, implement the `language_server_command` method on your extension:
 
 ```rust
-impl tehanu::Extension for MyExtension {
+impl gram::Extension for MyExtension {
     fn language_server_command(
         &mut self,
         language_server_id: &LanguageServerId,
-        worktree: &tehanu::Worktree,
-    ) -> Result<tehanu::Command> {
-        Ok(tehanu::Command {
+        worktree: &gram::Worktree,
+    ) -> Result<gram::Command> {
+        Ok(gram::Command {
             command: get_path_to_language_server_executable()?,
             args: get_args_for_language_server()?,
             env: get_env_for_language_server()?,
@@ -381,11 +381,11 @@ impl tehanu::Extension for MyExtension {
 }
 ```
 
-You can customize the handling of the language server using several optional methods in the `Extension` trait. For example, you can control how completions are styled using the `label_for_completion` method. For a complete list of methods, see the [API docs for the Tehanu extension API](https://docs.rs/zed_extension_api).
+You can customize the handling of the language server using several optional methods in the `Extension` trait. For example, you can control how completions are styled using the `label_for_completion` method. For a complete list of methods, see the [API docs for the Gram extension API](https://docs.rs/zed_extension_api).
 
 ### Multi-Language Support
 
-If your language server supports additional languages, you can use `language_ids` to map Tehanu `languages` to the desired [LSP-specific `languageId`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocumentItem) identifiers:
+If your language server supports additional languages, you can use `language_ids` to map Gram `languages` to the desired [LSP-specific `languageId`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocumentItem) identifiers:
 
 ```toml
 

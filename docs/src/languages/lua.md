@@ -18,7 +18,7 @@ To configure LuaLS you can create a `.luarc.json` file in the root of your works
 }
 ```
 
-See [LuaLS Settings Documentation](https://luals.github.io/wiki/settings/) for all available configuration options, or when editing this file in Tehanu available settings options will autocomplete, (e.g `runtime.version` will show `"Lua 5.1"`, `"Lua 5.2"`, `"Lua 5.3"`, `"Lua 5.4"` and `"LuaJIT"` as allowed values). Note when importing settings options from VS Code, remove the `Lua.` prefix. (e.g. `runtime.version` instead of `Lua.runtime.version`).
+See [LuaLS Settings Documentation](https://luals.github.io/wiki/settings/) for all available configuration options, or when editing this file in Gram available settings options will autocomplete, (e.g `runtime.version` will show `"Lua 5.1"`, `"Lua 5.2"`, `"Lua 5.3"`, `"Lua 5.4"` and `"LuaJIT"` as allowed values). Note when importing settings options from VS Code, remove the `Lua.` prefix. (e.g. `runtime.version` instead of `Lua.runtime.version`).
 
 ### LuaCATS Definitions
 
@@ -26,7 +26,7 @@ LuaLS can provide enhanced LSP autocompletion suggestions and type validation wi
 
 ### LÖVE (Love2D) {#love2d}
 
-To use [LÖVE (Love2D)](https://love2d.org/) in Tehanu, checkout [LuaCATS/love2d](https://github.com/LuaCATS/love2d) into a folder called `love2d-luacats` into the parent folder of your project:
+To use [LÖVE (Love2D)](https://love2d.org/) in Gram, checkout [LuaCATS/love2d](https://github.com/LuaCATS/love2d) into a folder called `love2d-luacats` into the parent folder of your project:
 
 ```sh
 cd .. && git clone https://github.com/LuaCATS/love2d love2d-luacats
@@ -47,7 +47,7 @@ Then in your `.luarc.json`:
 
 ### PlaydateSDK
 
-To use [Playdate Lua SDK](https://play.date/dev/) in Tehanu, checkout [playdate-luacats](https://github.com/notpeter/playdate-luacats) into the parent folder of your project:
+To use [Playdate Lua SDK](https://play.date/dev/) in Gram, checkout [playdate-luacats](https://github.com/notpeter/playdate-luacats) into the parent folder of your project:
 
 ```sh
 cd .. && git clone https://github.com/notpeter/playdate-luacats
@@ -86,9 +86,9 @@ Then in your `.luarc.json`:
 
 ### Inlay Hints
 
-To enable [Inlay Hints](../configuring-languages.md#inlay-hints) for LuaLS in Tehanu
+To enable [Inlay Hints](../configuring-languages.md#inlay-hints) for LuaLS in Gram
 
-1. Add the following to your Tehanu settings.json:
+1. Add the following to your Gram settings.json:
 
 ```json [settings]
   "languages": {
@@ -118,7 +118,7 @@ To enable auto-formatting with your LuaLS (provided by [CppCXY/EmmyLuaCodeStyle]
 }
 ```
 
-Then add the following to your Tehanu `settings.json`:
+Then add the following to your Gram `settings.json`:
 
 ```json [settings]
 {

@@ -10,15 +10,15 @@ Release Notes:
 - N/A _or_ Added/Fixed/Improved ...
 ```
 
-On Wednesdays, we run a [`get-preview-channel-changes`](https://github.com/zed-industries/zed/blob/main/script/get-preview-channel-changes) script that scrapes `Release Notes` lines from pull requests landing in preview, as documented in our [Release](https://tehanu.liten.app/docs/development/release-notes) docs.
+On Wednesdays, we run a [`get-preview-channel-changes`](https://github.com/zed-industries/zed/blob/main/script/get-preview-channel-changes) script that scrapes `Release Notes` lines from pull requests landing in preview, as documented in our [Release](https://gram.liten.app/docs/development/release-notes) docs.
 
-The script outputs everything below the `Release Notes` line, including additional data such as the pull request author (if not a Tehanu team member) and a link to the pull request.
+The script outputs everything below the `Release Notes` line, including additional data such as the pull request author (if not a Gram team member) and a link to the pull request.
 If you use `N/A`, the script skips your pull request entirely.
 
 ## Guidelines for crafting your `Release Notes` line(s)
 
-- A `Release Notes` line should only be written if the user can see or feel the difference in Tehanu.
-- A `Release Notes` line should be written such that a Tehanu user can understand what the change is.
+- A `Release Notes` line should only be written if the user can see or feel the difference in Gram.
+- A `Release Notes` line should be written such that a Gram user can understand what the change is.
   Don't assume a user knows technical editor developer lingo; phrase your change in language they understand as a user of a text editor.
 - If you want to include technical details about your pull request for other team members to see, do so above the `Release Notes` line.
 - Changes to docs should be labeled as `N/A`.

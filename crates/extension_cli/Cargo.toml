@@ -9,7 +9,7 @@ license = "GPL-3.0-or-later"
 workspace = true
 
 [[bin]]
-name = "tehanu-extension"
+name = "gram-extension"
 path = "src/main.rs"
 
 [dependencies]

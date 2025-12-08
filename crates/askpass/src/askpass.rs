@@ -281,7 +281,7 @@ impl PasswordProxy {
         }
     }
 }
-/// The main function for when Tehanu is running in netcat mode for use in askpass.
+/// The main function for when Gram is running in netcat mode for use in askpass.
 /// Called from both the remote server binary and the editor binary in their respective main functions.
 pub fn main(socket: &str) {
     use net::UnixStream;

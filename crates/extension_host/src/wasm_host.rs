@@ -37,7 +37,7 @@ use std::{
     },
     time::Duration,
 };
-use task::{DebugScenario, SpawnInTerminal, TaskTemplate, TehanuDebugConfig};
+use task::{DebugScenario, SpawnInTerminal, TaskTemplate, GramDebugConfig};
 use util::paths::SanitizedPath;
 use wasmtime::{
     CacheStore, Engine, Store,
@@ -66,7 +66,7 @@ pub struct WasmExtension {
     pub manifest: Arc<ExtensionManifest>,
     pub work_dir: Arc<Path>,
     #[allow(unused)]
-    pub tehanu_api_version: SemanticVersion,
+    pub gram_api_version: SemanticVersion,
     _task: Arc<Task<Result<(), gpui_tokio::JoinError>>>,
 }
 
@@ -342,7 +342,7 @@ impl extension::Extension for WasmExtension {
         .await?
     }
 
-    async fn dap_config_to_scenario(&self, config: TehanuDebugConfig) -> Result<DebugScenario> {
+    async fn dap_config_to_scenario(&self, config: GramDebugConfig) -> Result<DebugScenario> {
         self.call(|extension, store| {
             async move {
                 let kind = extension
@@ -512,7 +512,7 @@ impl WasmHost {
         let manifest = manifest.clone();
         let executor = cx.background_executor().clone();
         let load_extension_task = async move {
-            let tehanu_api_version = parse_wasm_extension_version(&manifest.id, &wasm_bytes)?;
+            let gram_api_version = parse_wasm_extension_version(&manifest.id, &wasm_bytes)?;
 
             let component = Component::from_binary(&this.engine, &wasm_bytes)
                 .context("failed to compile wasm component")?;
@@ -537,7 +537,7 @@ impl WasmHost {
                 &executor,
                 &mut store,
                 this.release_channel,
-                tehanu_api_version,
+                gram_api_version,
                 &component,
             )
             .await?;
@@ -565,11 +565,11 @@ impl WasmHost {
                 manifest.clone(),
                 this.work_dir.join(manifest.id.as_ref()).into(),
                 tx,
-                tehanu_api_version,
+                gram_api_version,
             ))
         };
         cx.spawn(async move |cx| {
-            let (extension_task, manifest, work_dir, tx, tehanu_api_version) =
+            let (extension_task, manifest, work_dir, tx, gram_api_version) =
                 cx.background_executor().spawn(load_extension_task).await?;
             // we need to run run the task in a tokio context as wasmtime_wasi may
             // call into tokio, accessing its runtime handle when we trigger the `engine.increment_epoch()` above.
@@ -579,7 +579,7 @@ impl WasmHost {
                 manifest,
                 work_dir,
                 tx,
-                tehanu_api_version,
+                gram_api_version,
                 _task: task,
             })
         })
@@ -629,12 +629,12 @@ pub fn parse_wasm_extension_version(
     for part in wasmparser::Parser::new(0).parse_all(wasm_bytes) {
         if let wasmparser::Payload::CustomSection(s) =
             part.context("error parsing wasm extension")?
-            && (s.name() == "tehanu:api-version" || s.name() == "zed:api-version")
+            && (s.name() == "gram:api-version" || s.name() == "zed:api-version")
         {
             version = parse_wasm_extension_version_custom_section(s.data());
             if version.is_none() {
                 bail!(
-                    "extension {} has invalid tehanu:api-version or zed:api-version section: {:?}",
+                    "extension {} has invalid gram:api-version or zed:api-version section: {:?}",
                     extension_id,
                     s.data()
                 );
@@ -648,7 +648,7 @@ pub fn parse_wasm_extension_version(
     // By parsing the entirety of the Wasm bytes before we return, we're able to detect this problem
     // earlier as an `Err` rather than as a panic.
     version.with_context(|| {
-        format!("extension {extension_id} has no tehanu:api-version or zed:api-version section")
+        format!("extension {extension_id} has no gram:api-version or zed:api-version section")
     })
 }
 

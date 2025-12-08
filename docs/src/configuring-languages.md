@@ -49,22 +49,22 @@ Here's an example of language-specific settings:
 
 Some of the settings that can be customized include:
 
-- [`tab_size`](./configuring-tehanu.md#tab-size): The number of spaces for each indentation level
-- [`formatter`](./configuring-tehanu.md#formatter): The tool used for code formatting
-- [`format_on_save`](./configuring-tehanu.md#format-on-save): Whether to automatically format code when saving
-- [`enable_language_server`](./configuring-tehanu.md#enable-language-server): Toggle language server support
-- [`hard_tabs`](./configuring-tehanu.md#hard-tabs): Use tabs instead of spaces for indentation
-- [`preferred_line_length`](./configuring-tehanu.md#preferred-line-length): The recommended maximum line length
-- [`soft_wrap`](./configuring-tehanu.md#soft-wrap): How to wrap long lines of code
-- [`show_completions_on_input`](./configuring-tehanu.md#show-completions-on-input): Whether or not to show completions as you type
-- [`show_completion_documentation`](./configuring-tehanu.md#show-completion-documentation): Whether to display inline and alongside documentation for items in the completions menu
-- [`colorize_brackets`](./configuring-tehanu.md#colorize-brackets): Whether to use tree-sitter bracket queries to detect and colorize the brackets in the editor (also known as "rainbow brackets")
+- [`tab_size`](./configuring-gram.md#tab-size): The number of spaces for each indentation level
+- [`formatter`](./configuring-gram.md#formatter): The tool used for code formatting
+- [`format_on_save`](./configuring-gram.md#format-on-save): Whether to automatically format code when saving
+- [`enable_language_server`](./configuring-gram.md#enable-language-server): Toggle language server support
+- [`hard_tabs`](./configuring-gram.md#hard-tabs): Use tabs instead of spaces for indentation
+- [`preferred_line_length`](./configuring-gram.md#preferred-line-length): The recommended maximum line length
+- [`soft_wrap`](./configuring-gram.md#soft-wrap): How to wrap long lines of code
+- [`show_completions_on_input`](./configuring-gram.md#show-completions-on-input): Whether or not to show completions as you type
+- [`show_completion_documentation`](./configuring-gram.md#show-completion-documentation): Whether to display inline and alongside documentation for items in the completions menu
+- [`colorize_brackets`](./configuring-gram.md#colorize-brackets): Whether to use tree-sitter bracket queries to detect and colorize the brackets in the editor (also known as "rainbow brackets")
 
 ## File Associations
 
-Tehanu automatically detects file types based on their extensions, but you can customize these associations.
+Gram automatically detects file types based on their extensions, but you can customize these associations.
 
-To set up custom file associations, use the [`file_types`](./configuring-tehanu.md#file-types) setting in your `settings.json`:
+To set up custom file associations, use the [`file_types`](./configuring-gram.md#file-types) setting in your `settings.json`:
 
 ```json [settings]
 "file_types": {
@@ -74,7 +74,7 @@ To set up custom file associations, use the [`file_types`](./configuring-tehanu.
 }
 ```
 
-This configuration tells Tehanu to:
+This configuration tells Gram to:
 
 - Treat `.c` files as C++ instead of C
 - Recognize files named "MyLockFile" as TOML
@@ -104,7 +104,7 @@ Some key features provided by language servers include:
 
 ### Managing Language Servers
 
-Tehanu simplifies language server management for users:
+Gram simplifies language server management for users:
 
 1. Suggested extensions: When you open a file with a known file type, you may be
    prompted to install the associated extension. For the installation to work,
@@ -112,14 +112,14 @@ Tehanu simplifies language server management for users:
 
 2. Storage Location:
 
-   - macOS: `~/Library/Application Support/Tehanu/languages`
-   - Linux: `$XDG_DATA_HOME/tehanu/languages`, `$FLATPAK_XDG_DATA_HOME/tehanu/languages`, or `$HOME/.local/share/tehanu/languages`
+   - macOS: `~/Library/Application Support/Gram/languages`
+   - Linux: `$XDG_DATA_HOME/gram/languages`, `$FLATPAK_XDG_DATA_HOME/gram/languages`, or `$HOME/.local/share/gram/languages`
 
 ### Choosing Language Servers
 
 Some languages offer multiple language server options. You might have multiple
 extensions installed that bundle language servers targeting the same language,
-potentially leading to overlapping capabilities. Tehanu allows you to prioritize
+potentially leading to overlapping capabilities. Gram allows you to prioritize
 which language servers are used and in what order.
 
 Specify preferences using the `language_servers` setting:
@@ -144,9 +144,9 @@ Some language servers need to be configured with a current "toolchain", which is
 an installation of a specific version of a programming language compiler or/and
 interpreter, which can possibly include a full set of dependencies of a project.
 
-An example of what Tehanu considers a toolchain is a virtual environment in Python.
+An example of what Gram considers a toolchain is a virtual environment in Python.
 
-Not all languages in Tehanu support toolchain discovery and selection, but for
+Not all languages in Gram support toolchain discovery and selection, but for
 those that do, you can specify the toolchain from a toolchain picker (via
 {#action toolchain::Select}). To learn more about toolchains, see
 [`toolchains`](./toolchains.md).
@@ -278,15 +278,15 @@ You can toggle language server support globally or per-language:
 
 This disables the language server for Markdown files, which can be useful for
 performance in large documentation projects. You can configure this globally in
-your `~/.config/tehanu/settings.json` or inside a `.tehanu/settings.json` in your
+your `~/.config/gram/settings.json` or inside a `.gram/settings.json` in your
 project directory.
 
 ## Formatting and Linting
 
 ### Configuring Formatters
 
-Tehanu supports both built-in and external formatters. See
-[`formatter`](./configuring-tehanu.md#formatter) docs for more.
+Gram supports both built-in and external formatters. See
+[`formatter`](./configuring-gram.md#formatter) docs for more.
 Configure formatters globally or per-language in `settings.json`:
 
 ```json [settings]
@@ -379,15 +379,15 @@ JavaScript files automatically on save:
 
 If you encounter issues with formatting or linting:
 
-1. Check the editor log file for error messages (Use the command palette: `tehanu: open log`)
+1. Check the editor log file for error messages (Use the command palette: `gram: open log`)
 2. Ensure external tools (formatters, linters) are correctly installed and in your PATH.
-3. Verify configurations in both Tehanu settings and language-specific config files (e.g., `.eslintrc`, `.prettierrc`)
+3. Verify configurations in both Gram settings and language-specific config files (e.g., `.eslintrc`, `.prettierrc`)
 
 ## Syntax Highlighting and Themes
 
 ### Customizing Syntax Highlighting
 
-Tehanu uses Tree-sitter grammars for syntax highlighting. Override the default highlighting using the `theme_overrides` setting.
+Gram uses Tree-sitter grammars for syntax highlighting. Override the default highlighting using the `theme_overrides` setting.
 
 This example makes comments italic and changes the color of strings:
 
@@ -421,12 +421,12 @@ To change the editor theme:
 }
 ```
 
-Create custom themes by creating a JSON file in `~/.config/tehanu/themes/`. Tehanu will automatically detect and make available any themes in this directory.
+Create custom themes by creating a JSON file in `~/.config/gram/themes/`. Gram will automatically detect and make available any themes in this directory.
 
 ### Using Theme Extensions
 
-Tehanu supports theme extensions. Find the URL for the theme you want to install
-and install it from the Extensions panel ({#kb tehanu::Extensions}).
+Gram supports theme extensions. Find the URL for the theme you want to install
+and install it from the Extensions panel ({#kb gram::Extensions}).
 
 To create your own theme extension, refer to the [Developing Theme Extensions](./extensions/themes.md) guide.
 
@@ -469,7 +469,7 @@ To rename a symbol across a project:
 
 These features depend on the capabilities of the language server for each language.
 
-When renaming a symbol that spans multiple files, Tehanu will open a preview in
+When renaming a symbol that spans multiple files, Gram will open a preview in
 a multibuffer. Here you can review all the changes before applying them. To
 confirm the rename, simply save the multibuffer. If you decide not to proceed
 with the rename, you can undo the changes or close the multibuffer without
@@ -485,7 +485,7 @@ The `workspace: Open Symbol` command allows you to search for symbols (functions
 
 ### Code Completion
 
-Tehanu provides code completion suggestions as you type. You can manually trigger completion with the `editor: Show Completions` command. Use <kbd>tab|tab</kbd> or <kbd>enter|enter</kbd> to accept suggestions.
+Gram provides code completion suggestions as you type. You can manually trigger completion with the `editor: Show Completions` command. Use <kbd>tab|tab</kbd> or <kbd>enter|enter</kbd> to accept suggestions.
 
 ### Diagnostics
 

@@ -122,7 +122,7 @@ async fn test_show_attach_modal_and_select_process(
                     .into_iter()
                     .collect(),
                     true,
-                    ModalIntent::AttachToProcess(task::TehanuDebugConfig {
+                    ModalIntent::AttachToProcess(task::GramDebugConfig {
                         adapter: FakeAdapter::ADAPTER_NAME.into(),
                         request: dap::DebugRequest::Attach(AttachRequest::default()),
                         label: "attach example".into(),
@@ -239,7 +239,7 @@ async fn test_attach_with_pick_pid_variable(executor: BackgroundExecutor, cx: &m
 
     assert!(
         attach_modal.is_some(),
-        "Attach modal should open when config contains TEHANU_PICK_PID"
+        "Attach modal should open when config contains GRAM_PICK_PID"
     );
 
     let attach_modal = attach_modal.unwrap();

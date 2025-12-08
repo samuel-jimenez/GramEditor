@@ -1,6 +1,6 @@
-# Tehanu
+# Gram
 
-This project is a strongy opinionated fork of the Tehanu code editor. The main
+This project is a strongy opinionated fork of the Gram code editor. The main
 rationale behind this fork is that I am curious about a new editor written in
 rust, but I don't want anything to do with AI, I don't want my editor to phone
 home to an American corporation and I don't want to sign in, sign up or
@@ -15,7 +15,7 @@ don't intend to start now.
 This project is first and foremost a source code editor. It aims to be a fast,
 reliable and hackable tool for developers to use, reuse, share and modify. It
 will _never_ contain, support or condone any of the following "features" that
-_permeate_ the Tehanu code editor: AI, Telemetry, Proprietary server components,
+_permeate_ the Gram code editor: AI, Telemetry, Proprietary server components,
 third-party service integrations, Contributor Licenses, Terms of Service or
 subscription fees.
 

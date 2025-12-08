@@ -183,7 +183,7 @@ impl TasksModal {
                 id: _,
                 directory_in_worktree: dir,
                 id_base: _,
-            } => dir.file_name().is_some_and(|name| name == ".tehanu"),
+            } => dir.file_name().is_some_and(|name| name == ".gram"),
             _ => false,
         });
         // todo(debugger): We're always adding lsp tasks here even if prefer_lsp is false
@@ -761,7 +761,7 @@ mod tests {
         fs.insert_tree(
             path!("/dir"),
             json!({
-                ".tehanu": {
+                ".gram": {
                     "tasks.json": r#"[
                         {
                             "label": "example task",
@@ -933,17 +933,17 @@ mod tests {
         fs.insert_tree(
             path!("/dir"),
             json!({
-                ".tehanu": {
+                ".gram": {
                     "tasks.json": r#"[
                         {
-                            "label": "hello from $TEHANU_FILE:$TEHANU_ROW:$TEHANU_COLUMN",
+                            "label": "hello from $GRAM_FILE:$GRAM_ROW:$GRAM_COLUMN",
                             "command": "echo",
-                            "args": ["hello", "from", "$TEHANU_FILE", ":", "$TEHANU_ROW", ":", "$TEHANU_COLUMN"]
+                            "args": ["hello", "from", "$GRAM_FILE", ":", "$GRAM_ROW", ":", "$GRAM_COLUMN"]
                         },
                         {
-                            "label": "opened now: $TEHANU_WORKTREE_ROOT",
+                            "label": "opened now: $GRAM_WORKTREE_ROOT",
                             "command": "echo",
-                            "args": ["opened", "now:", "$TEHANU_WORKTREE_ROOT"]
+                            "args": ["opened", "now:", "$GRAM_WORKTREE_ROOT"]
                         }
                     ]"#,
                 },
@@ -1076,12 +1076,12 @@ mod tests {
                             ..TaskTemplate::default()
                         },
                         TaskTemplate {
-                            label: "TypeScript task from file $TEHANU_FILE".to_string(),
+                            label: "TypeScript task from file $GRAM_FILE".to_string(),
                             command: "npm run build".to_string(),
                             ..TaskTemplate::default()
                         },
                         TaskTemplate {
-                            label: "Another task from file $TEHANU_FILE".to_string(),
+                            label: "Another task from file $GRAM_FILE".to_string(),
                             command: "npm run lint".to_string(),
                             ..TaskTemplate::default()
                         },

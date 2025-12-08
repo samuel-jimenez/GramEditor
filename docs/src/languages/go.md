@@ -1,6 +1,6 @@
 # Go
 
-Go support is available natively in Tehanu.
+Go support is available natively in Gram.
 
 - Tree-sitter: [tree-sitter/tree-sitter-go](https://github.com/tree-sitter/tree-sitter-go)
 - Language Server: [golang/tools/tree/master/gopls](https://github.com/golang/tools/tree/master/gopls)
@@ -39,7 +39,7 @@ If `gopls` is not found you will likely need to add `export PATH="$PATH:$HOME/go
 
 ## Inlay Hints
 
-Tehanu sets the following initialization options for inlay hints:
+Gram sets the following initialization options for inlay hints:
 
 ```json [settings]
 "hints": {
@@ -53,7 +53,7 @@ Tehanu sets the following initialization options for inlay hints:
 }
 ```
 
-to make the language server send back inlay hints when Tehanu has them enabled in the settings.
+to make the language server send back inlay hints when Gram has them enabled in the settings.
 
 Use
 
@@ -75,7 +75,7 @@ See [gopls inlayHints documentation](https://github.com/golang/tools/blob/master
 
 ## Debugging
 
-Tehanu supports zero-configuration debugging of Go tests and entry points (`func main`) using Delve. Run {#action debugger::Start} ({#kb debugger::Start}) to see a contextual list of these preconfigured debug tasks.
+Gram supports zero-configuration debugging of Go tests and entry points (`func main`) using Delve. Run {#action debugger::Start} ({#kb debugger::Start}) to see a contextual list of these preconfigured debug tasks.
 
 For more control, you can add debug configurations to `.zed/debug.json`. See below for examples.
 
@@ -90,7 +90,7 @@ To debug a specific package, you can do so by setting the Delve mode to "debug".
   {
     "label": "Go (Delve)",
     "adapter": "Delve",
-    "program": "$TEHANU_FILE",
+    "program": "$GRAM_FILE",
     "request": "launch",
     "mode": "debug"
   },
@@ -122,7 +122,7 @@ The "program" is still the package name, and you can use the "buildFlags" to do 
     "program": ".",
     "buildFlags": ["-tags", "integration"]
     // To filter down to just the test your cursor is in:
-    // "args": ["-test.run", "$TEHANU_SYMBOL"]
+    // "args": ["-test.run", "$GRAM_SYMBOL"]
   }
 ]
 ```
@@ -139,8 +139,8 @@ and the "build" command should build that.
     "adapter": "Delve",
     "request": "launch",
     "mode": "exec",
-    "program": "${TEHANU_WORKTREE_ROOT}/__debug_unit",
-    "args": ["-test.v", "-test.run=${TEHANU_SYMBOL}"],
+    "program": "${GRAM_WORKTREE_ROOT}/__debug_unit",
+    "args": ["-test.v", "-test.run=${GRAM_SYMBOL}"],
     "build": {
       "command": "go",
       "args": [
@@ -160,7 +160,7 @@ and the "build" command should build that.
 
 ### Attaching to an existing instance of Delve
 
-You might find yourself needing to connect to an existing instance of Delve that's not necessarily running on your machine; in such case, you can use `tcp_arguments` to instrument Tehanu's connection to Delve.
+You might find yourself needing to connect to an existing instance of Delve that's not necessarily running on your machine; in such case, you can use `tcp_arguments` to instrument Gram's connection to Delve.
 
 ```json [debug]
 [
@@ -179,7 +179,7 @@ You might find yourself needing to connect to an existing instance of Delve that
 ]
 ```
 
-In such case Tehanu won't spawn a new instance of Delve, as it opts to use an existing one. The consequence of this is that _there will be no terminal_ in Tehanu; you have to interact with the Delve instance directly, as it handles stdin/stdout of the debuggee.
+In such case Gram won't spawn a new instance of Delve, as it opts to use an existing one. The consequence of this is that _there will be no terminal_ in Gram; you have to interact with the Delve instance directly, as it handles stdin/stdout of the debuggee.
 
 ## Go Mod
 

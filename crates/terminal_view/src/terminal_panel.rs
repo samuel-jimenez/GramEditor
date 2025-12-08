@@ -1810,7 +1810,7 @@ mod tests {
             })
             .unwrap();
 
-        let user_command = r#"REPO_URL=$(git remote get-url origin | sed -e \"s/^git@\\(.*\\):\\(.*\\)\\.git$/https:\\/\\/\\1\\/\\2/\"); COMMIT_SHA=$(git log -1 --format=\"%H\" -- \"${TEHANU_RELATIVE_FILE}\"); echo \"${REPO_URL}/blob/${COMMIT_SHA}/${TEHANU_RELATIVE_FILE}#L${TEHANU_ROW}-$(echo $(($(wc -l <<< \"$TEHANU_SELECTED_TEXT\") + $TEHANU_ROW - 1)))\" | xclip -selection clipboard"#.to_string();
+        let user_command = r#"REPO_URL=$(git remote get-url origin | sed -e \"s/^git@\\(.*\\):\\(.*\\)\\.git$/https:\\/\\/\\1\\/\\2/\"); COMMIT_SHA=$(git log -1 --format=\"%H\" -- \"${GRAM_RELATIVE_FILE}\"); echo \"${REPO_URL}/blob/${COMMIT_SHA}/${GRAM_RELATIVE_FILE}#L${GRAM_ROW}-$(echo $(($(wc -l <<< \"$GRAM_SELECTED_TEXT\") + $GRAM_ROW - 1)))\" | xclip -selection clipboard"#.to_string();
 
         let expected_cwd = PathBuf::from("/some/work");
         let task = window_handle

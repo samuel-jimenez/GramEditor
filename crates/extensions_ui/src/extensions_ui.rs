@@ -35,7 +35,7 @@ use workspace::{
 use crate::components::ExtensionCard;
 
 actions!(
-    tehanu,
+    gram,
     [
         /// Installs an extension from a local directory.
         InstallExtensionFromFolder,
@@ -1238,20 +1238,20 @@ impl ExtensionsPage {
             let banner = match feature {
                 Feature::ExtensionBasedpyright => self.render_feature_upsell_banner(
                     "Basedpyright (Python language server) support is built-in!".into(),
-                    "https://tehanu.liten.app/docs/languages/python#basedpyright".into(),
+                    "https://gram.liten.app/docs/languages/python#basedpyright".into(),
                     false,
                     cx,
                 ),
                 Feature::ExtensionRuff => self.render_feature_upsell_banner(
                     "Ruff (linter for Python) support is built-in!".into(),
-                    "https://tehanu.liten.app/docs/languages/python#code-formatting--linting"
+                    "https://gram.liten.app/docs/languages/python#code-formatting--linting"
                         .into(),
                     false,
                     cx,
                 ),
                 Feature::ExtensionTailwind => self.render_feature_upsell_banner(
                     "Tailwind CSS support is built-in!".into(),
-                    "https://tehanu.liten.app/docs/languages/tailwindcss".into(),
+                    "https://gram.liten.app/docs/languages/tailwindcss".into(),
                     false,
                     cx,
                 ),
@@ -1262,69 +1262,69 @@ impl ExtensionsPage {
                     cx,
                 ),
                 Feature::Git => self.render_feature_upsell_banner(
-                    "Tehanu comes with basic Git support—more features are coming in the future."
+                    "Gram comes with basic Git support—more features are coming in the future."
                         .into(),
-                    "https://tehanu.liten.app/docs/git".into(),
+                    "https://gram.liten.app/docs/git".into(),
                     false,
                     cx,
                 ),
                 Feature::LanguageBash => self.render_feature_upsell_banner(
                     "Shell support is built-in!".into(),
-                    "https://tehanu.liten.app/docs/languages/bash".into(),
+                    "https://gram.liten.app/docs/languages/bash".into(),
                     false,
                     cx,
                 ),
                 Feature::LanguageC => self.render_feature_upsell_banner(
                     "C support is built-in!".into(),
-                    "https://tehanu.liten.app/docs/languages/c".into(),
+                    "https://gram.liten.app/docs/languages/c".into(),
                     false,
                     cx,
                 ),
                 Feature::LanguageCpp => self.render_feature_upsell_banner(
                     "C++ support is built-in!".into(),
-                    "https://tehanu.liten.app/docs/languages/cpp".into(),
+                    "https://gram.liten.app/docs/languages/cpp".into(),
                     false,
                     cx,
                 ),
                 Feature::LanguageGo => self.render_feature_upsell_banner(
                     "Go support is built-in!".into(),
-                    "https://tehanu.liten.app/docs/languages/go".into(),
+                    "https://gram.liten.app/docs/languages/go".into(),
                     false,
                     cx,
                 ),
                 Feature::LanguagePython => self.render_feature_upsell_banner(
                     "Python support is built-in!".into(),
-                    "https://tehanu.liten.app/docs/languages/python".into(),
+                    "https://gram.liten.app/docs/languages/python".into(),
                     false,
                     cx,
                 ),
                 Feature::LanguageReact => self.render_feature_upsell_banner(
                     "React support is built-in!".into(),
-                    "https://tehanu.liten.app/docs/languages/typescript".into(),
+                    "https://gram.liten.app/docs/languages/typescript".into(),
                     false,
                     cx,
                 ),
                 Feature::LanguageRust => self.render_feature_upsell_banner(
                     "Rust support is built-in!".into(),
-                    "https://tehanu.liten.app/docs/languages/rust".into(),
+                    "https://gram.liten.app/docs/languages/rust".into(),
                     false,
                     cx,
                 ),
                 Feature::LanguageTypescript => self.render_feature_upsell_banner(
                     "Typescript support is built-in!".into(),
-                    "https://tehanu.liten.app/docs/languages/typescript".into(),
+                    "https://gram.liten.app/docs/languages/typescript".into(),
                     false,
                     cx,
                 ),
                 Feature::OpenIn => self.render_feature_upsell_banner(
-                    "Tehanu supports linking to a source line on GitHub and others.".into(),
-                    "https://tehanu.liten.app/docs/git#git-integrations".into(),
+                    "Gram supports linking to a source line on GitHub and others.".into(),
+                    "https://gram.liten.app/docs/git#git-integrations".into(),
                     false,
                     cx,
                 ),
                 Feature::Vim => self.render_feature_upsell_banner(
                     "Vim support is built-in!".into(),
-                    "https://tehanu.liten.app/docs/vim".into(),
+                    "https://gram.liten.app/docs/vim".into(),
                     true,
                     cx,
                 ),

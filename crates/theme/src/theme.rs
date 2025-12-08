@@ -2,7 +2,7 @@
 
 //! # Theme
 //!
-//! This crate provides the theme system for Tehanu.
+//! This crate provides the theme system for Gram.
 //!
 //! ## Overview
 //!

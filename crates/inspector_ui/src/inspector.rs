@@ -107,7 +107,7 @@ fn render_inspector_id(inspector_id: &InspectorElementId, cx: &App) -> Div {
     // For unknown reasons, for some elements the path is absolute.
     let source_location_string = source_location.to_string();
     let source_location_string = source_location_string
-        .strip_prefix(env!("TEHANU_REPO_DIR"))
+        .strip_prefix(env!("GRAM_REPO_DIR"))
         .and_then(|s| s.strip_prefix("/"))
         .map(|s| s.to_string())
         .unwrap_or(source_location_string);
@@ -136,7 +136,7 @@ fn render_inspector_id(inspector_id: &InspectorElementId, cx: &App) -> Div {
                 .font_buffer(cx)
                 .text_xs()
                 .child(source_location_string)
-                .tooltip(Tooltip::text("Click to open by running Tehanu CLI"))
+                .tooltip(Tooltip::text("Click to open by running Gram CLI"))
                 .on_click(move |_, _window, cx| {
                     cx.background_spawn(open_zed_source_location(source_location))
                         .detach_and_log_err(cx);
@@ -157,7 +157,7 @@ fn render_inspector_id(inspector_id: &InspectorElementId, cx: &App) -> Div {
 async fn open_zed_source_location(
     location: &'static std::panic::Location<'static>,
 ) -> anyhow::Result<()> {
-    let mut path = Path::new(env!("TEHANU_REPO_DIR")).to_path_buf();
+    let mut path = Path::new(env!("GRAM_REPO_DIR")).to_path_buf();
     path.push(Path::new(location.file()));
     let path_arg = format!(
         "{}:{}:{}",
@@ -166,7 +166,7 @@ async fn open_zed_source_location(
         location.column()
     );
 
-    let output = new_smol_command("tehanu")
+    let output = new_smol_command("gram")
         .arg(&path_arg)
         .output()
         .await

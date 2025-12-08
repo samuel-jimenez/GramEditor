@@ -1,27 +1,27 @@
 #!/usr/bin/env sh
 set -eu
 
-# Uninstalls Tehanu that was installed using the install.sh script
+# Uninstalls Gram that was installed using the install.sh script
 
 check_remaining_installations() {
     platform="$(uname -s)"
     if [ "$platform" = "Darwin" ]; then
-        # Check for any Tehanu variants in /Applications
-        remaining=$(ls -d /Applications/Tehanu*.app 2>/dev/null | wc -l)
+        # Check for any Gram variants in /Applications
+        remaining=$(ls -d /Applications/Gram*.app 2>/dev/null | wc -l)
         [ "$remaining" -eq 0 ]
     else
-        # Check for any Tehanu variants in ~/.local
-        remaining=$(ls -d "$HOME/.local/tehanu"*.app 2>/dev/null | wc -l)
+        # Check for any Gram variants in ~/.local
+        remaining=$(ls -d "$HOME/.local/gram"*.app 2>/dev/null | wc -l)
         [ "$remaining" -eq 0 ]
     fi
 }
 
 prompt_remove_preferences() {
-    printf "Do you want to keep your Tehanu preferences? [Y/n] "
+    printf "Do you want to keep your Gram preferences? [Y/n] "
     read -r response
     case "$response" in
         [nN]|[nN][oO])
-            rm -rf "$HOME/.config/tehanu"
+            rm -rf "$HOME/.config/gram"
             echo "Preferences removed."
             ;;
         *)
@@ -32,7 +32,7 @@ prompt_remove_preferences() {
 
 main() {
     platform="$(uname -s)"
-    channel="${TEHANU_CHANNEL:-stable}"
+    channel="${GRAM_CHANNEL:-stable}"
 
     if [ "$platform" = "Darwin" ]; then
         platform="macos"
@@ -45,7 +45,7 @@ main() {
 
     "$platform"
 
-    echo "Tehanu has been uninstalled"
+    echo "Gram has been uninstalled"
 }
 
 linux() {
@@ -58,71 +58,71 @@ linux() {
     db_suffix="stable"
     case "$channel" in
       stable)
-        appid="se.ziran.Tehanu"
+        appid="se.ziran.Gram"
         db_suffix="stable"
         ;;
       nightly)
-        appid="se.ziran.Tehanu-Nightly"
+        appid="se.ziran.Gram-Nightly"
         db_suffix="nightly"
         ;;
       preview)
-        appid="se.ziran.Tehanu-Preview"
+        appid="se.ziran.Gram-Preview"
         db_suffix="preview"
         ;;
       dev)
-        appid="se.ziran.Tehanu-Dev"
+        appid="se.ziran.Gram-Dev"
         db_suffix="dev"
         ;;
       *)
         echo "Unknown release channel: ${channel}. Using stable app ID."
-        appid="se.ziran.Tehanu"
+        appid="se.ziran.Gram"
         db_suffix="stable"
         ;;
     esac
 
     # Remove the app directory
-    rm -rf "$HOME/.local/tehanu$suffix.app"
+    rm -rf "$HOME/.local/gram$suffix.app"
 
     # Remove the binary symlink
-    rm -f "$HOME/.local/bin/tehanu"
+    rm -f "$HOME/.local/bin/gram"
 
     # Remove the .desktop file
     rm -f "$HOME/.local/share/applications/${appid}.desktop"
 
     # Remove the database directory for this channel
-    rm -rf "$HOME/.local/share/tehanu/db/0-$db_suffix"
+    rm -rf "$HOME/.local/share/gram/db/0-$db_suffix"
 
     # Remove socket file
-    rm -f "$HOME/.local/share/tehanu/tehanu-$db_suffix.sock"
+    rm -f "$HOME/.local/share/gram/gram-$db_suffix.sock"
 
-    # Remove the entire Tehanu directory if no installations remain
+    # Remove the entire Gram directory if no installations remain
     if check_remaining_installations; then
-        rm -rf "$HOME/.local/share/tehanu"
+        rm -rf "$HOME/.local/share/gram"
         prompt_remove_preferences
     fi
 
-    rm -rf $HOME/.tehanu_server
+    rm -rf $HOME/.gram_server
 }
 
 macos() {
-    app="Tehanu.app"
+    app="Gram.app"
     db_suffix="stable"
-    app_id="se.ziran.Tehanu"
+    app_id="se.ziran.Gram"
     case "$channel" in
       nightly)
-        app="Tehanu Nightly.app"
+        app="Gram Nightly.app"
         db_suffix="nightly"
-        app_id="se.ziran.Tehanu-Nightly"
+        app_id="se.ziran.Gram-Nightly"
         ;;
       preview)
-        app="Tehanu Preview.app"
+        app="Gram Preview.app"
         db_suffix="preview"
-        app_id="se.ziran.Tehanu-Preview"
+        app_id="se.ziran.Gram-Preview"
         ;;
       dev)
-        app="Tehanu Dev.app"
+        app="Gram Dev.app"
         db_suffix="dev"
-        app_id="se.ziran.Tehanu-Dev"
+        app_id="se.ziran.Gram-Dev"
         ;;
     esac
 
@@ -132,10 +132,10 @@ macos() {
     fi
 
     # Remove the binary symlink
-    rm -f "$HOME/.local/bin/tehanu"
+    rm -f "$HOME/.local/bin/gram"
 
     # Remove the database directory for this channel
-    rm -rf "$HOME/Library/Application Support/Tehanu/db/0-$db_suffix"
+    rm -rf "$HOME/Library/Application Support/Gram/db/0-$db_suffix"
 
     # Remove app-specific files and directories
     rm -rf "$HOME/Library/Application Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.ApplicationRecentDocuments/$app_id.sfl"*
@@ -144,15 +144,15 @@ macos() {
     rm -rf "$HOME/Library/Preferences/$app_id.plist"
     rm -rf "$HOME/Library/Saved Application State/$app_id.savedState"
 
-    # Remove the entire Tehanu directory if no installations remain
+    # Remove the entire Gram directory if no installations remain
     if check_remaining_installations; then
-        rm -rf "$HOME/Library/Application Support/Tehanu"
-        rm -rf "$HOME/Library/Logs/Tehanu"
+        rm -rf "$HOME/Library/Application Support/Gram"
+        rm -rf "$HOME/Library/Logs/Gram"
 
         prompt_remove_preferences
     fi
 
-    rm -rf $HOME/.tehanu_server
+    rm -rf $HOME/.gram_server
 }
 
 main "$@"

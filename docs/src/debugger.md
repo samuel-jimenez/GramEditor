@@ -1,16 +1,16 @@
 # Debugger
 
-Tehanu uses the [Debug Adapter Protocol (DAP)](https://microsoft.github.io/debug-adapter-protocol/) to provide debugging functionality across multiple programming languages.
+Gram uses the [Debug Adapter Protocol (DAP)](https://microsoft.github.io/debug-adapter-protocol/) to provide debugging functionality across multiple programming languages.
 DAP is a standardized protocol that defines how debuggers, editors, and IDEs communicate with each other.
-It allows Tehanu to support various debuggers without needing to implement language-specific debugging logic.
-Tehanu implements the client side of the protocol, and various _debug adapters_ implement the server side.
+It allows Gram to support various debuggers without needing to implement language-specific debugging logic.
+Gram implements the client side of the protocol, and various _debug adapters_ implement the server side.
 
 This protocol enables features like setting breakpoints, stepping through code, inspecting variables,
 and more, in a consistent manner across different programming languages and runtime environments.
 
 ## Supported Languages
 
-To debug code written in a specific language, Tehanu needs to find a debug adapter for that language. Some debug adapters are provided by Tehanu without additional setup, and some are provided by [language extensions](./extensions/debugger-extensions.md). The following languages currently have debug adapters available:
+To debug code written in a specific language, Gram needs to find a debug adapter for that language. Some debug adapters are provided by Gram without additional setup, and some are provided by [language extensions](./extensions/debugger-extensions.md). The following languages currently have debug adapters available:
 
 <!-- keep this sorted -->
 
@@ -28,7 +28,7 @@ To debug code written in a specific language, Tehanu needs to find a debug adapt
 
 > If your language isn't listed, you can contribute by adding a debug adapter for it. Check out our [debugger extensions](./extensions/debugger-extensions.md) documentation for more information.
 
-Follow those links for language- and adapter-specific information and examples, or read on for more about Tehanu's general debugging features that apply to all adapters.
+Follow those links for language- and adapter-specific information and examples, or read on for more about Gram's general debugging features that apply to all adapters.
 
 ## Getting Started
 
@@ -55,31 +55,31 @@ For languages that don't provide preconfigured debug tasks (this includes C, C++
 
 Check the documentation for your language for example configurations covering typical use-cases. Once you've added configurations to `.zed/debug.json`, they'll appear in the list in the new process modal.
 
-Tehanu will also load debug configurations from `.vscode/launch.json`, and show them in the new process modal if no configurations are found in `.zed/debug.json`.
+Gram will also load debug configurations from `.vscode/launch.json`, and show them in the new process modal if no configurations are found in `.zed/debug.json`.
 
 #### Global debug configurations
 
-If you run the same launch profiles across multiple projects, you can store them once in your user configuration. Invoke {#action tehanu::OpenDebugTasks} from the command palette to open the global `debug.json` file; Tehanu creates it next to your user `settings.json` and keeps it in sync with the debugger UI. The file lives at:
+If you run the same launch profiles across multiple projects, you can store them once in your user configuration. Invoke {#action gram::OpenDebugTasks} from the command palette to open the global `debug.json` file; Gram creates it next to your user `settings.json` and keeps it in sync with the debugger UI. The file lives at:
 
-- **macOS:** `~/Library/Application Support/Tehanu/debug.json`
-- **Linux/BSD:** `$XDG_CONFIG_HOME/zed/debug.json` (falls back to `~/.config/tehanu/debug.json`)
-- **Windows:** `%APPDATA%\Tehanu\debug.json`
+- **macOS:** `~/Library/Application Support/Gram/debug.json`
+- **Linux/BSD:** `$XDG_CONFIG_HOME/zed/debug.json` (falls back to `~/.config/gram/debug.json`)
+- **Windows:** `%APPDATA%\Gram\debug.json`
 
 Populate this file with the same array of objects you would place in `.zed/debug.json`. Any scenarios defined there are merged into every workspace, so your favorite launch presets appear automatically in the "New Debug Session" dialog.
 
 ### Launching & Attaching
 
-Tehanu debugger offers two ways to debug your program; you can either _launch_ a new instance of your program or _attach_ to an existing process.
+Gram debugger offers two ways to debug your program; you can either _launch_ a new instance of your program or _attach_ to an existing process.
 Which one you choose depends on what you are trying to achieve.
 
-When launching a new instance, Tehanu (and the underlying debug adapter) can often do a better job at picking up the debug information compared to attaching to an existing process, since it controls the lifetime of a whole program.
+When launching a new instance, Gram (and the underlying debug adapter) can often do a better job at picking up the debug information compared to attaching to an existing process, since it controls the lifetime of a whole program.
 Running unit tests or a debug build of your application is a good use case for launching.
 
 Compared to launching, attaching to an existing process might seem inferior, but that's far from truth; there are cases where you cannot afford to restart your program, because for example, the bug is not reproducible outside of a production environment or some other circumstances.
 
 ## Configuration
 
-Tehanu requires the `adapter` and `label` fields for all debug tasks. In addition, Tehanu will use the `build` field to run any necessary setup steps before the debugger starts [(see below)](#build-tasks), and can accept a `tcp_connection` field to connect to an existing process.
+Gram requires the `adapter` and `label` fields for all debug tasks. In addition, Gram will use the `build` field to run any necessary setup steps before the debugger starts [(see below)](#build-tasks), and can accept a `tcp_connection` field to connect to an existing process.
 
 All other fields are provided by the debug adapter and can contain [task variables](./tasks.md#variables). Most adapters support `request`, `program`, and `cwd`:
 
@@ -88,16 +88,16 @@ All other fields are provided by the debug adapter and can contain [task variabl
   {
     // The label for the debug configuration and used to identify the debug session inside the debug panel & new process modal
     "label": "Example Start debugger config",
-    // The debug adapter that Tehanu should use to debug the program
+    // The debug adapter that Gram should use to debug the program
     "adapter": "Example adapter name",
     // Request:
-    //  - launch: Tehanu will launch the program if specified, or show a debug terminal with the right configuration
-    //  - attach: Tehanu will attach to a running program to debug it, or when the process_id is not specified, will show a process picker (only supported for node currently)
+    //  - launch: Gram will launch the program if specified, or show a debug terminal with the right configuration
+    //  - attach: Gram will attach to a running program to debug it, or when the process_id is not specified, will show a process picker (only supported for node currently)
     "request": "launch",
     // The program to debug. This field supports path resolution with ~ or . symbols.
     "program": "path_to_program",
-    // cwd: defaults to the current working directory of your project ($TEHANU_WORKTREE_ROOT)
-    "cwd": "$TEHANU_WORKTREE_ROOT"
+    // cwd: defaults to the current working directory of your project ($GRAM_WORKTREE_ROOT)
+    "cwd": "$GRAM_WORKTREE_ROOT"
   }
 ]
 ```
@@ -106,7 +106,7 @@ Check your debug adapter's documentation for more information on the fields it s
 
 ### Build tasks
 
-Tehanu allows embedding a Tehanu task in the `build` field that is run before the debugger starts. This is useful for setting up the environment or running any necessary setup steps before the debugger starts.
+Gram allows embedding a Gram task in the `build` field that is run before the debugger starts. This is useful for setting up the environment or running any necessary setup steps before the debugger starts.
 
 ```json [debug]
 [
@@ -132,14 +132,14 @@ Build tasks can also refer to the existing tasks by unsubstituted label:
     "adapter": "CodeLLDB",
     "program": "path_to_program",
     "request": "launch",
-    "build": "my build task" // Or "my build task for $TEHANU_FILE"
+    "build": "my build task" // Or "my build task for $GRAM_FILE"
   }
 ]
 ```
 
 ### Automatic scenario creation
 
-Given a Tehanu task, Tehanu can automatically create a scenario for you. Automatic scenario creation also powers our scenario creation from gutter.
+Given a Gram task, Gram can automatically create a scenario for you. Automatic scenario creation also powers our scenario creation from gutter.
 Automatic scenario creation is currently supported for Rust, Go, Python, JavaScript, and TypeScript.
 
 ## Breakpoints
@@ -164,10 +164,10 @@ The settings for the debugger are grouped under the `debugger` key in `settings.
 
 - `dock`: Determines the position of the debug panel in the UI.
 - `stepping_granularity`: Determines the stepping granularity.
-- `save_breakpoints`: Whether the breakpoints should be reused across Tehanu sessions.
+- `save_breakpoints`: Whether the breakpoints should be reused across Gram sessions.
 - `button`: Whether to show the debug button in the status bar.
 - `timeout`: Time in milliseconds until timeout error when connecting to a TCP debug adapter.
-- `log_dap_communications`: Whether to log messages between active debug adapters and Tehanu.
+- `log_dap_communications`: Whether to log messages between active debug adapters and Gram.
 - `format_dap_log_messages`: Whether to format DAP messages when adding them to the debug adapter logger.
 
 ### Dock
@@ -230,7 +230,7 @@ The settings for the debugger are grouped under the `debugger` key in `settings.
 
 ### Save Breakpoints
 
-- Description: Whether the breakpoints should be saved across Tehanu sessions.
+- Description: Whether the breakpoints should be saved across Gram sessions.
 - Default: `true`
 - Setting: `debugger.save_breakpoints`
 
@@ -302,7 +302,7 @@ Inline value hints can also be toggled from the Editor Controls menu in the edit
 
 ### Log Dap Communications
 
-- Description: Whether to log messages between active debug adapters and Tehanu. (Used for DAP development)
+- Description: Whether to log messages between active debug adapters and Gram. (Used for DAP development)
 - Default: false
 - Setting: debugger.log_dap_communications
 
@@ -338,11 +338,11 @@ Inline value hints can also be toggled from the Editor Controls menu in the edit
 
 ### Customizing Debug Adapters
 
-- Description: Custom program path and arguments to override how Tehanu launches a specific debug adapter.
+- Description: Custom program path and arguments to override how Gram launches a specific debug adapter.
 - Default: Adapter-specific
 - Setting: `dap.$ADAPTER.binary` and `dap.$ADAPTER.args`
 
-You can pass `binary`, `args`, or both. `binary` should be a path to a _debug adapter_ (like `lldb-dap`) not a _debugger_ (like `lldb` itself). The `args` setting overrides any arguments that Tehanu would otherwise pass to the adapter.
+You can pass `binary`, `args`, or both. `binary` should be a path to a _debug adapter_ (like `lldb-dap`) not a _debugger_ (like `lldb` itself). The `args` setting overrides any arguments that Gram would otherwise pass to the adapter.
 
 ```json [settings]
 {
@@ -366,5 +366,5 @@ The Debugger supports the following theme options:
 
 If you're running into problems with the debugger, please [open a GitHub issue](https://github.com/zed-industries/zed/issues/new?template=04_bug_debugger.yml), providing as much context as possible. There are also some features you can use to gather more information about the problem:
 
-- When you have a session running in the debug panel, you can run the {#action dev::CopyDebugAdapterArguments} action to copy a JSON blob to the clipboard that describes how Tehanu initialized the session. This is especially useful when the session failed to start, and is great context to add if you open a GitHub issue.
-- You can also use the {#action dev::OpenDebugAdapterLogs} action to see a trace of all of Tehanu's communications with debug adapters during the most recent debug sessions.
+- When you have a session running in the debug panel, you can run the {#action dev::CopyDebugAdapterArguments} action to copy a JSON blob to the clipboard that describes how Gram initialized the session. This is especially useful when the session failed to start, and is great context to add if you open a GitHub issue.
+- You can also use the {#action dev::OpenDebugAdapterLogs} action to see a trace of all of Gram's communications with debug adapters during the most recent debug sessions.

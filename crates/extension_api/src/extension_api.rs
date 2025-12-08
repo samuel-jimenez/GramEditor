@@ -1,4 +1,4 @@
-//! The Tehanu Rust Extension API allows you write extensions for [Tehanu](https://liten.app/) in Rust.
+//! The Gram Rust Extension API allows you write extensions for [Gram](https://liten.app/) in Rust.
 
 pub mod http_client;
 pub mod process;
@@ -50,7 +50,7 @@ pub mod lsp {
     };
 }
 
-/// A result returned from a Tehanu extension.
+/// A result returned from a Gram extension.
 pub type Result<T, E = String> = core::result::Result<T, E>;
 
 /// Updates the installation status for the given language server.
@@ -61,7 +61,7 @@ pub fn set_language_server_installation_status(
     wit::set_language_server_installation_status(&language_server_id.0, status)
 }
 
-/// A Tehanu extension.
+/// A Gram extension.
 pub trait Extension: Send + Sync {
     /// Returns a new instance of the extension.
     fn new() -> Self
@@ -182,10 +182,10 @@ pub trait Extension: Send + Sync {
         Err("`dap_config_to_scenario` not implemented".to_string())
     }
 
-    /// Locators are entities that convert a Tehanu task into a debug scenario.
+    /// Locators are entities that convert a Gram task into a debug scenario.
     ///
     /// They can be provided even by extensions that don't provide a debug adapter.
-    /// For all tasks applicable to a given buffer, Tehanu will query all locators to find one that can turn the task into a debug scenario.
+    /// For all tasks applicable to a given buffer, Gram will query all locators to find one that can turn the task into a debug scenario.
     /// A converted debug scenario can include a build task (it shouldn't contain any configuration in such case); a build task result will later
     /// be resolved with [`Extension::run_dap_locator`].
     ///
@@ -197,7 +197,7 @@ pub trait Extension: Send + Sync {
     ///    found the artifact path by themselves.
     ///
     /// Note that you're not obliged to use build tasks with locators. Specifically, it is sufficient to provide a debug configuration directly in the return value of
-    /// `dap_locator_create_scenario` if you're able to do that. Make sure to not fill out `build` field in that case, as that will prevent Tehanu from running second phase of resolution in such case.
+    /// `dap_locator_create_scenario` if you're able to do that. Make sure to not fill out `build` field in that case, as that will prevent Gram from running second phase of resolution in such case.
     /// This might be of particular relevance to interpreted languages.
     fn dap_locator_create_scenario(
         &mut self,
@@ -220,7 +220,7 @@ pub trait Extension: Send + Sync {
     }
 }
 
-/// Registers the provided type as a Tehanu extension.
+/// Registers the provided type as a Gram extension.
 ///
 /// The type must implement the [`Extension`] trait.
 #[macro_export]
@@ -285,9 +285,9 @@ fn extension() -> &'static mut dyn Extension {
 static mut EXTENSION: Option<Box<dyn Extension>> = None;
 
 #[cfg(target_arch = "wasm32")]
-#[unsafe(link_section = "tehanu:api-version")]
+#[unsafe(link_section = "gram:api-version")]
 #[doc(hidden)]
-pub static TEHANU_API_VERSION: [u8; 6] =
+pub static GRAM_API_VERSION: [u8; 6] =
     *include_bytes!(concat!(env!("OUT_DIR"), "/version_bytes"));
 
 mod wit {

@@ -1,30 +1,30 @@
-# Tehanu on Windows
+# Gram on Windows
 
-## Installing Tehanu
+## Installing Gram
 
-To install, you can build Tehanu [from source](https://tehanu.liten.app/docs/development/windows).
+To install, you can build Gram [from source](https://gram.liten.app/docs/development/windows).
 
 ## Uninstall
 
-- Installed via installer: Use `Settings` → `Apps` → `Installed apps`, search for Tehanu, and click Uninstall.
+- Installed via installer: Use `Settings` → `Apps` → `Installed apps`, search for Gram, and click Uninstall.
 - Built from source: Remove the build output directory you created (e.g., your target/install folder).
 
 Your settings and extensions live in your user profile. When uninstalling, you can choose to keep or remove them.
 
 ## Remote Development (SSH)
 
-Tehanu supports remote development on Windows through both SSH and WSL. You can connect to remote servers via SSH or work with files inside WSL distributions directly from Tehanu.
+Gram supports remote development on Windows through both SSH and WSL. You can connect to remote servers via SSH or work with files inside WSL distributions directly from Gram.
 
 For detailed instructions on setting up and using remote development features, including SSH configuration, WSL setup, and troubleshooting, see the [Remote Development documentation](./remote-development.md).
 
 ## Troubleshooting
 
-### Tehanu fails to start or shows a blank window
+### Gram fails to start or shows a blank window
 
-- Check that your hardware and operating system version are compatible with Tehanu. See our [installation guide](./installation.md) for more information.
+- Check that your hardware and operating system version are compatible with Gram. See our [installation guide](./installation.md) for more information.
 - Update your GPU drivers from your GPU vendor (Intel/AMD/NVIDIA/Qualcomm).
 - Ensure hardware acceleration is enabled in Windows and not blocked by third‑party software.
-- Try launching Tehanu with no extensions or custom settings to isolate conflicts.
+- Try launching Gram with no extensions or custom settings to isolate conflicts.
 
 ### Terminal issues
 
@@ -36,9 +36,9 @@ When prompted for credentials, use the graphical askpass dialog. If it doesn’t
 
 ### Graphics issues
 
-#### Tehanu fails to open / degraded performance
+#### Gram fails to open / degraded performance
 
-Tehanu requires a DirectX 11 compatible GPU to run. If Tehanu fails to open, your GPU may not meet the minimum requirements.
+Gram requires a DirectX 11 compatible GPU to run. If Gram fails to open, your GPU may not meet the minimum requirements.
 
 To check if your GPU supports DirectX 11, run the following command:
 
@@ -48,4 +48,4 @@ dxdiag
 
 This will open the DirectX Diagnostic Tool, which shows the DirectX version your GPU supports under `System` → `System Information` → `DirectX Version`.
 
-If you're running Tehanu inside a virtual machine, it will use the emulated adapter provided by your VM. While Tehanu will work in this environment, performance may be degraded.
+If you're running Gram inside a virtual machine, it will use the emulated adapter provided by your VM. While Gram will work in this environment, performance may be degraded.

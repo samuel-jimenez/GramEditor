@@ -291,7 +291,7 @@ async fn test_git_provider_project_setting(cx: &mut gpui::TestAppContext) {
     });
 
     fs.atomic_write(
-        Path::new(path!("/dir/.tehanu/settings.json")).to_owned(),
+        Path::new(path!("/dir/.gram/settings.json")).to_owned(),
         "{}".into(),
     )
     .await
@@ -403,8 +403,8 @@ async fn test_managing_project_specific_settings(cx: &mut gpui::TestAppContext) 
             (
                 TaskSourceKind::Worktree {
                     id: worktree_id,
-                    directory_in_worktree: rel_path("b/.tehanu").into(),
-                    id_base: "local worktree tasks from directory \"b/.tehanu\"".into()
+                    directory_in_worktree: rel_path("b/.gram").into(),
+                    id_base: "local worktree tasks from directory \"b/.gram\"".into()
                 },
                 "cargo check".to_string(),
                 vec!["check".to_string()],
@@ -484,8 +484,8 @@ async fn test_managing_project_specific_settings(cx: &mut gpui::TestAppContext) 
             (
                 TaskSourceKind::Worktree {
                     id: worktree_id,
-                    directory_in_worktree: rel_path("b/.tehanu").into(),
-                    id_base: "local worktree tasks from directory \"b/.tehanu\"".into()
+                    directory_in_worktree: rel_path("b/.gram").into(),
+                    id_base: "local worktree tasks from directory \"b/.gram\"".into()
                 },
                 "cargo check".to_string(),
                 vec!["check".to_string()],
@@ -523,7 +523,7 @@ async fn test_fallback_to_single_worktree_tasks(cx: &mut gpui::TestAppContext) {
             ".zed": {
                 "tasks.json": r#"[{
                     "label": "test worktree root",
-                    "command": "echo $TEHANU_WORKTREE_ROOT"
+                    "command": "echo $GRAM_WORKTREE_ROOT"
                 }]"#,
             },
             "a": {
@@ -560,7 +560,7 @@ async fn test_fallback_to_single_worktree_tasks(cx: &mut gpui::TestAppContext) {
         .await;
     assert!(
         active_non_worktree_item_tasks.is_empty(),
-        "A task can not be resolved with context with no TEHANU_WORKTREE_ROOT data"
+        "A task can not be resolved with context with no GRAM_WORKTREE_ROOT data"
     );
 
     let active_worktree_tasks = cx

@@ -15,7 +15,7 @@ The PHP extension offers both `phpactor` and `intelephense` language server supp
 
 ### Phpactor
 
-The Tehanu PHP Extension can install `phpactor` automatically but requires `php` to be installed and available in your path:
+The Gram PHP Extension can install `phpactor` automatically but requires `php` to be installed and available in your path:
 
 ```sh
 # brew install php            # macOS
@@ -57,13 +57,13 @@ To use the premium features, you can place your [licence.txt file](https://intel
 
 ## PHPDoc
 
-Tehanu supports syntax highlighting for PHPDoc comments.
+Gram supports syntax highlighting for PHPDoc comments.
 
 - Tree-sitter: [claytonrcarter/tree-sitter-phpdoc](https://github.com/claytonrcarter/tree-sitter-phpdoc)
 
 ## Setting up Xdebug
 
-Tehanu’s PHP extension provides a debug adapter for PHP and Xdebug. The adapter name is `Xdebug`. Here a couple ways you can use it:
+Gram’s PHP extension provides a debug adapter for PHP and Xdebug. The adapter name is `Xdebug`. Here a couple ways you can use it:
 
 ```json
 [
@@ -78,7 +78,7 @@ Tehanu’s PHP extension provides a debug adapter for PHP and Xdebug. The adapte
     "adapter": "Xdebug",
     "request": "launch",
     "program": "vendor/bin/phpunit",
-    "args": ["--filter", "$TEHANU_SYMBOL"]
+    "args": ["--filter", "$GRAM_SYMBOL"]
   }
 ]
 ```
@@ -88,5 +88,5 @@ In case you run into issues:
 - ensure that you have Xdebug installed for the version of PHP you’re running
 - ensure that Xdebug is configured to run in `debug` mode
 - ensure that Xdebug is actually starting a debugging session
-- check that the host and port matches between Xdebug and Tehanu
+- check that the host and port matches between Xdebug and Gram
 - look at the diagnostics log by using the `xdebug_info()` function in the page you’re trying to debug

@@ -1,10 +1,10 @@
-# Building Tehanu for FreeBSD
+# Building Gram for FreeBSD
 
 Note, FreeBSD is not currently a supported platform, and so this is a work-in-progress.
 
 ## Repository
 
-Clone the [Tehanu repository](https://github.com/zed-industries/zed).
+Clone the [Gram repository](https://github.com/zed-industries/zed).
 
 ## Dependencies
 
@@ -18,7 +18,7 @@ Clone the [Tehanu repository](https://github.com/zed-industries/zed).
 
 ## Building from source
 
-Once the dependencies are installed, you can build Tehanu using [Cargo](https://doc.rust-lang.org/cargo/).
+Once the dependencies are installed, you can build Gram using [Cargo](https://doc.rust-lang.org/cargo/).
 
 For a debug build of the editor:
 

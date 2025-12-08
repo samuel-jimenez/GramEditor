@@ -29,7 +29,7 @@ use util::split_str_with_ranges;
 
 /// Path used for unsaved buffer that contains style json. To support the json language server, this
 /// matches the name used in the generated schemas.
-const TEHANU_INSPECTOR_STYLE_JSON: &str = util_macros::path!("/zed-inspector-style.json");
+const GRAM_INSPECTOR_STYLE_JSON: &str = util_macros::path!("/zed-inspector-style.json");
 
 pub(crate) struct DivInspector {
     state: State,
@@ -81,7 +81,7 @@ impl DivInspector {
                 // Open the JSON style buffer in the inspector-specific project, so that it runs the
                 // JSON language server.
                 let json_style_buffer =
-                    Self::create_buffer_in_project(TEHANU_INSPECTOR_STYLE_JSON, &project, cx).await;
+                    Self::create_buffer_in_project(GRAM_INSPECTOR_STYLE_JSON, &project, cx).await;
 
                 // Create Rust style buffer without adding it to the project / buffer_store, so that
                 // Rust Analyzer doesn't get started for it.

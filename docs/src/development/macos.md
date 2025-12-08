@@ -1,8 +1,8 @@
-# Building Tehanu for macOS
+# Building Gram for macOS
 
 ## Repository
 
-Clone down the [Tehanu repository](https://github.com/zed-industries/zed).
+Clone down the [Gram repository](https://github.com/zed-industries/zed).
 
 ## Dependencies
 
@@ -31,9 +31,9 @@ Clone down the [Tehanu repository](https://github.com/zed-industries/zed).
   brew install cmake
   ```
 
-## Building Tehanu from Source
+## Building Gram from Source
 
-Once you have the dependencies installed, you can build Tehanu using [Cargo](https://doc.rust-lang.org/cargo/).
+Once you have the dependencies installed, you can build Gram using [Cargo](https://doc.rust-lang.org/cargo/).
 
 For a debug build:
 
@@ -121,20 +121,20 @@ This error seems to be caused by OS resource constraints. Installing and running
 
 ### Avoiding continual rebuilds
 
-If you are finding that Tehanu is continually rebuilding root crates, it may be because
-you are pointing your development Tehanu at the codebase itself.
+If you are finding that Gram is continually rebuilding root crates, it may be because
+you are pointing your development Gram at the codebase itself.
 
 This causes problems because `cargo run` exports a bunch of environment
 variables which are picked up by the `rust-analyzer` that runs in the development
-build of Tehanu. These environment variables are in turn passed to `cargo check`, which
+build of Gram. These environment variables are in turn passed to `cargo check`, which
 invalidates the build cache of some of the crates we depend on.
 
-You can easily avoid running the built binary on the checked-out Tehanu codebase using `cargo run
+You can easily avoid running the built binary on the checked-out Gram codebase using `cargo run
 ~/path/to/other/project` to ensure that you don't hit this.
 
 ### Speeding up verification
 
-If you are building Tehanu a lot, you may find that macOS continually verifies new
+If you are building Gram a lot, you may find that macOS continually verifies new
 builds which can add a few seconds to your iteration cycles.
 
 To fix this, you can:

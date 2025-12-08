@@ -32,7 +32,7 @@ async function main() {
     execFileSync("rm", ["-rf", "target/shallow_clone"]);
     execFileSync("git", [
       "clone",
-      "https://codeberg.org/krig/tehanu",
+      "https://codeberg.org/krig/gram",
       "target/shallow_clone",
       "--filter=tree:0",
       "--no-checkout",
@@ -60,11 +60,11 @@ async function main() {
   let skipped = [];
 
   for (const commit of newCommits) {
-    let link = "https://codeberg.org/krig/tehanu/pull/" + commit.pr;
+    let link = "https://codeberg.org/krig/gram/pull/" + commit.pr;
     let notes = commit.releaseNotes;
     if (commit.pr == "") {
-      link = "https://codeberg.org/krig/tehanu/commits/" + commit.hash;
-    } else if (!notes.includes("krig/tehanu/issues")) {
+      link = "https://codeberg.org/krig/gram/commits/" + commit.hash;
+    } else if (!notes.includes("krig/gram/issues")) {
       notes = notes + " ([#" + commit.pr + "](" + link + "))";
     }
 

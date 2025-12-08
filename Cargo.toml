@@ -123,7 +123,7 @@ members = [
     "crates/tab_switcher",
     "crates/task",
     "crates/tasks_ui",
-    "crates/tehanu",
+    "crates/gram",
     "crates/terminal",
     "crates/terminal_view",
     "crates/text",
@@ -164,7 +164,7 @@ members = [
     "tooling/perf",
     "tooling/xtask",
 ]
-default-members = ["crates/tehanu"]
+default-members = ["crates/gram"]
 
 [workspace.package]
 publish = false
@@ -295,7 +295,7 @@ system_specs = { path = "crates/system_specs" }
 tab_switcher = { path = "crates/tab_switcher" }
 task = { path = "crates/task" }
 tasks_ui = { path = "crates/tasks_ui" }
-tehanu = { path = "crates/tehanu" }
+gram = { path = "crates/gram" }
 terminal = { path = "crates/terminal" }
 terminal_view = { path = "crates/terminal_view" }
 text = { path = "crates/text" }
@@ -730,7 +730,7 @@ lto = "thin"
 codegen-units = 1
 
 [profile.release.package]
-tehanu = { codegen-units = 16 }
+gram = { codegen-units = 16 }
 
 [profile.release-fast]
 inherits = "release"
@@ -753,7 +753,7 @@ redundant_clone = "deny"
 disallowed_methods = "deny"
 
 # We currently do not restrict any style rules
-# as it slows down shipping code to Tehanu.
+# as it slows down shipping code to Gram.
 #
 # Running ./script/clippy can take several minutes, and so it's
 # common to skip that step and let CI do it. Any unexpected failures
@@ -761,7 +761,7 @@ disallowed_methods = "deny"
 # to an old branch, manual fixing, and re-pushing.
 #
 # In the future we could improve this by either making sure
-# Tehanu can surface clippy errors in diagnostics (in addition to the
+# Gram can surface clippy errors in diagnostics (in addition to the
 # rust-analyzer errors), or by having CI fix style nits automatically.
 style = { level = "allow", priority = -1 }
 

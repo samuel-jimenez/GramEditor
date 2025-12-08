@@ -1,6 +1,6 @@
 # Icon Themes
 
-Extensions may provide icon themes in order to change the icons Tehanu uses for folders and files.
+Extensions may provide icon themes in order to change the icons Gram uses for folders and files.
 
 ## Example extension
 
@@ -13,13 +13,13 @@ There are two important directories for an icon theme extension:
 - `icon_themes`: This directory will contain one or more JSON files containing the icon theme definitions.
 - `icons`: This directory contains the icon assets that will be distributed with the extension. You can created subdirectories in this directory, if so desired.
 
-Each icon theme file should adhere to the JSON schema specified at [`https://tehanu.liten.app/schema/icon_themes/v0.3.0.json`](https://tehanu.liten.app/schema/icon_themes/v0.3.0.json).
+Each icon theme file should adhere to the JSON schema specified at [`https://gram.liten.app/schema/icon_themes/v0.3.0.json`](https://gram.liten.app/schema/icon_themes/v0.3.0.json).
 
 Here is an example of the structure of an icon theme:
 
 ```json [icon-theme]
 {
-  "$schema": "https://tehanu.liten.app/schema/icon_themes/v0.3.0.json",
+  "$schema": "https://gram.liten.app/schema/icon_themes/v0.3.0.json",
   "name": "My Icon Theme",
   "author": "Your Name",
   "themes": [

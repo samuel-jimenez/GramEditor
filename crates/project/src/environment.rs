@@ -67,7 +67,7 @@ impl ProjectEnvironment {
         }
     }
 
-    /// Returns the inherited CLI environment, if this project was opened from the Tehanu CLI.
+    /// Returns the inherited CLI environment, if this project was opened from the Gram CLI.
     pub(crate) fn get_cli_environment(&self) -> Option<HashMap<String, String>> {
         if cfg!(any(test, feature = "test-support")) {
             return Some(HashMap::default());
@@ -289,10 +289,10 @@ impl ProjectEnvironment {
 }
 
 fn set_origin_marker(env: &mut HashMap<String, String>, origin: EnvironmentOrigin) {
-    env.insert(TEHANU_ENVIRONMENT_ORIGIN_MARKER.to_string(), origin.into());
+    env.insert(GRAM_ENVIRONMENT_ORIGIN_MARKER.to_string(), origin.into());
 }
 
-const TEHANU_ENVIRONMENT_ORIGIN_MARKER: &str = "TEHANU_ENVIRONMENT";
+const GRAM_ENVIRONMENT_ORIGIN_MARKER: &str = "GRAM_ENVIRONMENT";
 
 enum EnvironmentOrigin {
     Cli,

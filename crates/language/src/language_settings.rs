@@ -89,7 +89,7 @@ pub struct LanguageSettings {
     pub ensure_final_newline_on_save: bool,
     /// How to perform a buffer format.
     pub formatter: settings::FormatterList,
-    /// Tehanu's Prettier integration settings.
+    /// Gram's Prettier integration settings.
     pub prettier: PrettierSettings,
     /// Whether to automatically close JSX tags.
     pub jsx_tag_auto_close: bool,
@@ -212,13 +212,13 @@ pub struct LanguageTaskSettings {
     /// Extra task variables to set for a particular language.
     pub variables: HashMap<String, String>,
     pub enabled: bool,
-    /// Use LSP tasks over Tehanu language extension ones.
+    /// Use LSP tasks over Gram language extension ones.
     /// If no LSP tasks are returned due to error/timeout or regular execution,
-    /// Tehanu language extension tasks will be used instead.
+    /// Gram language extension tasks will be used instead.
     ///
-    /// Other Tehanu tasks will still be shown:
-    /// * Tehanu task from either of the task config file
-    /// * Tehanu task from history (e.g. one-off task was spawned before)
+    /// Other Gram tasks will still be shown:
+    /// * Gram task from either of the task config file
+    /// * Gram task from history (e.g. one-off task was spawned before)
     pub prefer_lsp: bool,
 }
 

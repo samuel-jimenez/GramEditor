@@ -35,7 +35,7 @@ const CRASH_HANDLER_CONNECT_TIMEOUT: Duration = Duration::from_secs(10);
 static PANIC_THREAD_ID: AtomicU32 = AtomicU32::new(0);
 
 pub async fn init(crash_init: InitCrashHandler) {
-    let gen_var = match env::var("TEHANU_GENERATE_MINIDUMPS") {
+    let gen_var = match env::var("GRAM_GENERATE_MINIDUMPS") {
         Ok(v) => {
             if v == "false" || v == "0" {
                 Some(false)
@@ -71,7 +71,7 @@ pub async fn init(crash_init: InitCrashHandler) {
     // server or interactive zed instance. This solves an issue where occasionally the socket
     // used by the crash handler isn't destroyed correctly which causes it to stay on the file
     // system and block further attempts to initialize crash handlers with that socket path.
-    let socket_name = paths::temp_dir().join(format!("tehanu-crash-handler-{app_pid}"));
+    let socket_name = paths::temp_dir().join(format!("gram-crash-handler-{app_pid}"));
     #[cfg(not(target_os = "windows"))]
     let _crash_handler = Command::new(exe)
         .arg("--crash-handler")
@@ -179,7 +179,7 @@ pub struct CrashInfo {
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct InitCrashHandler {
     pub session_id: String,
-    pub tehanu_version: String,
+    pub gram_version: String,
     pub binary: String,
     pub release_channel: String,
     pub commit_sha: String,

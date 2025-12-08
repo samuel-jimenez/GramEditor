@@ -19,7 +19,7 @@ use gpui::{
 use itertools::Itertools as _;
 use picker::{Picker, PickerDelegate, highlighted_match_with_paths::HighlightedMatch};
 use project::{DebugScenarioContext, Project, TaskContexts, TaskSourceKind, task_store::TaskStore};
-use task::{DebugScenario, RevealTarget, TehanuDebugConfig, VariableName};
+use task::{DebugScenario, RevealTarget, GramDebugConfig, VariableName};
 use ui::{
     ContextMenu, DropdownMenu, FluentBuilder, IconWithIndicator, Indicator, KeyBinding, ListItem,
     ListItemSpacing, Switch, SwitchLabelPosition, ToggleButtonGroup, ToggleButtonSimple,
@@ -318,7 +318,7 @@ impl NewProcessModal {
             None
         };
 
-        let session_scenario = TehanuDebugConfig {
+        let session_scenario = GramDebugConfig {
             adapter: debugger.to_owned().into(),
             label,
             request,
@@ -331,7 +331,7 @@ impl NewProcessModal {
 
         cx.spawn(async move |_| {
             adapter?
-                .config_from_tehanu_format(session_scenario)
+                .config_from_gram_format(session_scenario)
                 .await
                 .ok()
         })
@@ -767,14 +767,14 @@ pub(super) struct ConfigureMode {
 impl ConfigureMode {
     pub(super) fn new(window: &mut Window, cx: &mut App) -> Entity<Self> {
         let program = cx.new(|cx| {
-            InputField::new(window, cx, "ENV=Tehanu ~/bin/program --option")
+            InputField::new(window, cx, "ENV=Gram ~/bin/program --option")
                 .label("Program")
                 .tab_stop(true)
                 .tab_index(1)
         });
 
         let cwd = cx.new(|cx| {
-            InputField::new(window, cx, "Ex: $Tehanu_WORKTREE_ROOT")
+            InputField::new(window, cx, "Ex: $Gram_WORKTREE_ROOT")
                 .label("Working Directory")
                 .tab_stop(true)
                 .tab_index(2)
@@ -899,7 +899,7 @@ impl ConfigureMode {
 
 #[derive(Clone)]
 pub(super) struct AttachMode {
-    pub(super) definition: TehanuDebugConfig,
+    pub(super) definition: GramDebugConfig,
     pub(super) attach_picker: Entity<AttachModal>,
 }
 
@@ -911,7 +911,7 @@ impl AttachMode {
         window: &mut Window,
         cx: &mut Context<NewProcessModal>,
     ) -> Entity<Self> {
-        let definition = TehanuDebugConfig {
+        let definition = GramDebugConfig {
             adapter: debugger.unwrap_or(DebugAdapterName("".into())).0,
             label: "Attach New Session Setup".into(),
             request: dap::DebugRequest::Attach(task::AttachRequest { process_id: None }),
@@ -1548,7 +1548,7 @@ pub(crate) fn resolve_path(path: &mut String) {
         *path = trimmed_path.replacen('~', &home, 1);
     } else if let Some(strip_path) = path.strip_prefix(&format!(".{}", std::path::MAIN_SEPARATOR)) {
         *path = format!(
-            "$TEHANU_WORKTREE_ROOT{}{}",
+            "$GRAM_WORKTREE_ROOT{}{}",
             std::path::MAIN_SEPARATOR,
             &strip_path
         );

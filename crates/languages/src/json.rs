@@ -80,7 +80,7 @@ impl ContextProvider for JsonTaskProvider {
                         ..TaskTemplate::default()
                     })
                     .chain([TaskTemplate {
-                        label: "package script $TEHANU_CUSTOM_script".to_owned(),
+                        label: "package script $GRAM_CUSTOM_script".to_owned(),
                         command: command.clone(),
                         args: vec![
                             "run".into(),
@@ -100,15 +100,15 @@ impl ContextProvider for JsonTaskProvider {
                     .map(|key| TaskTemplate {
                         label: format!("run {key}"),
                         command: "composer".to_owned(),
-                        args: vec!["-d".into(), "$TEHANU_DIRNAME".into(), key.into()],
+                        args: vec!["-d".into(), "$GRAM_DIRNAME".into(), key.into()],
                         ..TaskTemplate::default()
                     })
                     .chain([TaskTemplate {
-                        label: "composer script $TEHANU_CUSTOM_script".to_owned(),
+                        label: "composer script $GRAM_CUSTOM_script".to_owned(),
                         command: "composer".to_owned(),
                         args: vec![
                             "-d".into(),
-                            "$TEHANU_DIRNAME".into(),
+                            "$GRAM_DIRNAME".into(),
                             VariableName::Custom("script".into()).template_value(),
                         ],
                         tags: vec!["composer-script".into()],
@@ -293,7 +293,7 @@ impl LspAdapter for JsonLspAdapter {
         .collect()
     }
 
-    fn is_primary_tehanu_json_schema_adapter(&self) -> bool {
+    fn is_primary_gram_json_schema_adapter(&self) -> bool {
         true
     }
 }

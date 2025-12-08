@@ -1,39 +1,39 @@
 # Vim Mode
 
-Tehanu includes a Vim emulation layer known as "vim mode". On this page, you will learn how to turn Tehanu's vim mode on or off, what tools and commands Tehanu provides to help you navigate and edit your code, and generally how to make the most of vim mode in Tehanu.
+Gram includes a Vim emulation layer known as "vim mode". On this page, you will learn how to turn Gram's vim mode on or off, what tools and commands Gram provides to help you navigate and edit your code, and generally how to make the most of vim mode in Gram.
 
 You'll learn how to:
 
-- Understand the core differences between Tehanu's vim mode and traditional Vim
+- Understand the core differences between Gram's vim mode and traditional Vim
 - Enable or disable vim mode
-- Make the most of Tehanu-specific features within vim mode
+- Make the most of Gram-specific features within vim mode
 - Customize vim mode key bindings
 - Configure vim mode settings
 
-Whether you're new to vim mode or an experienced Vim user looking to optimize your Tehanu experience, this guide will help you harness the full power of modal editing in Tehanu.
+Whether you're new to vim mode or an experienced Vim user looking to optimize your Gram experience, this guide will help you harness the full power of modal editing in Gram.
 
-## Tehanu's vim mode design
+## Gram's vim mode design
 
-Vim mode tries to offer a familiar experience to Vim users: it replicates the behavior of motions and commands precisely when it makes sense and uses Tehanu-specific functionality to provide an editing experience that "just works" without requiring configuration on your part.
+Vim mode tries to offer a familiar experience to Vim users: it replicates the behavior of motions and commands precisely when it makes sense and uses Gram-specific functionality to provide an editing experience that "just works" without requiring configuration on your part.
 
 This includes support for semantic navigation, multiple cursors, or other features usually provided by plugins like surrounding text.
 
-So, Tehanu's vim mode does not replicate Vim one-to-one, but it meshes Vim's modal design with Tehanu's modern features to provide a more fluid experience. It's also configurable, so you can add your own key bindings or override the defaults.
+So, Gram's vim mode does not replicate Vim one-to-one, but it meshes Vim's modal design with Gram's modern features to provide a more fluid experience. It's also configurable, so you can add your own key bindings or override the defaults.
 
 ### Core differences
 
-There are four types of features in vim mode that use Tehanu's core functionality, leading to some differences in behavior:
+There are four types of features in vim mode that use Gram's core functionality, leading to some differences in behavior:
 
-1. **Motions**: vim mode uses Tehanu's semantic parsing to tune the behavior of motions per language. For example, in Rust, jumping to matching bracket with `%` works with the pipe character `|`. In JavaScript, `w` considers `$` to be a word character.
-2. **Visual block selections**: vim mode uses Tehanu's multiple cursor to emulate visual block selections, making block selections a lot more flexible. For example, anything you insert after a block selection updates on every line in real-time, and you can add or remove cursors anytime.
-3. **Macros**: vim mode uses Tehanu's recording system for vim macros. So, you can capture and replay more complex actions, like autocompletion.
-4. **Search and replace**: vim mode uses Tehanu's search system, so, the syntax for regular expressions is slightly different compared to Vim. [Head to the Regex differences section](#regex-differences) for details.
+1. **Motions**: vim mode uses Gram's semantic parsing to tune the behavior of motions per language. For example, in Rust, jumping to matching bracket with `%` works with the pipe character `|`. In JavaScript, `w` considers `$` to be a word character.
+2. **Visual block selections**: vim mode uses Gram's multiple cursor to emulate visual block selections, making block selections a lot more flexible. For example, anything you insert after a block selection updates on every line in real-time, and you can add or remove cursors anytime.
+3. **Macros**: vim mode uses Gram's recording system for vim macros. So, you can capture and replay more complex actions, like autocompletion.
+4. **Search and replace**: vim mode uses Gram's search system, so, the syntax for regular expressions is slightly different compared to Vim. [Head to the Regex differences section](#regex-differences) for details.
 
-> **Note:** The foundations of Tehanu's vim mode should already cover many use cases, and we're always looking to improve it. If you find missing features that you rely on in your workflow, please [file an issue on GitHub](https://github.com/zed-industries/zed/issues).
+> **Note:** The foundations of Gram's vim mode should already cover many use cases, and we're always looking to improve it. If you find missing features that you rely on in your workflow, please [file an issue on GitHub](https://github.com/zed-industries/zed/issues).
 
 ## Enabling and disabling vim mode
 
-When you first open Tehanu, you'll see a checkbox on the welcome screen that allows you to enable vim mode.
+When you first open Gram, you'll see a checkbox on the welcome screen that allows you to enable vim mode.
 
 If you missed this, you can toggle vim mode on or off anytime by opening the command palette and using the workspace command `toggle vim mode`.
 
@@ -45,11 +45,11 @@ If you missed this, you can toggle vim mode on or off anytime by opening the com
 > }
 > ```
 
-## Tehanu-specific features
+## Gram-specific features
 
-Tehanu is built on a modern foundation that (among other things) uses Tree-sitter and language servers to understand the content of the file you're editing and supports multiple cursors out of the box.
+Gram is built on a modern foundation that (among other things) uses Tree-sitter and language servers to understand the content of the file you're editing and supports multiple cursors out of the box.
 
-Vim mode has several "core Tehanu" key bindings that will help you make the most of Tehanu's specific feature set.
+Vim mode has several "core Gram" key bindings that will help you make the most of Gram's specific feature set.
 
 ### Language server
 
@@ -84,7 +84,7 @@ The following commands use the language server to help you navigate and refactor
 
 ### Tree-sitter
 
-Tree-sitter is a powerful tool that Tehanu uses to understand the structure of your code. Tehanu provides motions that change the current cursor position, and text objects that can be used as the target of actions.
+Tree-sitter is a powerful tool that Gram uses to understand the structure of your code. Gram provides motions that change the current cursor position, and text objects that can be used as the target of actions.
 
 | Command                         | Default Shortcut            |
 | ------------------------------- | --------------------------- |
@@ -122,7 +122,7 @@ per language.
 
 ### Multi cursor
 
-These commands help you manage multiple cursors in Tehanu.
+These commands help you manage multiple cursors in Gram.
 
 | Command                                                      | Default Shortcut |
 | ------------------------------------------------------------ | ---------------- |
@@ -146,7 +146,7 @@ These commands open new panes or jump to specific panes.
 
 ### In insert mode
 
-The following commands help you bring up Tehanu's completion menu.
+The following commands help you bring up Gram's completion menu.
 
 | Command                                                                      | Default Shortcut |
 | ---------------------------------------------------------------------------- | ---------------- |
@@ -156,7 +156,7 @@ The following commands help you bring up Tehanu's completion menu.
 
 ### Supported plugins
 
-Tehanu's vim mode includes some features that are usually provided by very popular plugins in the Vim ecosystem:
+Gram's vim mode includes some features that are usually provided by very popular plugins in the Vim ecosystem:
 
 - You can surround text objects with `ys` (yank surround), change surrounding with `cs`, and delete surrounding with `ds`.
 - You can comment and uncomment selections with `gc` in visual mode and `gcc` in normal mode.
@@ -165,12 +165,12 @@ Tehanu's vim mode includes some features that are usually provided by very popul
 - You can use `gR` to do [ReplaceWithRegister](https://github.com/vim-scripts/ReplaceWithRegister).
 - You can use `cx` for [vim-exchange](https://github.com/tommcdo/vim-exchange) functionality. Note that it does not have a default binding in visual mode, but you can add one to your keymap (refer to the [optional key bindings](#optional-key-bindings) section).
 - You can navigate to indent depths relative to your cursor with the [indent wise](https://github.com/jeetsukumaran/vim-indentwise) plugin `[-`, `]-`, `[+`, `]+`, `[=`, `]=`.
-- You can select quoted text with AnyQuotes and bracketed text with AnyBrackets text objects. Tehanu also provides MiniQuotes and MiniBrackets which offer alternative selection behavior based on the [mini.ai](https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-ai.md) Neovim plugin. See the [Quote and Bracket text objects](#quote-and-bracket-text-objects) section below for details.
+- You can select quoted text with AnyQuotes and bracketed text with AnyBrackets text objects. Gram also provides MiniQuotes and MiniBrackets which offer alternative selection behavior based on the [mini.ai](https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-ai.md) Neovim plugin. See the [Quote and Bracket text objects](#quote-and-bracket-text-objects) section below for details.
 - You can configure AnyQuotes, AnyBrackets, MiniQuotes, and MiniBrackets text objects for selecting quoted and bracketed text using different selection strategies. See the [Any Bracket Functionality](#any-bracket-functionality) section below for details.
 
 ### Any Bracket Functionality
 
-Tehanu offers two different strategies for selecting text surrounded by any quote, or any bracket. These text objects are **not enabled by default** and must be configured in your keymap to be used.
+Gram offers two different strategies for selecting text surrounded by any quote, or any bracket. These text objects are **not enabled by default** and must be configured in your keymap to be used.
 
 #### Included Characters
 
@@ -241,7 +241,7 @@ With this configuration, you can use commands like:
 
 ## Command palette
 
-Vim mode allows you to open Tehanu's command palette with `:`. You can then type to access any usual Tehanu command. Additionally, vim mode adds aliases for popular Vim commands to ensure your muscle memory transfers to Tehanu. For example, you can write `:w` or `:write` to save the file.
+Vim mode allows you to open Gram's command palette with `:`. You can then type to access any usual Gram command. Additionally, vim mode adds aliases for popular Vim commands to ensure your muscle memory transfers to Gram. For example, you can write `:w` or `:write` to save the file.
 
 Below, you'll find tables listing the commands you can use in the command palette. We put optional characters in square brackets to indicate that you can omit them.
 
@@ -261,7 +261,7 @@ This table shows commands for managing windows, tabs, and panes. As commands don
 | `:qa[ll][!]`   | Close all buffers                                    |
 | `:[e]x[it][!]` | Close the buffer                                     |
 | `:up[date]`    | Save the current file                                |
-| `:cq`          | Quit completely (close all running instances of Tehanu) |
+| `:cq`          | Quit completely (close all running instances of Gram) |
 | `:vs[plit]`    | Split the pane vertically                            |
 | `:sp[lit]`     | Split the pane horizontally                          |
 | `:new`         | Create a new file in a horizontal split              |
@@ -277,7 +277,7 @@ This table shows commands for managing windows, tabs, and panes. As commands don
 
 ### Ex commands
 
-These ex commands open Tehanu's various panels and windows.
+These ex commands open Gram's various panels and windows.
 
 | Command                      | Default Shortcut |
 | ---------------------------- | ---------------- |
@@ -321,7 +321,7 @@ These commands jump to specific positions in the file.
 
 ### Replacement
 
-This command replaces text. It emulates the substitute command in vim. The substitute command uses regular expressions, and Tehanu uses a slightly different syntax than vim. You can learn more about Tehanu's syntax below, [in the regex differences section](#regex-differences). Tehanu will replace only the first occurrence of the search pattern in the current line. To replace all matches append the `g` flag.
+This command replaces text. It emulates the substitute command in vim. The substitute command uses regular expressions, and Gram uses a slightly different syntax than vim. You can learn more about Gram's syntax below, [in the regex differences section](#regex-differences). Gram will replace only the first occurrence of the search pattern in the current line. To replace all matches append the `g` flag.
 
 | Command                 | Description                       |
 | ----------------------- | --------------------------------- |
@@ -351,7 +351,7 @@ These commands modify editor options locally for the current buffer.
 
 ### Command mnemonics
 
-As any Tehanu command is available, you may find that it's helpful to remember mnemonics that run the correct command. For example:
+As any Gram command is available, you may find that it's helpful to remember mnemonics that run the correct command. For example:
 
 - `:diffs` for "toggle all hunk diffs"
 - `:cpp` for "copy path to file"
@@ -362,7 +362,7 @@ As any Tehanu command is available, you may find that it's helpful to remember m
 
 ## Customizing key bindings
 
-In this section, we'll learn how to customize the key bindings of Tehanu's vim mode. You'll learn:
+In this section, we'll learn how to customize the key bindings of Gram's vim mode. You'll learn:
 
 - How to select the correct context for your new key bindings.
 - Useful contexts for vim mode key bindings.
@@ -370,7 +370,7 @@ In this section, we'll learn how to customize the key bindings of Tehanu's vim m
 
 ### Selecting the correct context
 
-Tehanu's key bindings are evaluated only when the `"context"` property matches your location in the editor. For example, if you add key bindings to the `"Editor"` context, they will only work when you're editing a file. If you add key bindings to the `"Workspace"` context, they will work everywhere in Tehanu. Here's an example of a key binding that saves when you're editing a file:
+Gram's key bindings are evaluated only when the `"context"` property matches your location in the editor. For example, if you add key bindings to the `"Editor"` context, they will only work when you're editing a file. If you add key bindings to the `"Workspace"` context, they will work everywhere in Gram. Here's an example of a key binding that saves when you're editing a file:
 
 ```json [settings]
 {
@@ -384,7 +384,7 @@ Tehanu's key bindings are evaluated only when the `"context"` property matches y
 Contexts are nested, so when you're editing a file, the context is the `"Editor"` context, which is inside the `"Pane"` context, which is inside the `"Workspace"` context. That's why any key bindings you add to the `"Workspace"` context will work when you're editing a file. Here's an example:
 
 ```json [keymap]
-// This key binding will work when you're editing a file. It comes built into Tehanu by default as the workspace: save command.
+// This key binding will work when you're editing a file. It comes built into Gram by default as the workspace: save command.
 {
   "context": "Workspace",
   "bindings": {
@@ -491,7 +491,7 @@ Vim mode comes with shortcuts to surround the selection in normal mode (`ys`), b
 }
 ```
 
-In non-modal text editors, cursor navigation typically wraps when moving past line ends. Tehanu, however, handles this behavior exactly like Vim by default: the cursor stops at line boundaries. If you prefer your cursor to wrap between lines, override these keybindings:
+In non-modal text editors, cursor navigation typically wraps when moving past line ends. Gram, however, handles this behavior exactly like Vim by default: the cursor stops at line boundaries. If you prefer your cursor to wrap between lines, override these keybindings:
 
 ```json [settings]
 // In VimScript, this would look like this:
@@ -530,7 +530,7 @@ The [vim-exchange](https://github.com/tommcdo/vim-exchange) feature does not hav
 }
 ```
 
-### Restoring common text editing and Tehanu keybindings
+### Restoring common text editing and Gram keybindings
 
 If you're using vim mode on Linux or Windows, you may find it overrides keybindings you can't live without: `ctrl+v` to paste, `ctrl+f` to search, etc. You can restore them by copying this data into your keymap:
 
@@ -594,9 +594,9 @@ Here's an example of these settings changed:
 }
 ```
 
-## Useful core Tehanu settings for vim mode
+## Useful core Gram settings for vim mode
 
-Here are a few general Tehanu settings that can help you fine-tune your Vim experience:
+Here are a few general Gram settings that can help you fine-tune your Vim experience:
 
 | Property                | Description                                                                                                                                                   | Default Value        |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
@@ -638,13 +638,13 @@ The `command_aliases` property is a single object that maps keys or key sequence
 
 ## Regex differences
 
-Tehanu uses a different regular expression engine from Vim. This means that you will have to use a different syntax in some cases. Here are the most common differences:
+Gram uses a different regular expression engine from Vim. This means that you will have to use a different syntax in some cases. Here are the most common differences:
 
-- **Capture groups**: Vim uses `\(` and `\)` to represent capture groups, in Tehanu these are `(` and `)`. On the flip side, in Vim, `(` and `)` represent literal parentheses, but in Tehanu these must be escaped to `\(` and `\)`.
-- **Matches**: When replacing, Vim uses the backslash character followed by a number to represent a matched capture group. For example, `\1`. Tehanu uses the dollar sign instead. So, when in Vim you use `\0` to represent the entire match, in Tehanu the syntax is `$0` instead. Same for numbered capture groups: `\1` in Vim is `$1` in Tehanu.
-- **Global option**: By default, in Vim, regex searches only match the first occurrence on a line, and you append `/g` at the end of your query to find all matches. In Tehanu, regex searches are global by default.
-- **Case sensitivity**: Vim uses `/i` to indicate a case-insensitive search. In Tehanu you can either write `(?i)` at the start of the pattern or toggle case-sensitivity with the shortcut {#kb search::ToggleCaseSensitive}.
+- **Capture groups**: Vim uses `\(` and `\)` to represent capture groups, in Gram these are `(` and `)`. On the flip side, in Vim, `(` and `)` represent literal parentheses, but in Gram these must be escaped to `\(` and `\)`.
+- **Matches**: When replacing, Vim uses the backslash character followed by a number to represent a matched capture group. For example, `\1`. Gram uses the dollar sign instead. So, when in Vim you use `\0` to represent the entire match, in Gram the syntax is `$0` instead. Same for numbered capture groups: `\1` in Vim is `$1` in Gram.
+- **Global option**: By default, in Vim, regex searches only match the first occurrence on a line, and you append `/g` at the end of your query to find all matches. In Gram, regex searches are global by default.
+- **Case sensitivity**: Vim uses `/i` to indicate a case-insensitive search. In Gram you can either write `(?i)` at the start of the pattern or toggle case-sensitivity with the shortcut {#kb search::ToggleCaseSensitive}.
 
-> **Note**: To help with the transition, the command palette will fix parentheses and replace groups for you when you write a Vim-style substitute command, `:%s//`. So, Tehanu will convert `%s:/\(a\)(b)/\1/` into a search for "(a)\(b\)" and a replacement of "$1".
+> **Note**: To help with the transition, the command palette will fix parentheses and replace groups for you when you write a Vim-style substitute command, `:%s//`. So, Gram will convert `%s:/\(a\)(b)/\1/` into a search for "(a)\(b\)" and a replacement of "$1".
 
-For the full syntax supported by Tehanu's regex engine [see the regex crate documentation](https://docs.rs/regex/latest/regex/#syntax).
+For the full syntax supported by Gram's regex engine [see the regex crate documentation](https://docs.rs/regex/latest/regex/#syntax).

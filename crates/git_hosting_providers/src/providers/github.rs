@@ -267,7 +267,7 @@ mod tests {
 
     #[test]
     fn test_remote_url_with_root_slash() {
-        let remote_url = "git@github.com:/krig/tehanu";
+        let remote_url = "git@github.com:/krig/gram";
         let parsed_remote = Github::public_instance()
             .parse_remote_url(remote_url)
             .unwrap();
@@ -276,7 +276,7 @@ mod tests {
             parsed_remote,
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu".into(),
+                repo: "gram".into(),
             }
         );
     }
@@ -326,7 +326,7 @@ mod tests {
             parsed_remote,
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu".into(),
+                repo: "gram".into(),
             }
         );
     }
@@ -343,7 +343,7 @@ mod tests {
             parsed_remote,
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu".into(),
+                repo: "gram".into(),
             }
         );
     }
@@ -358,7 +358,7 @@ mod tests {
             parsed_remote,
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu".into(),
+                repo: "gram".into(),
             }
         );
     }
@@ -373,7 +373,7 @@ mod tests {
             parsed_remote,
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu".into(),
+                repo: "gram".into(),
             }
         );
     }
@@ -397,7 +397,7 @@ mod tests {
     fn test_build_github_permalink_from_ssh_url() {
         let remote = ParsedGitRemote {
             owner: "krig".into(),
-            repo: "tehanu".into(),
+            repo: "gram".into(),
         };
         let permalink = Github::public_instance().build_permalink(
             remote,
@@ -417,7 +417,7 @@ mod tests {
         let permalink = Github::public_instance().build_permalink(
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu".into(),
+                repo: "gram".into(),
             },
             BuildPermalinkParams::new(
                 "b2efec9824c45fcc90c9a7eb107a50d1772a60aa",
@@ -435,7 +435,7 @@ mod tests {
         let permalink = Github::public_instance().build_permalink(
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu".into(),
+                repo: "gram".into(),
             },
             BuildPermalinkParams::new(
                 "e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7",
@@ -453,7 +453,7 @@ mod tests {
         let permalink = Github::public_instance().build_permalink(
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu".into(),
+                repo: "gram".into(),
             },
             BuildPermalinkParams::new(
                 "e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7",
@@ -470,7 +470,7 @@ mod tests {
     fn test_github_pull_requests() {
         let remote = ParsedGitRemote {
             owner: "krig".into(),
-            repo: "tehanu".into(),
+            repo: "gram".into(),
         };
 
         let github = Github::public_instance();

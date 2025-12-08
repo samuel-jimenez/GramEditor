@@ -302,7 +302,7 @@ async fn test_remote_settings(cx: &mut TestAppContext, server_cx: &mut TestAppCo
     });
 
     fs.insert_tree(
-        "/code/project1/.tehanu",
+        "/code/project1/.gram",
         json!({
             "settings.json": r#"
                   {
@@ -389,7 +389,7 @@ async fn test_remote_lsp(cx: &mut TestAppContext, server_cx: &mut TestAppContext
     let (project, headless) = init_test(&fs, cx, server_cx).await;
 
     fs.insert_tree(
-        path!("/code/project1/.tehanu"),
+        path!("/code/project1/.gram"),
         json!({
             "settings.json": r#"
           {
@@ -628,7 +628,7 @@ async fn test_remote_cancel_language_server_work(
     let (project, headless) = init_test(&fs, cx, server_cx).await;
 
     fs.insert_tree(
-        path!("/code/project1/.tehanu"),
+        path!("/code/project1/.gram"),
         json!({
             "settings.json": r#"
           {

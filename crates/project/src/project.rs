@@ -272,7 +272,7 @@ pub enum Event {
     LanguageServerRemoved(LanguageServerId),
     LanguageServerLog(LanguageServerId, LanguageServerLogType, String),
     // [`lsp::notification::DidOpenTextDocument`] was sent to this server using the buffer data.
-    // Tehanu's buffer-related data is updated accordingly.
+    // Gram's buffer-related data is updated accordingly.
     LanguageServerBufferRegistered {
         server_id: LanguageServerId,
         buffer_id: BufferId,

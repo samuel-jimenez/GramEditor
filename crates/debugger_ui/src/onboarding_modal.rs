@@ -114,7 +114,7 @@ impl Render for DebuggerOnboardingModal {
                             .size(LabelSize::Small)
                             .color(Color::Muted),
                     )
-                    .child(Headline::new("Tehanu's Debugger").size(HeadlineSize::Large)),
+                    .child(Headline::new("Gram's Debugger").size(HeadlineSize::Large)),
             )
             .child(h_flex().absolute().top_2().right_2().child(
                 IconButton::new("cancel", IconName::Close).on_click(cx.listener(

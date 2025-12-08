@@ -14,9 +14,9 @@ use app_actions::{Extensions, OpenSettings, command_palette};
 use crate::{Onboarding, OpenOnboarding};
 
 actions!(
-    tehanu,
+    gram,
     [
-        /// Show the Tehanu welcome screen
+        /// Show the Gram welcome screen
         ShowWelcome
     ]
 );
@@ -182,7 +182,7 @@ impl Render for WelcomePage {
                                     .gap_4()
                                     .child(Vector::square(VectorName::Logo, rems(2.)))
                                     .child(
-                                        div().child(Headline::new("TEHANU")).child(
+                                        div().child(Headline::new("GRAM")).child(
                                             Label::new(r#"What cannot be mended must be transcended."#)
                                                 .size(LabelSize::Small)
                                                 .color(Color::Muted)

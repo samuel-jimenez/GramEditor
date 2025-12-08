@@ -1,6 +1,6 @@
-# Tehanu Schema Generator
+# Gram Schema Generator
 
-Prints various Tehanu schemas to stdout.
+Prints various Gram schemas to stdout.
 
 ## Usage
 

@@ -1,4 +1,4 @@
-//! Provides constructs for the Tehanu app version and release channel.
+//! Provides constructs for the Gram app version and release channel.
 
 #![deny(missing_docs)]
 
@@ -9,10 +9,10 @@ use gpui::{App, Global, SemanticVersion};
 /// stable | dev | nightly | preview
 pub static RELEASE_CHANNEL_NAME: LazyLock<String> = LazyLock::new(|| {
     if cfg!(debug_assertions) {
-        env::var("TEHANU_RELEASE_CHANNEL")
-            .unwrap_or_else(|_| include_str!("../../tehanu/RELEASE_CHANNEL").trim().to_string())
+        env::var("GRAM_RELEASE_CHANNEL")
+            .unwrap_or_else(|_| include_str!("../../gram/RELEASE_CHANNEL").trim().to_string())
     } else {
-        include_str!("../../tehanu/RELEASE_CHANNEL").trim().to_string()
+        include_str!("../../gram/RELEASE_CHANNEL").trim().to_string()
     }
 });
 
@@ -27,14 +27,14 @@ pub static RELEASE_CHANNEL: LazyLock<ReleaseChannel> =
 #[cfg(target_os = "windows")]
 pub fn app_identifier() -> &'static str {
     match *RELEASE_CHANNEL {
-        ReleaseChannel::Dev => "Tehanu-Editor-Dev",
-        ReleaseChannel::Nightly => "Tehanu-Editor-Nightly",
-        ReleaseChannel::Preview => "Tehanu-Editor-Preview",
-        ReleaseChannel::Stable => "Tehanu-Editor-Stable",
+        ReleaseChannel::Dev => "Gram-Editor-Dev",
+        ReleaseChannel::Nightly => "Gram-Editor-Nightly",
+        ReleaseChannel::Preview => "Gram-Editor-Preview",
+        ReleaseChannel::Stable => "Gram-Editor-Stable",
     }
 }
 
-/// The Git commit SHA that Tehanu was built at.
+/// The Git commit SHA that Gram was built at.
 #[derive(Clone, Eq, Debug, PartialEq)]
 pub struct AppCommitSha(String);
 
@@ -74,14 +74,14 @@ struct GlobalAppVersion(SemanticVersion);
 
 impl Global for GlobalAppVersion {}
 
-/// The version of Tehanu.
+/// The version of Gram.
 pub struct AppVersion;
 
 impl AppVersion {
     /// Load the app version from env.
     pub fn load(pkg_version: &str) -> SemanticVersion {
-        if let Ok(from_env) = env::var("TEHANU_APP_VERSION") {
-            from_env.parse().expect("invalid TEHANU_APP_VERSION")
+        if let Ok(from_env) = env::var("GRAM_APP_VERSION") {
+            from_env.parse().expect("invalid GRAM_APP_VERSION")
         } else {
             pkg_version.parse().expect("invalid version in Cargo.toml")
         }
@@ -97,12 +97,12 @@ impl AppVersion {
     }
 }
 
-/// A Tehanu release channel.
+/// A Gram release channel.
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Default)]
 pub enum ReleaseChannel {
     /// The development release channel.
     ///
-    /// Used for local debug builds of Tehanu.
+    /// Used for local debug builds of Gram.
     #[default]
     Dev,
 
@@ -152,10 +152,10 @@ impl ReleaseChannel {
     /// Returns the display name for this [`ReleaseChannel`].
     pub fn display_name(&self) -> &'static str {
         match self {
-            ReleaseChannel::Dev => "Tehanu Dev",
-            ReleaseChannel::Nightly => "Tehanu Nightly",
-            ReleaseChannel::Preview => "Tehanu Preview",
-            ReleaseChannel::Stable => "Tehanu",
+            ReleaseChannel::Dev => "Gram Dev",
+            ReleaseChannel::Nightly => "Gram Nightly",
+            ReleaseChannel::Preview => "Gram Preview",
+            ReleaseChannel::Stable => "Gram",
         }
     }
 
@@ -171,13 +171,13 @@ impl ReleaseChannel {
 
     /// Returns the application ID that's used by Wayland as application ID
     /// and WM_CLASS on X11.
-    /// This also has to match the bundle identifier for Tehanu on macOS.
+    /// This also has to match the bundle identifier for Gram on macOS.
     pub fn app_id(&self) -> &'static str {
         match self {
-            ReleaseChannel::Dev => "se.ziran.Tehanu-Dev",
-            ReleaseChannel::Nightly => "se.ziran.Tehanu-Nightly",
-            ReleaseChannel::Preview => "se.ziran.Tehanu-Preview",
-            ReleaseChannel::Stable => "se.ziran.Tehanu",
+            ReleaseChannel::Dev => "se.ziran.Gram-Dev",
+            ReleaseChannel::Nightly => "se.ziran.Gram-Nightly",
+            ReleaseChannel::Preview => "se.ziran.Gram-Preview",
+            ReleaseChannel::Stable => "se.ziran.Gram",
         }
     }
 

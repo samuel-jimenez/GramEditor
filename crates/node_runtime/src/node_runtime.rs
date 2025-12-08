@@ -149,7 +149,7 @@ impl NodeRuntime {
                 Ok(instance) => {
                     log::log!(
                         log_level,
-                        "using Tehanu managed Node.js at {} since {}",
+                        "using Gram managed Node.js at {} since {}",
                         instance.installation_path.display(),
                         why_using_managed
                     );
@@ -163,8 +163,8 @@ impl NodeRuntime {
                     // and/or have shared tracking of when internet is available.
                     Box::new(UnavailableNodeRuntime {
                         error_message: format!(
-                            "failure while downloading and/or installing Tehanu managed Node.js, \
-                            restart Tehanu to retry: {}",
+                            "failure while downloading and/or installing Gram managed Node.js, \
+                            restart Gram to retry: {}",
                             err
                         )
                         .into(),
@@ -428,7 +428,7 @@ impl ManagedNodeRuntime {
                         true
                     } else {
                         log::warn!(
-                            "Tehanu managed Node.js binary at {} failed check with output: {:?}",
+                            "Gram managed Node.js binary at {} failed check with output: {:?}",
                             node_binary.display(),
                             output
                         );
@@ -437,7 +437,7 @@ impl ManagedNodeRuntime {
                 }
                 Err(err) => {
                     log::warn!(
-                        "Tehanu managed Node.js binary at {} failed check, so re-downloading it. \
+                        "Gram managed Node.js binary at {} failed check, so re-downloading it. \
                         Error: {}",
                         node_binary.display(),
                         err

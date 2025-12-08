@@ -82,7 +82,7 @@ impl KeyContextView {
                         "".to_string()
                     };
                     let mut name = binding.action().name();
-                    if name == "tehanu::NoAction" {
+                    if name == "gram::NoAction" {
                         name = "(null)"
                     }
 
@@ -135,7 +135,7 @@ impl KeyContextView {
         if let Some(last_action) = a {
             last_action.partial_eq(b)
         } else {
-            b.name() == "tehanu::NoAction"
+            b.name() == "gram::NoAction"
         }
     }
 }
@@ -197,7 +197,7 @@ impl Render for KeyContextView {
                 }),
             )
             .child(Label::new("Keyboard Context").size(LabelSize::Large))
-            .child(Label::new("This view lets you determine the current context stack for creating custom key bindings in Tehanu. When a keyboard shortcut is triggered, it also shows all the possible contexts it could have triggered in, and which one matched."))
+            .child(Label::new("This view lets you determine the current context stack for creating custom key bindings in Gram. When a keyboard shortcut is triggered, it also shows all the possible contexts it could have triggered in, and which one matched."))
             .child(
                 h_flex()
                     .mt_4()
@@ -205,7 +205,7 @@ impl Render for KeyContextView {
                     .child(
                         Button::new("open_documentation", "Open Documentation")
                             .style(ButtonStyle::Filled)
-                            .on_click(|_, _, cx| cx.open_url("https://tehanu.liten.app/docs/key-bindings")),
+                            .on_click(|_, _, cx| cx.open_url("https://gram.liten.app/docs/key-bindings")),
                     )
                     .child(
                         Button::new("view_default_keymap", "View Default Keymap")

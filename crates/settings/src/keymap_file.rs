@@ -65,7 +65,7 @@ pub struct KeymapSection {
     /// `Workspace`, the bindings will be active in that context. Boolean expressions like `X && Y`,
     /// `X || Y`, `!X` are also supported. Some more complex logic including checking OS and the
     /// current file extension are also supported - see [the
-    /// documentation](https://tehanu.liten.app/docs/key-bindings#contexts) for more details.
+    /// documentation](https://gram.liten.app/docs/key-bindings#contexts) for more details.
     #[serde(default)]
     pub context: String,
     /// This option enables specifying keys based on their position on a QWERTY keyboard, by using
@@ -660,7 +660,7 @@ impl KeymapFile {
                 };
             }
             // if trying to remove a keybinding that is not user-defined, treat it as creating a binding
-            // that binds it to `tehanu::NoAction`
+            // that binds it to `gram::NoAction`
             KeybindUpdateOperation::Remove {
                 target,
                 target_keybind_source,
@@ -1184,14 +1184,14 @@ mod tests {
             "[]",
             KeybindUpdateOperation::add(KeybindUpdateTarget {
                 keystrokes: &parse_keystrokes("ctrl-a"),
-                action_name: "tehanu::SomeAction",
+                action_name: "gram::SomeAction",
                 context: None,
                 action_arguments: None,
             }),
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "tehanu::SomeAction"
+                        "ctrl-a": "gram::SomeAction"
                     }
                 }
             ]"#
@@ -1202,14 +1202,14 @@ mod tests {
             "[]",
             KeybindUpdateOperation::add(KeybindUpdateTarget {
                 keystrokes: &parse_keystrokes("\\ a"),
-                action_name: "tehanu::SomeAction",
+                action_name: "gram::SomeAction",
                 context: None,
                 action_arguments: None,
             }),
             r#"[
                 {
                     "bindings": {
-                        "\\ a": "tehanu::SomeAction"
+                        "\\ a": "gram::SomeAction"
                     }
                 }
             ]"#
@@ -1220,14 +1220,14 @@ mod tests {
             "[]",
             KeybindUpdateOperation::add(KeybindUpdateTarget {
                 keystrokes: &parse_keystrokes("ctrl-a"),
-                action_name: "tehanu::SomeAction",
+                action_name: "gram::SomeAction",
                 context: None,
                 action_arguments: Some(""),
             }),
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "tehanu::SomeAction"
+                        "ctrl-a": "gram::SomeAction"
                     }
                 }
             ]"#
@@ -1238,26 +1238,26 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "tehanu::SomeAction"
+                        "ctrl-a": "gram::SomeAction"
                     }
                 }
             ]"#
             .unindent(),
             KeybindUpdateOperation::add(KeybindUpdateTarget {
                 keystrokes: &parse_keystrokes("ctrl-b"),
-                action_name: "tehanu::SomeOtherAction",
+                action_name: "gram::SomeOtherAction",
                 context: None,
                 action_arguments: None,
             }),
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "tehanu::SomeAction"
+                        "ctrl-a": "gram::SomeAction"
                     }
                 },
                 {
                     "bindings": {
-                        "ctrl-b": "tehanu::SomeOtherAction"
+                        "ctrl-b": "gram::SomeOtherAction"
                     }
                 }
             ]"#
@@ -1268,27 +1268,27 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "tehanu::SomeAction"
+                        "ctrl-a": "gram::SomeAction"
                     }
                 }
             ]"#
             .unindent(),
             KeybindUpdateOperation::add(KeybindUpdateTarget {
                 keystrokes: &parse_keystrokes("ctrl-b"),
-                action_name: "tehanu::SomeOtherAction",
+                action_name: "gram::SomeOtherAction",
                 context: None,
                 action_arguments: Some(r#"{"foo": "bar"}"#),
             }),
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "tehanu::SomeAction"
+                        "ctrl-a": "gram::SomeAction"
                     }
                 },
                 {
                     "bindings": {
                         "ctrl-b": [
-                            "tehanu::SomeOtherAction",
+                            "gram::SomeOtherAction",
                             {
                                 "foo": "bar"
                             }
@@ -1303,28 +1303,28 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "tehanu::SomeAction"
+                        "ctrl-a": "gram::SomeAction"
                     }
                 }
             ]"#
             .unindent(),
             KeybindUpdateOperation::add(KeybindUpdateTarget {
                 keystrokes: &parse_keystrokes("ctrl-b"),
-                action_name: "tehanu::SomeOtherAction",
-                context: Some("Tehanu > Editor && some_condition = true"),
+                action_name: "gram::SomeOtherAction",
+                context: Some("Gram > Editor && some_condition = true"),
                 action_arguments: Some(r#"{"foo": "bar"}"#),
             }),
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "tehanu::SomeAction"
+                        "ctrl-a": "gram::SomeAction"
                     }
                 },
                 {
-                    "context": "Tehanu > Editor && some_condition = true",
+                    "context": "Gram > Editor && some_condition = true",
                     "bindings": {
                         "ctrl-b": [
-                            "tehanu::SomeOtherAction",
+                            "gram::SomeOtherAction",
                             {
                                 "foo": "bar"
                             }
@@ -1339,7 +1339,7 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "tehanu::SomeAction"
+                        "ctrl-a": "gram::SomeAction"
                     }
                 }
             ]"#
@@ -1347,13 +1347,13 @@ mod tests {
             KeybindUpdateOperation::Replace {
                 target: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("ctrl-a"),
-                    action_name: "tehanu::SomeAction",
+                    action_name: "gram::SomeAction",
                     context: None,
                     action_arguments: None,
                 },
                 source: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("ctrl-b"),
-                    action_name: "tehanu::SomeOtherAction",
+                    action_name: "gram::SomeOtherAction",
                     context: None,
                     action_arguments: Some(r#"{"foo": "bar"}"#),
                 },
@@ -1362,13 +1362,13 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "tehanu::SomeAction"
+                        "ctrl-a": "gram::SomeAction"
                     }
                 },
                 {
                     "bindings": {
                         "ctrl-b": [
-                            "tehanu::SomeOtherAction",
+                            "gram::SomeOtherAction",
                             {
                                 "foo": "bar"
                             }
@@ -1383,7 +1383,7 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "a": "tehanu::SomeAction"
+                        "a": "gram::SomeAction"
                     }
                 }
             ]"#
@@ -1391,13 +1391,13 @@ mod tests {
             KeybindUpdateOperation::Replace {
                 target: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("a"),
-                    action_name: "tehanu::SomeAction",
+                    action_name: "gram::SomeAction",
                     context: None,
                     action_arguments: None,
                 },
                 source: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("ctrl-b"),
-                    action_name: "tehanu::SomeOtherAction",
+                    action_name: "gram::SomeOtherAction",
                     context: None,
                     action_arguments: Some(r#"{"foo": "bar"}"#),
                 },
@@ -1407,7 +1407,7 @@ mod tests {
                 {
                     "bindings": {
                         "ctrl-b": [
-                            "tehanu::SomeOtherAction",
+                            "gram::SomeOtherAction",
                             {
                                 "foo": "bar"
                             }
@@ -1422,7 +1422,7 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "\\ a": "tehanu::SomeAction"
+                        "\\ a": "gram::SomeAction"
                     }
                 }
             ]"#
@@ -1430,13 +1430,13 @@ mod tests {
             KeybindUpdateOperation::Replace {
                 target: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("\\ a"),
-                    action_name: "tehanu::SomeAction",
+                    action_name: "gram::SomeAction",
                     context: None,
                     action_arguments: None,
                 },
                 source: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("\\ b"),
-                    action_name: "tehanu::SomeOtherAction",
+                    action_name: "gram::SomeOtherAction",
                     context: None,
                     action_arguments: Some(r#"{"foo": "bar"}"#),
                 },
@@ -1446,7 +1446,7 @@ mod tests {
                 {
                     "bindings": {
                         "\\ b": [
-                            "tehanu::SomeOtherAction",
+                            "gram::SomeOtherAction",
                             {
                                 "foo": "bar"
                             }
@@ -1461,7 +1461,7 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "\\ a": "tehanu::SomeAction"
+                        "\\ a": "gram::SomeAction"
                     }
                 }
             ]"#
@@ -1469,13 +1469,13 @@ mod tests {
             KeybindUpdateOperation::Replace {
                 target: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("\\ a"),
-                    action_name: "tehanu::SomeAction",
+                    action_name: "gram::SomeAction",
                     context: None,
                     action_arguments: None,
                 },
                 source: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("\\ a"),
-                    action_name: "tehanu::SomeAction",
+                    action_name: "gram::SomeAction",
                     context: None,
                     action_arguments: None,
                 },
@@ -1484,7 +1484,7 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "\\ a": "tehanu::SomeAction"
+                        "\\ a": "gram::SomeAction"
                     }
                 }
             ]"#
@@ -1495,7 +1495,7 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "tehanu::SomeAction"
+                        "ctrl-a": "gram::SomeAction"
                     }
                 }
             ]"#
@@ -1503,13 +1503,13 @@ mod tests {
             KeybindUpdateOperation::Replace {
                 target: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("ctrl-a"),
-                    action_name: "tehanu::SomeNonexistentAction",
+                    action_name: "gram::SomeNonexistentAction",
                     context: None,
                     action_arguments: None,
                 },
                 source: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("ctrl-b"),
-                    action_name: "tehanu::SomeOtherAction",
+                    action_name: "gram::SomeOtherAction",
                     context: None,
                     action_arguments: None,
                 },
@@ -1518,12 +1518,12 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "tehanu::SomeAction"
+                        "ctrl-a": "gram::SomeAction"
                     }
                 },
                 {
                     "bindings": {
-                        "ctrl-b": "tehanu::SomeOtherAction"
+                        "ctrl-b": "gram::SomeOtherAction"
                     }
                 }
             ]"#
@@ -1535,7 +1535,7 @@ mod tests {
                 {
                     "bindings": {
                         // some comment
-                        "ctrl-a": "tehanu::SomeAction"
+                        "ctrl-a": "gram::SomeAction"
                         // some other comment
                     }
                 }
@@ -1544,13 +1544,13 @@ mod tests {
             KeybindUpdateOperation::Replace {
                 target: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("ctrl-a"),
-                    action_name: "tehanu::SomeAction",
+                    action_name: "gram::SomeAction",
                     context: None,
                     action_arguments: None,
                 },
                 source: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("ctrl-b"),
-                    action_name: "tehanu::SomeOtherAction",
+                    action_name: "gram::SomeOtherAction",
                     context: None,
                     action_arguments: Some(r#"{"foo": "bar"}"#),
                 },
@@ -1561,7 +1561,7 @@ mod tests {
                     "bindings": {
                         // some comment
                         "ctrl-b": [
-                            "tehanu::SomeOtherAction",
+                            "gram::SomeOtherAction",
                             {
                                 "foo": "bar"
                             }

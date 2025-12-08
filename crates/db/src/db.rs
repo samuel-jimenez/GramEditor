@@ -20,7 +20,7 @@ use std::path::Path;
 use std::sync::atomic::AtomicBool;
 use std::sync::{LazyLock, atomic::Ordering};
 use util::{ResultExt, maybe};
-use app_env_vars::TEHANU_STATELESS;
+use app_env_vars::GRAM_STATELESS;
 
 const CONNECTION_INITIALIZE_QUERY: &str = sql!(
     PRAGMA foreign_keys=TRUE;
@@ -44,7 +44,7 @@ pub static ALL_FILE_DB_FAILED: LazyLock<AtomicBool> = LazyLock::new(|| AtomicBoo
 /// is moved to a backup folder and a new one is created. If that fails, a shared in memory db is created.
 /// In either case, static variables are set so that the user can be notified.
 pub async fn open_db<M: Migrator + 'static>(db_dir: &Path, scope: &str) -> ThreadSafeConnection {
-    if *TEHANU_STATELESS {
+    if *GRAM_STATELESS {
         return open_fallback_db::<M>().await;
     }
 

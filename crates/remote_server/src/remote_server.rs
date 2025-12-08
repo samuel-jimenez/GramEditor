@@ -68,12 +68,12 @@ pub fn run(command: Commands) -> anyhow::Result<()> {
             let release_channel = *RELEASE_CHANNEL;
             match release_channel {
                 ReleaseChannel::Stable | ReleaseChannel::Preview => {
-                    println!("{}", env!("TEHANU_PKG_VERSION"))
+                    println!("{}", env!("GRAM_PKG_VERSION"))
                 }
                 ReleaseChannel::Nightly | ReleaseChannel::Dev => {
                     println!(
                         "{}",
-                        option_env!("TEHANU_COMMIT_SHA").unwrap_or(release_channel.dev_name())
+                        option_env!("GRAM_COMMIT_SHA").unwrap_or(release_channel.dev_name())
                     )
                 }
             };

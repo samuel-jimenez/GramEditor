@@ -10,14 +10,14 @@ use util::{ResultExt, truncate_and_remove_front};
 
 use crate::{
     AttachRequest, ResolvedTask, RevealTarget, Shell, SpawnInTerminal, TaskContext, TaskId,
-    VariableName, TEHANU_VARIABLE_NAME_PREFIX, serde_helpers::non_empty_string_vec,
+    VariableName, GRAM_VARIABLE_NAME_PREFIX, serde_helpers::non_empty_string_vec,
 };
 
-/// A template definition of a Tehanu task to run.
+/// A template definition of a Gram task to run.
 /// May use the [`VariableName`] to get the corresponding substitutions into its fields.
 ///
 /// Template itself is not ready to spawn a task, it needs to be resolved with a [`TaskContext`] first, that
-/// contains all relevant Tehanu state in task variables.
+/// contains all relevant Gram state in task variables.
 /// A single template may produce different tasks (or none) for different contexts.
 #[derive(Clone, Default, Debug, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 #[serde(rename_all = "snake_case")]
@@ -128,7 +128,7 @@ impl TaskTemplates {
 
 impl TaskTemplate {
     /// Replaces all `VariableName` task variables in the task template string fields.
-    /// If any replacement fails or the new string substitutions still have [`TEHANU_VARIABLE_NAME_PREFIX`],
+    /// If any replacement fails or the new string substitutions still have [`GRAM_VARIABLE_NAME_PREFIX`],
     /// `None` is returned.
     ///
     /// Every [`ResolvedTask`] gets a [`TaskId`], based on the `id_base` (to avoid collision with various task sources),
@@ -336,8 +336,8 @@ fn substitute_all_template_variables_in_str<A: AsRef<str>>(
             }
             // Got a task variable hit - use the variable value, ignore default
             return Ok(Some(name.as_ref().to_owned()));
-        } else if variable_name.starts_with(TEHANU_VARIABLE_NAME_PREFIX) {
-            // Unknown TEHANU variable - use default if available
+        } else if variable_name.starts_with(GRAM_VARIABLE_NAME_PREFIX) {
+            // Unknown GRAM variable - use default if available
             if !default.is_empty() {
                 // Strip the colon and return the default value
                 return Ok(Some(default[1..].to_owned()));
@@ -698,7 +698,7 @@ mod tests {
             );
             assert_eq!(
                 resolved_task_attempt, None,
-                "If any of the Tehanu task variables is not substituted, the task should not be resolved, but got some resolution without the variable {removed_variable:?} (index {i})"
+                "If any of the Gram task variables is not substituted, the task should not be resolved, but got some resolution without the variable {removed_variable:?} (index {i})"
             );
         }
     }
@@ -726,7 +726,7 @@ mod tests {
         let task = TaskTemplate {
             label: "My task".into(),
             command: "echo".into(),
-            args: vec!["$TEHANU_VARIABLE".into()],
+            args: vec!["$GRAM_VARIABLE".into()],
             ..TaskTemplate::default()
         };
         assert!(
@@ -904,13 +904,13 @@ mod tests {
                 VariableName::File.to_string() + ":fallback.txt"
             ),
             args: vec![
-                "${TEHANU_MISSING_VAR:default_value}".to_string(),
+                "${GRAM_MISSING_VAR:default_value}".to_string(),
                 format!("${{{}}}", VariableName::Row.to_string() + ":42"),
             ],
             ..TaskTemplate::default()
         };
 
-        // Test 1: When TEHANU_FILE exists, should use actual value and ignore default
+        // Test 1: When GRAM_FILE exists, should use actual value and ignore default
         let context_with_file = TaskContext {
             cwd: None,
             task_variables: TaskVariables::from_iter(vec![
@@ -927,7 +927,7 @@ mod tests {
         assert_eq!(
             resolved.resolved.command.unwrap(),
             "echo actual_file.rs",
-            "Should use actual TEHANU_FILE value, not default"
+            "Should use actual GRAM_FILE value, not default"
         );
         assert_eq!(
             resolved.resolved.args,
@@ -935,7 +935,7 @@ mod tests {
             "Should use default for missing var, actual value for existing var"
         );
 
-        // Test 2: When TEHANU_FILE doesn't exist, should use default value
+        // Test 2: When GRAM_FILE doesn't exist, should use default value
         let context_without_file = TaskContext {
             cwd: None,
             task_variables: TaskVariables::from_iter(vec![(VariableName::Row, "456".to_string())]),
@@ -949,7 +949,7 @@ mod tests {
         assert_eq!(
             resolved.resolved.command.unwrap(),
             "echo fallback.txt",
-            "Should use default value when TEHANU_FILE is missing"
+            "Should use default value when GRAM_FILE is missing"
         );
         assert_eq!(
             resolved.resolved.args,
@@ -957,10 +957,10 @@ mod tests {
             "Should use defaults for missing vars"
         );
 
-        // Test 3: Missing TEHANU variable without default should fail
+        // Test 3: Missing GRAM variable without default should fail
         let task_no_default = TaskTemplate {
             label: "test no default".to_string(),
-            command: "${TEHANU_MISSING_NO_DEFAULT}".to_string(),
+            command: "${GRAM_MISSING_NO_DEFAULT}".to_string(),
             ..TaskTemplate::default()
         };
 
@@ -968,7 +968,7 @@ mod tests {
             task_no_default
                 .resolve_task(TEST_ID_BASE, &TaskContext::default())
                 .is_none(),
-            "Should fail when TEHANU variable has no default and doesn't exist"
+            "Should fail when GRAM variable has no default and doesn't exist"
         );
     }
 }

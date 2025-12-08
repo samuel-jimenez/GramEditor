@@ -133,14 +133,14 @@ mod tests {
     #[test]
     fn test_parse_remote_url_given_ssh_url() {
         let parsed_remote = Sourcehut::public_instance()
-            .parse_remote_url("git@git.sr.ht:~krig/tehanu")
+            .parse_remote_url("git@git.sr.ht:~krig/gram")
             .unwrap();
 
         assert_eq!(
             parsed_remote,
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu".into(),
+                repo: "gram".into(),
             }
         );
     }
@@ -148,14 +148,14 @@ mod tests {
     #[test]
     fn test_parse_remote_url_given_ssh_url_with_git_suffix() {
         let parsed_remote = Sourcehut::public_instance()
-            .parse_remote_url("git@git.sr.ht:~krig/tehanu.git")
+            .parse_remote_url("git@git.sr.ht:~krig/gram.git")
             .unwrap();
 
         assert_eq!(
             parsed_remote,
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu.git".into(),
+                repo: "gram.git".into(),
             }
         );
     }
@@ -163,14 +163,14 @@ mod tests {
     #[test]
     fn test_parse_remote_url_given_https_url() {
         let parsed_remote = Sourcehut::public_instance()
-            .parse_remote_url("https://git.sr.ht/~krig/tehanu")
+            .parse_remote_url("https://git.sr.ht/~krig/gram")
             .unwrap();
 
         assert_eq!(
             parsed_remote,
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu".into(),
+                repo: "gram".into(),
             }
         );
     }
@@ -180,7 +180,7 @@ mod tests {
         let permalink = Sourcehut::public_instance().build_permalink(
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu".into(),
+                repo: "gram".into(),
             },
             BuildPermalinkParams::new(
                 "faa6f979be417239b2e070dbbf6392b909224e0b",
@@ -189,7 +189,7 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://git.sr.ht/~krig/tehanu/tree/faa6f979be417239b2e070dbbf6392b909224e0b/item/crates/editor/src/git/permalink.rs";
+        let expected_url = "https://git.sr.ht/~krig/gram/tree/faa6f979be417239b2e070dbbf6392b909224e0b/item/crates/editor/src/git/permalink.rs";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
@@ -198,7 +198,7 @@ mod tests {
         let permalink = Sourcehut::public_instance().build_permalink(
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu.git".into(),
+                repo: "gram.git".into(),
             },
             BuildPermalinkParams::new(
                 "faa6f979be417239b2e070dbbf6392b909224e0b",
@@ -207,7 +207,7 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://git.sr.ht/~krig/tehanu.git/tree/faa6f979be417239b2e070dbbf6392b909224e0b/item/crates/editor/src/git/permalink.rs";
+        let expected_url = "https://git.sr.ht/~krig/gram.git/tree/faa6f979be417239b2e070dbbf6392b909224e0b/item/crates/editor/src/git/permalink.rs";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
@@ -216,7 +216,7 @@ mod tests {
         let permalink = Sourcehut::public_instance().build_permalink(
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu".into(),
+                repo: "gram".into(),
             },
             BuildPermalinkParams::new(
                 "faa6f979be417239b2e070dbbf6392b909224e0b",
@@ -225,7 +225,7 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://git.sr.ht/~krig/tehanu/tree/faa6f979be417239b2e070dbbf6392b909224e0b/item/crates/editor/src/git/permalink.rs#L7";
+        let expected_url = "https://git.sr.ht/~krig/gram/tree/faa6f979be417239b2e070dbbf6392b909224e0b/item/crates/editor/src/git/permalink.rs#L7";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
@@ -234,7 +234,7 @@ mod tests {
         let permalink = Sourcehut::public_instance().build_permalink(
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu".into(),
+                repo: "gram".into(),
             },
             BuildPermalinkParams::new(
                 "faa6f979be417239b2e070dbbf6392b909224e0b",
@@ -243,7 +243,7 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://git.sr.ht/~krig/tehanu/tree/faa6f979be417239b2e070dbbf6392b909224e0b/item/crates/editor/src/git/permalink.rs#L24-48";
+        let expected_url = "https://git.sr.ht/~krig/gram/tree/faa6f979be417239b2e070dbbf6392b909224e0b/item/crates/editor/src/git/permalink.rs#L24-48";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 }

@@ -1,11 +1,11 @@
 ---
-description: Tehanu is a text editor that supports lots of Git features
-title: Tehanu Editor Git integration documentation
+description: Gram is a text editor that supports lots of Git features
+title: Gram Editor Git integration documentation
 ---
 
 # Git
 
-Tehanu currently offers a set of fundamental Git features, with support coming in the future for more advanced ones, like conflict resolution tools, line by line staging, and more.
+Gram currently offers a set of fundamental Git features, with support coming in the future for more advanced ones, like conflict resolution tools, line by line staging, and more.
 
 Here's an overview of all currently supported features:
 
@@ -27,7 +27,7 @@ You can open the Git Panel using {#action git_panel::ToggleFocus}, or by clickin
 
 In the panel you can see the state of your project at a glance—which repository and branch are active, what files have changed and the current staging state of each file.
 
-Tehanu monitors your repository so that changes you make on the command line are instantly reflected.
+Gram monitors your repository so that changes you make on the command line are instantly reflected.
 
 ### Configuration
 
@@ -48,7 +48,7 @@ The Git Panel also allows configuring the `soft_wrap` setting to adjust how comm
 
 ## Project Diff
 
-You can see all of the changes captured by Git in Tehanu by opening the Project Diff ({#kb git::Diff}), accessible via the {#action git::Diff} action in the Command Palette or the Git Panel.
+You can see all of the changes captured by Git in Gram by opening the Project Diff ({#kb git::Diff}), accessible via the {#action git::Diff} action in the Command Palette or the Git Panel.
 
 All of the changes displayed in the Project Diff behave exactly the same as any other multibuffer: they are all editable excerpts of files.
 
@@ -58,11 +58,11 @@ You can stage or unstage each hunk as well as a whole file by hitting the button
 
 ## Fetch, push, and pull
 
-Fetch, push, or pull from your Git repository in Tehanu via the buttons available on the Git Panel or via the Command Palette by looking at the respective actions: {#action git::Fetch}, {#action git::Push}, and {#action git::Pull}.
+Fetch, push, or pull from your Git repository in Gram via the buttons available on the Git Panel or via the Command Palette by looking at the respective actions: {#action git::Fetch}, {#action git::Push}, and {#action git::Pull}.
 
 ## Staging Workflow
 
-Tehanu has two primary staging workflows, using either the Project Diff or the panel directly.
+Gram has two primary staging workflows, using either the Project Diff or the panel directly.
 
 ### Using the Project Diff
 
@@ -82,14 +82,14 @@ Entries can be staged using each individual entry's checkbox. All changes can be
 
 ## Committing
 
-Tehanu offers two commit textareas:
+Gram offers two commit textareas:
 
 1. The first one is available right at the bottom of the Git Panel. Hitting {#kb git::Commit} immediately commits all of your staged changes.
 2. The second is available via the action {#action git::ExpandCommitEditor} or via hitting the {#kb git::ExpandCommitEditor} while focused in the Git Panel commit textarea.
 
 ### Undoing a Commit
 
-As soon as you commit in Tehanu, in the Git Panel, you'll see a bar right under the commit textarea, which will show the recently submitted commit.
+As soon as you commit in Gram, in the Git Panel, you'll see a bar right under the commit textarea, which will show the recently submitted commit.
 In there, you can use the "Uncommit" button, which performs the `git reset HEADˆ--soft` command.
 
 ### Configuring Commit Line Length
@@ -108,7 +108,7 @@ To stash all your current changes, use the {#action git::StashAll} action. This 
 
 ### Managing Stashes
 
-Tehanu provides a comprehensive stash picker accessible via {#action git::ViewStash}. From the stash picker, you can:
+Gram provides a comprehensive stash picker accessible via {#action git::ViewStash}. From the stash picker, you can:
 
 - **View stash list**: Browse all your saved stashes with their descriptions and timestamps
 - **Open diffs**: See exactly what changes are stored in each stash
@@ -118,7 +118,7 @@ Tehanu provides a comprehensive stash picker accessible via {#action git::ViewSt
 
 ### Quick Stash Operations
 
-For faster workflows, Tehanu provides direct actions to work with the most recent stash:
+For faster workflows, Gram provides direct actions to work with the most recent stash:
 
 - **Apply latest stash**: Use {#action git::StashApply} to apply the most recent stash without removing it
 - **Pop latest stash**: Use {#action git::StashPop} to apply and remove the most recent stash
@@ -135,9 +135,9 @@ To open the stash diff view, select a stash from the stash picker and use the {#
 
 ## Git Integrations
 
-Tehanu integrates with popular Git hosting services to ensure that Git commit hashes and references to Issues, Pull Requests, and Merge Requests become clickable links.
+Gram integrates with popular Git hosting services to ensure that Git commit hashes and references to Issues, Pull Requests, and Merge Requests become clickable links.
 
-Tehanu currently supports links to the hosted versions of
+Gram currently supports links to the hosted versions of
 [GitHub](https://github.com),
 [GitLab](https://gitlab.com),
 [Bitbucket](https://bitbucket.org),
@@ -170,7 +170,7 @@ or by simply right clicking and selecting `Copy Permalink` with line(s) selected
 
 ## Diff Hunk Keyboard Shortcuts
 
-When viewing files with changes, Tehanu displays diff hunks that can be expanded or collapsed for detailed review:
+When viewing files with changes, Gram displays diff hunks that can be expanded or collapsed for detailed review:
 
 - **Expand all diff hunks**: {#action editor::ExpandAllDiffHunks} ({#kb editor::ExpandAllDiffHunks})
 - **Collapse all diff hunks**: Press `Escape` (bound to {#action editor::Cancel})
@@ -215,7 +215,7 @@ When viewing files with changes, Tehanu displays diff hunks that can be expanded
 
 ## Git CLI Configuration
 
-If you would like to also use Tehanu for your [git commit message editor](https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration#_core_editor) when committing from the command line you can use `zed --wait`:
+If you would like to also use Gram for your [git commit message editor](https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration#_core_editor) when committing from the command line you can use `zed --wait`:
 
 ```sh
 git config --global core.editor "zed --wait"

@@ -1,6 +1,6 @@
 # PowerShell
 
-PowerShell language support in Tehanu is provided by the community-maintained [Tehanu PowerShell extension](https://github.com/wingyplus/zed-powershell). Please report issues to: [github.com/wingyplus/zed-powershell/issues](https://github.com/wingyplus/zed-powershell/issues)
+PowerShell language support in Gram is provided by the community-maintained [Gram PowerShell extension](https://github.com/wingyplus/zed-powershell). Please report issues to: [github.com/wingyplus/zed-powershell/issues](https://github.com/wingyplus/zed-powershell/issues)
 
 - Tree-sitter: [airbus-cert/tree-sitter-powershell](https://github.com/airbus-cert/tree-sitter-powershell)
 - Language Server: [PowerShell/PowerShellEditorServices](https://github.com/PowerShell/PowerShellEditorServices)
@@ -16,13 +16,13 @@ PowerShell language support in Tehanu is provided by the community-maintained [T
 - Ubuntu: [Install PowerShell on RHEL](https://learn.microsoft.com/en-us/powershell/scripting/install/install-ubuntu)
 - Windows: [Install PowerShell on Windows](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows)
 
-The Tehanu PowerShell extension will default to the `pwsh` executable found in your path.
+The Gram PowerShell extension will default to the `pwsh` executable found in your path.
 
 ### Install PowerShell Editor Services (Optional) {#powershell-editor-services}
 
-The Tehanu PowerShell extensions will attempt to download [PowerShell Editor Services](https://github.com/PowerShell/PowerShellEditorServices) automatically.
+The Gram PowerShell extensions will attempt to download [PowerShell Editor Services](https://github.com/PowerShell/PowerShellEditorServices) automatically.
 
-If want to use a specific binary, you can specify in your that in your Tehanu settings.json:
+If want to use a specific binary, you can specify in your that in your Gram settings.json:
 
 ```json [settings]
   "lsp": {

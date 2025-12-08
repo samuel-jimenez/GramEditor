@@ -227,7 +227,7 @@ pub fn init(languages: Arc<LanguageRegistry>, fs: Arc<dyn Fs>, node: NodeRuntime
             ..Default::default()
         },
         LanguageInfo {
-            name: "tehanu-keybind-context",
+            name: "gram-keybind-context",
             ..Default::default()
         },
     ];

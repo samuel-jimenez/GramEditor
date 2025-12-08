@@ -155,7 +155,7 @@ impl Component for Vector {
                     example_group_with_title(
                         "Different Vectors",
                         vec![single_example(
-                            "Tehanu Logo",
+                            "Gram Logo",
                             Vector::square(VectorName::Logo, rems_from_px(8.)).into_any_element(),
                         )],
                     ),

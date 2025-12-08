@@ -1,11 +1,11 @@
 # Using a debugger
 
-> **DISCLAIMER**: This is not documentation for [configuring Tehanu's debugger](../debugger.md).
-> Rather, it is intended to provide information on how to use a debugger while developing Tehanu itself to both Tehanu employees and external contributors.
+> **DISCLAIMER**: This is not documentation for [configuring Gram's debugger](../debugger.md).
+> Rather, it is intended to provide information on how to use a debugger while developing Gram itself to both Gram employees and external contributors.
 
-## Using Tehanu's built-in debugger
+## Using Gram's built-in debugger
 
-While the Tehanu project is open you can open the `New Process Modal` and select the `Debug` tab. There you can see to debug configurations to debug Tehanu with, one for GDB and one for LLDB. Select the configuration you want and Tehanu will build and launch the binary.
+While the Gram project is open you can open the `New Process Modal` and select the `Debug` tab. There you can see to debug configurations to debug Gram with, one for GDB and one for LLDB. Select the configuration you want and Gram will build and launch the binary.
 
 Please note, GDB isn't supported on arm Macbooks
 
@@ -23,7 +23,7 @@ In release builds, this is done to reduce the binary size, as type and variable 
 However, while the type and variable level debug info is not required for good stack traces, it is very important for a good experience using debuggers,
 as without the type and variable level debug info, the debugger has no way to resolve local variables, inspect them, format them using pretty-printers, etc.
 
-Therefore, in order to use a debugger to it's fullest extent when debugging a release build, you must compile a new Tehanu binary, with full debug info.
+Therefore, in order to use a debugger to it's fullest extent when debugging a release build, you must compile a new Gram binary, with full debug info.
 
 The simplest way to do this, is to use the `--config` flag to override the `debug` field in the root `Cargo.toml` file when running `cargo run` or `cargo build` like so:
 
@@ -52,11 +52,11 @@ cargo build --config 'profile.release.debug="full"'
 >
 > **WARNING:** Make sure to avoid committing these changes!
 
-## Running Tehanu with a shell debugger GDB/LLDB
+## Running Gram with a shell debugger GDB/LLDB
 
 ### Background
 
-When installing rust through rustup, (the recommended way to do so when developing Tehanu, see the documentation for getting started on your platform [here](../development.md))
+When installing rust through rustup, (the recommended way to do so when developing Gram, see the documentation for getting started on your platform [here](../development.md))
 a few additional scripts are installed and put on your path to assist with debugging binaries compiled with rust.
 
 These are `rust-gdb` and `rust-lldb` respectively.
@@ -74,32 +74,32 @@ According to the [previously linked article](https://michaelwoerister.github.io/
 
 If you are unfamiliar with `gdb` or `lldb`, you can learn more about them [here](https://www.gnu.org/software/gdb/) and [here](https://lldb.llvm.org/) respectively.
 
-### Usage with Tehanu
+### Usage with Gram
 
-After following the steps above for including full debug info when compiling Tehanu,
-You can either run `rust-gdb` or `rust-lldb` on the compiled Tehanu binary after building it with `cargo build`, by running one of the following commands:
+After following the steps above for including full debug info when compiling Gram,
+You can either run `rust-gdb` or `rust-lldb` on the compiled Gram binary after building it with `cargo build`, by running one of the following commands:
 
 ```
 rust-gdb target/debug/zed
 rust-lldb target/debug/zed
 ```
 
-Alternatively, you can attach to a running instance of Tehanu (such as an instance of Tehanu started using `cargo run`) by running one of the following commands:
+Alternatively, you can attach to a running instance of Gram (such as an instance of Gram started using `cargo run`) by running one of the following commands:
 
 ```
 rust-gdb -p <pid>
 rust-lldb -p <pid>
 ```
 
-Where `<pid>` is the process ID of the Tehanu instance you want to attach to.
+Where `<pid>` is the process ID of the Gram instance you want to attach to.
 
-To get the process ID of a running Tehanu instance, you can use your systems process management tools such as `Task Manager` on windows or `Activity Monitor` on macOS.
+To get the process ID of a running Gram instance, you can use your systems process management tools such as `Task Manager` on windows or `Activity Monitor` on macOS.
 
 Alternatively, you can run the `ps aux | grep zed` command on macOS and Linux or `Get-Process | Select-Object Id, ProcessName` in an instance of PowerShell on Windows.
 
 #### Debugging Panics and Crashes
 
-Debuggers can be an excellent tool for debugging the cause of panics and crashes in all programs, including Tehanu.
+Debuggers can be an excellent tool for debugging the cause of panics and crashes in all programs, including Gram.
 
 By default, when a process that `gdb` or `lldb` is attached to hits an exception such as a panic, the debugger will automatically stop at the point of the panic and allow you to inspect the state of the program.
 
@@ -110,4 +110,4 @@ This can be accomplished using the `backtrace` command in combination with the `
 Once the program is stopped, you will not be able to continue execution as you can before an exception is hit. However, you can jump around to different stack frames, and inspect the values of variables and expressions
 within each frame, which can be very useful in identifying the root cause of the crash.
 
-You can find additional information on debugging Tehanu crashes [here](./debugging-crashes.md).
+You can find additional information on debugging Gram crashes [here](./debugging-crashes.md).

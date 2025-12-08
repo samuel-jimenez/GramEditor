@@ -1764,7 +1764,7 @@ impl Pane {
             let path = item.project_path(cx);
             // Put the currently active item at the end, because if the currently active item is not closed last
             // closing the currently active item will cause the focus to switch to another item
-            // This will cause Tehanu to expand the content of the currently active item
+            // This will cause Gram to expand the content of the currently active item
             //
             // Beyond that sort in order of project path, with untitled files and multibuffers coming last.
             (active_item_id == Some(item.item_id()), path.is_none(), path)

@@ -55,9 +55,9 @@ if ($Help) {
     exit 0
 }
 
-Push-Location -Path crates/tehanu
+Push-Location -Path crates/gram
 $channel = Get-Content "RELEASE_CHANNEL"
-$env:TEHANU_RELEASE_CHANNEL = $channel
+$env:GRAM_RELEASE_CHANNEL = $channel
 $env:RELEASE_CHANNEL = $channel
 Pop-Location
 
@@ -67,7 +67,7 @@ function CheckEnvironmentVariables {
     }
 
     $requiredVars = @(
-        'TEHANU_WORKSPACE', 'RELEASE_VERSION', 'TEHANU_RELEASE_CHANNEL',
+        'GRAM_WORKSPACE', 'RELEASE_VERSION', 'GRAM_RELEASE_CHANNEL',
         'AZURE_TENANT_ID', 'AZURE_CLIENT_ID', 'AZURE_CLIENT_SECRET',
         'ACCOUNT_NAME', 'CERT_PROFILE_NAME', 'ENDPOINT',
         'FILE_DIGEST', 'TIMESTAMP_DIGEST', 'TIMESTAMP_SERVER'
@@ -86,7 +86,7 @@ function PrepareForBundle {
         Remove-Item -Path "$innoDir" -Recurse -Force
     }
     New-Item -Path "$innoDir" -ItemType Directory -Force
-    Copy-Item -Path "$env:TEHANU_WORKSPACE\crates\tehanu\resources\windows\*" -Destination "$innoDir" -Recurse -Force
+    Copy-Item -Path "$env:GRAM_WORKSPACE\crates\gram\resources\windows\*" -Destination "$innoDir" -Recurse -Force
     New-Item -Path "$innoDir\make_appx" -ItemType Directory -Force
     New-Item -Path "$innoDir\appx" -ItemType Directory -Force
     New-Item -Path "$innoDir\bin" -ItemType Directory -Force
@@ -102,11 +102,11 @@ function GenerateLicenses {
     $ErrorActionPreference = $oldErrorActionPreference
 }
 
-function BuildTehanuAndItsFriends {
-    Write-Output "Building Tehanu and its friends, for channel: $channel"
-    # Build tehanu.exe, cli.exe
-    cargo build --release --package tehanu --package cli --target $target
-    Copy-Item -Path ".\$CargoOutDir\tehanu.exe" -Destination "$innoDir\Tehanu.exe" -Force
+function BuildGramAndItsFriends {
+    Write-Output "Building Gram and its friends, for channel: $channel"
+    # Build gram.exe, cli.exe
+    cargo build --release --package gram --package cli --target $target
+    Copy-Item -Path ".\$CargoOutDir\gram.exe" -Destination "$innoDir\Gram.exe" -Force
     Copy-Item -Path ".\$CargoOutDir\cli.exe" -Destination "$innoDir\cli.exe" -Force
     # Build explorer_command_injector.dll
     switch ($channel) {
@@ -120,44 +120,44 @@ function BuildTehanuAndItsFriends {
             cargo build --release --package explorer_command_injector --target $target
         }
     }
-    Copy-Item -Path ".\$CargoOutDir\explorer_command_injector.dll" -Destination "$innoDir\tehanu_explorer_command_injector.dll" -Force
+    Copy-Item -Path ".\$CargoOutDir\explorer_command_injector.dll" -Destination "$innoDir\gram_explorer_command_injector.dll" -Force
 }
 
-function ZipTehanuAndItsFriendsDebug {
+function ZipGramAndItsFriendsDebug {
     $items = @(
-        ".\$CargoOutDir\tehanu.pdb",
+        ".\$CargoOutDir\gram.pdb",
         ".\$CargoOutDir\cli.pdb",
         ".\$CargoOutDir\explorer_command_injector.pdb"
     )
 
-    Compress-Archive -Path $items -DestinationPath ".\$CargoOutDir\tehanu-$env:RELEASE_VERSION-$env:TEHANU_RELEASE_CHANNEL.dbg.zip" -Force
+    Compress-Archive -Path $items -DestinationPath ".\$CargoOutDir\gram-$env:RELEASE_VERSION-$env:GRAM_RELEASE_CHANNEL.dbg.zip" -Force
 }
 
 function MakeAppx {
     switch ($channel) {
         "stable" {
-            $manifestFile = "$env:TEHANU_WORKSPACE\crates\explorer_command_injector\AppxManifest.xml"
+            $manifestFile = "$env:GRAM_WORKSPACE\crates\explorer_command_injector\AppxManifest.xml"
         }
         "preview" {
-            $manifestFile = "$env:TEHANU_WORKSPACE\crates\explorer_command_injector\AppxManifest-Preview.xml"
+            $manifestFile = "$env:GRAM_WORKSPACE\crates\explorer_command_injector\AppxManifest-Preview.xml"
         }
         default {
-            $manifestFile = "$env:TEHANU_WORKSPACE\crates\explorer_command_injector\AppxManifest-Nightly.xml"
+            $manifestFile = "$env:GRAM_WORKSPACE\crates\explorer_command_injector\AppxManifest-Nightly.xml"
         }
     }
     Copy-Item -Path "$manifestFile" -Destination "$innoDir\make_appx\AppxManifest.xml"
     # Add makeAppx.exe to Path
     $sdk = "C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x64"
     $env:Path += ';' + $sdk
-    makeAppx.exe pack /d "$innoDir\make_appx" /p "$innoDir\tehanu_explorer_command_injector.appx" /nv
+    makeAppx.exe pack /d "$innoDir\make_appx" /p "$innoDir\gram_explorer_command_injector.appx" /nv
 }
 
-function SignTehanuAndItsFriends {
+function SignGramAndItsFriends {
     if (-not $env:CI) {
         return
     }
 
-    $files = "$innoDir\Tehanu.exe,$innoDir\cli.exe,$innoDir\tehanu_explorer_command_injector.dll,$innoDir\tehanu_explorer_command_injector.appx"
+    $files = "$innoDir\Gram.exe,$innoDir\cli.exe,$innoDir\gram_explorer_command_injector.dll,$innoDir\gram_explorer_command_injector.appx"
     & "$innoDir\sign.ps1" $files
 }
 
@@ -179,10 +179,10 @@ function DownloadConpty {
 }
 
 function CollectFiles {
-    Move-Item -Path "$innoDir\tehanu_explorer_command_injector.appx" -Destination "$innoDir\appx\tehanu_explorer_command_injector.appx" -Force
-    Move-Item -Path "$innoDir\tehanu_explorer_command_injector.dll" -Destination "$innoDir\appx\tehanu_explorer_command_injector.dll" -Force
-    Move-Item -Path "$innoDir\cli.exe" -Destination "$innoDir\bin\tehanu.exe" -Force
-    Move-Item -Path "$innoDir\tehanu.sh" -Destination "$innoDir\bin\tehanu" -Force
+    Move-Item -Path "$innoDir\gram_explorer_command_injector.appx" -Destination "$innoDir\appx\gram_explorer_command_injector.appx" -Force
+    Move-Item -Path "$innoDir\gram_explorer_command_injector.dll" -Destination "$innoDir\appx\gram_explorer_command_injector.dll" -Force
+    Move-Item -Path "$innoDir\cli.exe" -Destination "$innoDir\bin\gram.exe" -Force
+    Move-Item -Path "$innoDir\gram.sh" -Destination "$innoDir\bin\gram" -Force
     if($Architecture -eq "aarch64") {
         New-Item -Type Directory -Path "$innoDir\arm64" -Force
         Move-Item -Path ".\conpty\build\native\runtimes\arm64\OpenConsole.exe" -Destination "$innoDir\arm64\OpenConsole.exe" -Force
@@ -199,63 +199,63 @@ function CollectFiles {
 }
 
 function BuildInstaller {
-    $issFilePath = "$innoDir\tehanu.iss"
+    $issFilePath = "$innoDir\gram.iss"
     switch ($channel) {
         "stable" {
             $appId = "{{E62BA84E-40DF-471F-97EF-B85924F488FB}"
             $appIconName = "app-icon"
-            $appName = "Tehanu"
-            $appDisplayName = "Tehanu"
-            $appSetupName = "Tehanu-$Architecture"
-            # The mutex name here should match the mutex name in crates\tehanu\src\tehanu\windows_only_instance.rs
-            $appMutex = "Tehanu-Stable-Instance-Mutex"
-            $appExeName = "Tehanu"
-            $regValueName = "Tehanu"
-            $appUserId = "Tehanu.Tehanu"
+            $appName = "Gram"
+            $appDisplayName = "Gram"
+            $appSetupName = "Gram-$Architecture"
+            # The mutex name here should match the mutex name in crates\gram\src\gram\windows_only_instance.rs
+            $appMutex = "Gram-Stable-Instance-Mutex"
+            $appExeName = "Gram"
+            $regValueName = "Gram"
+            $appUserId = "Gram.Gram"
             $appShellNameShort = "T&ehanu"
-            $appAppxFullName = "Tehanu.Tehanu_1.0.0.0_neutral__mspublisherid"
+            $appAppxFullName = "Gram.Gram_1.0.0.0_neutral__mspublisherid"
         }
         "preview" {
             $appId = "{{85A6F569-DD2C-4850-B9E7-4FAC667B0D0C}"
             $appIconName = "app-icon-preview"
-            $appName = "Tehanu Preview"
-            $appDisplayName = "Tehanu Preview"
-            $appSetupName = "Tehanu-$Architecture"
-            # The mutex name here should match the mutex name in crates\tehanu\src\tehanu\windows_only_instance.rs
-            $appMutex = "Tehanu-Preview-Instance-Mutex"
-            $appExeName = "Tehanu"
-            $regValueName = "TehanuPreview"
-            $appUserId = "Tehanu.Tehanu.Preview"
+            $appName = "Gram Preview"
+            $appDisplayName = "Gram Preview"
+            $appSetupName = "Gram-$Architecture"
+            # The mutex name here should match the mutex name in crates\gram\src\gram\windows_only_instance.rs
+            $appMutex = "Gram-Preview-Instance-Mutex"
+            $appExeName = "Gram"
+            $regValueName = "GramPreview"
+            $appUserId = "Gram.Gram.Preview"
             $appShellNameShort = "T&ehanu Preview"
-            $appAppxFullName = "Tehanu.Tehanu.Preview_1.0.0.0_neutral__mspublisherid"
+            $appAppxFullName = "Gram.Gram.Preview_1.0.0.0_neutral__mspublisherid"
         }
         "nightly" {
             $appId = "{{A57C51AA-9E45-403E-A0E0-6D4DA22FACF6}"
             $appIconName = "app-icon-nightly"
-            $appName = "Tehanu Nightly"
-            $appDisplayName = "Tehanu Nightly"
-            $appSetupName = "Tehanu-$Architecture"
-            # The mutex name here should match the mutex name in crates\tehanu\src\tehanu\windows_only_instance.rs
-            $appMutex = "Tehanu-Nightly-Instance-Mutex"
-            $appExeName = "Tehanu"
-            $regValueName = "TehanuNightly"
-            $appUserId = "Tehanu.Tehanu.Nightly"
+            $appName = "Gram Nightly"
+            $appDisplayName = "Gram Nightly"
+            $appSetupName = "Gram-$Architecture"
+            # The mutex name here should match the mutex name in crates\gram\src\gram\windows_only_instance.rs
+            $appMutex = "Gram-Nightly-Instance-Mutex"
+            $appExeName = "Gram"
+            $regValueName = "GramNightly"
+            $appUserId = "Gram.Gram.Nightly"
             $appShellNameShort = "T&ehanu Editor Nightly"
-            $appAppxFullName = "Tehanu.Tehanu.Nightly_1.0.0.0_neutral__mspublisherid"
+            $appAppxFullName = "Gram.Gram.Nightly_1.0.0.0_neutral__mspublisherid"
         }
         "dev" {
             $appId = "{{4FEF353A-EA46-468C-95DD-2B343A71416F}"
             $appIconName = "app-icon-dev"
-            $appName = "Tehanu Dev"
-            $appDisplayName = "Tehanu Dev"
-            $appSetupName = "Tehanu-$Architecture"
-            # The mutex name here should match the mutex name in crates\tehanu\src\tehanu\windows_only_instance.rs
-            $appMutex = "Tehanu-Dev-Instance-Mutex"
-            $appExeName = "Tehanu"
-            $regValueName = "TehanuDev"
-            $appUserId = "Tehanu.Tehanu.Dev"
+            $appName = "Gram Dev"
+            $appDisplayName = "Gram Dev"
+            $appSetupName = "Gram-$Architecture"
+            # The mutex name here should match the mutex name in crates\gram\src\gram\windows_only_instance.rs
+            $appMutex = "Gram-Dev-Instance-Mutex"
+            $appExeName = "Gram"
+            $regValueName = "GramDev"
+            $appUserId = "Gram.Gram.Dev"
             $appShellNameShort = "T&ehanu Dev"
-            $appAppxFullName = "Tehanu.Tehanu.Dev_1.0.0.0_neutral__mspublisherid"
+            $appAppxFullName = "Gram.Gram.Dev_1.0.0.0_neutral__mspublisherid"
         }
         default {
             Write-Error "can't bundle installer for $channel."
@@ -271,7 +271,7 @@ function BuildInstaller {
     $definitions = @{
         "AppId"          = $appId
         "AppIconName"    = $appIconName
-        "OutputDir"      = "$env:TEHANU_WORKSPACE\target"
+        "OutputDir"      = "$env:GRAM_WORKSPACE\target"
         "AppSetupName"   = $appSetupName
         "AppName"        = $appName
         "AppDisplayName" = $appDisplayName
@@ -282,7 +282,7 @@ function BuildInstaller {
         "ShellNameShort" = $appShellNameShort
         "AppUserId"      = $appUserId
         "Version"        = "$env:RELEASE_VERSION"
-        "SourceDir"      = "$env:TEHANU_WORKSPACE"
+        "SourceDir"      = "$env:GRAM_WORKSPACE"
         "AppxFullName"   = $appAppxFullName
     }
 
@@ -312,18 +312,18 @@ function BuildInstaller {
     }
 }
 
-ParseTehanuWorkspace
-$innoDir = "$env:TEHANU_WORKSPACE\inno\$Architecture"
-$debugArchive = "$CargoOutDir\tehanu-$env:RELEASE_VERSION-$env:TEHANU_RELEASE_CHANNEL.dbg.zip"
-$debugStoreKey = "$env:TEHANU_RELEASE_CHANNEL/tehanu-$env:RELEASE_VERSION-$env:TEHANU_RELEASE_CHANNEL.dbg.zip"
+ParseGramWorkspace
+$innoDir = "$env:GRAM_WORKSPACE\inno\$Architecture"
+$debugArchive = "$CargoOutDir\gram-$env:RELEASE_VERSION-$env:GRAM_RELEASE_CHANNEL.dbg.zip"
+$debugStoreKey = "$env:GRAM_RELEASE_CHANNEL/gram-$env:RELEASE_VERSION-$env:GRAM_RELEASE_CHANNEL.dbg.zip"
 
 CheckEnvironmentVariables
 PrepareForBundle
 GenerateLicenses
-BuildTehanuAndItsFriends
+BuildGramAndItsFriends
 MakeAppx
-SignTehanuAndItsFriends
-ZipTehanuAndItsFriendsDebug
+SignGramAndItsFriends
+ZipGramAndItsFriendsDebug
 DownloadAMDGpuServices
 DownloadConpty
 CollectFiles
@@ -332,8 +332,8 @@ BuildInstaller
 if ($buildSuccess) {
     Write-Output "Build successful"
     if ($Install) {
-        Write-Output "Installing Tehanu..."
-        Start-Process -FilePath "$env:TEHANU_WORKSPACE/target/TehanuEditorUserSetup-x64-$env:RELEASE_VERSION.exe"
+        Write-Output "Installing Gram..."
+        Start-Process -FilePath "$env:GRAM_WORKSPACE/target/GramEditorUserSetup-x64-$env:RELEASE_VERSION.exe"
     }
     exit 0
 }

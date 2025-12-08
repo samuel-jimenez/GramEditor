@@ -31,7 +31,7 @@ pub struct SharedState {
 }
 
 impl SharedState {
-    /// Assert that both Tehanu and NeoVim have the same content and mode.
+    /// Assert that both Gram and NeoVim have the same content and mode.
     #[track_caller]
     pub fn assert_matches(&self) {
         if self.neovim != self.editor || self.neovim_mode != self.editor_mode {
@@ -300,7 +300,7 @@ impl NeovimBackedTestContext {
     }
 
     pub async fn set_scroll_height(&mut self, rows: u32) {
-        // match Tehanu's scrolling behavior
+        // match Gram's scrolling behavior
         self.neovim.set_option(&format!("scrolloff={}", 3)).await;
         // +2 to account for the vim command UI at the bottom.
         self.neovim.set_option(&format!("lines={}", rows + 2)).await;

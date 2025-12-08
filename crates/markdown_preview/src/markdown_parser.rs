@@ -1502,11 +1502,11 @@ mod tests {
 
     #[gpui::test]
     async fn test_heading_with_paragraph() {
-        let parsed = parse("# Tehanu\nThe editor").await;
+        let parsed = parse("# Gram\nThe editor").await;
 
         assert_eq!(
             parsed.children,
-            vec![h1(text("Tehanu", 2..5), 0..6), p("The editor", 6..16),]
+            vec![h1(text("Gram", 2..5), 0..6), p("The editor", 6..16),]
         );
     }
 

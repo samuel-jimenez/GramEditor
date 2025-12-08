@@ -1,10 +1,10 @@
-// Tehanu settings
+// Gram settings
 //
-// For information on how to configure Tehanu, see the Tehanu
-// documentation: https://tehanu.liten.app/docs/configuring-tehanu
+// For information on how to configure Gram, see the Gram
+// documentation: https://gram.liten.app/docs/configuring-gram
 //
-// To see all of Tehanu's default settings without changing your
-// custom settings, run `tehanu: open default settings` from the
+// To see all of Gram's default settings without changing your
+// custom settings, run `gram: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
   "ui_font_size": 16,

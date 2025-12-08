@@ -166,7 +166,7 @@ async fn build_remote_server_from_source(
     if platform.os == "linux" && use_musl {
         rust_flags.push_str(" -C target-feature=+crt-static");
 
-        if let Ok(path) = std::env::var("TEHANU_ZSTD_MUSL_LIB") {
+        if let Ok(path) = std::env::var("GRAM_ZSTD_MUSL_LIB") {
             rust_flags.push_str(&format!(" -C link-arg=-L{path}"));
         }
     }

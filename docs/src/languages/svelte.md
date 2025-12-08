@@ -24,7 +24,7 @@ You can modify how certain styles, such as directives and modifiers, appear in a
 
 ## Inlay Hints
 
-When inlay hints is enabled in Tehanu, to make the language server send them back, Tehanu sets the following initialization options:
+When inlay hints is enabled in Gram, to make the language server send them back, Gram sets the following initialization options:
 
 ```json [settings]
 "inlayHints": {

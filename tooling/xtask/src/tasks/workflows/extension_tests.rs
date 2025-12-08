@@ -9,7 +9,7 @@ use crate::tasks::workflows::{
 };
 
 const RUN_TESTS_INPUT: &str = "run_tests";
-const TEHANU_EXTENSION_CLI_SHA: &str = "7cfce605704d41ca247e3f84804bf323f6c6caaf";
+const GRAM_EXTENSION_CLI_SHA: &str = "7cfce605704d41ca247e3f84804bf323f6c6caaf";
 
 // This is used by various extensions repos in the zed-extensions org to run automated tests.
 pub(crate) fn extension_tests() -> Workflow {
@@ -42,7 +42,7 @@ pub(crate) fn extension_tests() -> Workflow {
         .add_env(("CARGO_TERM_COLOR", "always"))
         .add_env(("RUST_BACKTRACE", 1))
         .add_env(("CARGO_INCREMENTAL", 0))
-        .add_env(("TEHANU_EXTENSION_CLI_SHA", TEHANU_EXTENSION_CLI_SHA))
+        .add_env(("GRAM_EXTENSION_CLI_SHA", GRAM_EXTENSION_CLI_SHA))
         .map(|workflow| {
             jobs.into_iter()
                 .chain([tests_pass])
@@ -101,7 +101,7 @@ pub fn cache_zed_extension_cli() -> (Step<Use>, StepOutput) {
     .with(
         Input::default()
             .add("path", "zed-extension")
-            .add("key", "zed-extension-${{ env.TEHANU_EXTENSION_CLI_SHA }}"),
+            .add("key", "zed-extension-${{ env.GRAM_EXTENSION_CLI_SHA }}"),
     );
     let output = StepOutput::new(&step, "cache-hit");
     (step, output)
@@ -111,7 +111,7 @@ pub fn download_zed_extension_cli(cache_hit: StepOutput) -> Step<Run> {
     named::bash(
     indoc! {
         r#"
-        wget --quiet "https://zed-extension-cli.nyc3.digitaloceanspaces.com/$TEHANU_EXTENSION_CLI_SHA/x86_64-unknown-linux-gnu/zed-extension"
+        wget --quiet "https://zed-extension-cli.nyc3.digitaloceanspaces.com/$GRAM_EXTENSION_CLI_SHA/x86_64-unknown-linux-gnu/zed-extension"
         chmod +x zed-extension
         "#,
     }

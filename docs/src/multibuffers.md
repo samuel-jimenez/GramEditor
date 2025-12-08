@@ -1,6 +1,6 @@
 # Multibuffers
 
-One of the superpowers Tehanu gives you is the ability to edit multiple files simultaneously. When combined with multiple cursors, this makes wide-ranging refactors significantly faster.
+One of the superpowers Gram gives you is the ability to edit multiple files simultaneously. When combined with multiple cursors, this makes wide-ranging refactors significantly faster.
 
 ## Editing in a multibuffer
 

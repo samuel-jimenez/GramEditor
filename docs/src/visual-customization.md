@@ -1,19 +1,19 @@
 # Visual Customization
 
-Various aspects of Tehanu's visual layout can be configured via either the settings window or the `settings.json` file, which you can access via {#action tehanu::OpenSettings} ({#kb tehanu::OpenSettings}) and {#action tehanu::OpenSettingsFile} ({#kb tehanu::OpenSettingsFile}) respectively.
+Various aspects of Gram's visual layout can be configured via either the settings window or the `settings.json` file, which you can access via {#action gram::OpenSettings} ({#kb gram::OpenSettings}) and {#action gram::OpenSettingsFile} ({#kb gram::OpenSettingsFile}) respectively.
 
-See [Configuring Tehanu](./configuring-tehanu.md) for additional information and other non-visual settings.
+See [Configuring Gram](./configuring-gram.md) for additional information and other non-visual settings.
 
 ## Themes
 
-You can install many [themes](./themes.md) and [icon themes](./icon-themes.md) in form of extensions by running {#action tehanu::Extensions} from the command palette.
+You can install many [themes](./themes.md) and [icon themes](./icon-themes.md) in form of extensions by running {#action gram::Extensions} from the command palette.
 
 You can preview/choose amongst your installed themes and icon themes with {#action theme_selector::Toggle} ({#kb theme_selector::Toggle}) and {#action icon_theme_selector::Toggle} which will modify the following settings:
 
 ```json [settings]
 {
   "theme": "One Dark",
-  "icon_theme": "Tehanu (Default)"
+  "icon_theme": "Gram (Default)"
 }
 ```
 
@@ -28,8 +28,8 @@ If you would like to use distinct themes for light mode/dark mode that can be se
     "mode": "system"
   },
   "icon_theme": {
-    "dark": "Tehanu (Default)",
-    "light": "Tehanu (Default)",
+    "dark": "Gram (Default)",
+    "light": "Gram (Default)",
     // Mode to use (dark, light) or "system" to follow the OS's light/dark mode (default)
     "mode": "system"
   }
@@ -40,13 +40,13 @@ If you would like to use distinct themes for light mode/dark mode that can be se
 
 ```json [settings]
   // UI Font. Use ".SystemUIFont" to use the default system font (SF Pro on macOS),
-  // or ".TehanuSans" for the bundled default (currently IBM Plex)
+  // or ".GramSans" for the bundled default (currently IBM Plex)
   "ui_font_family": ".SystemUIFont",
   "ui_font_weight": 400, // Font weight in standard CSS units from 100 to 900.
   "ui_font_size": 16,
 
   // Buffer Font - Used by editor buffers
-  // use ".TehanuMono" for the bundled default monospace (currently Lilex)
+  // use ".GramMono" for the bundled default monospace (currently Lilex)
   "buffer_font_family": "Berkeley Mono", // Font name for editor buffers
   "buffer_font_size": 15,                 // Font size for editor buffers
   "buffer_font_weight": 400,              // Font weight in CSS units [100-900]
@@ -64,7 +64,7 @@ If you would like to use distinct themes for light mode/dark mode that can be se
 
 ### Font ligatures
 
-By default Tehanu enable font ligatures which will visually combines certain adjacent characters.
+By default Gram enable font ligatures which will visually combines certain adjacent characters.
 
 For example `=>` will be displayed as `→` and `!=` will be `≠`.
 This is purely cosmetic and the individual characters remain unchanged.
@@ -118,10 +118,10 @@ To disable this behavior use:
 
 ```json [settings]
 {
-  // Force usage of Tehanu build in path prompts (file and directory pickers)
+  // Force usage of Gram build in path prompts (file and directory pickers)
   // instead of OS native pickers (false).
   "use_system_path_prompts": true,
-  // Force usage of Tehanu built in confirmation prompts ("Do you want to save?")
+  // Force usage of Gram built in confirmation prompts ("Do you want to save?")
   // instead of OS native prompts (false). On linux this is ignored (always false).
   "use_system_prompts": true,
 
@@ -483,7 +483,7 @@ Project panel can be shown/hidden with {#action project_panel::ToggleFocus} ({#k
   }
 ```
 
-See [Terminal settings](./configuring-tehanu.md#terminal) for additional non-visual customization options.
+See [Terminal settings](./configuring-gram.md#terminal) for additional non-visual customization options.
 
 ### Other Panels
 

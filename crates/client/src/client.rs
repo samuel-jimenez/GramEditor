@@ -33,29 +33,29 @@ use util::{ConnectionResult, ResultExt};
 pub use rpc::*;
 pub use user::*;
 
-static TEHANU_SERVER_URL: LazyLock<Option<String>> =
-    LazyLock::new(|| std::env::var("TEHANU_SERVER_URL").ok());
+static GRAM_SERVER_URL: LazyLock<Option<String>> =
+    LazyLock::new(|| std::env::var("GRAM_SERVER_URL").ok());
 
 pub static IMPERSONATE_LOGIN: LazyLock<Option<String>> = LazyLock::new(|| {
-    std::env::var("TEHANU_IMPERSONATE")
+    std::env::var("GRAM_IMPERSONATE")
         .ok()
         .and_then(|s| if s.is_empty() { None } else { Some(s) })
 });
 
 pub static USE_WEB_LOGIN: LazyLock<bool> =
-    LazyLock::new(|| std::env::var("TEHANU_WEB_LOGIN").is_ok());
+    LazyLock::new(|| std::env::var("GRAM_WEB_LOGIN").is_ok());
 
 pub static ADMIN_API_TOKEN: LazyLock<Option<String>> = LazyLock::new(|| {
-    std::env::var("TEHANU_ADMIN_API_TOKEN")
+    std::env::var("GRAM_ADMIN_API_TOKEN")
         .ok()
         .and_then(|s| if s.is_empty() { None } else { Some(s) })
 });
 
-pub static TEHANU_APP_PATH: LazyLock<Option<PathBuf>> =
-    LazyLock::new(|| std::env::var("TEHANU_APP_PATH").ok().map(PathBuf::from));
+pub static GRAM_APP_PATH: LazyLock<Option<PathBuf>> =
+    LazyLock::new(|| std::env::var("GRAM_APP_PATH").ok().map(PathBuf::from));
 
-pub static TEHANU_ALWAYS_ACTIVE: LazyLock<bool> =
-    LazyLock::new(|| std::env::var("TEHANU_ALWAYS_ACTIVE").is_ok_and(|e| !e.is_empty()));
+pub static GRAM_ALWAYS_ACTIVE: LazyLock<bool> =
+    LazyLock::new(|| std::env::var("GRAM_ALWAYS_ACTIVE").is_ok_and(|e| !e.is_empty()));
 
 pub const INITIAL_RECONNECTION_DELAY: Duration = Duration::from_millis(500);
 pub const MAX_RECONNECTION_DELAY: Duration = Duration::from_secs(30);
@@ -64,9 +64,9 @@ pub const CONNECTION_TIMEOUT: Duration = Duration::from_secs(20);
 actions!(
     client,
     [
-        /// Signs in to Tehanu account.
+        /// Signs in to Gram account.
         SignIn,
-        /// Signs out of Tehanu account.
+        /// Signs out of Gram account.
         SignOut,
         /// Reconnects to the collaboration server.
         Reconnect
@@ -80,7 +80,7 @@ pub struct ClientSettings {
 
 impl Settings for ClientSettings {
     fn from_settings(_content: &settings::SettingsContent) -> Self {
-        if let Some(server_url) = &*TEHANU_SERVER_URL {
+        if let Some(server_url) = &*GRAM_SERVER_URL {
             return Self {
                 server_url: server_url.clone(),
             };
@@ -887,12 +887,12 @@ impl ProtoClient for Client {
     }
 }
 
-/// prefix for the tehanu:// url scheme
-pub const TEHANU_URL_SCHEME: &str = "tehanu";
+/// prefix for the gram:// url scheme
+pub const GRAM_URL_SCHEME: &str = "gram";
 
-/// Parses the given link into a Tehanu link.
+/// Parses the given link into a Gram link.
 ///
-/// Returns a [`Some`] containing the unprefixed link if the link is a Tehanu link.
+/// Returns a [`Some`] containing the unprefixed link if the link is a Gram link.
 /// Returns [`None`] otherwise.
 pub fn parse_editor_link<'a>(link: &'a str, cx: &App) -> Option<&'a str> {
     let server_url = &ClientSettings::get_global(cx).server_url;
@@ -903,7 +903,7 @@ pub fn parse_editor_link<'a>(link: &'a str, cx: &App) -> Option<&'a str> {
         return Some(stripped);
     }
     if let Some(stripped) = link
-        .strip_prefix(TEHANU_URL_SCHEME)
+        .strip_prefix(GRAM_URL_SCHEME)
         .and_then(|result| result.strip_prefix("://"))
     {
         return Some(stripped);

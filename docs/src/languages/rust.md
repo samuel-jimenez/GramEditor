@@ -1,13 +1,13 @@
 # Rust
 
-Rust support is available natively in Tehanu.
+Rust support is available natively in Gram.
 
 - Tree-sitter: [tree-sitter/tree-sitter-rust](https://github.com/tree-sitter/tree-sitter-rust)
 - Language Server: [rust-lang/rust-analyzer](https://github.com/rust-lang/rust-analyzer)
 - Debug Adapter: [CodeLLDB](https://github.com/vadimcn/codelldb) (primary), [GDB](https://sourceware.org/gdb/) (secondary, not available on Apple silicon)
 
 <!--
-TBD: Polish Rust Docs. Tehanu is a good rust editor, good Rust docs make it look like we care about Rust (we do!)
+TBD: Polish Rust Docs. Gram is a good rust editor, good Rust docs make it look like we care about Rust (we do!)
 TBD: Users may not know what inlayHints, don't start there.
 TBD: Provide explicit examples not just `....`
 -->
@@ -61,11 +61,11 @@ A `true` setting will set the target directory to `target/rust-analyzer`. You ca
 
 ## Binary
 
-You can configure which `rust-analyzer` binary Tehanu should use.
+You can configure which `rust-analyzer` binary Gram should use.
 
-By default, Tehanu will try to find a `rust-analyzer` in your `$PATH` and try to use that. If that binary successfully executes `rust-analyzer --help`, it's used. Otherwise, Tehanu will fall back to installing its own stable `rust-analyzer` version and use that.
+By default, Gram will try to find a `rust-analyzer` in your `$PATH` and try to use that. If that binary successfully executes `rust-analyzer --help`, it's used. Otherwise, Gram will fall back to installing its own stable `rust-analyzer` version and use that.
 
-If you want to install pre-release `rust-analyzer` version instead you can instruct Tehanu to do so by setting `pre_release` to `true` in your `settings.json`:
+If you want to install pre-release `rust-analyzer` version instead you can instruct Gram to do so by setting `pre_release` to `true` in your `settings.json`:
 
 ```json [settings]
 {
@@ -79,7 +79,7 @@ If you want to install pre-release `rust-analyzer` version instead you can instr
 }
 ```
 
-If you want to disable Tehanu looking for a `rust-analyzer` binary, you can set `ignore_system_version` to `true` in your `settings.json`:
+If you want to disable Gram looking for a `rust-analyzer` binary, you can set `ignore_system_version` to `true` in your `settings.json`:
 
 ```json [settings]
 {
@@ -112,7 +112,7 @@ This `"path"` has to be an absolute path.
 
 ## Alternate Targets
 
-If you want rust-analyzer to provide diagnostics for a target other than your current platform (e.g. for windows when running on macOS) you can use the following Tehanu lsp settings:
+If you want rust-analyzer to provide diagnostics for a target other than your current platform (e.g. for windows when running on macOS) you can use the following Gram lsp settings:
 
 ```json [settings]
 {
@@ -136,7 +136,7 @@ rustup target list --installed
 
 ## LSP tasks
 
-Tehanu provides tasks using tree-sitter, but rust-analyzer has an LSP extension method for querying file-related tasks via LSP.
+Gram provides tasks using tree-sitter, but rust-analyzer has an LSP extension method for querying file-related tasks via LSP.
 This is enabled by default and can be configured as
 
 ```json [settings]
@@ -159,7 +159,7 @@ TBD: Is it possible to specify RUSTFLAGS? https://github.com/zed-industries/zed/
 -->
 
 Rust-analyzer [manual](https://rust-analyzer.github.io/book/) describes various features and configuration options for rust-analyzer language server.
-Rust-analyzer in Tehanu runs with the default parameters.
+Rust-analyzer in Gram runs with the default parameters.
 
 ### Large projects and performance
 
@@ -180,16 +180,16 @@ rust-analyzer.cargo.allTargets (default: true)
     Pass --all-targets to cargo invocation
 ```
 
-Which would mean that every time Tehanu saves, a `cargo check --workspace --all-targets` command is run, checking the entire project (workspace), lib, doc, test, bin, bench and [other targets](https://doc.rust-lang.org/cargo/reference/cargo-targets.html).
+Which would mean that every time Gram saves, a `cargo check --workspace --all-targets` command is run, checking the entire project (workspace), lib, doc, test, bin, bench and [other targets](https://doc.rust-lang.org/cargo/reference/cargo-targets.html).
 
 While that works fine on small projects, it does not scale well.
 
-The alternatives would be to use [tasks](../tasks.md), as Tehanu already provides a `cargo check --workspace --all-targets` task and the ability to cmd/ctrl-click on the terminal output to navigate to the error, and limit or turn off the check on save feature entirely.
+The alternatives would be to use [tasks](../tasks.md), as Gram already provides a `cargo check --workspace --all-targets` task and the ability to cmd/ctrl-click on the terminal output to navigate to the error, and limit or turn off the check on save feature entirely.
 
 Check on save feature is responsible for returning part of the diagnostics based on cargo check output, so turning it off will limit rust-analyzer with its own [diagnostics](https://rust-analyzer.github.io/book/diagnostics.html).
 
 Consider more `rust-analyzer.cargo.` and `rust-analyzer.check.` and `rust-analyzer.diagnostics.` settings from the manual for more fine-grained configuration.
-Here's a snippet for Tehanu settings.json (the language server will restart automatically after the `lsp.rust-analyzer` section is edited and saved):
+Here's a snippet for Gram settings.json (the language server will restart automatically after the `lsp.rust-analyzer` section is edited and saved):
 
 ```json [settings]
 {
@@ -294,7 +294,7 @@ There's a way to get custom completion items from rust-analyzer, that will trans
 
 ## Debugging
 
-Tehanu supports debugging Rust binaries and tests out of the box with `CodeLLDB` and `GDB`. Run {#action debugger::Start} ({#kb debugger::Start}) to launch one of these preconfigured debug tasks.
+Gram supports debugging Rust binaries and tests out of the box with `CodeLLDB` and `GDB`. Run {#action debugger::Start} ({#kb debugger::Start}) to launch one of these preconfigured debug tasks.
 
 For more control, you can add debug configurations to `.zed/debug.json`. See the examples below.
 
@@ -311,7 +311,7 @@ For more control, you can add debug configurations to `.zed/debug.json`. See the
       "command": "cargo",
       "args": ["build"]
     },
-    "program": "$TEHANU_WORKTREE_ROOT/target/debug/binary",
+    "program": "$GRAM_WORKTREE_ROOT/target/debug/binary",
     // sourceLanguages is required for CodeLLDB (not GDB) when using Rust
     "sourceLanguages": ["rust"],
     "request": "launch",
@@ -322,7 +322,7 @@ For more control, you can add debug configurations to `.zed/debug.json`. See the
 
 ### Automatically locate a debug target based on build command
 
-When you use `cargo build` or `cargo test` as the build command, Tehanu can infer the path to the output binary.
+When you use `cargo build` or `cargo test` as the build command, Gram can infer the path to the output binary.
 
 ```json [debug]
 [

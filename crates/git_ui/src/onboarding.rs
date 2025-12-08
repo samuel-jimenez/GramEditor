@@ -116,7 +116,7 @@ impl Render for GitOnboardingModal {
             .full_width()
             .on_click(cx.listener(Self::view_blog));
 
-        let copy = "First-class support for staging, committing, pulling, pushing, viewing diffs, and more. All without leaving Tehanu.";
+        let copy = "First-class support for staging, committing, pulling, pushing, viewing diffs, and more. All without leaving Gram.";
 
         base.child(Label::new(copy).color(Color::Muted)).child(
             v_flex()

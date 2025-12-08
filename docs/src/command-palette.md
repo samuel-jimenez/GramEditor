@@ -1,8 +1,8 @@
 # Command Palette
 
-The Command Palette is the main way to access pretty much any functionality that's available in Tehanu. Its keybinding is the first one you should make yourself familiar with. To open it, hit: {#kb command_palette::Toggle}.
+The Command Palette is the main way to access pretty much any functionality that's available in Gram. Its keybinding is the first one you should make yourself familiar with. To open it, hit: {#kb command_palette::Toggle}.
 
-![The opened Command Palette](https://tehanu.liten.app/img/features/command-palette.jpg)
+![The opened Command Palette](https://gram.liten.app/img/features/command-palette.jpg)
 
 Try it! Open the Command Palette and type in `new file`. You should see the list of commands being filtered down to `workspace: new file`. Hit return and you end up with a new buffer.
 

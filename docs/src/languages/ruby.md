@@ -16,16 +16,16 @@ The Ruby extension also provides support for ERB files.
 
 ## Language Servers
 
-There are multiple language servers available for Ruby. Tehanu supports the two following:
+There are multiple language servers available for Ruby. Gram supports the two following:
 
 - [solargraph](https://github.com/castwide/solargraph)
 - [ruby-lsp](https://github.com/Shopify/ruby-lsp)
 
 They both have an overlapping feature set of autocomplete, diagnostics, code actions, etc. and it's up to you to decide which one you want to use. Note that you can't use both at the same time.
 
-In addition to these two language servers, Tehanu also supports:
+In addition to these two language servers, Gram also supports:
 
-- [rubocop](https://github.com/rubocop/rubocop) which is a static code analyzer and linter for Ruby. Under the hood, it's also used by Tehanu as a language server, but its functionality is complimentary to that of solargraph and ruby-lsp.
+- [rubocop](https://github.com/rubocop/rubocop) which is a static code analyzer and linter for Ruby. Under the hood, it's also used by Gram as a language server, but its functionality is complimentary to that of solargraph and ruby-lsp.
 - [sorbet](https://sorbet.org/) which is a static type checker for Ruby with a custom gradual type system.
 - [steep](https://github.com/soutaro/steep) which is a static type checker for Ruby that leverages Ruby Signature (RBS).
 - [Herb](https://herb-tools.dev) which is a language server for ERB files.
@@ -120,7 +120,7 @@ Or, conversely, you can disable `ruby-lsp` and enable `solargraph` and `rubocop`
 
 ## Setting up `solargraph`
 
-Solargraph has formatting and diagnostics disabled by default. We can tell Tehanu to enable them by adding the following to your `settings.json`:
+Solargraph has formatting and diagnostics disabled by default. We can tell Gram to enable them by adding the following to your `settings.json`:
 
 ```json [settings]
 {
@@ -179,7 +179,7 @@ LSP `settings` and `initialization_options` can also be project-specific. For ex
 
 ## Setting up `rubocop` LSP
 
-Rubocop has unsafe autocorrection disabled by default. We can tell Tehanu to enable it by adding the following to your `settings.json`:
+Rubocop has unsafe autocorrection disabled by default. We can tell Gram to enable it by adding the following to your `settings.json`:
 
 ```json [settings]
 {
@@ -305,15 +305,15 @@ To run tests in your Ruby project, you can set up custom tasks in your local `.z
 ```json [tasks]
 [
   {
-    "label": "test $TEHANU_RELATIVE_FILE -n /$TEHANU_CUSTOM_RUBY_TEST_NAME/",
+    "label": "test $GRAM_RELATIVE_FILE -n /$GRAM_CUSTOM_RUBY_TEST_NAME/",
     "command": "bin/rails",
     "args": [
       "test",
-      "$TEHANU_RELATIVE_FILE",
+      "$GRAM_RELATIVE_FILE",
       "-n",
-      "\"$TEHANU_CUSTOM_RUBY_TEST_NAME\""
+      "\"$GRAM_CUSTOM_RUBY_TEST_NAME\""
     ],
-    "cwd": "$TEHANU_WORKTREE_ROOT",
+    "cwd": "$GRAM_WORKTREE_ROOT",
     "tags": ["ruby-test"]
   }
 ]
@@ -321,22 +321,22 @@ To run tests in your Ruby project, you can set up custom tasks in your local `.z
 
 ### Minitest
 
-Plain minitest does not support running tests by line number, only by name, so we need to use `$TEHANU_CUSTOM_RUBY_TEST_NAME` instead:
+Plain minitest does not support running tests by line number, only by name, so we need to use `$GRAM_CUSTOM_RUBY_TEST_NAME` instead:
 
 ```json [tasks]
 [
   {
-    "label": "-Itest $TEHANU_RELATIVE_FILE -n /$TEHANU_CUSTOM_RUBY_TEST_NAME/",
+    "label": "-Itest $GRAM_RELATIVE_FILE -n /$GRAM_CUSTOM_RUBY_TEST_NAME/",
     "command": "bundle",
     "args": [
       "exec",
       "ruby",
       "-Itest",
-      "$TEHANU_RELATIVE_FILE",
+      "$GRAM_RELATIVE_FILE",
       "-n",
-      "\"$TEHANU_CUSTOM_RUBY_TEST_NAME\""
+      "\"$GRAM_CUSTOM_RUBY_TEST_NAME\""
     ],
-    "cwd": "$TEHANU_WORKTREE_ROOT",
+    "cwd": "$GRAM_WORKTREE_ROOT",
     "tags": ["ruby-test"]
   }
 ]
@@ -347,10 +347,10 @@ Plain minitest does not support running tests by line number, only by name, so w
 ```json [tasks]
 [
   {
-    "label": "test $TEHANU_RELATIVE_FILE:$TEHANU_ROW",
+    "label": "test $GRAM_RELATIVE_FILE:$GRAM_ROW",
     "command": "bundle",
-    "args": ["exec", "rspec", "\"$TEHANU_RELATIVE_FILE:$TEHANU_ROW\""],
-    "cwd": "$TEHANU_WORKTREE_ROOT",
+    "args": ["exec", "rspec", "\"$GRAM_RELATIVE_FILE:$GRAM_ROW\""],
+    "cwd": "$GRAM_WORKTREE_ROOT",
     "tags": ["ruby-test"]
   }
 ]
@@ -360,7 +360,7 @@ Similar task syntax can be used for other test frameworks such as `quickdraw` or
 
 ## Debugging
 
-The Ruby extension provides a debug adapter for debugging Ruby code. Tehanu's name for the adapter (in the UI and `debug.json`) is `rdbg`, and under the hood, it uses the [`debug`](https://github.com/ruby/debug) gem. The extension uses the [same activation logic](#language-server-activation) as the language servers.
+The Ruby extension provides a debug adapter for debugging Ruby code. Gram's name for the adapter (in the UI and `debug.json`) is `rdbg`, and under the hood, it uses the [`debug`](https://github.com/ruby/debug) gem. The extension uses the [same activation logic](#language-server-activation) as the language servers.
 
 ### Examples
 
@@ -372,8 +372,8 @@ The Ruby extension provides a debug adapter for debugging Ruby code. Tehanu's na
     "label": "Debug current file",
     "adapter": "rdbg",
     "request": "launch",
-    "script": "$TEHANU_FILE",
-    "cwd": "$TEHANU_WORKTREE_ROOT"
+    "script": "$GRAM_FILE",
+    "cwd": "$GRAM_WORKTREE_ROOT"
   }
 ]
 ```
@@ -388,7 +388,7 @@ The Ruby extension provides a debug adapter for debugging Ruby code. Tehanu's na
     "request": "launch",
     "command": "./bin/rails",
     "args": ["server"],
-    "cwd": "$TEHANU_WORKTREE_ROOT",
+    "cwd": "$GRAM_WORKTREE_ROOT",
     "env": {
       "RUBY_DEBUG_OPEN": "true"
     }

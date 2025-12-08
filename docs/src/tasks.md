@@ -1,6 +1,6 @@
 # Tasks
 
-Tehanu supports ways to spawn (and rerun) commands using its integrated terminal to output the results. These commands can read a limited subset of Tehanu state (such as a path to the file currently being edited or selected text).
+Gram supports ways to spawn (and rerun) commands using its integrated terminal to output the results. These commands can read a limited subset of Gram state (such as a path to the file currently being edited or selected text).
 
 ```json [tasks]
 [
@@ -64,39 +64,39 @@ Keep `"use_new_terminal": false` and set `"allow_concurrent_runs": true` to allo
 
 Tasks can be defined:
 
-- in the global `tasks.json` file; such tasks are available in all Tehanu projects you work on. This file is usually located in `~/.config/tehanu/tasks.json`. You can edit them by using the `tehanu: open tasks` action.
-- in the worktree-specific (local) `.tehanu/tasks.json` file; such tasks are available only when working on a project with that worktree included. You can edit worktree-specific tasks by using the `tehanu: open project tasks` action.
+- in the global `tasks.json` file; such tasks are available in all Gram projects you work on. This file is usually located in `~/.config/gram/tasks.json`. You can edit them by using the `gram: open tasks` action.
+- in the worktree-specific (local) `.gram/tasks.json` file; such tasks are available only when working on a project with that worktree included. You can edit worktree-specific tasks by using the `gram: open project tasks` action.
 - on the fly with [oneshot tasks](#oneshot-tasks). These tasks are project-specific and do not persist across sessions.
 - by language extension.
 
 ## Variables
 
-Tehanu tasks act just like your shell; that also means that you can reference environmental variables via sh-esque `$VAR_NAME` syntax. A couple of additional environmental variables are set for your convenience.
+Gram tasks act just like your shell; that also means that you can reference environmental variables via sh-esque `$VAR_NAME` syntax. A couple of additional environmental variables are set for your convenience.
 These variables allow you to pull information from the current editor and use it in your tasks. The following variables are available:
 
-- `TEHANU_COLUMN`: current line column
-- `TEHANU_ROW`: current line row
-- `TEHANU_FILE`: absolute path of the currently opened file (e.g. `/Users/my-user/path/to/project/src/main.rs`)
-- `TEHANU_FILENAME`: filename of the currently opened file (e.g. `main.rs`)
-- `TEHANU_DIRNAME`: absolute path of the currently opened file with file name stripped (e.g. `/Users/my-user/path/to/project/src`)
-- `TEHANU_RELATIVE_FILE`: path of the currently opened file, relative to `TEHANU_WORKTREE_ROOT` (e.g. `src/main.rs`)
-- `TEHANU_RELATIVE_DIR`: path of the currently opened file's directory, relative to `TEHANU_WORKTREE_ROOT` (e.g. `src`)
-- `TEHANU_STEM`: stem (filename without extension) of the currently opened file (e.g. `main`)
-- `TEHANU_SYMBOL`: currently selected symbol; should match the last symbol shown in a symbol breadcrumb (e.g. `mod tests > fn test_task_contexts`)
-- `TEHANU_SELECTED_TEXT`: currently selected text
-- `TEHANU_WORKTREE_ROOT`: absolute path to the root of the current worktree. (e.g. `/Users/my-user/path/to/project`)
-- `TEHANU_CUSTOM_RUST_PACKAGE`: (Rust-specific) name of the parent package of $TEHANU_FILE source file.
+- `GRAM_COLUMN`: current line column
+- `GRAM_ROW`: current line row
+- `GRAM_FILE`: absolute path of the currently opened file (e.g. `/Users/my-user/path/to/project/src/main.rs`)
+- `GRAM_FILENAME`: filename of the currently opened file (e.g. `main.rs`)
+- `GRAM_DIRNAME`: absolute path of the currently opened file with file name stripped (e.g. `/Users/my-user/path/to/project/src`)
+- `GRAM_RELATIVE_FILE`: path of the currently opened file, relative to `GRAM_WORKTREE_ROOT` (e.g. `src/main.rs`)
+- `GRAM_RELATIVE_DIR`: path of the currently opened file's directory, relative to `GRAM_WORKTREE_ROOT` (e.g. `src`)
+- `GRAM_STEM`: stem (filename without extension) of the currently opened file (e.g. `main`)
+- `GRAM_SYMBOL`: currently selected symbol; should match the last symbol shown in a symbol breadcrumb (e.g. `mod tests > fn test_task_contexts`)
+- `GRAM_SELECTED_TEXT`: currently selected text
+- `GRAM_WORKTREE_ROOT`: absolute path to the root of the current worktree. (e.g. `/Users/my-user/path/to/project`)
+- `GRAM_CUSTOM_RUST_PACKAGE`: (Rust-specific) name of the parent package of $GRAM_FILE source file.
 
 To use a variable in a task, prefix it with a dollar sign (`$`):
 
 ```json [settings]
 {
   "label": "echo current file's path",
-  "command": "echo $TEHANU_FILE"
+  "command": "echo $GRAM_FILE"
 }
 ```
 
-You can also use verbose syntax that allows specifying a default if a given variable is not available: `${TEHANU_FILE:default_value}`
+You can also use verbose syntax that allows specifying a default if a given variable is not available: `${GRAM_FILE:default_value}`
 
 These environmental variables can also be used in tasks' `cwd`, `args`, and `label` fields.
 
@@ -109,7 +109,7 @@ For example, instead of this (which will fail if the path has a space):
 ```json [settings]
 {
   "label": "stat current file",
-  "command": "stat $TEHANU_FILE"
+  "command": "stat $GRAM_FILE"
 }
 ```
 
@@ -119,7 +119,7 @@ Provide the following:
 {
   "label": "stat current file",
   "command": "stat",
-  "args": ["$TEHANU_FILE"]
+  "args": ["$GRAM_FILE"]
 }
 ```
 
@@ -128,7 +128,7 @@ Or explicitly include escaped quotes like so:
 ```json [settings]
 {
   "label": "stat current file",
-  "command": "stat \"$TEHANU_FILE\""
+  "command": "stat \"$GRAM_FILE\""
 }
 ```
 
@@ -140,7 +140,7 @@ For example, the following task will appear in the spawn modal only if there is 
 ```json [settings]
 {
   "label": "selected text",
-  "command": "echo \"$TEHANU_SELECTED_TEXT\""
+  "command": "echo \"$GRAM_SELECTED_TEXT\""
 }
 ```
 
@@ -149,7 +149,7 @@ Set default values to such variables to have such tasks always displayed:
 ```json [settings]
 {
   "label": "selected text with default",
-  "command": "echo \"${TEHANU_SELECTED_TEXT:no text selected}\""
+  "command": "echo \"${GRAM_SELECTED_TEXT:no text selected}\""
 }
 ```
 
@@ -201,7 +201,7 @@ This could be useful for launching a terminal application that you want to use i
 // In tasks.json
 {
   "label": "start lazygit",
-  "command": "lazygit -p $TEHANU_WORKTREE_ROOT"
+  "command": "lazygit -p $GRAM_WORKTREE_ROOT"
 }
 ```
 
@@ -220,7 +220,7 @@ This could be useful for launching a terminal application that you want to use i
 
 ## Binding runnable tags to task templates
 
-Tehanu supports overriding the default action for inline runnable indicators via workspace-local and global `tasks.json` file with the following precedence hierarchy:
+Gram supports overriding the default action for inline runnable indicators via workspace-local and global `tasks.json` file with the following precedence hierarchy:
 
 1. Workspace `tasks.json`
 2. Global `tasks.json`
@@ -231,7 +231,7 @@ To tag a task, add the runnable tag name to the `tags` field on the task templat
 ```json [settings]
 {
   "label": "echo current file's path",
-  "command": "echo $TEHANU_FILE",
+  "command": "echo $GRAM_FILE",
   "tags": ["rust-test"]
 }
 ```
@@ -240,4 +240,4 @@ In doing so, you can change which task is shown in the runnables indicator.
 
 ## Keybindings to run tasks bound to runnables
 
-When you have a task definition that is bound to the runnable, you can quickly run it using [Code Actions](https://tehanu.liten.app/docs/configuring-languages?#code-actions) that you can trigger either via `editor: Toggle Code Actions` command or by the `cmd-.`/`ctrl-.` shortcut. Your task will be the first in the dropdown. The task will run immediately if there are no additional Code Actions for this line.
+When you have a task definition that is bound to the runnable, you can quickly run it using [Code Actions](https://gram.liten.app/docs/configuring-languages?#code-actions) that you can trigger either via `editor: Toggle Code Actions` command or by the `cmd-.`/`ctrl-.` shortcut. Your task will be the first in the dropdown. The task will run immediately if there are no additional Code Actions for this line.

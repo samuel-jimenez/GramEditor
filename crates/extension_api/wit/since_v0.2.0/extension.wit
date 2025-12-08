@@ -68,7 +68,7 @@ world extension {
         env: env-vars,
     }
 
-    /// A Tehanu worktree.
+    /// A Gram worktree.
     resource worktree {
         /// Returns the ID of the worktree.
         id: func() -> u64;
@@ -82,7 +82,7 @@ world extension {
         shell-env: func() -> env-vars;
     }
 
-    /// A Tehanu project.
+    /// A Gram project.
     resource project {
         /// Returns the IDs of all of the worktrees in this project.
         worktree-ids: func() -> list<u64>;

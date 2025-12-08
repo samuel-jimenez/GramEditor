@@ -1,13 +1,13 @@
 #![allow(clippy::disallowed_methods, reason = "build scripts are exempt")]
 use std::process::Command;
 
-const TEHANU_MANIFEST: &str = include_str!("../tehanu/Cargo.toml");
+const GRAM_MANIFEST: &str = include_str!("../gram/Cargo.toml");
 
 fn main() {
     let zed_cargo_toml: cargo_toml::Manifest =
-        toml::from_str(TEHANU_MANIFEST).expect("failed to parse tehanu Cargo.toml");
+        toml::from_str(GRAM_MANIFEST).expect("failed to parse gram Cargo.toml");
     println!(
-        "cargo:rustc-env=TEHANU_PKG_VERSION={}",
+        "cargo:rustc-env=GRAM_PKG_VERSION={}",
         zed_cargo_toml.package.unwrap().version.unwrap()
     );
     println!(
@@ -26,6 +26,6 @@ fn main() {
         let git_sha = String::from_utf8_lossy(&output.stdout);
         let git_sha = git_sha.trim();
 
-        println!("cargo:rustc-env=TEHANU_COMMIT_SHA={git_sha}");
+        println!("cargo:rustc-env=GRAM_COMMIT_SHA={git_sha}");
     }
 }

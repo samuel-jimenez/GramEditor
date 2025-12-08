@@ -25,20 +25,20 @@
       "ctrl-shift-w": "workspace::CloseWindow",
       "shift-escape": "workspace::ToggleZoom",
       "ctrl-o": "workspace::Open",
-      "ctrl-=": ["tehanu::IncreaseBufferFontSize", { "persist": false }],
-      "ctrl-shift-=": ["tehanu::IncreaseBufferFontSize", { "persist": false }],
-      "ctrl--": ["tehanu::DecreaseBufferFontSize", { "persist": false }],
-      "ctrl-0": ["tehanu::ResetBufferFontSize", { "persist": false }],
-      "ctrl-,": "tehanu::OpenSettings",
-      "ctrl-alt-,": "tehanu::OpenSettingsFile",
-      "ctrl-q": "tehanu::Quit",
+      "ctrl-=": ["gram::IncreaseBufferFontSize", { "persist": false }],
+      "ctrl-shift-=": ["gram::IncreaseBufferFontSize", { "persist": false }],
+      "ctrl--": ["gram::DecreaseBufferFontSize", { "persist": false }],
+      "ctrl-0": ["gram::ResetBufferFontSize", { "persist": false }],
+      "ctrl-,": "gram::OpenSettings",
+      "ctrl-alt-,": "gram::OpenSettingsFile",
+      "ctrl-q": "gram::Quit",
       "f4": "debugger::Start",
       "shift-f5": "debugger::Stop",
       "ctrl-shift-f5": "debugger::RerunSession",
       "f6": "debugger::Pause",
       "f10": "debugger::StepOver",
       "shift-f11": "debugger::StepOut",
-      "f11": "tehanu::ToggleFullScreen",
+      "f11": "gram::ToggleFullScreen",
       "shift-alt-l": "lsp_tool::ToggleMenu",
       "ctrl-shift-alt-c": "editor::DisplayCursorNames"
     }
@@ -401,7 +401,7 @@
       "ctrl-n": "workspace::NewFile",
       "ctrl-shift-n": "workspace::NewWindow",
       "ctrl-`": "terminal_panel::Toggle",
-      "f10": ["app_menu::OpenApplicationMenu", "Tehanu"],
+      "f10": ["app_menu::OpenApplicationMenu", "Gram"],
       "alt-1": ["workspace::ActivatePane", 0],
       "alt-2": ["workspace::ActivatePane", 1],
       "alt-3": ["workspace::ActivatePane", 2],
@@ -423,7 +423,7 @@
       "ctrl-shift-f": "pane::DeploySearch",
       "ctrl-shift-h": ["pane::DeploySearch", { "replace_enabled": true }],
       "ctrl-shift-t": "pane::ReopenClosedItem",
-      "ctrl-k ctrl-s": "tehanu::OpenKeymap",
+      "ctrl-k ctrl-s": "gram::OpenKeymap",
       "ctrl-k ctrl-t": "theme_selector::Toggle",
       "ctrl-alt-super-p": "settings_profile_selector::Toggle",
       "ctrl-t": "project_symbols::Toggle",
@@ -449,7 +449,7 @@
       "ctrl-k shift-right": "workspace::SwapPaneRight",
       "ctrl-k shift-up": "workspace::SwapPaneUp",
       "ctrl-k shift-down": "workspace::SwapPaneDown",
-      "ctrl-shift-x": "tehanu::Extensions",
+      "ctrl-shift-x": "gram::Extensions",
       // All task parameters are captured and unchanged between reruns by default.
       // Use the `"reevaluate_context"` parameter to control this.
       "ctrl-shift-r": ["task::Rerun", { "reevaluate_context": false }],
@@ -469,7 +469,7 @@
     "context": "Workspace && debugger_running",
     "use_key_equivalents": true,
     "bindings": {
-      "f5": "tehanu::NoAction"
+      "f5": "gram::NoAction"
     }
   },
   {
@@ -888,7 +888,7 @@
     }
   },
   {
-    "context": "TehanuPredictModal",
+    "context": "GramPredictModal",
     "use_key_equivalents": true,
     "bindings": {
       "escape": "menu::Cancel"
@@ -991,10 +991,10 @@
     "context": "Onboarding",
     "use_key_equivalents": true,
     "bindings": {
-      "ctrl-=": ["tehanu::IncreaseUiFontSize", { "persist": false }],
-      "ctrl-+": ["tehanu::IncreaseUiFontSize", { "persist": false }],
-      "ctrl--": ["tehanu::DecreaseUiFontSize", { "persist": false }],
-      "ctrl-0": ["tehanu::ResetUiFontSize", { "persist": false }],
+      "ctrl-=": ["gram::IncreaseUiFontSize", { "persist": false }],
+      "ctrl-+": ["gram::IncreaseUiFontSize", { "persist": false }],
+      "ctrl--": ["gram::DecreaseUiFontSize", { "persist": false }],
+      "ctrl-0": ["gram::ResetUiFontSize", { "persist": false }],
       "ctrl-enter": "onboarding::Finish"
     }
   },
@@ -1002,10 +1002,10 @@
     "context": "Welcome",
     "use_key_equivalents": true,
     "bindings": {
-      "ctrl-=": ["tehanu::IncreaseUiFontSize", { "persist": false }],
-      "ctrl-+": ["tehanu::IncreaseUiFontSize", { "persist": false }],
-      "ctrl--": ["tehanu::DecreaseUiFontSize", { "persist": false }],
-      "ctrl-0": ["tehanu::ResetUiFontSize", { "persist": false }]
+      "ctrl-=": ["gram::IncreaseUiFontSize", { "persist": false }],
+      "ctrl-+": ["gram::IncreaseUiFontSize", { "persist": false }],
+      "ctrl--": ["gram::DecreaseUiFontSize", { "persist": false }],
+      "ctrl-0": ["gram::ResetUiFontSize", { "persist": false }]
     }
   },
   {

@@ -136,7 +136,7 @@ impl Workspace {
             cx.new(|cx| {
                 ErrorMessagePrompt::new(err.to_string(), cx).with_link_button(
                     "See docs",
-                    "https://tehanu.liten.app/docs/linux#i-cant-open-any-files",
+                    "https://gram.liten.app/docs/linux#i-cant-open-any-files",
                 )
             })
         });

@@ -72,8 +72,8 @@ impl TextSystem {
             font_runs_pool: Mutex::default(),
             fallback_font_stack: smallvec![
                 // TODO: Remove this when Linux have implemented setting fallbacks.
-                font(".TehanuMono"),
-                font(".TehanuSans"),
+                font(".GramMono"),
+                font(".GramSans"),
                 font("Helvetica"),
                 font("Segoe UI"),     // Windows
                 font("Ubuntu"),       // Gnome (Ubuntu)
@@ -922,8 +922,8 @@ impl FontMetrics {
 pub(crate) fn font_name_with_fallbacks<'a>(name: &'a str, system: &'a str) -> &'a str {
     match name {
         ".SystemUIFont" => system,
-        ".TehanuSans" => "Fira Sans",
-        ".TehanuMono" => "Fira Code",
+        ".GramSans" => "Fira Sans",
+        ".GramMono" => "Fira Code",
         _ => name,
     }
 }

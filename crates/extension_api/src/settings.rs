@@ -1,4 +1,4 @@
-//! Provides access to Tehanu settings.
+//! Provides access to Gram settings.
 
 #[path = "../wit/since_v0.2.0/settings.rs"]
 mod types;

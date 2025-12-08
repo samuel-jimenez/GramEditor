@@ -132,7 +132,7 @@ impl MasterProcess {
 
 #[cfg(target_os = "windows")]
 impl MasterProcess {
-    const CONNECTION_ESTABLISHED_MAGIC: &str = "TEHANU_SSH_CONNECTION_ESTABLISHED";
+    const CONNECTION_ESTABLISHED_MAGIC: &str = "GRAM_SSH_CONNECTION_ESTABLISHED";
 
     pub fn new(
         askpass_script_path: &std::ffi::OsStr,
@@ -353,7 +353,7 @@ impl RemoteConnection for SshRemoteConnection {
         };
 
         let mut proxy_args = vec![];
-        for env_var in ["RUST_LOG", "RUST_BACKTRACE", "TEHANU_GENERATE_MINIDUMPS"] {
+        for env_var in ["RUST_LOG", "RUST_BACKTRACE", "GRAM_GENERATE_MINIDUMPS"] {
             if let Some(value) = std::env::var(env_var).ok() {
                 proxy_args.push(format!("{}='{}'", env_var, value));
             }
@@ -409,7 +409,7 @@ impl SshRemoteConnection {
         let url = connection_options.ssh_url();
 
         let temp_dir = tempfile::Builder::new()
-            .prefix("tehanu-ssh-session")
+            .prefix("gram-ssh-session")
             .tempdir()?;
         let askpass_delegate = askpass::AskPassDelegate::new(cx, {
             let delegate = delegate.clone();
@@ -550,7 +550,7 @@ impl SshRemoteConnection {
             _ => version.to_string(),
         };
         let binary_name = format!(
-            "tehanu-remote-server-{}-{}",
+            "gram-remote-server-{}-{}",
             release_channel.dev_name(),
             version_str
         );

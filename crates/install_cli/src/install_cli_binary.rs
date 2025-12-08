@@ -11,14 +11,14 @@ use workspace::{Toast, Workspace};
 actions!(
     cli,
     [
-        /// Installs the Tehanu CLI tool to the system PATH.
+        /// Installs the Gram CLI tool to the system PATH.
         InstallCliBinary,
     ]
 );
 
 async fn install_script(cx: &AsyncApp) -> Result<PathBuf> {
     let cli_path = cx.update(|cx| cx.path_for_auxiliary_executable("cli"))??;
-    let link_path = Path::new("/usr/local/bin/tehanu");
+    let link_path = Path::new("/usr/local/bin/gram");
     let bin_dir_path = link_path.parent().unwrap();
 
     // Don't re-create symlink if it points to the same CLI binary.
@@ -62,7 +62,7 @@ async fn install_script(cx: &AsyncApp) -> Result<PathBuf> {
 }
 
 pub fn install_cli_binary(window: &mut Window, cx: &mut Context<Workspace>) {
-    const LINUX_PROMPT_DETAIL: &str = "If you installed Tehanu from our official release add ~/.local/bin to your PATH.\n\nIf you installed Tehanu from a different source like your package manager, then you may need to create an alias/symlink manually.\n\nDepending on your package manager, the CLI might be named zeditor, zedit, zed-editor or something else.";
+    const LINUX_PROMPT_DETAIL: &str = "If you installed Gram from our official release add ~/.local/bin to your PATH.\n\nIf you installed Gram from a different source like your package manager, then you may need to create an alias/symlink manually.\n\nDepending on your package manager, the CLI might be named zeditor, zedit, zed-editor or something else.";
 
     cx.spawn_in(window, async move |workspace, cx| {
         if cfg!(any(target_os = "linux", target_os = "freebsd")) {
@@ -80,13 +80,13 @@ pub fn install_cli_binary(window: &mut Window, cx: &mut Context<Workspace>) {
             .context("error creating CLI symlink")?;
 
         workspace.update_in(cx, |workspace, _, cx| {
-            struct InstalledTehanuCli;
+            struct InstalledGramCli;
 
             workspace.show_toast(
                 Toast::new(
-                    NotificationId::unique::<InstalledTehanuCli>(),
+                    NotificationId::unique::<InstalledGramCli>(),
                     format!(
-                        "Installed `tehanu` to {}. You can launch {} from your terminal.",
+                        "Installed `gram` to {}. You can launch {} from your terminal.",
                         path.to_string_lossy(),
                         ReleaseChannel::global(cx).display_name()
                     ),

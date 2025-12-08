@@ -4,7 +4,7 @@ use collections::HashMap;
 use dap::{StartDebuggingRequestArguments, adapters::DebugTaskDefinition};
 use gpui::AsyncApp;
 use std::ffi::OsStr;
-use task::{DebugScenario, TehanuDebugConfig};
+use task::{DebugScenario, GramDebugConfig};
 
 use crate::*;
 
@@ -29,10 +29,10 @@ impl DebugAdapter for GdbDebugAdapter {
         DebugAdapterName(Self::ADAPTER_NAME.into())
     }
 
-    async fn config_from_tehanu_format(&self, tehanu_scenario: TehanuDebugConfig) -> Result<DebugScenario> {
+    async fn config_from_gram_format(&self, gram_scenario: GramDebugConfig) -> Result<DebugScenario> {
         let mut obj = serde_json::Map::default();
 
-        match &tehanu_scenario.request {
+        match &gram_scenario.request {
             dap::DebugRequest::Attach(attach) => {
                 obj.insert("request".into(), "attach".into());
                 obj.insert("pid".into(), attach.process_id.into());
@@ -50,7 +50,7 @@ impl DebugAdapter for GdbDebugAdapter {
                     obj.insert("env".into(), launch.env_json());
                 }
 
-                if let Some(stop_on_entry) = tehanu_scenario.stop_on_entry {
+                if let Some(stop_on_entry) = gram_scenario.stop_on_entry {
                     obj.insert(
                         "stopAtBeginningOfMainSubprogram".into(),
                         stop_on_entry.into(),
@@ -63,8 +63,8 @@ impl DebugAdapter for GdbDebugAdapter {
         }
 
         Ok(DebugScenario {
-            adapter: tehanu_scenario.adapter,
-            label: tehanu_scenario.label,
+            adapter: gram_scenario.adapter,
+            label: gram_scenario.label,
             build: None,
             config: serde_json::Value::Object(obj),
             tcp_connection: None,

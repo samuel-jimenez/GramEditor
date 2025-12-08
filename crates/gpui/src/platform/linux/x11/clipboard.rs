@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 - 2025 Tehanu Project, Inc.
+ * Copyright 2022 - 2025 Gram Project, Inc.
  * License: Apache-2.0
  * See LICENSE-APACHE for complete license terms
  *

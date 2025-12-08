@@ -782,7 +782,7 @@ impl LspAdapter for TypeScriptLspAdapter {
         let tsdk_path = self.tsdk_path(adapter).await;
         Ok(Some(json!({
             "provideFormatter": true,
-            "hostInfo": "tehanu",
+            "hostInfo": "gram",
             "tsserver": {
                 "path": tsdk_path,
             },
@@ -1286,19 +1286,19 @@ mod tests {
             [
                 (
                     "vitest file test".into(),
-                    Some("$TEHANU_CUSTOM_TYPESCRIPT_VITEST_PACKAGE_PATH".into()),
+                    Some("$GRAM_CUSTOM_TYPESCRIPT_VITEST_PACKAGE_PATH".into()),
                 ),
                 (
-                    "vitest test $TEHANU_SYMBOL".into(),
-                    Some("$TEHANU_CUSTOM_TYPESCRIPT_VITEST_PACKAGE_PATH".into()),
+                    "vitest test $GRAM_SYMBOL".into(),
+                    Some("$GRAM_CUSTOM_TYPESCRIPT_VITEST_PACKAGE_PATH".into()),
                 ),
                 (
                     "mocha file test".into(),
-                    Some("$TEHANU_CUSTOM_TYPESCRIPT_MOCHA_PACKAGE_PATH".into()),
+                    Some("$GRAM_CUSTOM_TYPESCRIPT_MOCHA_PACKAGE_PATH".into()),
                 ),
                 (
-                    "mocha test $TEHANU_SYMBOL".into(),
-                    Some("$TEHANU_CUSTOM_TYPESCRIPT_MOCHA_PACKAGE_PATH".into()),
+                    "mocha test $GRAM_SYMBOL".into(),
+                    Some("$GRAM_CUSTOM_TYPESCRIPT_MOCHA_PACKAGE_PATH".into()),
                 ),
                 (
                     "root/package.json > test".into(),

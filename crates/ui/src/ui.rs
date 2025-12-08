@@ -1,6 +1,6 @@
-//! # UI – Tehanu UI Primitives & Components
+//! # UI – Gram UI Primitives & Components
 //!
-//! This crate provides a set of UI primitives and components that are used to build all of the elements in Tehanu's UI.
+//! This crate provides a set of UI primitives and components that are used to build all of the elements in Gram's UI.
 //!
 //! ## Related Crates:
 //!

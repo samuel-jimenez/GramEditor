@@ -399,7 +399,7 @@ pub trait File: Send + Sync + Any {
     /// Converts this file into a protobuf message.
     fn to_proto(&self, cx: &App) -> rpc::proto::File;
 
-    /// Return whether Tehanu considers this to be a private file.
+    /// Return whether Gram considers this to be a private file.
     fn is_private(&self) -> bool;
 }
 
@@ -409,7 +409,7 @@ pub trait File: Send + Sync + Any {
 /// indicator for new files.
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub enum DiskState {
-    /// File created in Tehanu that has not been saved.
+    /// File created in Gram that has not been saved.
     New,
     /// File present on the filesystem.
     Present { mtime: MTime },

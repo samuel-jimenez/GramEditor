@@ -228,7 +228,7 @@ mod tests {
             parsed_remote,
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu".into(),
+                repo: "gram".into(),
             }
         );
     }
@@ -243,7 +243,7 @@ mod tests {
             parsed_remote,
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu".into(),
+                repo: "gram".into(),
             }
         );
     }
@@ -261,7 +261,7 @@ mod tests {
             parsed_remote,
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu".into(),
+                repo: "gram".into(),
             }
         );
     }
@@ -278,7 +278,7 @@ mod tests {
             parsed_remote,
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu".into(),
+                repo: "gram".into(),
             }
         );
     }
@@ -288,7 +288,7 @@ mod tests {
         let permalink = Gitea::public_instance().build_permalink(
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu".into(),
+                repo: "gram".into(),
             },
             BuildPermalinkParams::new(
                 "faa6f979be417239b2e070dbbf6392b909224e0b",
@@ -306,7 +306,7 @@ mod tests {
         let permalink = Gitea::public_instance().build_permalink(
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu".into(),
+                repo: "gram".into(),
             },
             BuildPermalinkParams::new(
                 "faa6f979be417239b2e070dbbf6392b909224e0b",
@@ -324,7 +324,7 @@ mod tests {
         let permalink = Gitea::public_instance().build_permalink(
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu".into(),
+                repo: "gram".into(),
             },
             BuildPermalinkParams::new(
                 "faa6f979be417239b2e070dbbf6392b909224e0b",
@@ -344,7 +344,7 @@ mod tests {
         let permalink = gitea.build_permalink(
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu".into(),
+                repo: "gram".into(),
             },
             BuildPermalinkParams::new(
                 "e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7",
@@ -365,7 +365,7 @@ mod tests {
         let permalink = gitea.build_permalink(
             ParsedGitRemote {
                 owner: "krig".into(),
-                repo: "tehanu".into(),
+                repo: "gram".into(),
             },
             BuildPermalinkParams::new(
                 "b2efec9824c45fcc90c9a7eb107a50d1772a60aa",

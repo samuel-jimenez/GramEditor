@@ -7,7 +7,7 @@ use dap::adapters::{DebugTaskDefinition, latest_github_release};
 use futures::StreamExt;
 use gpui::AsyncApp;
 use serde_json::Value;
-use task::{DebugRequest, DebugScenario, TehanuDebugConfig};
+use task::{DebugRequest, DebugScenario, GramDebugConfig};
 use util::fs::remove_matching;
 
 use crate::*;
@@ -89,9 +89,9 @@ impl DebugAdapter for CodeLldbDebugAdapter {
         DebugAdapterName(Self::ADAPTER_NAME.into())
     }
 
-    async fn config_from_tehanu_format(&self, tehanu_scenario: TehanuDebugConfig) -> Result<DebugScenario> {
+    async fn config_from_gram_format(&self, gram_scenario: GramDebugConfig) -> Result<DebugScenario> {
         let mut configuration = json!({
-            "request": match tehanu_scenario.request {
+            "request": match gram_scenario.request {
                 DebugRequest::Launch(_) => "launch",
                 DebugRequest::Attach(_) => "attach",
             },
@@ -100,9 +100,9 @@ impl DebugAdapter for CodeLldbDebugAdapter {
         // CodeLLDB uses `name` for a terminal label.
         map.insert(
             "name".into(),
-            Value::String(String::from(tehanu_scenario.label.as_ref())),
+            Value::String(String::from(gram_scenario.label.as_ref())),
         );
-        match &tehanu_scenario.request {
+        match &gram_scenario.request {
             DebugRequest::Attach(attach) => {
                 map.insert("pid".into(), attach.process_id.into());
             }
@@ -115,7 +115,7 @@ impl DebugAdapter for CodeLldbDebugAdapter {
                 if !launch.env.is_empty() {
                     map.insert("env".into(), launch.env_json());
                 }
-                if let Some(stop_on_entry) = tehanu_scenario.stop_on_entry {
+                if let Some(stop_on_entry) = gram_scenario.stop_on_entry {
                     map.insert("stopOnEntry".into(), stop_on_entry.into());
                 }
                 if let Some(cwd) = launch.cwd.as_ref() {
@@ -125,8 +125,8 @@ impl DebugAdapter for CodeLldbDebugAdapter {
         }
 
         Ok(DebugScenario {
-            adapter: tehanu_scenario.adapter,
-            label: tehanu_scenario.label,
+            adapter: gram_scenario.adapter,
+            label: gram_scenario.label,
             config: configuration,
             build: None,
             tcp_connection: None,

@@ -33,7 +33,7 @@ pub fn init(cx: &mut App) {
                 extension::Event::ExtensionsInstalledChanged => {}
             }
             cx.update_global::<SchemaStore, _>(|schema_store, cx| {
-                schema_store.notify_schema_changed("tehanu://schemas/settings", cx);
+                schema_store.notify_schema_changed("gram://schemas/settings", cx);
             });
         })
         .detach();
@@ -41,7 +41,7 @@ pub fn init(cx: &mut App) {
 
     cx.observe_global::<dap::DapRegistry>(|cx| {
         cx.update_global::<SchemaStore, _>(|schema_store, cx| {
-            schema_store.notify_schema_changed("tehanu://schemas/debug_tasks", cx);
+            schema_store.notify_schema_changed("gram://schemas/debug_tasks", cx);
         });
     })
     .detach();
@@ -87,7 +87,7 @@ pub fn resolve_schema_request(
     cx: &mut AsyncApp,
 ) -> Result<serde_json::Value> {
     let path = uri
-        .strip_prefix("tehanu://schemas/")
+        .strip_prefix("gram://schemas/")
         .context("Invalid URI")?;
     resolve_schema_request_inner(languages, path, cx)
 }
@@ -154,7 +154,7 @@ pub fn resolve_schema_request_inner(
         }
         "package_json" => package_json_schema(),
         "tsconfig" => tsconfig_schema(),
-        "tehanu_inspector_style" => {
+        "gram_inspector_style" => {
             if cfg!(debug_assertions) {
                 generate_inspector_style_schema()
             } else {
@@ -197,25 +197,25 @@ pub fn all_schema_file_associations(
                 schema_file_match(paths::settings_file()),
                 paths::local_settings_file_relative_path()
             ],
-            "url": "tehanu://schemas/settings",
+            "url": "gram://schemas/settings",
         },
         {
             "fileMatch": [schema_file_match(paths::keymap_file())],
-            "url": "tehanu://schemas/keymap",
+            "url": "gram://schemas/keymap",
         },
         {
             "fileMatch": [
                 schema_file_match(paths::tasks_file()),
                 paths::local_tasks_file_relative_path()
             ],
-            "url": "tehanu://schemas/tasks",
+            "url": "gram://schemas/tasks",
         },
         {
             "fileMatch": [
                 schema_file_match(paths::debug_scenarios_file()),
                 paths::local_debug_file_relative_path()
             ],
-            "url": "tehanu://schemas/debug_tasks",
+            "url": "gram://schemas/debug_tasks",
         },
         {
             "fileMatch": [
@@ -225,19 +225,19 @@ pub fn all_schema_file_associations(
                         .as_path()
                 )
             ],
-            "url": "tehanu://schemas/snippets",
+            "url": "gram://schemas/snippets",
         },
         {
             "fileMatch": ["tsconfig.json"],
-            "url": "tehanu://schemas/tsconfig"
+            "url": "gram://schemas/tsconfig"
         },
         {
             "fileMatch": ["package.json"],
-            "url": "tehanu://schemas/package_json"
+            "url": "gram://schemas/package_json"
         },
         {
             "fileMatch": &jsonc_globs,
-            "url": "tehanu://schemas/jsonc"
+            "url": "gram://schemas/jsonc"
         },
     ]);
 
@@ -248,9 +248,9 @@ pub fn all_schema_file_associations(
             .unwrap()
             .push(serde_json::json!({
                 "fileMatch": [
-                    "tehanu-inspector-style.json"
+                    "gram-inspector-style.json"
                 ],
-                "url": "tehanu://schemas/tehanu_inspector_style"
+                "url": "gram://schemas/gram_inspector_style"
             }));
     }
 
@@ -261,7 +261,7 @@ pub fn all_schema_file_associations(
             let file_name = normalized_action_name_to_file_name(normalized_name.clone());
             serde_json::json!({
                 "fileMatch": [file_name],
-                "url": format!("tehanu://schemas/action/{normalized_name}")
+                "url": format!("gram://schemas/action/{normalized_name}")
             })
         }),
     );

@@ -13,29 +13,29 @@ pub fn init() {}
 
 /// Opens a URL in the system's default web browser.
 #[derive(Clone, PartialEq, Deserialize, JsonSchema, Action)]
-#[action(namespace = tehanu)]
+#[action(namespace = gram)]
 #[serde(deny_unknown_fields)]
 pub struct OpenBrowser {
     pub url: String,
 }
 
-/// Opens a tehanu:// URL within the application.
+/// Opens a gram:// URL within the application.
 #[derive(Clone, PartialEq, Deserialize, JsonSchema, Action)]
-#[action(namespace = tehanu)]
+#[action(namespace = gram)]
 #[serde(deny_unknown_fields)]
-pub struct OpenTehanuUrl {
+pub struct OpenGramUrl {
     pub url: String,
 }
 
 /// Opens the keymap to either add a keybinding or change an existing one
 #[derive(PartialEq, Clone, Default, Action, JsonSchema, Serialize, Deserialize)]
-#[action(namespace = tehanu, no_json, no_register)]
+#[action(namespace = gram, no_json, no_register)]
 pub struct ChangeKeybinding {
     pub action: String,
 }
 
 actions!(
-    tehanu,
+    gram,
     [
         /// Opens the settings editor.
         #[action(deprecated_aliases = ["app_actions::OpenSettingsEditor"])]
@@ -58,7 +58,7 @@ actions!(
         OpenServerSettings,
         /// Quits the application.
         Quit,
-        /// Shows information about Tehanu.
+        /// Shows information about Gram.
         About,
         /// Opens the documentation website.
         OpenDocs,
@@ -84,7 +84,7 @@ pub enum ExtensionCategoryFilter {
 
 /// Opens the extensions management interface.
 #[derive(PartialEq, Clone, Default, Debug, Deserialize, JsonSchema, Action)]
-#[action(namespace = tehanu)]
+#[action(namespace = gram)]
 #[serde(deny_unknown_fields)]
 pub struct Extensions {
     /// Filters the extensions page down to extensions that are in the specified category.
@@ -97,7 +97,7 @@ pub struct Extensions {
 
 /// Decreases the font size in the editor buffer.
 #[derive(PartialEq, Clone, Default, Debug, Deserialize, JsonSchema, Action)]
-#[action(namespace = tehanu)]
+#[action(namespace = gram)]
 #[serde(deny_unknown_fields)]
 pub struct DecreaseBufferFontSize {
     #[serde(default)]
@@ -106,7 +106,7 @@ pub struct DecreaseBufferFontSize {
 
 /// Increases the font size in the editor buffer.
 #[derive(PartialEq, Clone, Default, Debug, Deserialize, JsonSchema, Action)]
-#[action(namespace = tehanu)]
+#[action(namespace = gram)]
 #[serde(deny_unknown_fields)]
 pub struct IncreaseBufferFontSize {
     #[serde(default)]
@@ -115,7 +115,7 @@ pub struct IncreaseBufferFontSize {
 
 /// Increases the font size in the editor buffer.
 #[derive(PartialEq, Clone, Debug, Deserialize, JsonSchema, Action)]
-#[action(namespace = tehanu)]
+#[action(namespace = gram)]
 #[serde(deny_unknown_fields)]
 pub struct OpenSettingsAt {
     /// A path to a specific setting (e.g. `theme.mode`)
@@ -124,7 +124,7 @@ pub struct OpenSettingsAt {
 
 /// Resets the buffer font size to the default value.
 #[derive(PartialEq, Clone, Default, Debug, Deserialize, JsonSchema, Action)]
-#[action(namespace = tehanu)]
+#[action(namespace = gram)]
 #[serde(deny_unknown_fields)]
 pub struct ResetBufferFontSize {
     #[serde(default)]
@@ -133,7 +133,7 @@ pub struct ResetBufferFontSize {
 
 /// Decreases the font size of the user interface.
 #[derive(PartialEq, Clone, Default, Debug, Deserialize, JsonSchema, Action)]
-#[action(namespace = tehanu)]
+#[action(namespace = gram)]
 #[serde(deny_unknown_fields)]
 pub struct DecreaseUiFontSize {
     #[serde(default)]
@@ -142,7 +142,7 @@ pub struct DecreaseUiFontSize {
 
 /// Increases the font size of the user interface.
 #[derive(PartialEq, Clone, Default, Debug, Deserialize, JsonSchema, Action)]
-#[action(namespace = tehanu)]
+#[action(namespace = gram)]
 #[serde(deny_unknown_fields)]
 pub struct IncreaseUiFontSize {
     #[serde(default)]
@@ -151,7 +151,7 @@ pub struct IncreaseUiFontSize {
 
 /// Resets the UI font size to the default value.
 #[derive(PartialEq, Clone, Default, Debug, Deserialize, JsonSchema, Action)]
-#[action(namespace = tehanu)]
+#[action(namespace = gram)]
 #[serde(deny_unknown_fields)]
 pub struct ResetUiFontSize {
     #[serde(default)]
@@ -160,7 +160,7 @@ pub struct ResetUiFontSize {
 
 /// Resets all zoom levels (UI and buffer font sizes) to their default values.
 #[derive(PartialEq, Clone, Default, Debug, Deserialize, JsonSchema, Action)]
-#[action(namespace = tehanu)]
+#[action(namespace = gram)]
 #[serde(deny_unknown_fields)]
 pub struct ResetAllZoom {
     #[serde(default)]
@@ -264,8 +264,8 @@ pub mod feedback {
     actions!(
         feedback,
         [
-            /// Opens email client to send feedback to Tehanu support.
-            EmailTehanu,
+            /// Opens email client to send feedback to Gram support.
+            EmailGram,
             /// Opens the bug report form.
             FileBugReport,
             /// Opens the feature request form.
@@ -398,7 +398,7 @@ impl Spawn {
 #[serde(deny_unknown_fields)]
 pub struct Rerun {
     /// Controls whether the task context is reevaluated prior to execution of a task.
-    /// If it is not, environment variables such as TEHANU_COLUMN, TEHANU_FILE are gonna be the same as in the last execution of a task
+    /// If it is not, environment variables such as GRAM_COLUMN, GRAM_FILE are gonna be the same as in the last execution of a task
     /// If it is, these variables will be updated to reflect current state of editor at the time task::Rerun is executed.
     /// default: false
     #[serde(default)]

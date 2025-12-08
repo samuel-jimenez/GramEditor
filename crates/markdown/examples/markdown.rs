@@ -74,16 +74,16 @@ impl Render for MarkdownExample {
     fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let markdown_style = MarkdownStyle {
             base_text_style: gpui::TextStyle {
-                font_family: ".TehanuSans".into(),
+                font_family: ".GramSans".into(),
                 color: cx.theme().colors().terminal_ansi_black,
                 ..Default::default()
             },
             code_block: StyleRefinement::default()
-                .font_family(".TehanuMono")
+                .font_family(".GramMono")
                 .m(rems(1.))
                 .bg(rgb(0xAAAAAAA)),
             inline_code: gpui::TextStyleRefinement {
-                font_family: Some(".TehanuMono".into()),
+                font_family: Some(".GramMono".into()),
                 color: Some(cx.theme().colors().editor_foreground),
                 background_color: Some(cx.theme().colors().editor_background),
                 ..Default::default()

@@ -1,6 +1,6 @@
 # AsciiDoc
 
-AsciiDoc language support in Tehanu is provided by the community-maintained [AsciiDoc extension](https://github.com/andreicek/zed-asciidoc).
+AsciiDoc language support in Gram is provided by the community-maintained [AsciiDoc extension](https://github.com/andreicek/zed-asciidoc).
 Report issues to: [https://github.com/andreicek/zed-asciidoc/issues](https://github.com/andreicek/zed-asciidoc/issues)
 
 - Tree-sitter: [cathaysia/tree-sitter-asciidoc](https://github.com/cathaysia/tree-sitter-asciidoc)

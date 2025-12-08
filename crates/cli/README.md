@@ -2,14 +2,14 @@
 
 ## Testing
 
-You can test your changes to the `cli` crate by first building the main tehanu binary:
+You can test your changes to the `cli` crate by first building the main gram binary:
 
 ```
-cargo build -p tehanu
+cargo build -p gram
 ```
 
 And then building and running the `cli` crate with the following parameters:
 
 ```
- cargo run -p cli -- --tehanu ./target/debug/tehanu.exe
+ cargo run -p cli -- --gram ./target/debug/gram.exe
 ```

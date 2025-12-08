@@ -5,18 +5,18 @@ set -euxo pipefail
 if [[ $# -gt 0 ]]; then
   echo "
   Usage: ${0##*/}
-  Builds and installs tehanu onto your system into ~/.local, making it available as ~/.local/bin/tehanu.
+  Builds and installs gram onto your system into ~/.local, making it available as ~/.local/bin/gram.
 
   Before running this you should ensure you have all the build dependencies installed with `./script/linux`.
   "
   exit 1
 fi
-export TEHANU_CHANNEL=$(<crates/tehanu/RELEASE_CHANNEL)
-export TEHANU_UPDATE_EXPLANATION="You need to fetch and rebuild tehanu in $(pwd)"
+export GRAM_CHANNEL=$(<crates/gram/RELEASE_CHANNEL)
+export GRAM_UPDATE_EXPLANATION="You need to fetch and rebuild gram in $(pwd)"
 script/bundle-linux
 
 arch="$(uname -m)"
 commit=$(git rev-parse HEAD | cut -c 1-7)
-archive="tehanu-linux-${arch}.tar.gz"
-export TEHANU_BUNDLE_PATH="${CARGO_TARGET_DIR:-target}/release/${archive}"
+archive="gram-linux-${arch}.tar.gz"
+export GRAM_BUNDLE_PATH="${CARGO_TARGET_DIR:-target}/release/${archive}"
 script/install.sh

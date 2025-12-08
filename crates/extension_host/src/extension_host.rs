@@ -58,7 +58,7 @@ pub use extension_settings::ExtensionSettings;
 pub const RELOAD_DEBOUNCE_DURATION: Duration = Duration::from_millis(200);
 const FS_WATCH_LATENCY: Duration = Duration::from_millis(100);
 
-/// The current extension [`SchemaVersion`] supported by Tehanu.
+/// The current extension [`SchemaVersion`] supported by Gram.
 const CURRENT_SCHEMA_VERSION: SchemaVersion = SchemaVersion(1);
 
 /// Extensions that should no longer be loaded or downloaded.
@@ -67,12 +67,12 @@ const CURRENT_SCHEMA_VERSION: SchemaVersion = SchemaVersion(1);
 /// functionality has been integrated into the core editor.
 const SUPPRESSED_EXTENSIONS: &[&str] = &["snippets", "ruff", "ty", "basedpyright"];
 
-/// Returns the [`SchemaVersion`] range that is compatible with this version of Tehanu.
+/// Returns the [`SchemaVersion`] range that is compatible with this version of Gram.
 pub fn schema_version_range() -> RangeInclusive<SchemaVersion> {
     SchemaVersion::ZERO..=CURRENT_SCHEMA_VERSION
 }
 
-/// Returns whether the given extension version is compatible with this version of Tehanu.
+/// Returns whether the given extension version is compatible with this version of Gram.
 pub fn is_version_compatible(
     release_channel: ReleaseChannel,
     extension_version: &ExtensionMetadata,
@@ -173,7 +173,7 @@ pub struct ExtensionIndexLanguageEntry {
 }
 
 actions!(
-    tehanu,
+    gram,
     [
         /// Reloads all installed extensions.
         ReloadExtensions

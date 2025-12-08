@@ -10,7 +10,7 @@ struct Cli {
     #[command(subcommand)]
     command: Option<Commands>,
     /// Used for SSH/Git password authentication, to remove the need for netcat as a dependency,
-    /// by having Tehanu act like netcat communicating over a Unix socket.
+    /// by having Gram act like netcat communicating over a Unix socket.
     #[arg(long, hide = true)]
     askpass: Option<String>,
     /// Used for recording minidumps on crashes by having the server run a separate

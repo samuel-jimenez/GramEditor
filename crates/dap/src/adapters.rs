@@ -23,7 +23,7 @@ use std::{
     path::{Path, PathBuf},
     sync::Arc,
 };
-use task::{DebugScenario, TcpArgumentsTemplate, TehanuDebugConfig};
+use task::{DebugScenario, TcpArgumentsTemplate, GramDebugConfig};
 use util::{archive::extract_zip, rel_path::RelPath};
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -349,7 +349,7 @@ pub async fn download_adapter_from_github(
 pub trait DebugAdapter: 'static + Send + Sync {
     fn name(&self) -> DebugAdapterName;
 
-    async fn config_from_tehanu_format(&self, scenario: TehanuDebugConfig)
+    async fn config_from_gram_format(&self, scenario: GramDebugConfig)
     -> Result<DebugScenario>;
 
     async fn get_binary(
@@ -440,9 +440,9 @@ impl DebugAdapter for FakeAdapter {
         None
     }
 
-    async fn config_from_tehanu_format(
+    async fn config_from_gram_format(
         &self,
-        scenario: TehanuDebugConfig,
+        scenario: GramDebugConfig,
     ) -> Result<DebugScenario> {
         let config = serde_json::to_value(scenario.request).unwrap();
 

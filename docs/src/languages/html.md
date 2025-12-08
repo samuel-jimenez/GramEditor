@@ -7,9 +7,9 @@ HTML support is available through the [HTML extension](https://github.com/zed-in
 
 ## Formatting
 
-By default Tehanu uses [Prettier](https://prettier.io/) for formatting HTML.
+By default Gram uses [Prettier](https://prettier.io/) for formatting HTML.
 
-You can disable `format_on_save` by adding the following to your Tehanu `settings.json`:
+You can disable `format_on_save` by adding the following to your Gram `settings.json`:
 
 ```json [settings]
   "languages": {
@@ -23,7 +23,7 @@ You can still trigger formatting manually with {#kb editor::Format} or by openin
 
 ### LSP Formatting
 
-To use the `vscode-html-language-server` language server auto-formatting instead of Prettier, add the following to your Tehanu settings:
+To use the `vscode-html-language-server` language server auto-formatting instead of Prettier, add the following to your Gram settings:
 
 ```json [settings]
   "languages": {
@@ -33,7 +33,7 @@ To use the `vscode-html-language-server` language server auto-formatting instead
   }
 ```
 
-You can customize various [formatting options](https://code.visualstudio.com/docs/languages/html#_formatting) for `vscode-html-language-server` via your Tehanu `settings.json`:
+You can customize various [formatting options](https://code.visualstudio.com/docs/languages/html#_formatting) for `vscode-html-language-server` via your Gram `settings.json`:
 
 ```json [settings]
   "lsp": {
