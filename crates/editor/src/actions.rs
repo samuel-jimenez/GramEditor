@@ -448,8 +448,6 @@ actions!(
         CollapseAllDiffHunks,
         /// Expands macros recursively at cursor position.
         ExpandMacroRecursively,
-        /// Finds all references to the symbol at cursor.
-        FindAllReferences,
         /// Finds the next match in the search.
         FindNextMatch,
         /// Finds the previous match in the search.
@@ -814,3 +812,20 @@ actions!(
         WrapSelectionsInTag
     ]
 );
+
+/// Finds all references to the symbol at cursor.
+#[derive(PartialEq, Clone, Deserialize, JsonSchema, Action)]
+#[action(namespace = editor)]
+#[serde(deny_unknown_fields)]
+pub struct FindAllReferences {
+    #[serde(default = "default_true")]
+    pub always_open_multibuffer: bool,
+}
+
+impl Default for FindAllReferences {
+    fn default() -> Self {
+        Self {
+            always_open_multibuffer: true,
+        }
+    }
+}
