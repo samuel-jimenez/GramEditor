@@ -6601,11 +6601,13 @@ outline: struct OutlineEntryExcerpt
                 format!(
                     r#"frontend-project/
   public/lottie/
-    syntax-tree.json  <==== selected
+    syntax-tree.json
+      search: {{ "something": "«static»" }}
   src/
     app/(site)/
     components/
-      ErrorBoundary.tsx"#
+      ErrorBoundary.tsx  <==== selected
+        search: «static»"#
                 )
             );
         });
@@ -6647,7 +6649,7 @@ outline: struct OutlineEntryExcerpt
                 format!(
                     r#"frontend-project/
   public/lottie/
-    syntax-tree.json  <==== selected
+    syntax-tree.json
       search: {{ "something": "«static»" }}
   src/
     app/(site)/
@@ -6658,7 +6660,7 @@ outline: struct OutlineEntryExcerpt
         page.tsx
           search: «static»
     components/
-      ErrorBoundary.tsx
+      ErrorBoundary.tsx  <==== selected
         search: «static»"#
                 )
             );
