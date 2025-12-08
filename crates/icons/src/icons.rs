@@ -104,6 +104,7 @@ pub enum IconName {
     GenericRestore,
     GitBranch,
     GitBranchAlt,
+    GitBranchPlus,
     Forge,
     Hash,
     HistoryRerun,
