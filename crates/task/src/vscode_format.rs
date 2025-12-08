@@ -42,7 +42,7 @@ enum Command {
 }
 
 impl VsCodeTaskDefinition {
-    fn into_zed_format(
+    fn into_gram_format(
         self,
         replacer: &EnvVariableReplacer,
     ) -> anyhow::Result<Option<TaskTemplate>> {
@@ -110,7 +110,7 @@ impl TryFrom<VsCodeTaskFile> for TaskTemplates {
             .into_iter()
             .filter_map(|vscode_definition| {
                 vscode_definition
-                    .into_zed_format(&replacer)
+                    .into_gram_format(&replacer)
                     .log_err()
                     .flatten()
             })

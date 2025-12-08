@@ -311,9 +311,9 @@ pub fn get_shell_safe_binary_path(shell_kind: shell::ShellKind) -> anyhow::Resul
         .context("Failed to shell-escape Gram executable path.")
 }
 
-/// Returns a path for the zed cli executable, this function
-/// should be called from the executable, not zed-cli.
-pub fn get_zed_cli_path() -> Result<PathBuf> {
+/// Returns a path for the gram cli executable, this function
+/// should be called from the executable, not gram-cli.
+pub fn get_gram_cli_path() -> Result<PathBuf> {
     let binary_path =
         std::env::current_exe().context("Failed to determine current executable path.")?;
     let parent = binary_path
@@ -321,7 +321,7 @@ pub fn get_zed_cli_path() -> Result<PathBuf> {
         .context("Failed to determine parent directory of executable path.")?;
 
     let possible_locations: &[&str] = if cfg!(target_os = "macos") {
-        // On macOS, the executable and zed-cli are inside the app bundle,
+        // On macOS, the executable and gram-cli are inside the app bundle,
         // so here ./cli is for both installed and development builds.
         &["./cli"]
     } else if cfg!(target_os = "windows") {
@@ -331,7 +331,7 @@ pub fn get_zed_cli_path() -> Result<PathBuf> {
         // bin is the standard, ./cli is for the target directory in development builds.
         &["../bin/gram", "./cli"]
     } else {
-        anyhow::bail!("unsupported platform for determining zed-cli path");
+        anyhow::bail!("unsupported platform for determining gram-cli path");
     };
 
     possible_locations
@@ -345,7 +345,7 @@ pub fn get_zed_cli_path() -> Result<PathBuf> {
         })
         .with_context(|| {
             format!(
-                "could not find zed-cli from any of: {}",
+                "could not find gram-cli from any of: {}",
                 possible_locations.join(", ")
             )
         })
@@ -468,13 +468,13 @@ pub fn merge_non_null_json_value_into(source: serde_json::Value, target: &mut se
 
 pub fn measure<R>(label: &str, f: impl FnOnce() -> R) -> R {
     static GRAM_MEASUREMENTS: OnceLock<bool> = OnceLock::new();
-    let zed_measurements = GRAM_MEASUREMENTS.get_or_init(|| {
+    let gram = GRAM_MEASUREMENTS.get_or_init(|| {
         env::var("GRAM_MEASUREMENTS")
             .map(|measurements| measurements == "1" || measurements == "true")
             .unwrap_or(false)
     });
 
-    if *zed_measurements {
+    if *gram {
         let start = Instant::now();
         let result = f();
         let elapsed = start.elapsed();

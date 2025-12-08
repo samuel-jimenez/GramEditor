@@ -319,7 +319,7 @@ mod test {
 
     #[test]
     #[should_panic]
-    fn wild_zed_lost_failure() {
+    fn wild_editor_lost_failure() {
         enum TestWorkspace {}
         impl Domain for TestWorkspace {
             const NAME: &str = "workspace";
@@ -347,7 +347,7 @@ mod test {
         }
 
         let builder =
-            ThreadSafeConnection::builder::<TestWorkspace>("wild_zed_lost_failure", false)
+            ThreadSafeConnection::builder::<TestWorkspace>("wild_editor_lost_failure", false)
                 .with_connection_initialize_query("PRAGMA FOREIGN_KEYS=true");
 
         smol::block_on(builder.build()).unwrap();

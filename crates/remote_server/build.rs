@@ -4,11 +4,11 @@ use std::process::Command;
 const GRAM_MANIFEST: &str = include_str!("../gram/Cargo.toml");
 
 fn main() {
-    let zed_cargo_toml: cargo_toml::Manifest =
+    let toml: cargo_toml::Manifest =
         toml::from_str(GRAM_MANIFEST).expect("failed to parse gram Cargo.toml");
     println!(
         "cargo:rustc-env=GRAM_PKG_VERSION={}",
-        zed_cargo_toml.package.unwrap().version.unwrap()
+        toml.package.unwrap().version.unwrap()
     );
     println!(
         "cargo:rustc-env=TARGET={}",

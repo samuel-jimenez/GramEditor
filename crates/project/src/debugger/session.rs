@@ -300,9 +300,9 @@ impl RunningMode {
                     breakpoints
                         .into_iter()
                         .zip(raw_breakpoints)
-                        .filter_map(|(dap_bp, zed_bp)| {
+                        .filter_map(|(dap_bp, editor_bp)| {
                             Some((
-                                zed_bp,
+                                editor_bp,
                                 BreakpointSessionState {
                                     id: dap_bp.id?,
                                     verified: dap_bp.verified,
@@ -385,9 +385,9 @@ impl RunningMode {
                     let breakpoints = cx.background_spawn(send_request).await?;
 
                     let breakpoints = breakpoints.into_iter().zip(raw_breakpoints).filter_map(
-                        |(dap_bp, zed_bp)| {
+                        |(dap_bp, editor_bp)| {
                             Some((
-                                zed_bp,
+                                editor_bp,
                                 BreakpointSessionState {
                                     id: dap_bp.id?,
                                     verified: dap_bp.verified,

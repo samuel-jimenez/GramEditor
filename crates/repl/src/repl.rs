@@ -29,12 +29,12 @@ pub use crate::session::Session;
 pub const KERNEL_DOCS_URL: &str = "https://gram.liten.app/docs/repl#changing-kernels";
 
 pub fn init(fs: Arc<dyn Fs>, cx: &mut App) {
-    set_dispatcher(zed_dispatcher(cx));
+    set_dispatcher(editor_dispatcher(cx));
     repl_sessions_ui::init(cx);
     ReplStore::init(fs, cx);
 }
 
-fn zed_dispatcher(cx: &mut App) -> impl Dispatcher {
+fn editor_dispatcher(cx: &mut App) -> impl Dispatcher {
     struct GramDispatcher {
         dispatcher: Arc<dyn PlatformDispatcher>,
     }

@@ -78,20 +78,20 @@ fn check_rust() -> NamedJob {
 }
 
 fn check_extension() -> NamedJob {
-    let (cache_download, cache_hit) = cache_zed_extension_cli();
+    let (cache_download, cache_hit) = cache_gram_extension_cli();
     let job = Job::default()
         .with_repository_owner_guard()
         .runs_on(runners::LINUX_SMALL)
         .timeout_minutes(1u32)
         .add_step(steps::checkout_repo())
         .add_step(cache_download)
-        .add_step(download_zed_extension_cli(cache_hit))
+        .add_step(download_gram_extension_cli(cache_hit))
         .add_step(check());
 
     named::job(job)
 }
 
-pub fn cache_zed_extension_cli() -> (Step<Use>, StepOutput) {
+pub fn cache_gram_extension_cli() -> (Step<Use>, StepOutput) {
     let step = named::uses(
         "actions",
         "cache",
@@ -107,7 +107,7 @@ pub fn cache_zed_extension_cli() -> (Step<Use>, StepOutput) {
     (step, output)
 }
 
-pub fn download_zed_extension_cli(cache_hit: StepOutput) -> Step<Run> {
+pub fn download_gram_extension_cli(cache_hit: StepOutput) -> Step<Run> {
     named::bash(
     indoc! {
         r#"

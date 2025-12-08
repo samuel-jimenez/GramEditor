@@ -68,7 +68,7 @@
         <com:Extension Category="windows.comServer">
           <com:ComServer>
             <com:SurrogateServer DisplayName="Gram Preview">
-              <com:Class Id="af8e85ea-fb20-4db2-93cf-56513c1ec697" Path="zed_explorer_command_injector.dll" ThreadingModel="STA"/>
+              <com:Class Id="af8e85ea-fb20-4db2-93cf-56513c1ec697" Path="gram_explorer_command_injector.dll" ThreadingModel="STA"/>
             </com:SurrogateServer>
           </com:ComServer>
         </com:Extension>

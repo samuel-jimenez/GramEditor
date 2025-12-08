@@ -138,7 +138,7 @@ fn render_inspector_id(inspector_id: &InspectorElementId, cx: &App) -> Div {
                 .child(source_location_string)
                 .tooltip(Tooltip::text("Click to open by running Gram CLI"))
                 .on_click(move |_, _window, cx| {
-                    cx.background_spawn(open_zed_source_location(source_location))
+                    cx.background_spawn(open_editor_source_location(source_location))
                         .detach_and_log_err(cx);
                 }),
         )
@@ -154,7 +154,7 @@ fn render_inspector_id(inspector_id: &InspectorElementId, cx: &App) -> Div {
         )
 }
 
-async fn open_zed_source_location(
+async fn open_editor_source_location(
     location: &'static std::panic::Location<'static>,
 ) -> anyhow::Result<()> {
     let mut path = Path::new(env!("GRAM_REPO_DIR")).to_path_buf();
@@ -170,11 +170,11 @@ async fn open_zed_source_location(
         .arg(&path_arg)
         .output()
         .await
-        .with_context(|| format!("running zed to open {path_arg} failed"))?;
+        .with_context(|| format!("running gram to open {path_arg} failed"))?;
 
     if !output.status.success() {
         Err(anyhow!(
-            "running zed to open {path_arg} failed with stderr: {}",
+            "running gram to open {path_arg} failed with stderr: {}",
             String::from_utf8_lossy(&output.stderr)
         ))
     } else {

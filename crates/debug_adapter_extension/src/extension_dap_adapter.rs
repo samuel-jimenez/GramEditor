@@ -106,8 +106,8 @@ impl DebugAdapter for ExtensionDapAdapter {
             .await
     }
 
-    async fn config_from_gram_format(&self, zed_scenario: GramDebugConfig) -> Result<DebugScenario> {
-        self.extension.dap_config_to_scenario(zed_scenario).await
+    async fn config_from_gram_format(&self, scenario: GramDebugConfig) -> Result<DebugScenario> {
+        self.extension.dap_config_to_scenario(scenario).await
     }
 
     async fn request_kind(

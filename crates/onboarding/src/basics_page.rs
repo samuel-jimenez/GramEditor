@@ -12,19 +12,19 @@ use ui::{
     ToggleButtonGroup, ToggleButtonGroupSize, ToggleButtonSimple, ToggleButtonWithIcon, prelude::*,
     rems_from_px,
 };
-use vim_mode_setting::VimModeSetting;
+use vim_mode_setting::{HelixModeSetting, VimModeSetting};
 
 use crate::{
     ImportVsCodeSettings, SettingsImportState,
     theme_preview::{ThemePreviewStyle, ThemePreviewTile},
 };
 
-const LIGHT_THEMES: [&str; 3] = ["One Light", "Ayu Light", "Gruvbox Light"];
-const DARK_THEMES: [&str; 3] = ["One Dark", "Ayu Dark", "Gruvbox Dark"];
+const LIGHT_THEMES: [&str; 3] = ["One Light", "Melange Light", "Catppuccin Latte"];
+const DARK_THEMES: [&str; 3] = ["One Dark", "Melange Dark", "Catppuccin Mocha"];
 const FAMILY_NAMES: [SharedString; 3] = [
     SharedString::new_static("One"),
-    SharedString::new_static("Ayu"),
-    SharedString::new_static("Gruvbox"),
+    SharedString::new_static("Melange"),
+    SharedString::new_static("Catppuccin"),
 ];
 
 fn get_theme_family_themes(theme_name: &str) -> Option<(&'static str, &'static str)> {
@@ -277,7 +277,7 @@ fn render_vim_mode_switch(tab_index: &mut isize, cx: &mut App) -> impl IntoEleme
     SwitchField::new(
         "onboarding-vim-mode",
         Some("Vim Mode"),
-        Some("Coming from Neovim? Use our first-class implementation of Vim Mode".into()),
+        Some("Modal editing, vim style".into()),
         toggle_state,
         {
             let fs = <dyn Fs>::global(cx);
@@ -291,6 +291,45 @@ fn render_vim_mode_switch(tab_index: &mut isize, cx: &mut App) -> impl IntoEleme
                 };
                 update_settings_file(fs.clone(), cx, move |setting, _| {
                     setting.vim_mode = Some(vim_mode);
+                    if vim_mode {
+                        setting.helix_mode = None;
+                    }
+                });
+            }
+        },
+    )
+    .tab_index({
+        *tab_index += 1;
+        *tab_index - 1
+    })
+}
+
+fn render_helix_mode_switch(tab_index: &mut isize, cx: &mut App) -> impl IntoElement {
+    let toggle_state = if HelixModeSetting::get_global(cx).0 {
+        ui::ToggleState::Selected
+    } else {
+        ui::ToggleState::Unselected
+    };
+    SwitchField::new(
+        "onboarding-helix-mode",
+        Some("Helix Mode"),
+        Some("Modal editing, helix/kakoune style".into()),
+        toggle_state,
+        {
+            let fs = <dyn Fs>::global(cx);
+            move |&selection, _, cx| {
+                let helix_mode = match selection {
+                    ToggleState::Selected => true,
+                    ToggleState::Unselected => false,
+                    ToggleState::Indeterminate => {
+                        return;
+                    }
+                };
+                update_settings_file(fs.clone(), cx, move |setting, _| {
+                    setting.helix_mode = Some(helix_mode);
+                    if helix_mode {
+                        setting.vim_mode = None;
+                    }
                 });
             }
         },
@@ -309,7 +348,7 @@ fn render_setting_import_button(
 ) -> impl IntoElement + 'static {
     let action = action.boxed_clone();
 
-    Button::new(label.clone(), label.clone())
+    Button::new(label.clone(), label)
         .style(ButtonStyle::OutlinedGhost)
         .size(ButtonSize::Medium)
         .label_size(LabelSize::Small)
@@ -365,5 +404,6 @@ pub(crate) fn render_basics_page(cx: &mut App) -> impl IntoElement {
         .child(render_base_keymap_section(&mut tab_index, cx))
         .child(render_import_settings_section(&mut tab_index, cx))
         .child(render_vim_mode_switch(&mut tab_index, cx))
+        .child(render_helix_mode_switch(&mut tab_index, cx))
         .child(Divider::horizontal().color(ui::DividerColor::BorderVariant))
 }

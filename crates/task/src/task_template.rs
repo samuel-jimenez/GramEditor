@@ -722,7 +722,7 @@ mod tests {
     }
 
     #[test]
-    fn test_errors_on_missing_zed_variable() {
+    fn test_errors_on_missing_gram_variable() {
         let task = TaskTemplate {
             label: "My task".into(),
             command: "echo".into(),

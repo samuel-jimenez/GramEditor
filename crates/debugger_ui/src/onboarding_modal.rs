@@ -28,11 +28,6 @@ impl DebuggerOnboardingModal {
         cx.emit(DismissEvent);
     }
 
-    fn view_blog(&mut self, _: &ClickEvent, _: &mut Window, cx: &mut Context<Self>) {
-        cx.open_url("https://liten.app/blog/debugger");
-        cx.notify();
-    }
-
     fn cancel(&mut self, _: &menu::Cancel, _: &mut Window, cx: &mut Context<Self>) {
         cx.emit(DismissEvent);
     }
@@ -114,7 +109,7 @@ impl Render for DebuggerOnboardingModal {
                             .size(LabelSize::Small)
                             .color(Color::Muted),
                     )
-                    .child(Headline::new("Gram's Debugger").size(HeadlineSize::Large)),
+                    .child(Headline::new("Debugger").size(HeadlineSize::Large)),
             )
             .child(h_flex().absolute().top_2().right_2().child(
                 IconButton::new("cancel", IconName::Close).on_click(cx.listener(
@@ -130,22 +125,9 @@ impl Render for DebuggerOnboardingModal {
             .full_width()
             .on_click(cx.listener(Self::open_panel));
 
-        let blog_post_button = Button::new("view-blog", "Check out the Blog Post")
-            .icon(IconName::ArrowUpRight)
-            .icon_size(IconSize::Indicator)
-            .icon_color(Color::Muted)
-            .full_width()
-            .on_click(cx.listener(Self::view_blog));
+        let copy = "Integrated debugger for many programming languages";
 
-        let copy = "It's finally here: Native support for debugging across multiple programming languages.";
-
-        base.child(Label::new(copy).color(Color::Muted)).child(
-            v_flex()
-                .w_full()
-                .mt_2()
-                .gap_2()
-                .child(open_panel_button)
-                .child(blog_post_button),
-        )
+        base.child(Label::new(copy).color(Color::Muted))
+            .child(v_flex().w_full().mt_2().gap_2().child(open_panel_button))
     }
 }

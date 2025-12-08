@@ -96,7 +96,7 @@ impl ThemeRegistry {
 
         // We're loading the Gram default theme, as we need a theme to be loaded
         // for tests.
-        registry.insert_theme_families([crate::fallback_themes::zed_default_themes()]);
+        registry.insert_theme_families([crate::fallback_themes::gram_default_themes()]);
 
         let default_icon_theme = crate::default_icon_theme();
         registry
