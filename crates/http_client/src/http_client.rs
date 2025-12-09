@@ -8,10 +8,7 @@ use derive_more::Deref;
 use http::HeaderValue;
 pub use http::{self, Method, Request, Response, StatusCode, Uri, request::Builder};
 
-use futures::{
-    FutureExt as _,
-    future::{self, BoxFuture},
-};
+use futures::future::BoxFuture;
 use parking_lot::Mutex;
 use std::sync::Arc;
 #[cfg(feature = "test-support")]
@@ -109,14 +106,6 @@ pub trait HttpClient: 'static + Send + Sync {
     fn as_fake(&self) -> &FakeHttpClient {
         panic!("called as_fake on {}", type_name::<Self>())
     }
-
-    fn send_multipart_form<'a>(
-        &'a self,
-        _url: &str,
-        _request: reqwest::multipart::Form,
-    ) -> BoxFuture<'a, anyhow::Result<Response<AsyncBody>>> {
-        future::ready(Err(anyhow!("not implemented"))).boxed()
-    }
 }
 
 /// An [`HttpClient`] that may have a proxy.
@@ -163,14 +152,6 @@ impl HttpClient for HttpClientWithProxy {
     #[cfg(feature = "test-support")]
     fn as_fake(&self) -> &FakeHttpClient {
         self.client.as_fake()
-    }
-
-    fn send_multipart_form<'a>(
-        &'a self,
-        url: &str,
-        form: reqwest::multipart::Form,
-    ) -> BoxFuture<'a, anyhow::Result<Response<AsyncBody>>> {
-        self.client.send_multipart_form(url, form)
     }
 }
 
@@ -246,14 +227,6 @@ impl HttpClient for HttpClientWithUrl {
     #[cfg(feature = "test-support")]
     fn as_fake(&self) -> &FakeHttpClient {
         self.client.as_fake()
-    }
-
-    fn send_multipart_form<'a>(
-        &'a self,
-        url: &str,
-        request: reqwest::multipart::Form,
-    ) -> BoxFuture<'a, anyhow::Result<Response<AsyncBody>>> {
-        self.client.send_multipart_form(url, request)
     }
 }
 

@@ -5097,7 +5097,6 @@ dependencies = [
  "tempfile",
  "url",
  "util",
- "zed-reqwest",
 ]
 
 [[package]]
