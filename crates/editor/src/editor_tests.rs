@@ -2219,10 +2219,9 @@ async fn test_move_start_of_paragraph_end_of_paragraph(cx: &mut TestAppContext) 
     init_test(cx, |_| {});
     let mut cx = EditorTestContext::new(cx).await;
 
-    let line_height = cx.editor(|editor, window, _| {
+    let line_height = cx.update_editor(|editor, window, cx| {
         editor
-            .style()
-            .unwrap()
+            .style(cx)
             .text
             .line_height_in_pixels(window.rem_size())
     });
@@ -2335,10 +2334,9 @@ async fn test_move_start_of_paragraph_end_of_paragraph(cx: &mut TestAppContext) 
 async fn test_scroll_page_up_page_down(cx: &mut TestAppContext) {
     init_test(cx, |_| {});
     let mut cx = EditorTestContext::new(cx).await;
-    let line_height = cx.editor(|editor, window, _| {
+    let line_height = cx.update_editor(|editor, window, cx| {
         editor
-            .style()
-            .unwrap()
+            .style(cx)
             .text
             .line_height_in_pixels(window.rem_size())
     });
@@ -2401,8 +2399,7 @@ async fn test_autoscroll(cx: &mut TestAppContext) {
     let line_height = cx.update_editor(|editor, window, cx| {
         editor.set_vertical_scroll_margin(2, cx);
         editor
-            .style()
-            .unwrap()
+            .style(cx)
             .text
             .line_height_in_pixels(window.rem_size())
     });
@@ -2481,10 +2478,9 @@ async fn test_move_page_up_page_down(cx: &mut TestAppContext) {
     init_test(cx, |_| {});
     let mut cx = EditorTestContext::new(cx).await;
 
-    let line_height = cx.editor(|editor, window, _cx| {
+    let line_height = cx.update_editor(|editor, window, cx| {
         editor
-            .style()
-            .unwrap()
+            .style(cx)
             .text
             .line_height_in_pixels(window.rem_size())
     });
@@ -27849,7 +27845,8 @@ async fn test_sticky_scroll(cx: &mut TestAppContext) {
     let mut sticky_headers = |offset: ScrollOffset| {
         cx.update_editor(|e, window, cx| {
             e.scroll(gpui::Point { x: 0., y: offset }, None, window, cx);
-            EditorElement::sticky_headers(&e, &e.snapshot(window, cx), cx)
+            let style = e.style(cx).clone();
+            EditorElement::sticky_headers(&e, &e.snapshot(window, cx), &style, cx)
                 .into_iter()
                 .map(
                     |StickyHeader {
@@ -27903,10 +27900,9 @@ async fn test_scroll_by_clicking_sticky_header(cx: &mut TestAppContext) {
     });
     let mut cx = EditorTestContext::new(cx).await;
 
-    let line_height = cx.editor(|editor, window, _cx| {
+    let line_height = cx.update_editor(|editor, window, cx| {
         editor
-            .style()
-            .unwrap()
+            .style(cx)
             .text
             .line_height_in_pixels(window.rem_size())
     });
