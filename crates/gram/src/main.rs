@@ -2,7 +2,7 @@ mod reliability;
 mod gram;
 
 use anyhow::{Context as _, Error, Result};
-use clap::{Parser, command};
+use clap::Parser;
 use cli::FORCE_CLI_MODE_ENV_VAR_NAME;
 use client::{Client, ProxySettings, UserStore, parse_editor_link};
 use collections::HashMap;

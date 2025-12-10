@@ -32,7 +32,7 @@ struct Detect;
 
 trait InstalledApp {
     fn gram_version_string(&self) -> String;
-    fn launch(&self, ipc_url: String) -> anyhow::Result<()>;
+    fn launch(&self, ipc_url: String, user_data_dir: Option<&str>) -> anyhow::Result<()>;
     fn run_foreground(
         &self,
         ipc_url: String,
@@ -588,7 +588,7 @@ fn main() -> Result<()> {
     if args.foreground {
         app.run_foreground(url, user_data_dir.as_deref())?;
     } else {
-        app.launch(url)?;
+        app.launch(url, user_data_dir.as_deref())?;
         sender.join().unwrap()?;
         if let Some(handle) = stdin_pipe_handle {
             handle.join().unwrap()?;
@@ -712,14 +712,18 @@ mod linux {
             )
         }
 
-        fn launch(&self, ipc_url: String) -> anyhow::Result<()> {
-            let sock_path = paths::data_dir().join(format!(
+        fn launch(&self, ipc_url: String, user_data_dir: Option<&str>) -> anyhow::Result<()> {
+            let data_dir = user_data_dir
+                .map(PathBuf::from)
+                .unwrap_or_else(|| paths::data_dir().clone());
+
+            let sock_path = data_dir.join(format!(
                 "gram-{}.sock",
                 *release_channel::RELEASE_CHANNEL_NAME
             ));
             let sock = UnixDatagram::unbound()?;
             if sock.connect(&sock_path).is_err() {
-                self.boot_background(ipc_url)?;
+                self.boot_background(ipc_url, user_data_dir)?;
             } else {
                 sock.send(ipc_url.as_bytes())?;
             }
@@ -745,7 +749,11 @@ mod linux {
     }
 
     impl App {
-        fn boot_background(&self, ipc_url: String) -> anyhow::Result<()> {
+        fn boot_background(
+            &self,
+            ipc_url: String,
+            user_data_dir: Option<&str>,
+        ) -> anyhow::Result<()> {
             let path = &self.0;
 
             match fork::fork() {
@@ -759,8 +767,13 @@ mod linux {
                     if fork::close_fd().is_err() {
                         eprintln!("failed to close_fd: {}", std::io::Error::last_os_error());
                     }
-                    let error =
-                        exec::execvp(path.clone(), &[path.as_os_str(), &OsString::from(ipc_url)]);
+                    let mut args: Vec<OsString> =
+                        vec![path.as_os_str().to_owned(), OsString::from(ipc_url)];
+                    if let Some(dir) = user_data_dir {
+                        args.push(OsString::from("--user-data-dir"));
+                        args.push(OsString::from(dir));
+                    }
+                    let error = exec::execvp(path.clone(), &args);
                     // if exec succeeded, we never get here.
                     eprintln!("failed to exec {:?}: {}", path, error);
                     process::exit(1)
@@ -951,11 +964,14 @@ mod windows {
             )
         }
 
-        fn launch(&self, ipc_url: String) -> anyhow::Result<()> {
+        fn launch(&self, ipc_url: String, user_data_dir: Option<&str>) -> anyhow::Result<()> {
             if check_single_instance() {
-                std::process::Command::new(self.0.clone())
-                    .arg(ipc_url)
-                    .spawn()?;
+                let mut cmd = std::process::Command::new(self.0.clone());
+                cmd.arg(ipc_url);
+                if let Some(dir) = user_data_dir {
+                    cmd.arg("--user-data-dir").arg(dir);
+                }
+                cmd.spawn()?;
             } else {
                 unsafe {
                     let pipe = CreateFileW(
@@ -1004,11 +1020,8 @@ mod windows {
 
                 // ../Gram.exe is the standard, lib/gram is for MSYS2, ./gram.exe is for the target
                 // directory in development builds.
-                let possible_locations = [
-                    "../Gram.exe",
-                    "../lib/gram/gram-editor.exe",
-                    "./gram.exe",
-                ];
+                let possible_locations =
+                    ["../Gram.exe", "../lib/gram/gram-editor.exe", "./gram.exe"];
                 possible_locations
                     .iter()
                     .find_map(|p| dir.join(p).canonicalize().ok().filter(|path| path != &cli))
@@ -1108,7 +1121,7 @@ mod mac_os {
             format!("Gram {} – {}", self.version(), self.path().display(),)
         }
 
-        fn launch(&self, url: String) -> anyhow::Result<()> {
+        fn launch(&self, url: String, user_data_dir: Option<&str>) -> anyhow::Result<()> {
             match self {
                 Self::App { app_bundle, .. } => {
                     let app_path = app_bundle;
@@ -1158,8 +1171,11 @@ mod mac_os {
                             format!("Cloning descriptor for file {subprocess_stdout_file:?}")
                         })?;
                     let mut command = std::process::Command::new(executable);
-                    let command = command
-                        .env(FORCE_CLI_MODE_ENV_VAR_NAME, "")
+                    command.env(FORCE_CLI_MODE_ENV_VAR_NAME, "");
+                    if let Some(dir) = user_data_dir {
+                        command.arg("--user-data-dir").arg(dir);
+                    }
+                    command
                         .stderr(subprocess_stdout_file)
                         .stdout(subprocess_stdin_file)
                         .arg(url);
