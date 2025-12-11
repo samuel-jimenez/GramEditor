@@ -432,6 +432,7 @@ impl HeadlessProject {
                     message.payload.visible,
                     this.fs.clone(),
                     this.next_entry_id.clone(),
+                    true,
                     &mut cx,
                 )
             })?
