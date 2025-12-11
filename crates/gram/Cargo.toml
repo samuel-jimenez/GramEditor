@@ -2,7 +2,7 @@
 description = "What cannot be mended must be transcended."
 edition.workspace = true
 name = "gram"
-version = "0.216.0"
+version = "0.1.0"
 publish.workspace = true
 license = "GPL-3.0-or-later"
 authors = ["Kristoffer Grönlund <k@ziran.se>"]

@@ -6,7 +6,7 @@ directives that specify logging levels for different modules (crates). The
 general format is for instance:
 
 ```
-ZED_LOG=info,project=debug,agent=off
+ZED_LOG=info,project=debug
 ```
 
 - Levels can be one of: `off`/`none`, `error`, `warn`, `info`, `debug`, or

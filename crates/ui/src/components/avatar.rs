@@ -111,7 +111,7 @@ impl RenderOnce for Avatar {
 // View this component preview using `workspace: open component-preview`
 impl Component for Avatar {
     fn scope() -> ComponentScope {
-        ComponentScope::Collaboration
+        ComponentScope::Editor
     }
 
     fn description() -> Option<&'static str> {
