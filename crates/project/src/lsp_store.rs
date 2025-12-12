@@ -422,7 +422,6 @@ impl LocalLspStore {
                     Some(pending_workspace_folders),
                     cx,
                 )
-                .await
             }
         });
 
