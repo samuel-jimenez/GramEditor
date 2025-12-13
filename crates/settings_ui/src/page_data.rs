@@ -2276,8 +2276,12 @@ pub(crate) fn settings_data(cx: &App) -> Vec<SettingsPage> {
                 // Note that `crates/json_schema_store` solves the same problem, there is probably a way to unify the two
                 items.push(SettingsPageItem::SectionHeader(LANGUAGES_SECTION_HEADER));
                 items.extend(all_language_names(cx).into_iter().map(|language_name| {
+                    let link = format!("languages.{language_name}");
                     SettingsPageItem::SubPageLink(SubPageLink {
                         title: language_name,
+                        description: None,
+                        json_path: Some(link.leak()),
+                        in_json: true,
                         files: USER | PROJECT,
                         render: Arc::new(|this, window, cx| {
                             this.render_sub_page_items(
