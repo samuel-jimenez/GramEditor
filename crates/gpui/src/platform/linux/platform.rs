@@ -37,7 +37,7 @@ pub(crate) const SCROLL_LINES: f32 = 3.0;
 #[cfg(any(feature = "wayland", feature = "x11"))]
 pub(crate) const DOUBLE_CLICK_INTERVAL: Duration = Duration::from_millis(400);
 pub(crate) const DOUBLE_CLICK_DISTANCE: Pixels = px(5.0);
-pub(crate) const KEYRING_LABEL: &str = "zed-github-account";
+pub(crate) const KEYRING_LABEL: &str = "gram-github-account";
 
 #[cfg(any(feature = "wayland", feature = "x11"))]
 const FILE_PICKER_PORTAL_MISSING: &str =
@@ -63,23 +63,22 @@ impl<T> ResultExt for anyhow::Result<T> {
 
                 let proxy = block_on(NotificationProxy::new()).expect(msg);
 
-                let notification_id = "dev.zed.Oops";
+                let notification_id = "se.ziran.Oops";
                 block_on(
                     proxy.add_notification(
                         notification_id,
-                        Notification::new("Zed failed to launch")
+                        Notification::new("Gram failed to launch")
                             .body(Some(
-                                format!(
-                                    "{e:?}. See https://zed.dev/docs/linux for troubleshooting steps."
-                                )
-                                .as_str(),
+                                format!("{e:?}. See docs/src/linux.md for troubleshooting steps.")
+                                    .as_str(),
                             ))
                             .priority(Priority::High)
                             .icon(ashpd::desktop::Icon::with_names(&[
                                 "dialog-question-symbolic",
                             ])),
-                    )
-                ).expect(msg);
+                    ),
+                )
+                .expect(msg);
 
                 panic!("{msg}");
             }

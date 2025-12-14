@@ -163,7 +163,7 @@ extern "system" fn DllGetClassObject(
     }
 }
 
-fn get_zed_install_folder() -> Option<PathBuf> {
+fn get_gram_install_folder() -> Option<PathBuf> {
     let mut buf = vec![0u16; MAX_PATH as usize];
     unsafe { GetModuleFileNameW(Some(DLL_INSTANCE.into()), &mut buf) };
 
@@ -181,7 +181,7 @@ fn get_zed_install_folder() -> Option<PathBuf> {
 
 #[inline]
 fn get_gram_exe_path() -> Option<String> {
-    get_zed_install_folder().map(|path| path.join("Gram.exe").to_string_lossy().into_owned())
+    get_gram_install_folder().map(|path| path.join("Gram.exe").to_string_lossy().into_owned())
 }
 
 #[inline]

@@ -531,7 +531,7 @@ impl WaylandClient {
             })
             .unwrap();
 
-        // This could be unified with the notification handling in zed/main:fail_to_open_window.
+        // This could be unified with the notification handling in gram/main:fail_to_open_window.
         let gpu_context = BladeContext::new().notify_err("Unable to init GPU context");
 
         let seat = seat.unwrap();

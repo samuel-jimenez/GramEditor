@@ -58,7 +58,7 @@ By using the action name, we can ensure that the keybinding is always up-to-date
 
 `{#action scope::Action}` - e.g., `{#action gram::OpenSettings}`.
 
-This will render a human-readable version of the action name, e.g., "zed: open settings", and will allow us to implement things like additional context on hover, etc.
+This will render a human-readable version of the action name, e.g., "gram: open settings", and will allow us to implement things like additional context on hover, etc.
 
 ### Creating New Templates
 

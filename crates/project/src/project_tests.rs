@@ -164,7 +164,7 @@ async fn test_editorconfig_support(cx: &mut gpui::TestAppContext) {
             tab_width = 10
             max_line_length = off
         "#,
-        ".zed": {
+        ".gram": {
             "settings.json": r#"{
                 "tab_size": 8,
                 "hard_tabs": false,
@@ -223,7 +223,7 @@ async fn test_editorconfig_support(cx: &mut gpui::TestAppContext) {
         let settings_c = settings_for("c.js");
         let settings_readme = settings_for("README.json");
 
-        // .editorconfig overrides .zed/settings
+        // .editorconfig overrides .gram/settings
         assert_eq!(Some(settings_a.tab_size), NonZeroU32::new(3));
         assert_eq!(settings_a.hard_tabs, true);
         assert_eq!(settings_a.ensure_final_newline_on_save, true);
@@ -236,7 +236,7 @@ async fn test_editorconfig_support(cx: &mut gpui::TestAppContext) {
         // "indent_size" is not set, so "tab_width" is used
         assert_eq!(Some(settings_c.tab_size), NonZeroU32::new(10));
 
-        // When max_line_length is "off", default to .zed/settings.json
+        // When max_line_length is "off", default to .gram/settings.json
         assert_eq!(settings_b.preferred_line_length, 64);
         assert_eq!(settings_c.preferred_line_length, 64);
 
@@ -260,7 +260,7 @@ async fn test_git_provider_project_setting(cx: &mut gpui::TestAppContext) {
     fs.insert_tree(
         path!("/dir"),
         json!({
-            ".zed": {
+            ".gram": {
                 "settings.json": r#"{
                     "git_hosting_providers": [
                         {
@@ -319,7 +319,7 @@ async fn test_managing_project_specific_settings(cx: &mut gpui::TestAppContext) 
     fs.insert_tree(
         path!("/dir"),
         json!({
-            ".zed": {
+            ".gram": {
                 "settings.json": r#"{ "tab_size": 8 }"#,
                 "tasks.json": r#"[{
                     "label": "cargo check all",
@@ -331,7 +331,7 @@ async fn test_managing_project_specific_settings(cx: &mut gpui::TestAppContext) 
                 "a.rs": "fn a() {\n    A\n}"
             },
             "b": {
-                ".zed": {
+                ".gram": {
                     "settings.json": r#"{ "tab_size": 2 }"#,
                     "tasks.json": r#"[{
                         "label": "cargo check",
@@ -361,8 +361,8 @@ async fn test_managing_project_specific_settings(cx: &mut gpui::TestAppContext) 
 
     let topmost_local_task_source_kind = TaskSourceKind::Worktree {
         id: worktree_id,
-        directory_in_worktree: rel_path(".zed").into(),
-        id_base: "local worktree tasks from directory \".zed\"".into(),
+        directory_in_worktree: rel_path(".gram").into(),
+        id_base: "local worktree tasks from directory \".gram\"".into(),
     };
 
     let all_tasks = cx
@@ -520,7 +520,7 @@ async fn test_fallback_to_single_worktree_tasks(cx: &mut gpui::TestAppContext) {
     fs.insert_tree(
         path!("/dir"),
         json!({
-            ".zed": {
+            ".gram": {
                 "tasks.json": r#"[{
                     "label": "test worktree root",
                     "command": "echo $GRAM_WORKTREE_ROOT"
@@ -595,8 +595,8 @@ async fn test_fallback_to_single_worktree_tasks(cx: &mut gpui::TestAppContext) {
         vec![(
             TaskSourceKind::Worktree {
                 id: worktree_id,
-                directory_in_worktree: rel_path(".zed").into(),
-                id_base: "local worktree tasks from directory \".zed\"".into(),
+                directory_in_worktree: rel_path(".gram").into(),
+                id_base: "local worktree tasks from directory \".gram\"".into(),
             },
             "echo /dir".to_string(),
         )]
@@ -639,7 +639,7 @@ async fn test_running_multiple_instances_of_a_single_server_in_one_worktree(
     fs.insert_tree(
         path!("/the-root"),
         json!({
-            ".zed": {
+            ".gram": {
                 "settings.json": r#"
                 {
                     "languages": {
@@ -1238,7 +1238,7 @@ async fn test_language_server_relative_path(cx: &mut gpui::TestAppContext) {
     fs.insert_tree(
         path!("/the-root"),
         json!({
-            ".zed": {
+            ".gram": {
                 "settings.json": settings_json_contents.to_string(),
             },
             ".relative_path": {
@@ -1315,7 +1315,7 @@ async fn test_language_server_tilde_path(cx: &mut gpui::TestAppContext) {
     fs.insert_tree(
         path!("/root"),
         json!({
-            ".zed": {
+            ".gram": {
                 "settings.json": settings_json_contents.to_string(),
             },
             "src": {

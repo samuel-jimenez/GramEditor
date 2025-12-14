@@ -1156,7 +1156,7 @@ impl DebugPanel {
                             .read(cx)
                             .project_path_for_absolute_path(path, cx)
                             .context(
-                                "Couldn't get project path for .zed/debug.json in active worktree",
+                                "Couldn't get project path for .gram/debug.json in active worktree",
                             )
                     })??;
 

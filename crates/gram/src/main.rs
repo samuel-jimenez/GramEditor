@@ -1,5 +1,5 @@
-mod reliability;
 mod gram;
+mod reliability;
 
 use anyhow::{Context as _, Error, Result};
 use clap::Parser;
@@ -22,6 +22,11 @@ use remote::RemoteConnectionOptions;
 use reqwest_client::ReqwestClient;
 
 use assets::Assets;
+use gram::{
+    OpenListener, OpenRequest, RawOpenRequest, app_menus, build_window_options,
+    derive_paths_with_position, handle_cli_connection, handle_keymap_file_changes,
+    handle_settings_file_changes, initialize_workspace, open_paths_with_positions,
+};
 use node_runtime::{NodeBinaryOptions, NodeRuntime};
 use parking_lot::Mutex;
 use project::project_settings::ProjectSettings;
@@ -36,11 +41,6 @@ use std::{
     process,
     sync::{Arc, OnceLock},
     time::Instant,
-};
-use gram::{
-    OpenListener, OpenRequest, RawOpenRequest, app_menus, build_window_options,
-    derive_paths_with_position, handle_cli_connection, handle_keymap_file_changes,
-    handle_settings_file_changes, initialize_workspace, open_paths_with_positions,
 };
 use theme::{ActiveTheme, GlobalTheme, ThemeRegistry};
 use util::ResultExt;
@@ -170,20 +170,20 @@ pub fn main() {
 
     let args = Args::parse();
 
-    // `zed --askpass` Makes zed operate in nc/netcat mode for use with askpass
+    // `gram --askpass` Makes gram operate in nc/netcat mode for use with askpass
     #[cfg(not(target_os = "windows"))]
     if let Some(socket) = &args.askpass {
         askpass::main(socket);
         return;
     }
 
-    // `zed --crash-handler` Makes zed operate in minidump crash handler mode
+    // `gram --crash-handler` Makes gram operate in minidump crash handler mode
     if let Some(socket) = &args.crash_handler {
         crashes::crash_server(socket.as_path());
         return;
     }
 
-    // `zed --nc` Makes zed operate in nc/netcat mode for use with MCP
+    // `gram --nc` Makes gram operate in nc/netcat mode for use with MCP
     if let Some(socket) = &args.nc {
         match nc::main(socket) {
             Ok(()) => return,
@@ -203,7 +203,7 @@ pub fn main() {
         }
     }
 
-    // `zed --printenv` Outputs environment variables as JSON to stdout
+    // `gram --printenv` Outputs environment variables as JSON to stdout
     if args.printenv {
         util::shell_env::print_env();
         return;
@@ -220,7 +220,7 @@ pub fn main() {
     }
 
     #[cfg(target_os = "windows")]
-    match util::get_zed_cli_path() {
+    match util::get_gram_cli_path() {
         Ok(path) => askpass::set_askpass_program(path),
         Err(err) => {
             eprintln!("Error: {}", err);
@@ -248,8 +248,8 @@ pub fn main() {
     }
 
     let app_version = AppVersion::load(env!("CARGO_PKG_VERSION"));
-    let app_commit_sha = option_env!("GRAM_COMMIT_SHA")
-        .map(|commit_sha| AppCommitSha::new(commit_sha.to_string()));
+    let app_commit_sha =
+        option_env!("GRAM_COMMIT_SHA").map(|commit_sha| AppCommitSha::new(commit_sha.to_string()));
 
     if args.system_specs {
         let system_specs = system_specs::SystemSpecs::new_stateless(
@@ -269,7 +269,7 @@ pub fn main() {
         .unwrap();
 
     log::info!(
-        "========== starting zed version {}, sha {} ==========",
+        "========== starting gram version {}, sha {} ==========",
         app_version,
         app_commit_sha
             .as_ref()
@@ -328,7 +328,7 @@ pub fn main() {
         }
     };
     if failed_single_instance_check {
-        println!("zed is already running");
+        println!("gram is already running");
         return;
     }
 
@@ -1069,7 +1069,7 @@ struct Args {
     ///
     /// This overrides the default platform-specific data directory location.
     /// On macOS, the default is `~/Library/Application Support/Gram`.
-    /// On Linux/FreeBSD, the default is `$XDG_DATA_HOME/zed`.
+    /// On Linux/FreeBSD, the default is `$XDG_DATA_HOME/gram`.
     /// On Windows, the default is `%LOCALAPPDATA%\Gram`.
     #[arg(long, value_name = "DIR", verbatim_doc_comment)]
     user_data_dir: Option<String>,
@@ -1087,7 +1087,7 @@ struct Args {
     #[arg(long, value_name = "USER@DISTRO")]
     wsl: Option<String>,
 
-    /// Instructs zed to run as a dev server on this machine. (not implemented)
+    /// Instructs gram to run as a dev server on this machine. (not implemented)
     #[arg(long)]
     dev_server_token: Option<String>,
 
@@ -1109,7 +1109,7 @@ struct Args {
     #[arg(long, hide = true)]
     crash_handler: Option<PathBuf>,
 
-    /// Run zed in the foreground, only used on Windows, to match the behavior on macOS.
+    /// Run gram in the foreground, only used on Windows, to match the behavior on macOS.
     #[arg(long)]
     #[cfg(target_os = "windows")]
     #[arg(hide = true)]
