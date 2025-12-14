@@ -6,16 +6,15 @@ If you're used to a specific editor's defaults, you can change your `base_keymap
 
 The following keymap styles are currently supported:
 
-- VS Code (default)
+- Emacs (default)
+- VS Code
 - Atom
-- Emacs (Beta)
 - JetBrains
 - Sublime Text
 - TextMate
-- Cursor
 - None (disables _all_ key bindings)
 
-This setting can also be changed via the command palette through the `zed: toggle base keymap selector` action.
+This setting can also be changed via the command palette through the `gram: toggle base keymap selector` action.
 
 You can also enable `vim_mode` or `helix_mode`, which add modal bindings.
 For more information, see the documentation for [Vim mode](./vim.md) and [Helix mode](./helix.md).

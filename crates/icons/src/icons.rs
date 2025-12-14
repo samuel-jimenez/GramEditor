@@ -91,6 +91,7 @@ pub enum IconName {
     FileTree,
     Filter,
     Flame,
+    Flower,
     Folder,
     FolderOpen,
     FolderSearch,

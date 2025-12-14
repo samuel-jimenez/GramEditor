@@ -11,27 +11,18 @@
   // - "dark": Use the theme indicated by the "dark" field
   "theme": {
     "mode": "system",
-    "light": "One Light",
-    "dark": "One Dark"
+    "light": "Melange Light",
+    "dark": "Melange Dark"
   },
   "icon_theme": "Gram (Default)",
   // The name of a base set of key bindings to use.
-  // This setting can take six values, each named after another
-  // text editor:
-  //
-  // 1. "VSCode"
-  // 2. "Atom"
-  // 3. "JetBrains"
-  // 4. "None"
-  // 5. "SublimeText"
-  // 6. "TextMate"
-  "base_keymap": "VSCode",
+  // See crates/settings/src/base_keymap_setting.rs BaseKeymap
+  // for possible values.
+  "base_keymap": "Emacs",
   // Features that can be globally enabled or disabled
   "features": {
   },
   // The name of a font to use for rendering text in the editor
-  // ".GramMono" currently aliases to Lilex
-  // but this may change in the future.
   "buffer_font_family": ".GramMono",
   // Set the buffer text's font fallbacks, this will be merged with
   // the platform's default fallbacks.
@@ -39,10 +30,10 @@
   // The OpenType features to enable for text in the editor.
   "buffer_font_features": {
     // Disable ligatures:
-    // "calt": false
+    "calt": false
   },
   // The default font size for text in the editor
-  "buffer_font_size": 15,
+  "buffer_font_size": 16,
   // The weight of the editor font in standard CSS units from 100 to 900.
   "buffer_font_weight": 400,
   // Set the buffer's line height.
@@ -72,7 +63,7 @@
   // The weight of the UI font in standard CSS units from 100 to 900.
   "ui_font_weight": 400,
   // The default font size for text in the UI
-  "ui_font_size": 16,
+  "ui_font_size": 15,
   // How much to fade out unused code.
   "unnecessary_code_fade": 0.3,
   // Active pane styling settings.
@@ -255,7 +246,7 @@
   "minimum_contrast_for_highlights": 45,
   // Whether to pop the completions menu while typing in an editor without
   // explicitly requesting it.
-  "show_completions_on_input": true,
+  "show_completions_on_input": false,
   // Whether to display inline and alongside documentation for items in the
   // completions menu
   "show_completion_documentation": true,
@@ -335,7 +326,7 @@
   // Whether to automatically add matching closing characters when typing
   // opening parenthesis, bracket, brace, single or double quote characters.
   // For example, when you type '(', Gram will add a closing ) at the correct position.
-  "use_autoclose": true,
+  "use_autoclose": false,
   // Whether to automatically surround selected text when typing opening parenthesis,
   // bracket, brace, single or double quote characters.
   // For example, when you select text and type '(', Gram will surround the text with ().
@@ -384,7 +375,7 @@
   // - It is a tab
   // - It is adjacent to an edge (start or end)
   // - It is adjacent to a whitespace (left or right)
-  "show_whitespaces": "selection",
+  "show_whitespaces": "trailing",
   // Visible characters used to render whitespace when show_whitespaces is enabled.
   "whitespace_map": {
     "space": "•",
@@ -529,7 +520,7 @@
   },
   "indent_guides": {
     // Whether to show indent guides in the editor.
-    "enabled": true,
+    "enabled": false,
     // The width of the indent guides in pixels, between 1 and 10.
     "line_width": 1,
     // The width of the active indent guide in pixels, between 1 and 10.
@@ -567,7 +558,7 @@
     // Whether to stick scopes to the top of the editor.
     "enabled": false
   },
-  "relative_line_numbers": "disabled",
+  "relative_line_numbers": "enabled",
   // If 'search_wrap' is disabled, search result do not wrap around the end of the file.
   "search_wrap": true,
   // Search options to enable by default when opening new project and buffer searches.
@@ -598,7 +589,7 @@
   // When enabled, automatically adjusts search case sensitivity based on your query.
   // If your search query contains any uppercase letters, the search becomes case-sensitive;
   // if it contains only lowercase letters, the search becomes case-insensitive.
-  "use_smartcase_search": false,
+  "use_smartcase_search": true,
   // Inlay hint related settings
   "inlay_hints": {
     // Global switch to toggle hints on and off, switched off by default.
@@ -644,9 +635,9 @@
     // Spacing between worktree entries in the project panel. Can be 'comfortable' or 'standard'.
     "entry_spacing": "comfortable",
     // Whether to show file icons in the project panel.
-    "file_icons": true,
+    "file_icons": false,
     // Whether to show folder icons or chevrons for directories in the project panel.
-    "folder_icons": true,
+    "folder_icons": false,
     // Whether to show the git status in the project panel.
     "git_status": true,
     // Amount of indentation for nested items.
@@ -1109,7 +1100,7 @@
     // Control whether the git blame information is shown inline,
     // in the currently focused line.
     "inline_blame": {
-      "enabled": true,
+      "enabled": false,
       // Sets a delay after which the inline blame information is shown.
       // Delay is restarted with every cursor movement.
       "delay_ms": 0,
@@ -1568,6 +1559,10 @@
       "soft_wrap": "editor_width",
       "preferred_line_length": 72
     },
+    "Gleam": {
+      "language_servers": ["gleam lsp", "..."],
+      "tab_size": 2
+    },
     "Go": {
       "hard_tabs": true,
       "code_actions_on_format": {
@@ -1811,7 +1806,7 @@
     "default_mode": "normal",
     "toggle_relative_line_numbers": false,
     "use_system_clipboard": "always",
-    "use_smartcase_find": false,
+    "use_smartcase_find": true,
     "highlight_on_yank_duration": 200,
     "custom_digraphs": {},
     // Cursor shape for the each mode.

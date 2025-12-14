@@ -19,7 +19,6 @@ pub enum BaseKeymap {
     Atom,
     TextMate,
     Emacs,
-    Cursor,
     None,
 }
 
@@ -32,7 +31,6 @@ impl From<BaseKeymapContent> for BaseKeymap {
             BaseKeymapContent::Atom => Self::Atom,
             BaseKeymapContent::TextMate => Self::TextMate,
             BaseKeymapContent::Emacs => Self::Emacs,
-            BaseKeymapContent::Cursor => Self::Cursor,
             BaseKeymapContent::None => Self::None,
         }
     }
@@ -46,7 +44,6 @@ impl Into<BaseKeymapContent> for BaseKeymap {
             BaseKeymap::Atom => BaseKeymapContent::Atom,
             BaseKeymap::TextMate => BaseKeymapContent::TextMate,
             BaseKeymap::Emacs => BaseKeymapContent::Emacs,
-            BaseKeymap::Cursor => BaseKeymapContent::Cursor,
             BaseKeymap::None => BaseKeymapContent::None,
         }
     }
@@ -60,8 +57,7 @@ impl Display for BaseKeymap {
             BaseKeymap::SublimeText => write!(f, "Sublime Text"),
             BaseKeymap::Atom => write!(f, "Atom"),
             BaseKeymap::TextMate => write!(f, "TextMate"),
-            BaseKeymap::Emacs => write!(f, "Emacs (beta)"),
-            BaseKeymap::Cursor => write!(f, "Cursor (beta)"),
+            BaseKeymap::Emacs => write!(f, "Emacs"),
             BaseKeymap::None => write!(f, "None"),
         }
     }
@@ -69,14 +65,13 @@ impl Display for BaseKeymap {
 
 impl BaseKeymap {
     #[cfg(target_os = "macos")]
-    pub const OPTIONS: [(&'static str, Self); 7] = [
+    pub const OPTIONS: [(&'static str, Self); 6] = [
         ("VS Code (Default)", Self::VSCode),
         ("Atom", Self::Atom),
         ("JetBrains", Self::JetBrains),
         ("Sublime Text", Self::SublimeText),
-        ("Emacs (beta)", Self::Emacs),
+        ("Emacs", Self::Emacs),
         ("TextMate", Self::TextMate),
-        ("Cursor", Self::Cursor),
     ];
 
     #[cfg(not(target_os = "macos"))]
@@ -85,8 +80,7 @@ impl BaseKeymap {
         ("Atom", Self::Atom),
         ("JetBrains", Self::JetBrains),
         ("Sublime Text", Self::SublimeText),
-        ("Emacs (beta)", Self::Emacs),
-        ("Cursor", Self::Cursor),
+        ("Emacs", Self::Emacs),
     ];
 
     pub fn asset_path(&self) -> Option<&'static str> {
@@ -97,7 +91,6 @@ impl BaseKeymap {
             BaseKeymap::Atom => Some("keymaps/macos/atom.json"),
             BaseKeymap::TextMate => Some("keymaps/macos/textmate.json"),
             BaseKeymap::Emacs => Some("keymaps/macos/emacs.json"),
-            BaseKeymap::Cursor => Some("keymaps/macos/cursor.json"),
             BaseKeymap::VSCode => None,
             BaseKeymap::None => None,
         }
@@ -108,7 +101,6 @@ impl BaseKeymap {
             BaseKeymap::SublimeText => Some("keymaps/linux/sublime_text.json"),
             BaseKeymap::Atom => Some("keymaps/linux/atom.json"),
             BaseKeymap::Emacs => Some("keymaps/linux/emacs.json"),
-            BaseKeymap::Cursor => Some("keymaps/linux/cursor.json"),
             BaseKeymap::TextMate => None,
             BaseKeymap::VSCode => None,
             BaseKeymap::None => None,

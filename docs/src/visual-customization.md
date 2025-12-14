@@ -46,7 +46,7 @@ If you would like to use distinct themes for light mode/dark mode that can be se
   "ui_font_size": 16,
 
   // Buffer Font - Used by editor buffers
-  // use ".GramMono" for the bundled default monospace (currently Lilex)
+  // use ".GramMono" for the bundled default monospace
   "buffer_font_family": "Berkeley Mono", // Font name for editor buffers
   "buffer_font_size": 15,                 // Font size for editor buffers
   "buffer_font_weight": 400,              // Font weight in CSS units [100-900]

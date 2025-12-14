@@ -351,7 +351,7 @@ Note that a save will be triggered when an unsaved tab is closed, even if this i
 
 - Description: The name of a font to use for rendering text in the editor.
 - Setting: `buffer_font_family`
-- Default: `.GramMono`. This currently aliases to [Lilex](https://lilex.myrt.co).
+- Default: `.GramMono`.
 
 **Options**
 

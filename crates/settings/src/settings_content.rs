@@ -209,7 +209,6 @@ pub enum BaseKeymapContent {
     Atom,
     TextMate,
     Emacs,
-    Cursor,
     None,
 }
 
@@ -221,7 +220,6 @@ impl strum::VariantNames for BaseKeymapContent {
         "Atom",
         "TextMate",
         "Emacs",
-        "Cursor",
         "None",
     ];
 }
