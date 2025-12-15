@@ -182,14 +182,13 @@ impl ProjectPicker {
         connection: RemoteConnectionOptions,
         project: Entity<Project>,
         home_dir: RemotePathBuf,
-        path_style: PathStyle,
         workspace: WeakEntity<Workspace>,
         window: &mut Window,
         cx: &mut Context<RemoteServerProjects>,
     ) -> Entity<Self> {
         let (tx, rx) = oneshot::channel();
         let lister = project::DirectoryLister::Project(project.clone());
-        let delegate = file_finder::OpenPathDelegate::new(tx, lister, false, path_style);
+        let delegate = file_finder::OpenPathDelegate::new(tx, lister, false, cx);
 
         let picker = cx.new(|cx| {
             let picker = Picker::uniform_list(delegate, window, cx)
@@ -651,7 +650,6 @@ impl RemoteServerProjects {
         connection_options: remote::RemoteConnectionOptions,
         project: Entity<Project>,
         home_dir: RemotePathBuf,
-        path_style: PathStyle,
         window: &mut Window,
         cx: &mut Context<Self>,
         workspace: WeakEntity<Workspace>,
@@ -664,7 +662,6 @@ impl RemoteServerProjects {
             connection_options,
             project,
             home_dir,
-            path_style,
             workspace,
             window,
             cx,
@@ -949,7 +946,6 @@ impl RemoteServerProjects {
                                     connection_options,
                                     project,
                                     home_dir,
-                                    path_style,
                                     window,
                                     cx,
                                     weak,
