@@ -10,7 +10,8 @@ Navigating through the icon theme list by moving up and down will change the ico
 
 ## Installing more Icon Themes
 
-More icon themes are available from the Extensions page, which you can access via the command palette with `zed: extensions` or the [Gram website](https://gram.liten.app/extensions?filter=icon-themes).
+Gram can use icon themes created for the Zed editor. If you find an icon theme
+you like, you can install it using the repository URL from the Extensions page.
 
 ## Configuring Icon Themes
 
