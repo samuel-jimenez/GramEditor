@@ -4686,6 +4686,9 @@ impl Editor {
                 .collect();
 
             this.change_selections(Default::default(), window, cx, |s| s.select(new_selections));
+            if let Some(task) = this.trigger_on_type_formatting("\n".to_owned(), window, cx) {
+                task.detach_and_log_err(cx);
+            }
         });
     }
 
@@ -4750,6 +4753,9 @@ impl Editor {
                 }
             }
             editor.edit(indent_edits, cx);
+            if let Some(format) = editor.trigger_on_type_formatting("\n".to_owned(), window, cx) {
+                format.detach_and_log_err(cx);
+            }
         });
     }
 
@@ -4812,6 +4818,9 @@ impl Editor {
                 }
             }
             editor.edit(indent_edits, cx);
+            if let Some(format) = editor.trigger_on_type_formatting("\n".to_owned(), window, cx) {
+                format.detach_and_log_err(cx);
+            }
         });
     }
 
@@ -5122,7 +5131,7 @@ impl Editor {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) -> Option<Task<Result<()>>> {
-        if input.len() != 1 {
+        if input.chars().count() != 1 {
             return None;
         }
 
