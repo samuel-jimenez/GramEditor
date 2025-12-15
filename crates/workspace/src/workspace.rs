@@ -22,6 +22,7 @@ pub use path_list::PathList;
 pub use toast_layer::{ToastAction, ToastLayer, ToastView};
 
 use anyhow::{Context as _, Result, anyhow};
+use app_actions::{Spawn, feedback::FileBugReport};
 use client::{
     Client, ErrorExt, TypedEnvelope, UserStore,
     proto::{self, ErrorCode, PanelId},
@@ -121,7 +122,6 @@ pub use workspace_settings::{
     AutosaveSetting, BottomDockLayout, RestoreOnStartupBehavior, StatusBarSettings, TabBarSettings,
     WorkspaceSettings,
 };
-use app_actions::{Spawn, feedback::FileBugReport};
 
 use crate::persistence::{
     SerializedAxis,
@@ -258,6 +258,10 @@ actions!(
         ToggleRightDock,
         /// Toggles zoom on the active pane.
         ToggleZoom,
+        /// Zooms in on the active pane.
+        ZoomIn,
+        /// Zooms out of the active pane.
+        ZoomOut,
         /// Restores the banner.
         RestoreBanner,
         /// Toggles expansion of the selected item.
@@ -7913,6 +7917,105 @@ mod tests {
             assert!(!pane.focus_handle(cx).is_focused(window));
             assert!(workspace.right_dock().read(cx).is_open());
             assert!(workspace.zoomed.is_none());
+        });
+    }
+
+    #[gpui::test]
+    async fn test_pane_zoom_in_out(cx: &mut TestAppContext) {
+        init_test(cx);
+        let fs = FakeFs::new(cx.executor());
+
+        let project = Project::test(fs, [], cx).await;
+        let (workspace, cx) =
+            cx.add_window_view(|window, cx| Workspace::test_new(project, window, cx));
+
+        let pane = workspace.update_in(cx, |workspace, _window, _cx| {
+            workspace.active_pane().clone()
+        });
+
+        // Add an item to the pane so it can be zoomed
+        workspace.update_in(cx, |workspace, window, cx| {
+            let item = cx.new(TestItem::new);
+            workspace.add_item(pane.clone(), Box::new(item), None, true, true, window, cx);
+        });
+
+        // Initially not zoomed
+        workspace.update_in(cx, |workspace, _window, cx| {
+            assert!(!pane.read(cx).is_zoomed(), "Pane starts unzoomed");
+            assert!(
+                workspace.zoomed.is_none(),
+                "Workspace should track no zoomed pane"
+            );
+            assert!(pane.read(cx).items_len() > 0, "Pane should have items");
+        });
+
+        // Zoom In
+        pane.update_in(cx, |pane, window, cx| {
+            pane.zoom_in(&crate::ZoomIn, window, cx);
+        });
+
+        workspace.update_in(cx, |workspace, window, cx| {
+            assert!(
+                pane.read(cx).is_zoomed(),
+                "Pane should be zoomed after ZoomIn"
+            );
+            assert!(
+                workspace.zoomed.is_some(),
+                "Workspace should track the zoomed pane"
+            );
+            assert!(
+                pane.read(cx).focus_handle(cx).contains_focused(window, cx),
+                "ZoomIn should focus the pane"
+            );
+        });
+
+        // Zoom In again is a no-op
+        pane.update_in(cx, |pane, window, cx| {
+            pane.zoom_in(&crate::ZoomIn, window, cx);
+        });
+
+        workspace.update_in(cx, |workspace, window, cx| {
+            assert!(pane.read(cx).is_zoomed(), "Second ZoomIn keeps pane zoomed");
+            assert!(
+                workspace.zoomed.is_some(),
+                "Workspace still tracks zoomed pane"
+            );
+            assert!(
+                pane.read(cx).focus_handle(cx).contains_focused(window, cx),
+                "Pane remains focused after repeated ZoomIn"
+            );
+        });
+
+        // Zoom Out
+        pane.update_in(cx, |pane, window, cx| {
+            pane.zoom_out(&crate::ZoomOut, window, cx);
+        });
+
+        workspace.update_in(cx, |workspace, _window, cx| {
+            assert!(
+                !pane.read(cx).is_zoomed(),
+                "Pane should unzoom after ZoomOut"
+            );
+            assert!(
+                workspace.zoomed.is_none(),
+                "Workspace clears zoom tracking after ZoomOut"
+            );
+        });
+
+        // Zoom Out again is a no-op
+        pane.update_in(cx, |pane, window, cx| {
+            pane.zoom_out(&crate::ZoomOut, window, cx);
+        });
+
+        workspace.update_in(cx, |workspace, _window, cx| {
+            assert!(
+                !pane.read(cx).is_zoomed(),
+                "Second ZoomOut keeps pane unzoomed"
+            );
+            assert!(
+                workspace.zoomed.is_none(),
+                "Workspace remains without zoomed pane"
+            );
         });
     }
 
