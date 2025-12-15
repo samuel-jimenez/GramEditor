@@ -103,10 +103,10 @@ use gpui::{
     ClipboardEntry, ClipboardItem, Context, DispatchPhase, Entity, EntityInputHandler,
     EventEmitter, FocusHandle, FocusOutEvent, Focusable, FontId, FontWeight, Global,
     HighlightStyle, Hsla, KeyContext, Modifiers, MouseButton, MouseDownEvent, MouseMoveEvent,
-    PaintQuad, ParentElement, Pixels, Render, ScrollHandle, SharedString, Size, Styled,
-    Subscription, Task, TextRun, TextStyle, TextStyleRefinement, UTF16Selection, UnderlineStyle,
-    UniformListScrollHandle, WeakEntity, WeakFocusHandle, Window, div, point, prelude::*, px,
-    relative, size,
+    PaintQuad, ParentElement, Pixels, PressureStage, Render, ScrollHandle, SharedString, Size,
+    Styled, Subscription, Task, TextRun, TextStyle, TextStyleRefinement, UTF16Selection,
+    UnderlineStyle, UniformListScrollHandle, WeakEntity, WeakFocusHandle, Window, div, point,
+    prelude::*, px, relative, size,
 };
 use hover_links::{HoverLink, HoveredLinkState, find_file};
 use hover_popover::{HoverState, hide_hover};
