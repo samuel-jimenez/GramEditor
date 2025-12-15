@@ -9,9 +9,7 @@ mod quick_action_bar;
 pub(crate) mod windows_only_instance;
 
 use anyhow::Context as _;
-use app_actions::{
-    OpenBrowser, OpenDocs, OpenServerSettings, OpenSettingsFile, OpenGramUrl, Quit,
-};
+use app_actions::{OpenBrowser, OpenDocs, OpenGramUrl, OpenServerSettings, OpenSettingsFile, Quit};
 pub use app_menus::*;
 use assets::Assets;
 use breadcrumbs::Breadcrumbs;
@@ -136,15 +134,15 @@ pub fn init(cx: &mut App) {
             || flag.await
         {
             cx.update(|cx| {
-                cx.on_action(|_: &TestPanic, _| panic!("Ran the TestPanic action"));
-                cx.on_action(|_: &TestCrash, _| {
-                    unsafe extern "C" {
-                        fn puts(s: *const i8);
-                    }
-                    unsafe {
-                        puts(0xabad1d3a as *const i8);
-                    }
-                });
+                cx.on_action(|_: &TestPanic, _| panic!("Ran the TestPanic action"))
+                    .on_action(|_: &TestCrash, _| {
+                        unsafe extern "C" {
+                            fn puts(s: *const i8);
+                        }
+                        unsafe {
+                            puts(0xabad1d3a as *const i8);
+                        }
+                    });
             })
             .ok();
         };
@@ -154,11 +152,11 @@ pub fn init(cx: &mut App) {
         with_active_or_new_workspace(cx, |workspace, window, cx| {
             open_log_file(workspace, window, cx);
         });
-    });
-    cx.on_action(|_: &workspace::RevealLogInFileManager, cx| {
+    })
+    .on_action(|_: &workspace::RevealLogInFileManager, cx| {
         cx.reveal_path(paths::log_file().as_path());
-    });
-    cx.on_action(|_: &app_actions::OpenLicenses, cx| {
+    })
+    .on_action(|_: &app_actions::OpenLicenses, cx| {
         with_active_or_new_workspace(cx, |workspace, window, cx| {
             open_bundled_file(
                 workspace,
@@ -169,8 +167,8 @@ pub fn init(cx: &mut App) {
                 cx,
             );
         });
-    });
-    cx.on_action(|&app_actions::OpenKeymapFile, cx| {
+    })
+    .on_action(|&app_actions::OpenKeymapFile, cx| {
         with_active_or_new_workspace(cx, |_, window, cx| {
             open_settings_file(
                 paths::keymap_file(),
@@ -179,8 +177,8 @@ pub fn init(cx: &mut App) {
                 cx,
             );
         });
-    });
-    cx.on_action(|_: &OpenSettingsFile, cx| {
+    })
+    .on_action(|_: &OpenSettingsFile, cx| {
         with_active_or_new_workspace(cx, |_, window, cx| {
             open_settings_file(
                 paths::settings_file(),
@@ -189,8 +187,8 @@ pub fn init(cx: &mut App) {
                 cx,
             );
         });
-    });
-    cx.on_action(|_: &OpenTasks, cx| {
+    })
+    .on_action(|_: &OpenTasks, cx| {
         with_active_or_new_workspace(cx, |_, window, cx| {
             open_settings_file(
                 paths::tasks_file(),
@@ -199,8 +197,8 @@ pub fn init(cx: &mut App) {
                 cx,
             );
         });
-    });
-    cx.on_action(|_: &OpenDebugTasks, cx| {
+    })
+    .on_action(|_: &OpenDebugTasks, cx| {
         with_active_or_new_workspace(cx, |_, window, cx| {
             open_settings_file(
                 paths::debug_scenarios_file(),
@@ -209,8 +207,8 @@ pub fn init(cx: &mut App) {
                 cx,
             );
         });
-    });
-    cx.on_action(|_: &OpenDefaultSettings, cx| {
+    })
+    .on_action(|_: &OpenDefaultSettings, cx| {
         with_active_or_new_workspace(cx, |workspace, window, cx| {
             open_bundled_file(
                 workspace,
@@ -221,8 +219,8 @@ pub fn init(cx: &mut App) {
                 cx,
             );
         });
-    });
-    cx.on_action(|_: &app_actions::OpenDefaultKeymap, cx| {
+    })
+    .on_action(|_: &app_actions::OpenDefaultKeymap, cx| {
         with_active_or_new_workspace(cx, |workspace, window, cx| {
             open_bundled_file(
                 workspace,
@@ -233,8 +231,8 @@ pub fn init(cx: &mut App) {
                 cx,
             );
         });
-    });
-    cx.on_action(|_: &app_actions::About, cx| {
+    })
+    .on_action(|_: &app_actions::About, cx| {
         with_active_or_new_workspace(cx, |workspace, window, cx| {
             about(workspace, window, cx);
         });
@@ -432,7 +430,7 @@ fn unstable_version_notification(cx: &mut App) {
     ) {
         return;
     }
-    let db_key = "zed_windows_nightly_notif_shown_at".to_owned();
+    let db_key = "gram_windows_nightly_notif_shown_at".to_owned();
     let time = chrono::Utc::now();
     if let Some(last_shown) = db::kvp::KEY_VALUE_STORE
         .read_kvp(&db_key)
@@ -549,7 +547,7 @@ fn show_software_emulation_warning_if_needed(
             (
                 "Vulkan",
                 "https://gram.liten.app/docs/linux",
-                "https://gram.liten.app/docs/linux#zed-fails-to-open-windows",
+                "https://gram.liten.app/docs/linux",
             )
         };
         let message = format!(
@@ -4703,7 +4701,7 @@ mod tests {
             "Test setup failed - settings file doesn't contain our marker"
         );
 
-        // 3. Add .zed to file scan exclusions in user settings
+        // 3. Add .gram to file scan exclusions in user settings
         cx.update_global::<SettingsStore, _>(|store, cx| {
             store.update_user_settings(cx, |worktree_settings| {
                 worktree_settings.project.worktree.file_scan_exclusions =

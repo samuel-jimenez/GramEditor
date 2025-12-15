@@ -125,16 +125,14 @@ pub fn init(client: &Arc<Client>, cx: &mut App) {
         move |_: &SignIn, _cx| {
             if let Some(_) = client.upgrade() {}
         }
-    });
-
-    cx.on_action({
+    })
+    .on_action({
         let client = client.clone();
         move |_: &SignOut, _cx| {
             if let Some(_client) = client.upgrade() {}
         }
-    });
-
-    cx.on_action({
+    })
+    .on_action({
         let client = client;
         move |_: &Reconnect, cx| {
             if let Some(client) = client.upgrade() {
