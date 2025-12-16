@@ -383,7 +383,7 @@ futures = "0.3"
 futures-batch = "0.6.1"
 futures-lite = "1.13"
 gh-workflow = { git = "https://github.com/zed-industries/gh-workflow", rev = "3eaa84abca0778eb54272f45a312cb24f9a0b435" }
-git2 = { version = "0.20.2" }
+git2 = { version = "0.20.2", default-features = false, features = ["vendored-libgit2", "vendored-openssl", "ssh", "https"] }
 globset = "0.4"
 handlebars = "4.3"
 hashbrown = "0.15.3"
