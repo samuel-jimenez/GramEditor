@@ -679,6 +679,8 @@
   {
     "context": "GitPanel && ChangesList",
     "bindings": {
+      "left": "git_panel::CollapseSelectedEntry",
+      "right": "git_panel::ExpandSelectedEntry",
       "up": "menu::SelectPrevious",
       "down": "menu::SelectNext",
       "enter": "menu::Confirm",
