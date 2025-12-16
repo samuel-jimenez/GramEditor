@@ -3,7 +3,6 @@ use crate::restorable_workspace_locations;
 use anyhow::{Context as _, Result, anyhow};
 use cli::{CliRequest, CliResponse, ipc::IpcSender};
 use cli::{IpcHandshake, ipc};
-use client::parse_editor_link;
 use collections::HashMap;
 use db::kvp::KEY_VALUE_STORE;
 use editor::Editor;
@@ -36,8 +35,6 @@ pub struct OpenRequest {
     pub kind: Option<OpenRequestKind>,
     pub open_paths: Vec<String>,
     pub diff_paths: Vec<[String; 2]>,
-    pub open_channel_notes: Vec<(u64, Option<String>)>,
-    pub join_channel: Option<u64>,
     pub remote_connection: Option<RemoteConnectionOptions>,
 }
 
@@ -109,8 +106,6 @@ impl OpenRequest {
                 });
             } else if url.starts_with("ssh://") {
                 this.parse_ssh_file_path(&url, cx)?
-            } else if let Some(request_path) = parse_editor_link(&url, cx) {
-                this.parse_request_path(request_path).log_err();
             } else {
                 log::error!("unhandled url: {}", url);
             }
@@ -153,31 +148,6 @@ impl OpenRequest {
         self.remote_connection = Some(connection_options);
         self.parse_file_path(url.path());
         Ok(())
-    }
-
-    fn parse_request_path(&mut self, request_path: &str) -> Result<()> {
-        let mut parts = request_path.split('/');
-        if parts.next() == Some("channel")
-            && let Some(slug) = parts.next()
-            && let Some(id_str) = slug.split('-').next_back()
-            && let Ok(channel_id) = id_str.parse::<u64>()
-        {
-            let Some(next) = parts.next() else {
-                self.join_channel = Some(channel_id);
-                return Ok(());
-            };
-
-            if let Some(heading) = next.strip_prefix("notes#") {
-                self.open_channel_notes
-                    .push((channel_id, Some(heading.to_string())));
-                return Ok(());
-            }
-            if next == "notes" {
-                self.open_channel_notes.push((channel_id, None));
-                return Ok(());
-            }
-        }
-        anyhow::bail!("invalid zed url: {request_path}")
     }
 }
 
