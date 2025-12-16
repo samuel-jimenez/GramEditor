@@ -132,7 +132,7 @@ impl SelectionLayout {
     fn new<T: ToPoint + ToDisplayPoint + Clone>(
         selection: Selection<T>,
         line_mode: bool,
-        vim_mode_enabled: bool,
+        cursor_offset: bool,
         cursor_shape: CursorShape,
         map: &DisplaySnapshot,
         is_newest: bool,
@@ -153,7 +153,7 @@ impl SelectionLayout {
         }
 
         // any vim visual mode (including line mode)
-        if vim_mode_enabled && !range.is_empty() && !selection.reversed {
+        if cursor_offset && !range.is_empty() && !selection.reversed {
             if head.column() > 0 {
                 head = map.clip_point(DisplayPoint::new(head.row(), head.column() - 1), Bias::Left);
             } else if head.row().0 > 0 && head != map.max_point() {
@@ -1455,7 +1455,7 @@ impl EditorElement {
                     let layout = SelectionLayout::new(
                         selection,
                         editor.selections.line_mode(),
-                        editor.is_vim_mode_enabled(cx),
+                        editor.cursor_offset_on_selection,
                         editor.cursor_shape,
                         &snapshot.display_snapshot,
                         is_newest,
@@ -1502,7 +1502,7 @@ impl EditorElement {
                     let drag_cursor_layout = SelectionLayout::new(
                         drop_cursor.clone(),
                         false,
-                        editor.is_vim_mode_enabled(cx),
+                        editor.cursor_offset_on_selection,
                         CursorShape::Bar,
                         &snapshot.display_snapshot,
                         false,
@@ -1515,7 +1515,8 @@ impl EditorElement {
             }
 
             if !editor.is_focused(window) && editor.show_cursor_when_unfocused {
-                let player = editor.current_user_player_color(cx);
+                let cursor_offset_on_selection = editor.cursor_offset_on_selection;
+
                 let layouts = snapshot
                     .buffer_snapshot()
                     .selections_in_range(&(start_anchor..end_anchor), true)
@@ -1523,7 +1524,7 @@ impl EditorElement {
                         SelectionLayout::new(
                             selection,
                             line_mode,
-                            editor.is_vim_mode_enabled(cx),
+                            cursor_offset_on_selection,
                             cursor_shape,
                             &snapshot.display_snapshot,
                             false,
@@ -1532,7 +1533,7 @@ impl EditorElement {
                         )
                     })
                     .collect::<Vec<_>>();
-
+                let player = editor.current_user_player_color(cx);
                 selections.push((player, layouts));
             }
         });
@@ -3206,7 +3207,7 @@ impl EditorElement {
                 SelectionLayout::new(
                     newest,
                     editor.selections.line_mode(),
-                    editor.is_vim_mode_enabled(cx),
+                    editor.cursor_offset_on_selection,
                     editor.cursor_shape,
                     &snapshot.display_snapshot,
                     true,
@@ -11342,7 +11343,6 @@ mod tests {
     use log::info;
     use std::num::NonZeroU32;
     use util::test::sample_text;
-    use vim_mode_setting::VimModeSetting;
 
     #[gpui::test]
     async fn test_soft_wrap_editor_width_auto_height_editor(cx: &mut TestAppContext) {
@@ -11687,12 +11687,6 @@ mod tests {
     async fn test_vim_visual_selections(cx: &mut TestAppContext) {
         init_test(cx, |_| {});
 
-        // Enable `vim_mode` setting so the logic that checks whether this is
-        // enabled can work as expected.
-        cx.update(|cx| {
-            VimModeSetting::override_global(VimModeSetting(true), cx);
-        });
-
         let window = cx.add_window(|window, cx| {
             let buffer = MultiBuffer::build_simple(&(sample_text(6, 6, 'a') + "\n"), cx);
             Editor::new(EditorMode::full(), buffer, None, window, cx)
@@ -11703,6 +11697,7 @@ mod tests {
 
         window
             .update(cx, |editor, window, cx| {
+                editor.cursor_offset_on_selection = true;
                 editor.change_selections(SelectionEffects::no_scroll(), window, cx, |s| {
                     s.select_ranges([
                         Point::new(0, 0)..Point::new(1, 0),
