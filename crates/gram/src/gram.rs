@@ -4391,6 +4391,7 @@ mod tests {
                 "keymap_editor",
                 "keystroke_input",
                 "language_selector",
+                "welcome",
                 "line_ending_selector",
                 "lsp_tool",
                 "markdown",

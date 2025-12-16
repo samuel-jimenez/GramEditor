@@ -1,5 +1,5 @@
-pub use crate::welcome::ShowWelcome;
-use crate::{multibuffer_hint::MultibufferHint, welcome::WelcomePage};
+use crate::multibuffer_hint::MultibufferHint;
+use app_actions::OpenOnboarding;
 use client::UserStore;
 use db::kvp::KEY_VALUE_STORE;
 use fs::Fs;
@@ -17,6 +17,8 @@ use ui::{
     Divider, KeyBinding, ParentElement as _, StatefulInteractiveElement, Vector, VectorName,
     WithScrollbar as _, prelude::*, rems_from_px,
 };
+pub use workspace::welcome::ShowWelcome;
+use workspace::welcome::WelcomePage;
 use workspace::{
     AppState, Workspace, WorkspaceId,
     dock::DockPosition,
@@ -28,7 +30,6 @@ mod base_keymap_picker;
 mod basics_page;
 pub mod multibuffer_hint;
 mod theme_preview;
-mod welcome;
 
 /// Imports settings from Visual Studio Code.
 #[derive(Copy, Clone, Debug, Default, PartialEq, Deserialize, JsonSchema, Action)]
@@ -41,14 +42,6 @@ pub struct ImportVsCodeSettings {
 
 pub const FIRST_OPEN: &str = "first_open";
 pub const DOCS_URL: &str = "https://gram.liten.app/docs/";
-
-actions!(
-    gram,
-    [
-        /// Opens the onboarding view.
-        OpenOnboarding
-    ]
-);
 
 actions!(
     onboarding,
@@ -107,7 +100,8 @@ pub fn init(cx: &mut App) {
                     if let Some(existing) = existing {
                         workspace.activate_item(&existing, true, true, window, cx);
                     } else {
-                        let settings_page = WelcomePage::new(window, cx);
+                        let settings_page = cx
+                            .new(|cx| WelcomePage::new(workspace.weak_handle(), false, window, cx));
                         workspace.add_item_to_active_pane(
                             Box::new(settings_page),
                             None,
@@ -368,7 +362,9 @@ fn go_to_welcome_page(cx: &mut App) {
             if let Some(idx) = idx {
                 pane.activate_item(idx, true, true, window, cx);
             } else {
-                let item = Box::new(WelcomePage::new(window, cx));
+                let item = Box::new(
+                    cx.new(|cx| WelcomePage::new(workspace.weak_handle(), false, window, cx)),
+                );
                 pane.add_item(item, true, true, Some(onboarding_idx), window, cx);
             }
 

@@ -115,14 +115,16 @@
   // Whether to confirm before quitting Gram.
   "confirm_quit": false,
   // Whether to restore last closed project when fresh Gram instance is opened
-  // May take 3 values:
-  //  1. All workspaces open during last session
+  // May take 4 values:
+  //  1. Open the Launchpad / Welcome screen
+  //         "restore_on_startup": "launchpad"
+  //  2. All workspaces open during last session
   //         "restore_on_startup": "last_session"
-  //  2. The workspace opened
+  //  3. The workspace opened
   //         "restore_on_startup": "last_workspace",
-  //  3. Do not restore previous workspaces
+  //  4. Do not restore previous workspaces
   //         "restore_on_startup": "none",
-  "restore_on_startup": "last_session",
+  "restore_on_startup": "launchpad",
   // Whether to attempt to restore previous file's state when opening it again.
   // The state is stored per pane.
   // When disabled, defaults are applied instead of the state restoration.

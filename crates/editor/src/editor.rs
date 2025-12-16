@@ -3093,7 +3093,8 @@ impl Editor {
                 data.selections = inmemory_selections;
             });
 
-            if WorkspaceSettings::get(None, cx).restore_on_startup != RestoreOnStartupBehavior::None
+            if WorkspaceSettings::get(None, cx).restore_on_startup
+                != RestoreOnStartupBehavior::EmptyTab
                 && let Some(workspace_id) = self.workspace_serialization_id(cx)
             {
                 let snapshot = self.buffer().read(cx).snapshot(cx);
@@ -3133,7 +3134,8 @@ impl Editor {
         use text::ToPoint as _;
 
         if self.mode.is_minimap()
-            || WorkspaceSettings::get(None, cx).restore_on_startup == RestoreOnStartupBehavior::None
+            || WorkspaceSettings::get(None, cx).restore_on_startup
+                == RestoreOnStartupBehavior::EmptyTab
         {
             return;
         }
@@ -20750,7 +20752,8 @@ impl Editor {
     ) {
         if self.buffer_kind(cx) == ItemBufferKind::Singleton
             && !self.mode.is_minimap()
-            && WorkspaceSettings::get(None, cx).restore_on_startup != RestoreOnStartupBehavior::None
+            && WorkspaceSettings::get(None, cx).restore_on_startup
+                != RestoreOnStartupBehavior::EmptyTab
         {
             let buffer_snapshot = OnceCell::new();
 

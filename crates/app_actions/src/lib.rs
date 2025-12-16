@@ -66,6 +66,8 @@ actions!(
         OpenLicenses,
         /// Opens the performance profiler.
         OpenPerformanceProfiler,
+        /// Opens the onboarding view.
+        OpenOnboarding,
     ]
 );
 
