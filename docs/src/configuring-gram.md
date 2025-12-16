@@ -195,7 +195,7 @@ Note: This setting has no effect in Vim mode, as rewrap is already allowed every
 
 ## Auto Install extensions
 
-Extensions have to be manually installed in Ludd.
+Extensions have to be manually installed in Gram.
 
 You can find the names of your currently installed extensions by listing the subfolders under the [extension installation location](./extensions/installing-extensions.md#installation-location):
 
