@@ -1,6 +1,6 @@
 use crate::wasm_host::wit::since_v0_6_0::dap::{
-    AttachRequest, BuildTaskDefinition, BuildTaskDefinitionTemplatePayload, LaunchRequest,
-    StartDebuggingRequestArguments, TcpArguments, TcpArgumentsTemplate,
+    BuildTaskDefinition, BuildTaskDefinitionTemplatePayload, StartDebuggingRequestArguments,
+    TcpArguments, TcpArgumentsTemplate,
 };
 use crate::wasm_host::wit::{CompletionKind, CompletionLabelDetails, InsertTextFormat, SymbolKind};
 use crate::wasm_host::{WasmState, wit::ToWasmtimeResult};
@@ -26,7 +26,7 @@ use std::{
     str::FromStr,
     sync::{Arc, OnceLock},
 };
-use task::{SpawnInTerminal, GramDebugConfig};
+use task::{GramDebugConfig, SpawnInTerminal};
 use url::Url;
 use util::{
     archive::extract_zip, fs::make_file_executable, maybe, paths::PathStyle, rel_path::RelPath,
