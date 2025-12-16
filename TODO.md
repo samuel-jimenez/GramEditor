@@ -1,5 +1,21 @@
 # TODO
 
+- Find a solution for the remote_server situation...
+
+  The problem is that in dev mode we can just build the remote
+  server executable and that works fine, but in stable mode the
+  only way to get it is by downloading from a server (that's what
+  zed does) either directly on the remote or on the client machine.
+  Well, I don't want to do that...
+
+  - Build a minimal zig-based remote_server executable for all targets and bundle?
+
+- Replace the extension model
+
+  - Figure out what the extension API basically looks like and
+  reimplement in Lua. Extensions are now lua scripts, we can bundle
+  a lua bundle with extensions in the installer.
+
 - Reintroduce collab editing using https://github.com/teamtype/teamtype
 
 - Sniff out all the AI-written text and get rid of it
