@@ -2,7 +2,7 @@
 
 ## Repository
 
-Clone down the [Gram repository](https://github.com/zed-industries/zed).
+Clone down the [Gram repository](https://codeberg.org/krig/gram).
 
 ## Dependencies
 
@@ -58,7 +58,7 @@ cargo test --workspace
 ### Error compiling metal shaders
 
 ```sh
-error: failed to run custom build command for gpui v0.1.0 (/Users/path/to/zed)`**
+error: failed to run custom build command for gpui v0.1.0 (/Users/path/to/gram)`**
 
 xcrun: error: unable to find utility "metal", not a developer tool or in PATH
 ```

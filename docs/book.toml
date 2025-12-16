@@ -1,5 +1,5 @@
 [book]
-authors = ["The Gram Team"]
+authors = ["Gram"]
 language = "en"
 multilingual = false
 src = "src"
@@ -56,9 +56,7 @@ enable = false
 "/ruby.html" = "/docs/languages/ruby.html"
 
 # Gram development
-"/contribute-to-gram.html" = "/docs/development.html#contributor-links"
-"/contributing.html" = "/docs/development.html#contributor-links"
-"/developing-gram.html" = "/docs/development.html"
+"/development.html" = "/docs/development.html"
 "/development/development/linux.html" = "/docs/development/linux.html"
 "/development/development/macos.html" = "/docs/development/macos.html"
 "/development/development/windows.html" = "/docs/development/windows.html"
