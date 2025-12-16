@@ -1822,16 +1822,6 @@
     // The shape can be one of the following: "block", "bar", "underline", "hollow".
     "cursor_shape": {}
   },
-  // Settings overrides to use when using Gram Preview.
-  // Mostly useful for developers who are managing multiple instances of Gram.
-  "preview": {
-    // "theme": "Andromeda"
-  },
-  // Settings overrides to use when using Gram Nightly.
-  // Mostly useful for developers who are managing multiple instances of Gram.
-  "nightly": {
-    // "theme": "Andromeda"
-  },
   // Settings overrides to use when using Gram Stable.
   // Mostly useful for developers who are managing multiple instances of Gram.
   "stable": {

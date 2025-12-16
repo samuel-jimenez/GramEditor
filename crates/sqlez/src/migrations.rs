@@ -34,12 +34,7 @@ impl Connection {
     /// Note: Unlike everything else in SQLez, migrations are run eagerly, without first
     /// preparing the SQL statements. This makes it possible to do multi-statement schema
     /// updates in a single string without running into prepare errors.
-    pub fn migrate(
-        &self,
-        domain: &'static str,
-        migrations: &[&'static str],
-        mut should_allow_migration_change: impl FnMut(usize, &str, &str) -> bool,
-    ) -> Result<()> {
+    pub fn migrate(&self, domain: &'static str, migrations: &[&'static str]) -> Result<()> {
         self.with_savepoint("migrating", || {
             // Setup the migrations table unconditionally
             self.exec(indoc! {"
@@ -73,9 +68,6 @@ impl Connection {
                     );
                     if completed_migration == migration {
                         // Migration already run. Continue
-                        continue;
-                    } else if should_allow_migration_change(index, &completed_migration, &migration)
-                    {
                         continue;
                     } else {
                         anyhow::bail!(formatdoc! {"

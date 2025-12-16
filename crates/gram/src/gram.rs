@@ -423,51 +423,7 @@ pub fn initialize_workspace(app_state: Arc<AppState>, cx: &mut App) {
 }
 
 #[cfg(target_os = "windows")]
-fn unstable_version_notification(cx: &mut App) {
-    if !matches!(
-        ReleaseChannel::try_global(cx),
-        Some(ReleaseChannel::Nightly)
-    ) {
-        return;
-    }
-    let db_key = "gram_windows_nightly_notif_shown_at".to_owned();
-    let time = chrono::Utc::now();
-    if let Some(last_shown) = db::kvp::KEY_VALUE_STORE
-        .read_kvp(&db_key)
-        .log_err()
-        .flatten()
-        .and_then(|timestamp| chrono::DateTime::parse_from_rfc3339(&timestamp).ok())
-    {
-        if time.fixed_offset() - last_shown < chrono::Duration::days(7) {
-            return;
-        }
-    }
-    cx.spawn(async move |_| {
-        db::kvp::KEY_VALUE_STORE
-            .write_kvp(db_key, time.to_rfc3339())
-            .await
-    })
-    .detach_and_log_err(cx);
-    struct WindowsNightly;
-    show_app_notification(NotificationId::unique::<WindowsNightly>(), cx, |cx| {
-        cx.new(|cx| {
-            MessageNotification::new("You're using an unstable version of Gram (Nightly)", cx)
-                .primary_message("Download Stable")
-                .primary_icon_color(Color::Accent)
-                .primary_icon(IconName::Download)
-                .primary_on_click(|window, cx| {
-                    window.dispatch_action(
-                        app_actions::OpenBrowser {
-                            url: "https://liten.app/download".to_string(),
-                        }
-                        .boxed_clone(),
-                        cx,
-                    );
-                    cx.emit(DismissEvent);
-                })
-        })
-    });
-}
+fn unstable_version_notification(_cx: &mut App) {}
 
 #[cfg(any(target_os = "linux", target_os = "freebsd"))]
 fn initialize_file_watcher(window: &mut Window, cx: &mut Context<Workspace>) {

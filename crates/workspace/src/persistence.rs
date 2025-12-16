@@ -703,13 +703,6 @@ impl Domain for WorkspaceDb {
             DROP TABLE ssh_connections;
         ),
     ];
-
-    // Allow recovering from bad migration that was initially shipped to nightly
-    // when introducing the ssh_connections table.
-    fn should_allow_migration_change(_index: usize, old: &str, new: &str) -> bool {
-        old.starts_with("CREATE TABLE ssh_connections")
-            && new.starts_with("CREATE TABLE ssh_connections")
-    }
 }
 
 db::static_connection!(DB, WorkspaceDb, []);

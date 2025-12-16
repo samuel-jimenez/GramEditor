@@ -13,7 +13,7 @@ use futures::{
 };
 use gpui::{App, AppContext as _, AsyncApp, SemanticVersion, Task};
 use parking_lot::Mutex;
-use release_channel::{AppCommitSha, AppVersion, ReleaseChannel};
+use release_channel::{AppVersion, ReleaseChannel};
 use rpc::proto::Envelope;
 pub use settings::SshPortForwardOption;
 use smol::{
@@ -521,15 +521,10 @@ impl SshRemoteConnection {
             ssh_default_system_shell,
         };
 
-        let (release_channel, version, commit) = cx.update(|cx| {
-            (
-                ReleaseChannel::global(cx),
-                AppVersion::global(cx),
-                AppCommitSha::try_global(cx),
-            )
-        })?;
+        let (release_channel, version) =
+            cx.update(|cx| (ReleaseChannel::global(cx), AppVersion::global(cx)))?;
         this.remote_binary_path = Some(
-            this.ensure_server_binary(&delegate, release_channel, version, commit, cx)
+            this.ensure_server_binary(&delegate, release_channel, version, cx)
                 .await?,
         );
 
@@ -541,14 +536,9 @@ impl SshRemoteConnection {
         delegate: &Arc<dyn RemoteClientDelegate>,
         release_channel: ReleaseChannel,
         version: SemanticVersion,
-        commit: Option<AppCommitSha>,
         cx: &mut AsyncApp,
     ) -> Result<Arc<RelPath>> {
         let version_str = match release_channel {
-            ReleaseChannel::Nightly => {
-                let commit = commit.map(|s| s.full()).unwrap_or_default();
-                format!("{}-{}", version, commit)
-            }
             ReleaseChannel::Dev => "build".to_string(),
             _ => version.to_string(),
         };

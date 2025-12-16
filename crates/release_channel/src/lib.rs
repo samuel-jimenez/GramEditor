@@ -6,13 +6,18 @@ use std::{env, str::FromStr, sync::LazyLock};
 
 use gpui::{App, Global, SemanticVersion};
 
-/// stable | dev | nightly | preview
+/// stable | dev
 pub static RELEASE_CHANNEL_NAME: LazyLock<String> = LazyLock::new(|| {
     if cfg!(debug_assertions) {
-        env::var("GRAM_RELEASE_CHANNEL")
-            .unwrap_or_else(|_| include_str!("../../gram/RELEASE_CHANNEL").trim().to_string())
+        env::var("GRAM_RELEASE_CHANNEL").unwrap_or_else(|_| {
+            include_str!("../../gram/RELEASE_CHANNEL")
+                .trim()
+                .to_string()
+        })
     } else {
-        include_str!("../../gram/RELEASE_CHANNEL").trim().to_string()
+        include_str!("../../gram/RELEASE_CHANNEL")
+            .trim()
+            .to_string()
     }
 });
 
@@ -28,8 +33,6 @@ pub static RELEASE_CHANNEL: LazyLock<ReleaseChannel> =
 pub fn app_identifier() -> &'static str {
     match *RELEASE_CHANNEL {
         ReleaseChannel::Dev => "Gram-Editor-Dev",
-        ReleaseChannel::Nightly => "Gram-Editor-Nightly",
-        ReleaseChannel::Preview => "Gram-Editor-Preview",
         ReleaseChannel::Stable => "Gram-Editor-Stable",
     }
 }
@@ -106,12 +109,6 @@ pub enum ReleaseChannel {
     #[default]
     Dev,
 
-    /// The Nightly release channel.
-    Nightly,
-
-    /// The Preview release channel.
-    Preview,
-
     /// The Stable release channel.
     Stable,
 }
@@ -153,8 +150,6 @@ impl ReleaseChannel {
     pub fn display_name(&self) -> &'static str {
         match self {
             ReleaseChannel::Dev => "Gram Dev",
-            ReleaseChannel::Nightly => "Gram Nightly",
-            ReleaseChannel::Preview => "Gram Preview",
             ReleaseChannel::Stable => "Gram",
         }
     }
@@ -163,8 +158,6 @@ impl ReleaseChannel {
     pub fn dev_name(&self) -> &'static str {
         match self {
             ReleaseChannel::Dev => "dev",
-            ReleaseChannel::Nightly => "nightly",
-            ReleaseChannel::Preview => "preview",
             ReleaseChannel::Stable => "stable",
         }
     }
@@ -175,8 +168,6 @@ impl ReleaseChannel {
     pub fn app_id(&self) -> &'static str {
         match self {
             ReleaseChannel::Dev => "se.ziran.Gram-Dev",
-            ReleaseChannel::Nightly => "se.ziran.Gram-Nightly",
-            ReleaseChannel::Preview => "se.ziran.Gram-Preview",
             ReleaseChannel::Stable => "se.ziran.Gram",
         }
     }
@@ -185,8 +176,6 @@ impl ReleaseChannel {
     pub fn release_query_param(&self) -> Option<&'static str> {
         match self {
             Self::Dev => None,
-            Self::Nightly => Some("nightly=1"),
-            Self::Preview => Some("preview=1"),
             Self::Stable => None,
         }
     }
@@ -202,8 +191,6 @@ impl FromStr for ReleaseChannel {
     fn from_str(channel: &str) -> Result<Self, Self::Err> {
         Ok(match channel {
             "dev" => ReleaseChannel::Dev,
-            "nightly" => ReleaseChannel::Nightly,
-            "preview" => ReleaseChannel::Preview,
             "stable" => ReleaseChannel::Stable,
             _ => return Err(InvalidReleaseChannel),
         })

@@ -151,12 +151,8 @@ export DO_STARTUP_NOTIFY="true"
 export APP_CLI="gram"
 export APP_ICON="gram"
 export APP_ARGS="%U"
-if [[ "$channel" == "preview" ]]; then
-  export APP_NAME="Gram Preview"
-elif [[ "$channel" == "nightly" ]]; then
-  export APP_NAME="Gram Nightly"
-elif [[ "$channel" == "dev" ]]; then
-  export APP_NAME="Gram Devel"
+if [[ "$channel" == "dev" ]]; then
+  export APP_NAME="Gram Dev"
 else
   export APP_NAME="Gram"
 fi

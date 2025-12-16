@@ -128,16 +128,7 @@ impl IClassFactory_Impl for ExplorerCommandInjectorFactory_Impl {
     }
 }
 
-#[cfg(all(feature = "stable", not(feature = "preview"), not(feature = "nightly")))]
 const MODULE_ID: GUID = GUID::from_u128(0x6a1f6b13_3b82_48a1_9e06_7bb0a6d0bffd);
-#[cfg(all(feature = "preview", not(feature = "stable"), not(feature = "nightly")))]
-const MODULE_ID: GUID = GUID::from_u128(0xaf8e85ea_fb20_4db2_93cf_56513c1ec697);
-#[cfg(all(feature = "nightly", not(feature = "stable"), not(feature = "preview")))]
-const MODULE_ID: GUID = GUID::from_u128(0x266f2cfe_1653_42af_b55c_fe3590c83871);
-
-// Make cargo clippy happy
-#[cfg(all(feature = "nightly", feature = "stable", feature = "preview"))]
-const MODULE_ID: GUID = GUID::from_u128(0x685f4d49_6718_4c55_b271_ebb5c6a48d6f);
 
 #[unsafe(no_mangle)]
 extern "system" fn DllGetClassObject(
@@ -186,17 +177,7 @@ fn get_gram_exe_path() -> Option<String> {
 
 #[inline]
 fn retrieve_command_description() -> Result<HSTRING> {
-    #[cfg(all(feature = "stable", not(feature = "preview"), not(feature = "nightly")))]
     const REG_PATH: &str = "Software\\Classes\\GramEditorContextMenu";
-    #[cfg(all(feature = "preview", not(feature = "stable"), not(feature = "nightly")))]
-    const REG_PATH: &str = "Software\\Classes\\GramEditorPreviewContextMenu";
-    #[cfg(all(feature = "nightly", not(feature = "stable"), not(feature = "preview")))]
-    const REG_PATH: &str = "Software\\Classes\\GramEditorNightlyContextMenu";
-
-    // Make cargo clippy happy
-    #[cfg(all(feature = "nightly", feature = "stable", feature = "preview"))]
-    const REG_PATH: &str = "Software\\Classes\\GramEditorClippyContextMenu";
-
     let key = windows_registry::CURRENT_USER.open(REG_PATH)?;
     key.get_hstring("Title")
 }

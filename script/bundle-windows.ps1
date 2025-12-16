@@ -134,17 +134,7 @@ function ZipGramAndItsFriendsDebug {
 }
 
 function MakeAppx {
-    switch ($channel) {
-        "stable" {
-            $manifestFile = "$env:GRAM_WORKSPACE\crates\explorer_command_injector\AppxManifest.xml"
-        }
-        "preview" {
-            $manifestFile = "$env:GRAM_WORKSPACE\crates\explorer_command_injector\AppxManifest-Preview.xml"
-        }
-        default {
-            $manifestFile = "$env:GRAM_WORKSPACE\crates\explorer_command_injector\AppxManifest-Nightly.xml"
-        }
-    }
+    $manifestFile = "$env:GRAM_WORKSPACE\crates\explorer_command_injector\AppxManifest.xml"
     Copy-Item -Path "$manifestFile" -Destination "$innoDir\make_appx\AppxManifest.xml"
     # Add makeAppx.exe to Path
     $sdk = "C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x64"
@@ -212,36 +202,8 @@ function BuildInstaller {
             $appExeName = "Gram"
             $regValueName = "Gram"
             $appUserId = "Gram.Gram"
-            $appShellNameShort = "T&ehanu"
+            $appShellNameShort = "G&ram"
             $appAppxFullName = "Gram.Gram_1.0.0.0_neutral__mspublisherid"
-        }
-        "preview" {
-            $appId = "{{85A6F569-DD2C-4850-B9E7-4FAC667B0D0C}"
-            $appIconName = "app-icon-preview"
-            $appName = "Gram Preview"
-            $appDisplayName = "Gram Preview"
-            $appSetupName = "Gram-$Architecture"
-            # The mutex name here should match the mutex name in crates\gram\src\gram\windows_only_instance.rs
-            $appMutex = "Gram-Preview-Instance-Mutex"
-            $appExeName = "Gram"
-            $regValueName = "GramPreview"
-            $appUserId = "Gram.Gram.Preview"
-            $appShellNameShort = "T&ehanu Preview"
-            $appAppxFullName = "Gram.Gram.Preview_1.0.0.0_neutral__mspublisherid"
-        }
-        "nightly" {
-            $appId = "{{A57C51AA-9E45-403E-A0E0-6D4DA22FACF6}"
-            $appIconName = "app-icon-nightly"
-            $appName = "Gram Nightly"
-            $appDisplayName = "Gram Nightly"
-            $appSetupName = "Gram-$Architecture"
-            # The mutex name here should match the mutex name in crates\gram\src\gram\windows_only_instance.rs
-            $appMutex = "Gram-Nightly-Instance-Mutex"
-            $appExeName = "Gram"
-            $regValueName = "GramNightly"
-            $appUserId = "Gram.Gram.Nightly"
-            $appShellNameShort = "T&ehanu Editor Nightly"
-            $appAppxFullName = "Gram.Gram.Nightly_1.0.0.0_neutral__mspublisherid"
         }
         "dev" {
             $appId = "{{4FEF353A-EA46-468C-95DD-2B343A71416F}"
@@ -254,7 +216,7 @@ function BuildInstaller {
             $appExeName = "Gram"
             $regValueName = "GramDev"
             $appUserId = "Gram.Gram.Dev"
-            $appShellNameShort = "T&ehanu Dev"
+            $appShellNameShort = "G&ram Dev"
             $appAppxFullName = "Gram.Gram.Dev_1.0.0.0_neutral__mspublisherid"
         }
         default {

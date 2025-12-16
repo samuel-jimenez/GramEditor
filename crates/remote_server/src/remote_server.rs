@@ -67,10 +67,10 @@ pub fn run(command: Commands) -> anyhow::Result<()> {
         Commands::Version => {
             let release_channel = *RELEASE_CHANNEL;
             match release_channel {
-                ReleaseChannel::Stable | ReleaseChannel::Preview => {
+                ReleaseChannel::Stable => {
                     println!("{}", env!("GRAM_PKG_VERSION"))
                 }
-                ReleaseChannel::Nightly | ReleaseChannel::Dev => {
+                ReleaseChannel::Dev => {
                     println!(
                         "{}",
                         option_env!("GRAM_COMMIT_SHA").unwrap_or(release_channel.dev_name())

@@ -49,10 +49,8 @@ use std::{
 use thiserror::Error;
 
 pub static VERSION: LazyLock<&str> = LazyLock::new(|| match *RELEASE_CHANNEL {
-    ReleaseChannel::Stable | ReleaseChannel::Preview => env!("GRAM_PKG_VERSION"),
-    ReleaseChannel::Nightly | ReleaseChannel::Dev => {
-        option_env!("GRAM_COMMIT_SHA").unwrap_or("missing-zed-commit-sha")
-    }
+    ReleaseChannel::Stable => env!("GRAM_PKG_VERSION"),
+    ReleaseChannel::Dev => option_env!("GRAM_COMMIT_SHA").unwrap_or("missing-gram-commit-sha"),
 });
 
 fn init_logging_proxy() {
@@ -356,7 +354,9 @@ pub fn execute_run(
             gram_version: VERSION.to_owned(),
             binary: "gram-remote-server".to_string(),
             release_channel: release_channel::RELEASE_CHANNEL_NAME.clone(),
-            commit_sha: option_env!("GRAM_COMMIT_SHA").unwrap_or("no_sha").to_owned(),
+            commit_sha: option_env!("GRAM_COMMIT_SHA")
+                .unwrap_or("no_sha")
+                .to_owned(),
         }))
         .detach();
     let log_rx = init_logging_server(log_file)?;
@@ -575,7 +575,9 @@ pub(crate) fn execute_proxy(
         gram_version: VERSION.to_owned(),
         binary: "gram-remote-server".to_string(),
         release_channel: release_channel::RELEASE_CHANNEL_NAME.clone(),
-        commit_sha: option_env!("GRAM_COMMIT_SHA").unwrap_or("no_sha").to_owned(),
+        commit_sha: option_env!("GRAM_COMMIT_SHA")
+            .unwrap_or("no_sha")
+            .to_owned(),
     }))
     .detach();
 

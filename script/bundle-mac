@@ -184,7 +184,6 @@ function sign_app_binaries() {
     echo "Downloading git binary"
     download_git "${target_triple}" "${app_path}/Contents/MacOS/git"
 
-    # Note: The app identifier for our development builds is the same as the app identifier for nightly.
     cp crates/gram/contents/$channel/embedded.provisionprofile "${app_path}/Contents/"
 
     if [[ $can_code_sign = true ]]; then
@@ -203,8 +202,7 @@ function sign_app_binaries() {
 
         # NOTE: if you need to test universal links you have a few paths forward:
         # - create a PR and tag it with the `run-bundling` label, and download the .dmg file from there.
-        # - get a signing key for the MQ55VZLNZQ team from Nathan.
-        # - create your own signing key, and update references to MQ55VZLNZQ to your own team ID
+        # - create your own signing key, and update signing key references to your own team ID
         # then comment out this line.
         cat crates/gram/resources/gram.entitlements | sed '/com.apple.developer.associated-domains/,+1d' > "${app_path}/Contents/Resources/gram.entitlements"
 
@@ -252,10 +250,6 @@ function sign_app_binaries() {
         # This symlink causes CPU issues with Gram if the Gram codebase is the project being worked on, so we simply remove it for now.
         echo "Removing symlink to /Applications from ${dmg_source_directory}"
         rm ${dmg_source_directory}/Applications
-
-        # echo "Adding license agreement to DMG"
-        # npm install --global dmg-license minimist
-        # dmg-license script/terms/terms.json "${dmg_file_path}"
 
         if [[ $can_code_sign = true ]]; then
             echo "Notarizing DMG with Apple"

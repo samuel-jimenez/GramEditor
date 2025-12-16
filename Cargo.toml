@@ -162,7 +162,6 @@ members = [
     #
 
     "tooling/perf",
-    "tooling/xtask",
 ]
 default-members = ["crates/gram"]
 

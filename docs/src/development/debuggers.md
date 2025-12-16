@@ -11,7 +11,7 @@ Note: GDB isn't supported on ARM Macbooks.
 
 ## Release build profile considerations
 
-By default, builds using the release profile (release is the profile used for production builds, i.e. nightly, preview, and stable) include limited debug info.
+By default, builds using the release profile (release is the profile used for production builds, i.e. stable) include limited debug info.
 
 This is done by setting the `profile.(release).debug` field in the root `Cargo.toml` field to `"limited"`.
 

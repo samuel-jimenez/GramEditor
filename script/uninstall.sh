@@ -61,14 +61,6 @@ linux() {
         appid="se.ziran.Gram"
         db_suffix="stable"
         ;;
-      nightly)
-        appid="se.ziran.Gram-Nightly"
-        db_suffix="nightly"
-        ;;
-      preview)
-        appid="se.ziran.Gram-Preview"
-        db_suffix="preview"
-        ;;
       dev)
         appid="se.ziran.Gram-Dev"
         db_suffix="dev"
@@ -109,16 +101,6 @@ macos() {
     db_suffix="stable"
     app_id="se.ziran.Gram"
     case "$channel" in
-      nightly)
-        app="Gram Nightly.app"
-        db_suffix="nightly"
-        app_id="se.ziran.Gram-Nightly"
-        ;;
-      preview)
-        app="Gram Preview.app"
-        db_suffix="preview"
-        app_id="se.ziran.Gram-Preview"
-        ;;
       dev)
         app="Gram Dev.app"
         db_suffix="dev"

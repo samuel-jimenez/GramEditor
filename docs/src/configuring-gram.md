@@ -42,27 +42,23 @@ The syntax for configuration files is a super-set of JSON that allows `//` comme
 
 ## Per-release Channel Overrides
 
-Gram reads the same `settings.json` across all release channels (Stable, Preview or Nightly).
-However, you can scope overrides to a specific channel by adding top-level `stable`, `preview`, `nightly` or `dev` objects.
+You can scope overrides to a specific channel by adding top-level `stable` or `dev` objects.
+
 They are merged into the base configuration with settings from these keys taking precedence upon launching the specified build. For example:
 
 ```json [settings]
 {
   "theme": "sunset",
   "vim_mode": false,
-  "nightly": {
-    "theme": "cave-light",
-    "vim_mode": true
-  },
-  "preview": {
+  "stable": {
     "theme": "gram-dark"
   }
 }
 ```
 
-With this configuration, Stable keeps all base preferences, Preview switches to `gram-dark`, and Nightly enables Vim mode with a different theme.
+With this configuration, Dev keeps all base preferences while Stable switches to `gram-dark`.
 
-Changing settings in the Settings Editorwill always apply the change across all channels.
+Changing settings in the Settings Editor will always apply the change across all channels.
 
 # Settings
 

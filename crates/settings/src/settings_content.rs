@@ -142,8 +142,6 @@ pub struct UserSettingsContent {
     pub content: Box<SettingsContent>,
 
     pub dev: Option<Box<SettingsContent>>,
-    pub nightly: Option<Box<SettingsContent>>,
-    pub preview: Option<Box<SettingsContent>>,
     pub stable: Option<Box<SettingsContent>>,
 
     pub macos: Option<Box<SettingsContent>>,
@@ -162,8 +160,6 @@ impl UserSettingsContent {
     pub fn for_release_channel(&self) -> Option<&SettingsContent> {
         match *release_channel::RELEASE_CHANNEL {
             ReleaseChannel::Dev => self.dev.as_deref(),
-            ReleaseChannel::Nightly => self.nightly.as_deref(),
-            ReleaseChannel::Preview => self.preview.as_deref(),
             ReleaseChannel::Stable => self.stable.as_deref(),
         }
     }
