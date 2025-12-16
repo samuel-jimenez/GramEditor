@@ -1,13 +1,13 @@
 # Using a debugger
 
 > **DISCLAIMER**: This is not documentation for [configuring Gram's debugger](../debugger.md).
-> Rather, it is intended to provide information on how to use a debugger while developing Gram itself to both Gram employees and external contributors.
+> Rather, it is intended to provide information on how to use a debugger while developing Gram itself.
 
 ## Using Gram's built-in debugger
 
 While the Gram project is open you can open the `New Process Modal` and select the `Debug` tab. There you can see to debug configurations to debug Gram with, one for GDB and one for LLDB. Select the configuration you want and Gram will build and launch the binary.
 
-Please note, GDB isn't supported on arm Macbooks
+Note: GDB isn't supported on ARM Macbooks.
 
 ## Release build profile considerations
 
