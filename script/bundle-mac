@@ -96,10 +96,7 @@ fi
 # Generate the licenses first, so they can be baked into the binaries
 script/generate-licenses
 
-linux_triple="x86_64-unknown-linux-gnu"
-
 rustup target add $target_triple
-# rustup target add $linux_triple
 
 echo "Compiling gram binaries"
 cargo build ${build_flag} --package gram --package cli --target $target_triple
@@ -107,8 +104,6 @@ cargo build ${build_flag} --package gram --package cli --target $target_triple
 # from influencing dynamic libraries required by it.
 echo "Compiling remote_server for $target_triple"
 cargo build ${build_flag} --package remote_server --target $target_triple
-echo "Compiling remote_server for $linux_triple"
-cargo build ${build_flag} --package remote_server --target $linux_triple
 
 echo "Creating application bundle"
 pushd crates/gram
@@ -277,9 +272,13 @@ cp target/${target_triple}/${target_dir}/cli "${app_path}/Contents/MacOS/cli"
 sign_app_binaries
 
 sign_binary "target/$target_triple/release/remote_server"
-gzip -f --stdout --best target/$target_triple/release/remote_server > target/gram-remote-server-macos-$arch_suffix.gz
-# sign_binary "target/$linux_triple/release/remote_server"
-# gzip -f --stdout --best target/$linux_triple/release/remote_server > target/gram-remote-server-linux-x86_64.gz
-# echo "Built remote servers for Mac and Linux at"
-echo "target/gram-remote-server-macos-$arch_suffix.gz"
-# echo "target/gram-remote-server-linux-x86_64.gz"
+echo "target/gram-remote-server-macos-$arch_suffix"
+
+# echo "Building remote server for Linux x86_64"
+# RUSTFLAGS="-C target-feature=+crt-static" cargo zigbuild \
+#   --package remote_server \
+#   --target-dir target/remote_server-linux-x86_64 \
+#   --target "unknown-linux-gnu"
+# sign_binary "target/remote-server-linux-x86_64"
+# echo "target/gram-remote-server-macos-$arch_suffix"
+
