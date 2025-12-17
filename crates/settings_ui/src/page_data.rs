@@ -3281,7 +3281,7 @@ pub(crate) fn settings_data(cx: &App) -> Vec<SettingsPage> {
                 }),
                 SettingsPageItem::SettingItem(SettingItem {
                     title: "Window Decorations",
-                    description: "(Linux only) whether Zed or your compositor should draw window decorations.",
+                    description: "(Linux only) whether Gram or your compositor should draw window decorations.",
                     field: Box::new(SettingField {
                         json_path: Some("window_decorations"),
                         pick: |settings_content| {

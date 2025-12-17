@@ -56,7 +56,7 @@ Open Gram.
 From the menu bar, choose File > Open Folder, or launch from the terminal:
 
 ```bash
-zed path/to/your/project
+gram path/to/your/project
 ```
 
 Gram will recognize `.py` files automatically using its native tree-sitter-python parser, with no plugins or manual setup required.
@@ -260,7 +260,7 @@ For more details, refer to the Ruff documentation about [configuration files](ht
 
 ### Embedded Language Highlighting
 
-Zed supports syntax highlighting for code embedded in Python strings by adding a comment with the language name.
+Gram supports syntax highlighting for code embedded in Python strings by adding a comment with the language name.
 
 ```python
 # sql

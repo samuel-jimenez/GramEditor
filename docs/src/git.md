@@ -31,7 +31,7 @@ Gram monitors your repository so that changes you make on the command line are i
 
 ### Configuration
 
-You can configure how Zed hard wraps commit messages with the `preferred-line-length` setting of the "Git Commit" language. The default is `72`, but it can be set to any number of characters `0` or more.
+You can configure how Gram hard wraps commit messages with the `preferred-line-length` setting of the "Git Commit" language. The default is `72`, but it can be set to any number of characters `0` or more.
 
 The Git Panel also allows configuring the `soft_wrap` setting to adjust how commit messages display while you are typing them in the Git Panel. The default setting is `editor_width`, however, `none`, `preferred_line_length`, and `bounded` are also options.
 
@@ -94,7 +94,7 @@ In there, you can use the "Uncommit" button, which performs the `git reset HEADË
 
 ### Configuring Commit Line Length
 
-By default, Zed sets the commit line length to `72` but it can be configured in your local `settings.json` file.
+By default, Gram sets the commit line length to `72` but it can be configured in your local `settings.json` file.
 
 Find more information about setting the `preferred-line-length` in the [Configuration](#configuration) section.
 
