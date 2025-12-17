@@ -21,9 +21,7 @@ use project::debugger::breakpoint_store::{BreakpointState, SourceBreakpoint};
 
 use language::{LanguageName, Toolchain, ToolchainScope};
 use project::WorktreeId;
-use remote::{
-    DockerConnectionOptions, RemoteConnectionOptions, SshConnectionOptions, WslConnectionOptions,
-};
+use remote::{RemoteConnectionOptions, SshConnectionOptions, WslConnectionOptions};
 use serde::{Deserialize, Serialize};
 use sqlez::{
     bindable::{Bind, Column, StaticColumnCount},
