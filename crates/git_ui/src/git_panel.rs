@@ -4428,7 +4428,7 @@ impl GitPanel {
                     cx.stop_propagation();
                 },
             )
-            .child(name_row)
+            .child(name_row.overflow_x_hidden())
             .child(
                 div()
                     .id(checkbox_wrapper_id)
@@ -4582,7 +4582,7 @@ impl GitPanel {
                     this.toggle_directory(&key, window, cx);
                 })
             })
-            .child(name_row)
+            .child(name_row.overflow_x_hidden())
             .child(
                 div()
                     .id(checkbox_wrapper_id)
