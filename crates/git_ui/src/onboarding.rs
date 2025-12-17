@@ -71,8 +71,8 @@ impl Render for GitOnboardingModal {
             .on_action(cx.listener(|_, _: &menu::Cancel, _window, cx| {
                 cx.emit(DismissEvent);
             }))
-            .on_any_mouse_down(cx.listener(|this, _: &MouseDownEvent, window, _cx| {
-                this.focus_handle.focus(window);
+            .on_any_mouse_down(cx.listener(|this, _: &MouseDownEvent, window, cx| {
+                this.focus_handle.focus(window, cx);
             }))
             .child(
                 div().p_1p5().absolute().inset_0().h(px(160.)).child(

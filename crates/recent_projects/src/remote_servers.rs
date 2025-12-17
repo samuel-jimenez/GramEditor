@@ -74,7 +74,7 @@ impl CreateRemoteServer {
     fn new(window: &mut Window, cx: &mut App) -> Self {
         let address_editor = cx.new(|cx| Editor::single_line(window, cx));
         address_editor.update(cx, |this, cx| {
-            this.focus_handle(cx).focus(window);
+            this.focus_handle(cx).focus(window, cx);
         });
         Self {
             address_editor,
@@ -164,7 +164,7 @@ impl EditNicknameState {
                 this.set_text(starting_text, window, cx);
             }
         });
-        this.editor.focus_handle(cx).focus(window);
+        this.editor.focus_handle(cx).focus(window, cx);
         this
     }
 }
@@ -722,7 +722,7 @@ impl RemoteServerProjects {
                         this.retained_connections.push(client);
                         this.add_ssh_server(connection_options, cx);
                         this.mode = Mode::default_mode(&this.ssh_config_servers, cx);
-                        this.focus_handle(cx).focus(window);
+                        this.focus_handle(cx).focus(window, cx);
                         cx.notify()
                     })
                     .log_err(),
@@ -803,7 +803,7 @@ impl RemoteServerProjects {
 
                     crate::add_wsl_distro(fs, &connection_options, cx);
                     this.mode = Mode::default_mode(&BTreeSet::new(), cx);
-                    this.focus_handle(cx).focus(window);
+                    this.focus_handle(cx).focus(window, cx);
                     cx.notify();
                 }),
                 _ => this.update(cx, |this, cx| {
@@ -852,7 +852,7 @@ impl RemoteServerProjects {
                 return;
             }
         });
-        self.focus_handle(cx).focus(window);
+        self.focus_handle(cx).focus(window, cx);
         cx.notify();
     }
 
@@ -985,7 +985,7 @@ impl RemoteServerProjects {
                     }
                 });
                 self.mode = Mode::default_mode(&self.ssh_config_servers, cx);
-                self.focus_handle.focus(window);
+                self.focus_handle.focus(window, cx);
             }
             #[cfg(target_os = "windows")]
             Mode::AddWslDistro(state) => {
@@ -1011,7 +1011,7 @@ impl RemoteServerProjects {
             }
             _ => {
                 self.mode = Mode::default_mode(&self.ssh_config_servers, cx);
-                self.focus_handle(cx).focus(window);
+                self.focus_handle(cx).focus(window, cx);
                 cx.notify();
             }
         }
@@ -1530,7 +1530,7 @@ impl RemoteServerProjects {
         let connection_prompt = state.connection_prompt.clone();
 
         state.picker.update(cx, |picker, cx| {
-            picker.focus_handle(cx).focus(window);
+            picker.focus_handle(cx).focus(window, cx);
         });
 
         v_flex()
@@ -2273,7 +2273,7 @@ impl Render for RemoteServerProjects {
             .on_action(cx.listener(Self::cancel))
             .on_action(cx.listener(Self::confirm))
             .capture_any_mouse_down(cx.listener(|this, _, window, cx| {
-                this.focus_handle(cx).focus(window);
+                this.focus_handle(cx).focus(window, cx);
             }))
             .on_mouse_down_out(cx.listener(|this, _, _, cx| {
                 if matches!(this.mode, Mode::Default(_)) {

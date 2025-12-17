@@ -155,7 +155,7 @@ pub fn show_onboarding_view(app_state: Arc<AppState>, cx: &mut App) -> Task<anyh
                 let onboarding_page = Onboarding::new(workspace, cx);
                 workspace.add_item_to_center(Box::new(onboarding_page.clone()), window, cx);
 
-                window.focus(&onboarding_page.focus_handle(cx));
+                window.focus(&onboarding_page.focus_handle(cx), cx);
 
                 cx.notify();
             };
@@ -222,11 +222,11 @@ impl Render for Onboarding {
             .bg(cx.theme().colors().editor_background)
             .on_action(Self::on_finish)
             .on_action(cx.listener(|_, _: &menu::SelectNext, window, cx| {
-                window.focus_next();
+                window.focus_next(cx);
                 cx.notify();
             }))
             .on_action(cx.listener(|_, _: &menu::SelectPrevious, window, cx| {
-                window.focus_prev();
+                window.focus_prev(cx);
                 cx.notify();
             }))
             .child(

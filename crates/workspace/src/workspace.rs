@@ -1182,7 +1182,7 @@ impl Workspace {
 
         cx.on_focus_lost(window, |this, window, cx| {
             let focus_handle = this.focus_handle(cx);
-            window.focus(&focus_handle);
+            window.focus(&focus_handle, cx);
         })
         .detach();
 
@@ -1206,7 +1206,7 @@ impl Workspace {
         cx.subscribe_in(&center_pane, window, Self::handle_pane_event)
             .detach();
 
-        window.focus(&center_pane.focus_handle(cx));
+        window.focus(&center_pane.focus_handle(cx), cx);
 
         cx.emit(Event::PaneAdded(center_pane.clone()));
 
@@ -1804,7 +1804,7 @@ impl Workspace {
     ) -> Task<Result<()>> {
         let to_load = if let Some(pane) = pane.upgrade() {
             pane.update(cx, |pane, cx| {
-                window.focus(&pane.focus_handle(cx));
+                window.focus(&pane.focus_handle(cx), cx);
                 loop {
                     // Retrieve the weak item handle from the history.
                     let entry = pane.nav_history_mut().pop(mode, cx)?;
@@ -2880,7 +2880,7 @@ impl Workspace {
                     }
                 } else {
                     let focus_handle = &active_panel.panel_focus_handle(cx);
-                    window.focus(focus_handle);
+                    window.focus(focus_handle, cx);
                     reveal_dock = true;
                 }
             }
@@ -2892,7 +2892,7 @@ impl Workspace {
 
         if focus_center {
             self.active_pane
-                .update(cx, |pane, cx| window.focus(&pane.focus_handle(cx)))
+                .update(cx, |pane, cx| window.focus(&pane.focus_handle(cx), cx))
         }
 
         cx.notify();
@@ -3060,7 +3060,7 @@ impl Workspace {
                     if let Some(panel) = panel.as_ref() {
                         if should_focus(&**panel, window, cx) {
                             dock.set_open(true, window, cx);
-                            panel.panel_focus_handle(cx).focus(window);
+                            panel.panel_focus_handle(cx).focus(window, cx);
                         } else {
                             focus_center = true;
                         }
@@ -3070,7 +3070,7 @@ impl Workspace {
 
                 if focus_center {
                     self.active_pane
-                        .update(cx, |pane, cx| window.focus(&pane.focus_handle(cx)))
+                        .update(cx, |pane, cx| window.focus(&pane.focus_handle(cx), cx))
                 }
 
                 result_panel = panel;
@@ -3144,7 +3144,7 @@ impl Workspace {
 
         if focus_center {
             self.active_pane
-                .update(cx, |pane, cx| window.focus(&pane.focus_handle(cx)))
+                .update(cx, |pane, cx| window.focus(&pane.focus_handle(cx), cx))
         }
 
         if self.zoomed_position != dock_to_reveal {
@@ -3175,7 +3175,7 @@ impl Workspace {
             .detach();
         self.panes.push(pane.clone());
 
-        window.focus(&pane.focus_handle(cx));
+        window.focus(&pane.focus_handle(cx), cx);
 
         cx.emit(Event::PaneAdded(pane.clone()));
         pane
@@ -3555,7 +3555,7 @@ impl Workspace {
     ) {
         let panes = self.center.panes();
         if let Some(pane) = panes.get(action.0).map(|p| (*p).clone()) {
-            window.focus(&pane.focus_handle(cx));
+            window.focus(&pane.focus_handle(cx), cx);
         } else {
             self.split_and_clone(self.active_pane.clone(), SplitDirection::Right, window, cx)
                 .detach();
@@ -3625,7 +3625,7 @@ impl Workspace {
         if let Some(ix) = panes.iter().position(|pane| **pane == self.active_pane) {
             let next_ix = (ix + 1) % panes.len();
             let next_pane = panes[next_ix].clone();
-            window.focus(&next_pane.focus_handle(cx));
+            window.focus(&next_pane.focus_handle(cx), cx);
         }
     }
 
@@ -3634,7 +3634,7 @@ impl Workspace {
         if let Some(ix) = panes.iter().position(|pane| **pane == self.active_pane) {
             let prev_ix = cmp::min(ix.wrapping_sub(1), panes.len() - 1);
             let prev_pane = panes[prev_ix].clone();
-            window.focus(&prev_pane.focus_handle(cx));
+            window.focus(&prev_pane.focus_handle(cx), cx);
         }
     }
 
@@ -3730,7 +3730,7 @@ impl Workspace {
             Some(ActivateInDirectionTarget::Pane(pane)) => {
                 let pane = pane.read(cx);
                 if let Some(item) = pane.active_item() {
-                    item.item_focus_handle(cx).focus(window);
+                    item.item_focus_handle(cx).focus(window, cx);
                 } else {
                     log::error!(
                         "Could not find a focus target when in switching focus in {direction} direction for a pane",
@@ -3742,7 +3742,7 @@ impl Workspace {
                 window.defer(cx, move |window, cx| {
                     let dock = dock.read(cx);
                     if let Some(panel) = dock.active_panel() {
-                        panel.panel_focus_handle(cx).focus(window);
+                        panel.panel_focus_handle(cx).focus(window, cx);
                     } else {
                         log::error!("Could not find a focus target when in switching focus in {direction} direction for a {:?} dock", dock.position());
                     }
@@ -4393,12 +4393,12 @@ impl Workspace {
     ) {
         self.panes.retain(|p| p != pane);
         if let Some(focus_on) = focus_on {
-            focus_on.update(cx, |pane, cx| window.focus(&pane.focus_handle(cx)));
+            focus_on.update(cx, |pane, cx| window.focus(&pane.focus_handle(cx), cx));
         } else if self.active_pane() == pane {
             self.panes
                 .last()
                 .unwrap()
-                .update(cx, |pane, cx| window.focus(&pane.focus_handle(cx)));
+                .update(cx, |pane, cx| window.focus(&pane.focus_handle(cx), cx));
         }
         if self.last_active_center_pane == Some(pane.downgrade()) {
             self.last_active_center_pane = None;
@@ -5133,7 +5133,7 @@ impl Workspace {
         let workspace = Self::new(Default::default(), project, app_state, window, cx);
         workspace
             .active_pane
-            .update(cx, |pane, cx| window.focus(&pane.focus_handle(cx)));
+            .update(cx, |pane, cx| window.focus(&pane.focus_handle(cx), cx));
         workspace
     }
 
@@ -6910,7 +6910,7 @@ fn move_all_items(
         // This automatically removes duplicate items in the pane
         to_pane.update(cx, |destination, cx| {
             destination.add_item(item_handle, true, true, None, window, cx);
-            window.focus(&destination.focus_handle(cx))
+            window.focus(&destination.focus_handle(cx), cx)
         });
     }
 }
@@ -6954,7 +6954,7 @@ pub fn move_item(
             cx,
         );
         if activate {
-            window.focus(&destination.focus_handle(cx))
+            window.focus(&destination.focus_handle(cx), cx)
         }
     });
 }

@@ -472,7 +472,7 @@ impl TitleBar {
                 })
                 .on_click(move |_, window, cx| {
                     let _ = workspace.update(cx, |this, cx| {
-                        window.focus(&this.active_pane().focus_handle(cx));
+                        window.focus(&this.active_pane().focus_handle(cx), cx);
                         window.dispatch_action(app_actions::git::Branch.boxed_clone(), cx);
                     });
                 })

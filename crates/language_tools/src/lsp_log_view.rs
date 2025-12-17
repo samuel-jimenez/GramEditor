@@ -228,7 +228,7 @@ impl LspLogView {
 
         let focus_handle = cx.focus_handle();
         let focus_subscription = cx.on_focus(&focus_handle, window, |log_view, window, cx| {
-            window.focus(&log_view.editor.focus_handle(cx));
+            window.focus(&log_view.editor.focus_handle(cx), cx);
         });
 
         cx.on_release(|log_view, cx| {
@@ -429,7 +429,7 @@ impl LspLogView {
             self.editor_subscriptions = editor_subscriptions;
             cx.notify();
         }
-        self.editor.read(cx).focus_handle(cx).focus(window);
+        self.editor.read(cx).focus_handle(cx).focus(window, cx);
         self.log_store.update(cx, |log_store, cx| {
             let state = log_store.get_language_server_state(server_id)?;
             state.toggled_log_kind = Some(LogKind::Logs);
@@ -461,7 +461,7 @@ impl LspLogView {
             cx.notify();
         }
 
-        self.editor.read(cx).focus_handle(cx).focus(window);
+        self.editor.read(cx).focus_handle(cx).focus(window, cx);
     }
 
     fn show_trace_for_server(
@@ -495,7 +495,7 @@ impl LspLogView {
             });
             cx.notify();
         }
-        self.editor.read(cx).focus_handle(cx).focus(window);
+        self.editor.read(cx).focus_handle(cx).focus(window, cx);
     }
 
     fn show_rpc_trace_for_server(
@@ -539,7 +539,7 @@ impl LspLogView {
             cx.notify();
         }
 
-        self.editor.read(cx).focus_handle(cx).focus(window);
+        self.editor.read(cx).focus_handle(cx).focus(window, cx);
     }
 
     fn toggle_rpc_trace_for_server(
@@ -627,7 +627,7 @@ impl LspLogView {
         self.editor = editor;
         self.editor_subscriptions = editor_subscriptions;
         cx.notify();
-        self.editor.read(cx).focus_handle(cx).focus(window);
+        self.editor.read(cx).focus_handle(cx).focus(window, cx);
         self.log_store.update(cx, |log_store, cx| {
             let state = log_store.get_language_server_state(server_id)?;
             if let Some(log_kind) = state.toggled_log_kind.take() {
@@ -1276,7 +1276,7 @@ impl LspLogToolbarItemView {
                     log_view.show_rpc_trace_for_server(id, window, cx);
                     cx.notify();
                 }
-                window.focus(&log_view.focus_handle);
+                window.focus(&log_view.focus_handle, cx);
             });
         }
         cx.notify();
