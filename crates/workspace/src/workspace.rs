@@ -1382,6 +1382,7 @@ impl Workspace {
         app_state: Arc<AppState>,
         requesting_window: Option<WindowHandle<Workspace>>,
         env: Option<HashMap<String, String>>,
+        init: Option<Box<dyn FnOnce(&mut Workspace, &mut Window, &mut Context<Workspace>) + Send>>,
         cx: &mut App,
     ) -> Task<
         anyhow::Result<(
@@ -1488,6 +1489,12 @@ impl Workspace {
                         );
 
                         workspace.centered_layout = centered_layout;
+
+                        // Call init callback to add items before window renders
+                        if let Some(init) = init {
+                            init(&mut workspace, window, cx);
+                        }
+
                         workspace
                     });
                 })?;
@@ -1539,6 +1546,12 @@ impl Workspace {
                                 cx,
                             );
                             workspace.centered_layout = centered_layout;
+
+                            // Call init callback to add items before window renders
+                            if let Some(init) = init {
+                                init(&mut workspace, window, cx);
+                            }
+
                             workspace
                         })
                     }
@@ -2104,7 +2117,7 @@ impl Workspace {
             Task::ready(Ok(callback(self, window, cx)))
         } else {
             let env = self.project.read(cx).cli_environment(cx);
-            let task = Self::new_local(Vec::new(), self.app_state.clone(), None, env, cx);
+            let task = Self::new_local(Vec::new(), self.app_state.clone(), None, env, None, cx);
             cx.spawn_in(window, async move |_vh, cx| {
                 let (workspace, _) = task.await?;
                 workspace.update(cx, callback)
@@ -6103,7 +6116,7 @@ pub async fn get_any_active_workspace(
     // find an existing workspace to focus and show call controls
     let active_window = activate_any_workspace_window(&mut cx);
     if active_window.is_none() {
-        cx.update(|cx| Workspace::new_local(vec![], app_state.clone(), None, None, cx))?
+        cx.update(|cx| Workspace::new_local(vec![], app_state.clone(), None, None, None, cx))?
             .await?;
     }
     activate_any_workspace_window(&mut cx).context("could not open zed")
@@ -6270,6 +6283,7 @@ pub fn open_paths(
                     app_state.clone(),
                     open_options.replace_window,
                     open_options.env,
+                    None,
                     cx,
                 )
             })?
@@ -6314,14 +6328,17 @@ pub fn open_new(
     cx: &mut App,
     init: impl FnOnce(&mut Workspace, &mut Window, &mut Context<Workspace>) + 'static + Send,
 ) -> Task<anyhow::Result<()>> {
-    let task = Workspace::new_local(Vec::new(), app_state, None, open_options.env, cx);
-    cx.spawn(async move |cx| {
-        let (workspace, opened_paths) = task.await?;
-        workspace.update(cx, |workspace, window, cx| {
-            if opened_paths.is_empty() {
-                init(workspace, window, cx)
-            }
-        })?;
+    let task = Workspace::new_local(
+        Vec::new(),
+        app_state,
+        None,
+        open_options.env,
+        Some(Box::new(init)),
+        cx,
+    );
+    cx.spawn(async move |_cx| {
+        let (_workspace, _opened_paths) = task.await?;
+        // Init callback is called synchronously during workspace creation
         Ok(())
     })
 }
