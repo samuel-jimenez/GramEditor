@@ -219,6 +219,13 @@ fn language_extension_key(extension_id: &str) -> String {
     format!("{}_extension_suggest", extension_id)
 }
 
+fn pretty_url(url: &str) -> &str {
+    let url = url.strip_prefix("https://").unwrap_or(url);
+    let url = url.strip_prefix("http://").unwrap_or(url);
+    let url = url.strip_prefix("www.").unwrap_or(url);
+    url.strip_suffix(".git").unwrap_or(url)
+}
+
 pub(crate) fn suggest(buffer: Entity<Buffer>, window: &mut Window, cx: &mut Context<Workspace>) {
     let Some(file) = buffer.read(cx).file().cloned() else {
         return;
@@ -231,9 +238,11 @@ pub(crate) fn suggest(buffer: Entity<Buffer>, window: &mut Window, cx: &mut Cont
     else {
         return;
     };
+    log::info!("Found suggested extension {}", extension_id);
 
     let key = language_extension_key(&extension_id);
     let Ok(None) = KEY_VALUE_STORE.read_kvp(&key) else {
+        log::info!("Found installed extension for key {}", key);
         return;
     };
 
@@ -253,16 +262,18 @@ pub(crate) fn suggest(buffer: Entity<Buffer>, window: &mut Window, cx: &mut Cont
         );
 
         let Some(url) = EXTENSION_URL.iter().find(|eu| *eu.0 == *extension_id) else {
+            log::info!("No URL found for {}", extension_id);
             return;
         };
         let url = url.1;
+        log::info!("URL for {}: {}", extension_id, url);
 
         workspace.show_notification(notification_id, cx, |cx| {
             cx.new(move |cx| {
                 MessageNotification::new(
                     format!(
-                        "Install the '{}' extension for '{}' files from <{}>?",
-                        extension_id, file_name_or_extension, url,
+                        "Install the '{}' extension for '{}' files?",
+                        extension_id, file_name_or_extension,
                     ),
                     cx,
                 )
@@ -286,6 +297,8 @@ pub(crate) fn suggest(buffer: Entity<Buffer>, window: &mut Window, cx: &mut Cont
                         KEY_VALUE_STORE.write_kvp(key, "dismissed".to_string())
                     });
                 })
+                .more_info_message(pretty_url(url))
+                .more_info_url(url)
             })
         });
     })
