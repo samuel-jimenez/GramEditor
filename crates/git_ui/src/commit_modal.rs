@@ -326,22 +326,30 @@ impl CommitModal {
     }
 
     pub fn render_footer(&self, _: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-        let (can_commit, tooltip, commit_label, active_repo, is_amend_pending, is_signoff_enabled) =
-            self.git_panel.update(cx, |git_panel, cx| {
-                let (can_commit, tooltip) = git_panel.configure_commit_button(cx);
-                let title = git_panel.commit_button_title();
-                let active_repo = git_panel.active_repository.clone();
-                let is_amend_pending = git_panel.amend_pending();
-                let is_signoff_enabled = git_panel.signoff_enabled();
-                (
-                    can_commit,
-                    tooltip,
-                    title,
-                    active_repo,
-                    is_amend_pending,
-                    is_signoff_enabled,
-                )
-            });
+        let (
+            can_commit,
+            tooltip,
+            commit_label,
+            active_repo,
+            is_amend_pending,
+            is_signoff_enabled,
+            workspace,
+        ) = self.git_panel.update(cx, |git_panel, cx| {
+            let (can_commit, tooltip) = git_panel.configure_commit_button(cx);
+            let title = git_panel.commit_button_title();
+            let active_repo = git_panel.active_repository.clone();
+            let is_amend_pending = git_panel.amend_pending();
+            let is_signoff_enabled = git_panel.signoff_enabled();
+            (
+                can_commit,
+                tooltip,
+                title,
+                active_repo,
+                is_amend_pending,
+                is_signoff_enabled,
+                git_panel.workspace.clone(),
+            )
+        });
 
         let branch = active_repo
             .as_ref()
@@ -361,7 +369,14 @@ impl CommitModal {
             .style(ButtonStyle::Transparent);
 
         let branch_picker = PopoverMenu::new("popover-button")
-            .menu(move |window, cx| Some(branch_picker::popover(active_repo.clone(), window, cx)))
+            .menu(move |window, cx| {
+                Some(branch_picker::popover(
+                    workspace.clone(),
+                    active_repo.clone(),
+                    window,
+                    cx,
+                ))
+            })
             .with_handle(self.branch_list_handle.clone())
             .trigger_with_tooltip(
                 branch_picker_button,
