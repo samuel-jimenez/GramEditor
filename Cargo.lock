@@ -4714,6 +4714,7 @@ dependencies = [
  "vim",
  "vim_mode_setting",
  "watch",
+ "which_key",
  "windows 0.61.3",
  "winresource",
  "workspace",
@@ -13901,6 +13902,20 @@ dependencies = [
  "env_home",
  "rustix 1.1.2",
  "winsafe",
+]
+
+[[package]]
+name = "which_key"
+version = "0.1.0"
+dependencies = [
+ "command_palette",
+ "gpui",
+ "serde",
+ "settings",
+ "theme",
+ "ui",
+ "util",
+ "workspace",
 ]
 
 [[package]]

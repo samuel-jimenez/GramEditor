@@ -1824,6 +1824,13 @@
     // The shape can be one of the following: "block", "bar", "underline", "hollow".
     "cursor_shape": {}
   },
+  // Which-key popup settings
+  "which_key": {
+    // Whether to show the which-key popup when holding down key combinations.
+    "enabled": true,
+    // Delay in milliseconds before showing the which-key popup.
+    "delay_ms": 1000,
+  },
   // Settings overrides to use when using Gram Stable.
   // Mostly useful for developers who are managing multiple instances of Gram.
   "stable": {

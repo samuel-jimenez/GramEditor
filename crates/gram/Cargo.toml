@@ -137,6 +137,7 @@ uuid.workspace = true
 vim.workspace = true
 vim_mode_setting.workspace = true
 watch.workspace = true
+which_key.workspace = true
 workspace.workspace = true
 app_actions.workspace = true
 app_env_vars.workspace = true
