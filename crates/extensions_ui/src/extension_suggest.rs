@@ -88,7 +88,7 @@ const SUGGESTIONS_BY_EXTENSION_ID: &[(&str, &[&str])] = &[
     ("vue", &["vue"]),
     ("wgsl", &["wgsl"]),
     ("wit", &["wit"]),
-    ("xml", &["xml"]),
+    ("xml", &["xml", "svg"]),
     ("zig", &["zig"]),
 ];
 
@@ -248,10 +248,12 @@ pub(crate) fn suggest(buffer: Entity<Buffer>, window: &mut Window, cx: &mut Cont
 
     cx.on_next_frame(window, move |workspace, _, cx| {
         let Some(editor) = workspace.active_item_as::<Editor>(cx) else {
+            log::info!("suggest {}: No matching editor in workspace", key);
             return;
         };
 
         if editor.read(cx).buffer().read(cx).as_singleton().as_ref() != Some(&buffer) {
+            log::info!("suggest {}: Not the active buffer", key);
             return;
         }
 
@@ -271,10 +273,14 @@ pub(crate) fn suggest(buffer: Entity<Buffer>, window: &mut Window, cx: &mut Cont
         workspace.show_notification(notification_id, cx, |cx| {
             cx.new(move |cx| {
                 MessageNotification::new(
-                    format!(
-                        "Install the '{}' extension for '{}' files?",
-                        extension_id, file_name_or_extension,
-                    ),
+                    if extension_id == file_name_or_extension {
+                        format!("Install the '{}' extension?", extension_id,)
+                    } else {
+                        format!(
+                            "Install the '{}' extension for '{}' files?",
+                            extension_id, file_name_or_extension,
+                        )
+                    },
                     cx,
                 )
                 .primary_message("Install")
