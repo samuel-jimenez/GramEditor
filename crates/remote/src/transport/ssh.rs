@@ -634,7 +634,10 @@ impl SshRemoteConnection {
             return Ok(dst_path);
         }
 
-        Ok(dst_path)
+        anyhow::bail!(
+            "Could not find remote server at {:?}",
+            dst_path.display(self.path_style())
+        );
     }
 
     async fn upload_local_server_binary(

@@ -27,9 +27,7 @@ fn parse_platform(output: &str) -> Result<RemotePlatform> {
     let os = match os {
         "Darwin" => "macos",
         "Linux" => "linux",
-        _ => anyhow::bail!(
-            "Prebuilt remote servers are not yet available for {os:?}. See https://zed.dev/docs/remote-development"
-        ),
+        _ => anyhow::bail!("Remote servers are not yet available for {os:?}."),
     };
 
     // exclude armv5,6,7 as they are 32-bit.
@@ -42,9 +40,7 @@ fn parse_platform(output: &str) -> Result<RemotePlatform> {
     } else if arch.starts_with("x86") {
         "x86_64"
     } else {
-        anyhow::bail!(
-            "Prebuilt remote servers are not yet available for {arch:?}. See https://zed.dev/docs/remote-development"
-        )
+        anyhow::bail!("Remote servers are not yet available for {arch:?}.")
     };
 
     Ok(RemotePlatform { os, arch })
