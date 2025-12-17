@@ -1432,7 +1432,12 @@
   // }
   //
   "file_types": {
-    "JSONC": ["**/.gram/**/*.json", "**/gram/**/*.json", "**/Gram/**/*.json", "**/.vscode/**/*.json", "tsconfig*.json"],
+    "JSONC": [
+      "**/.gram/*.json",
+      "**/.vscode/**/*.json",
+      "**/{gram,Gram}/{settings,keymap,tasks,debug}.json",
+      "tsconfig*.json",
+    ],
     "Markdown": [".rules"],
     "Shell Script": [".env.*"]
   },
