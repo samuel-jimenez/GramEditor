@@ -1,17 +1,4 @@
-# Gram Development: Glossary
-
-These are some terms and structures frequently used throughout the zed codebase.
-
-This is a best effort list and a work in progress.
-
-<!--
-TBD: Glossary Improvement
-
-Questions:
-
-- Can we generate this list from doc comments throughout zed?
-- We should have a section that shows the various UI parts and their names. (Can't do that in the channel.)
--->
+# Development: Glossary
 
 ## Naming conventions
 
@@ -71,11 +58,11 @@ h_flex()
 
 ## Gram UI
 
-- `Window`: A struct in zed representing a zed window in your desktop environment (see image below). There can be multiple if you have multiple zed instances open. Mostly passed around for rendering.
+- `Window`: A struct in gram representing a gram window in your desktop environment (see image below). There can be multiple if you have multiple gram instances open. Mostly passed around for rendering.
 - `Modal`: A UI element that floats on top of the rest of the UI
 - `Picker`: A struct representing a list of items in floating on top of the UI (Modal). You can select an item and confirm. What happens on select or confirm is determined by the picker's delegate. (The 'Model' in the image below is a picker.)
 - `PickerDelegate`: A trait used to specialize behavior for a `Picker`. The `Picker` stores the `PickerDelegate` in the field delegate.
-- `Center`: The middle of the zed window, the center is split into multiple `Pane`s. In the codebase this is a field on the `Workspace` struct. (see image below).
+- `Center`: The middle of the gram window, the center is split into multiple `Pane`s. In the codebase this is a field on the `Workspace` struct. (see image below).
 - `Pane`: An area in the `Center` where we can place items, such as an editor, multi-buffer or terminal (see image below).
 - `Panel`: An `Entity` implementing the `Panel` trait. These can be placed in a `Dock`. In the image below we see the: `ProjectPanel` in the left dock and the `DebugPanel` in the bottom dock. Note `Editor` does not implement `Panel` and hence is not a `Panel`.
 - `Dock`: A UI element similar to a `Pane` which can be opened and hidden. There can be up to 3 docks open at a time, left right and below the center. A dock contains one or more `Panel`s not `Pane`s. (see image).
@@ -93,7 +80,7 @@ h_flex()
 
 ## Editor
 
-- `Editor`: _The_ text editor, nearly everything in zed is an `Editor`, even single line inputs. Each pane in the image above contains one or more `Editor` instances.
+- `Editor`: _The_ text editor, nearly everything in gram is an `Editor`, even single line inputs. Each pane in the image above contains one or more `Editor` instances.
 - `Workspace`: The root of the window
 - `Entry`: A file, dir, pending dir or unloaded dir.
 - `Buffer`: The in-memory representation of a 'file' together with relevant data such as syntax trees, git status and diagnostics.

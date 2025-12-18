@@ -80,8 +80,8 @@ After following the steps above for including full debug info when compiling Gra
 You can either run `rust-gdb` or `rust-lldb` on the compiled Gram binary after building it with `cargo build`, by running one of the following commands:
 
 ```
-rust-gdb target/debug/zed
-rust-lldb target/debug/zed
+rust-gdb target/debug/gram
+rust-lldb target/debug/gram
 ```
 
 Alternatively, you can attach to a running instance of Gram (such as an instance of Gram started using `cargo run`) by running one of the following commands:
@@ -95,7 +95,7 @@ Where `<pid>` is the process ID of the Gram instance you want to attach to.
 
 To get the process ID of a running Gram instance, you can use your systems process management tools such as `Task Manager` on windows or `Activity Monitor` on macOS.
 
-Alternatively, you can run the `ps aux | grep zed` command on macOS and Linux or `Get-Process | Select-Object Id, ProcessName` in an instance of PowerShell on Windows.
+Alternatively, you can run the `ps aux | grep gram` command on macOS and Linux or `Get-Process | Select-Object Id, ProcessName` in an instance of PowerShell on Windows.
 
 #### Debugging Panics and Crashes
 

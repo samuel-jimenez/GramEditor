@@ -1,11 +1,11 @@
 # Debugging Crashes
 
-When Gram panics or otherwise crashes, Gram sends a message to a sidecar process which inspects the memory of the crashing editor to create a [minidump](https://chromium.googlesource.com/breakpad/breakpad/+/master/docs/getting_started_with_breakpad.md#the-minidump-file-format) file in `~/Library/Logs/Gram` or `$XDG_DATA_HOME/zed/logs`. This minidump can be used to generate backtraces for the stacks of all threads.
+When Gram panics or otherwise crashes, Gram sends a message to a sidecar process which inspects the memory of the crashing editor to create a [minidump](https://chromium.googlesource.com/breakpad/breakpad/+/master/docs/getting_started_with_breakpad.md#the-minidump-file-format) file in `~/Library/Logs/Gram` or `$XDG_DATA_HOME/gram/logs`. This minidump can be used to generate backtraces for the stacks of all threads.
 
 These crash reports contain rich information; but they are hard to read because they don't contain spans or symbol information. You can still work with them locally by downloading sources and an unstripped binary (or separate symbols file) for your Gram release and running:
 
 ```sh
-zstd -d ~/.local/share/zed/<uuid>.dmp -o minidump.dmp
+zstd -d ~/.local/share/gram/<uuid>.dmp -o minidump.dmp
 minidump-stackwalk minidump.dmp
 ```
 
