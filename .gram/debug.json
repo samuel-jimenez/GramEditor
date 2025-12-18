@@ -1,18 +1,18 @@
 [
   {
-    "label": "Debug Tehanu (CodeLLDB)",
+    "label": "Debug Gram (CodeLLDB)",
     "adapter": "CodeLLDB",
     "build": {
-      "label": "Build Tehanu",
+      "label": "Build Gram",
       "command": "cargo",
       "args": ["build"]
     }
   },
   {
-    "label": "Debug Tehanu (GDB)",
+    "label": "Debug Gram (GDB)",
     "adapter": "GDB",
     "build": {
-      "label": "Build Tehanu",
+      "label": "Build Gram",
       "command": "cargo",
       "args": ["build"]
     }
