@@ -38,7 +38,7 @@ sql-formatter --version
 
 Substitute your preferred [SQL Dialect] for `mysql` above (`duckdb`, `hive`, `mariadb`, `postgresql`, `redshift`, `snowflake`, `sqlite`, `spark`, etc).
 
-You can add this to Gram project settings (`.zed/settings.json`) or via your Gram user settings (`~/.config/gram/settings.json`).
+You can add this to Gram project settings (`.gram/settings.json`) or via your Gram user settings (`~/.config/gram/settings.json`).
 
 ### Advanced Formatting
 

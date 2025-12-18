@@ -106,7 +106,7 @@ TBD: Get this working
 
 ### REditorSupport/languageserver Configuration
 
-You can configure the [R languageserver settings](https://github.com/REditorSupport/languageserver#settings) via Gram Project Settings `.zed/settings.json` or Gram User Settings `~/.config/gram/settings.json`:
+You can configure the [R languageserver settings](https://github.com/REditorSupport/languageserver#settings) via Gram Project Settings `.gram/settings.json` or Gram User Settings `~/.config/gram/settings.json`:
 
 For example to disable Lintr linting and suppress code snippet suggestions (both enabled by default):
 

@@ -172,7 +172,7 @@ Run {#action debugger::Start} ({#kb debugger::Start}) to see a contextual list o
 
 As for all languages, configurations from `.vscode/launch.json` are also available for debugging in Gram.
 
-If your use-case isn't covered by any of these, you can take full control by adding debug configurations to `.zed/debug.json`. See below for example configurations.
+If your use-case isn't covered by any of these, you can take full control by adding debug configurations to `.gram/debug.json`. See below for example configurations.
 
 ### Configuring JavaScript debug tasks
 

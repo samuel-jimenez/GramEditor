@@ -342,7 +342,7 @@ async fn test_debug_modal_subtitles_with_multiple_worktrees(
 
     assert_eq!(
         subtitles.as_slice(),
-        [path!(".zed/debug.json"), path!(".zed/debug.json")]
+        [path!(".gram/debug.json"), path!(".gram/debug.json")]
     );
 }
 

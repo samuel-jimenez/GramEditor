@@ -6,7 +6,7 @@ Shell Scripts (bash, zsh, dash, sh) are supported natively by Gram.
 
 ## Settings
 
-You can configure various settings for Shell Scripts in your Gram User Settings (`~/.config/gram/settings.json`) or Gram Project Settings (`.zed/settings.json`):
+You can configure various settings for Shell Scripts in your Gram User Settings (`~/.config/gram/settings.json`) or Gram Project Settings (`.gram/settings.json`):
 
 ```json [settings]
   "languages": {

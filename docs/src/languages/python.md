@@ -279,7 +279,7 @@ result = func( #sql
 
 ## Debugging
 
-Gram supports Python debugging through the `debugpy` adapter. You can start with no configuration or define custom launch profiles in `.zed/debug.json`.
+Gram supports Python debugging through the `debugpy` adapter. You can start with no configuration or define custom launch profiles in `.gram/debug.json`.
 
 ### Start Debugging with No Setup
 
@@ -294,7 +294,7 @@ Gram uses `debugpy` under the hood, but no manual adapter configuration is requi
 
 ### Define Custom Debug Configurations
 
-For reusable setups, create a `.zed/debug.json` file in your project root. This gives you more control over how Gram runs and debugs your code.
+For reusable setups, create a `.gram/debug.json` file in your project root. This gives you more control over how Gram runs and debugs your code.
 
 - [debugpy configuration documentation](https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings#launchattach-settings)
 

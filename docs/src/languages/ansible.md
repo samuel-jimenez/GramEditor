@@ -9,7 +9,7 @@ Support for Ansible in Gram is provided via a community-maintained [Ansible exte
 
 ### File detection
 
-To avoid mishandling non-Ansible YAML files, the Ansible Language is not associated with any file extensions by default. To change this behavior you can add a `"file_types"` section to Gram settings inside your project (`.zed/settings.json`) or your Gram user settings (`~/.config/gram/settings.json`) to match your folder/naming conventions. For example:
+To avoid mishandling non-Ansible YAML files, the Ansible Language is not associated with any file extensions by default. To change this behavior you can add a `"file_types"` section to Gram settings inside your project (`.gram/settings.json`) or your Gram user settings (`~/.config/gram/settings.json`) to match your folder/naming conventions. For example:
 
 ```json [settings]
 "file_types": {
