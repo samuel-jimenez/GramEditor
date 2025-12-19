@@ -10,6 +10,7 @@ use ui::{
 };
 
 mod blame_ui;
+pub mod clone;
 
 use app_actions;
 use git::{

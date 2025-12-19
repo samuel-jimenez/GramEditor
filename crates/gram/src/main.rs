@@ -13,11 +13,13 @@ use extension::ExtensionHostProxy;
 use fs::{Fs, RealFs};
 use futures::{StreamExt, channel::oneshot, future};
 use git::GitHostingProviderRegistry;
+use git_ui::clone::clone_and_open;
 use gpui::{App, AppContext, Application, AsyncApp, QuitMode, UpdateGlobal as _};
 
 use gpui_tokio::Tokio;
 use language::LanguageRegistry;
 use onboarding::{FIRST_OPEN, show_onboarding_view};
+use project_panel::ProjectPanel;
 use remote::RemoteConnectionOptions;
 use reqwest_client::ReqwestClient;
 
@@ -35,10 +37,12 @@ use release_channel::{AppCommitSha, AppVersion, ReleaseChannel};
 use session::{AppSession, Session};
 use settings::{Settings, SettingsStore, watch_config_file};
 use std::{
+    cell::RefCell,
     env,
     io::{self, IsTerminal},
     path::{Path, PathBuf},
     process,
+    rc::Rc,
     sync::{Arc, OnceLock},
     time::Instant,
 };
@@ -792,6 +796,79 @@ fn handle_open_request(request: OpenRequest, app_state: Arc<AppState>, cx: &mut 
                             cx,
                         ),
                     })
+                })
+                .detach_and_log_err(cx);
+            }
+            OpenRequestKind::GitClone { repo_url } => {
+                workspace::with_active_or_new_workspace(cx, |_workspace, window, cx| {
+                    if window.is_window_active() {
+                        clone_and_open(
+                            repo_url,
+                            cx.weak_entity(),
+                            window,
+                            cx,
+                            Arc::new(|workspace: &mut workspace::Workspace, window, cx| {
+                                workspace.focus_panel::<ProjectPanel>(window, cx);
+                            }),
+                        );
+                        return;
+                    }
+
+                    let subscription = Rc::new(RefCell::new(None));
+                    subscription.replace(Some(cx.observe_in(&cx.entity(), window, {
+                        let subscription = subscription.clone();
+                        let repo_url = repo_url;
+                        move |_, workspace_entity, window, cx| {
+                            if window.is_window_active() && subscription.take().is_some() {
+                                clone_and_open(
+                                    repo_url.clone(),
+                                    workspace_entity.downgrade(),
+                                    window,
+                                    cx,
+                                    Arc::new(|workspace: &mut workspace::Workspace, window, cx| {
+                                        workspace.focus_panel::<ProjectPanel>(window, cx);
+                                    }),
+                                );
+                            }
+                        }
+                    })));
+                });
+            }
+            OpenRequestKind::GitCommit { sha } => {
+                cx.spawn(async move |cx| {
+                    let paths_with_position =
+                        derive_paths_with_position(app_state.fs.as_ref(), request.open_paths).await;
+                    let (workspace, _results) = open_paths_with_positions(
+                        &paths_with_position,
+                        &[],
+                        app_state,
+                        workspace::OpenOptions::default(),
+                        cx,
+                    )
+                    .await?;
+
+                    workspace
+                        .update(cx, |workspace, window, cx| {
+                            let Some(repo) = workspace.project().read(cx).active_repository(cx)
+                            else {
+                                log::error!("no active repository found for commit view");
+                                return Err(anyhow::anyhow!("no active repository found"));
+                            };
+
+                            git_ui::commit_view::CommitView::open(
+                                sha,
+                                repo.downgrade(),
+                                workspace.weak_handle(),
+                                None,
+                                None,
+                                window,
+                                cx,
+                            );
+                            Ok(())
+                        })
+                        .log_err();
+
+                    anyhow::Ok(())
                 })
                 .detach_and_log_err(cx);
             }
