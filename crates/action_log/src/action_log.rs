@@ -4,7 +4,7 @@ use clock;
 use collections::BTreeMap;
 use futures::{FutureExt, StreamExt, channel::mpsc};
 use gpui::{App, AppContext, AsyncApp, Context, Entity, Subscription, Task, WeakEntity};
-use language::{Anchor, Buffer, BufferEvent, DiskState, Point, ToPoint};
+use language::{Anchor, Buffer, BufferEvent, Point, ToPoint};
 use project::{Project, lsp_store::OpenLspBufferHandle};
 use std::{cmp, ops::Range, sync::Arc};
 use text::{Edit, Patch, Rope};
@@ -148,7 +148,7 @@ impl ActionLog {
                 if buffer
                     .read(cx)
                     .file()
-                    .is_some_and(|file| file.disk_state() == DiskState::Deleted)
+                    .is_some_and(|file| file.disk_state().is_deleted())
                 {
                     // If the buffer had been edited by a tool, but it got
                     // deleted externally, we want to stop tracking it.
@@ -160,7 +160,7 @@ impl ActionLog {
                 if buffer
                     .read(cx)
                     .file()
-                    .is_some_and(|file| file.disk_state() != DiskState::Deleted)
+                    .is_some_and(|file| !file.disk_state().is_deleted())
                 {
                     // If the buffer had been deleted by a tool, but it got
                     // resurrected externally, we want to clear the edits we
@@ -717,7 +717,7 @@ impl ActionLog {
                 tracked.version != buffer.version
                     && buffer
                         .file()
-                        .is_some_and(|file| file.disk_state() != DiskState::Deleted)
+                        .is_some_and(|file| !file.disk_state().is_deleted())
             })
             .map(|(buffer, _)| buffer)
     }
