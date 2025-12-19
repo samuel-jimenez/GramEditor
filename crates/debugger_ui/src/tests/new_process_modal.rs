@@ -5,7 +5,9 @@ use project::{FakeFs, Fs as _, Project};
 use serde_json::json;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
-use task::{DebugRequest, DebugScenario, LaunchRequest, TaskContext, VariableName, GramDebugConfig};
+use task::{
+    DebugRequest, DebugScenario, GramDebugConfig, LaunchRequest, TaskContext, VariableName,
+};
 use text::Point;
 use util::path;
 
@@ -291,7 +293,7 @@ async fn test_debug_modal_subtitles_with_multiple_worktrees(
     fs.insert_tree(
         path!("/workspace1"),
         json!({
-            ".zed": {
+            ".gram": {
                 "debug.json": r#"[
                     {
                         "adapter": "fake-adapter",
@@ -364,7 +366,7 @@ async fn test_dap_adapter_config_conversion_and_validation(cx: &mut TestAppConte
         registry.enumerate_adapters::<Vec<_>>()
     });
 
-    let zed_config = GramDebugConfig {
+    let gram_config = GramDebugConfig {
         label: "test_debug_session".into(),
         adapter: "test_adapter".into(),
         request: DebugRequest::Launch(LaunchRequest {
@@ -389,7 +391,7 @@ async fn test_dap_adapter_config_conversion_and_validation(cx: &mut TestAppConte
             })
             .unwrap_or_else(|| panic!("Adapter {} should exist", adapter_name));
 
-        let mut adapter_specific_config = zed_config.clone();
+        let mut adapter_specific_config = gram_config.clone();
         adapter_specific_config.adapter = adapter_name.to_string().into();
 
         let debug_scenario = adapter

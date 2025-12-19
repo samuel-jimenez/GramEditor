@@ -1,7 +1,5 @@
 # Environment Variables
 
-_**Note**: The following only applies to Gram 0.152.0 and later._
-
 Multiple features in Gram are affected by environment variables:
 
 - Tasks
@@ -9,15 +7,19 @@ Multiple features in Gram are affected by environment variables:
 - Look-up of language servers
 - Language servers
 
-In order to make the best use of these features, it's helpful to understand where Gram gets its environment variables from and how they're used.
+In order to make the best use of these features, it's helpful to understand
+where Gram gets its environment variables from and how they're used.
 
 ## Where does Gram get its environment variables from?
 
-How Gram was started — whether it's icon was clicked in the macOS Dock or in a Linux window manager, or whether it was started via the CLI `zed` that comes with Gram — influences which environment variables Gram can use.
+How Gram was started — whether it's icon was clicked in the macOS Dock or in a
+Linux window manager, or whether it was started via the CLI `gram` that comes
+with Gram — influences which environment variables Gram can use.
 
 ### Launched from the CLI
 
-If Gram is opened via the CLI (`zed`), it will inherit the environment variables from the surrounding shell session.
+If Gram is opened via the CLI (`gram`), it will inherit the environment variables
+from the surrounding shell session.
 
 That means if you do
 
@@ -26,17 +28,30 @@ $ export MY_ENV_VAR=hello
 $ zed .
 ```
 
-the environment variable `MY_ENV_VAR` is now available inside Gram. For example, in the built-in terminal.
+the environment variable `MY_ENV_VAR` is now available inside Gram. For example,
+in the built-in terminal.
 
-Starting with Gram 0.152.0, the CLI `zed` will _always_ pass along its environment to Gram, regardless of whether a Gram instance was previously running or not. Prior to Gram 0.152.0 this was not the case and only the first Gram instance would inherit the environment variables.
+The CLI `gram` will _always_ pass along its environment to Gram, regardless of
+whether a Gram instance was previously running or not.
 
 ### Launched via window manager, Dock, or launcher
 
-When Gram has been launched via the macOS Dock, or a GNOME or KDE icon on Linux, or an application launcher like Alfred or Raycast, it has no surrounding shell environment from which to inherit its environment variables.
+When Gram has been launched via the macOS Dock, or a GNOME or KDE icon on Linux,
+or an application launcher like Alfred or Raycast, it has no surrounding shell
+environment from which to inherit its environment variables.
 
-In order to still have a useful environment, Gram spawns a login shell in the user's home directory and gets its environment. This environment is then set on the Gram _process_. That means all Gram windows and projects will inherit that home directory environment.
+In order to still have a useful environment, Gram spawns a login shell in the
+user's home directory and gets its environment. This environment is then set on
+the Gram _process_. That means all Gram windows and projects will inherit that
+home directory environment.
 
-Since that can lead to problems for users that require different environment variables for a project (because they use `direnv`, or `asdf`, or `mise`, ... in that project), when opening project, Gram spawns another login shell. This time in the project's directory. The environment from that login shell is _not_ set on the process (because that would mean opening a new project changes the environment for all Gram windows). Instead, the environment is stored and passed along when running tasks, opening terminals, or spawning language servers.
+Since that can lead to problems for users that require different environment
+variables for a project (because they use `direnv`, or `asdf`, or `mise`, ... in
+that project), when opening project, Gram spawns another login shell. This time
+in the project's directory. The environment from that login shell is _not_ set
+on the process (because that would mean opening a new project changes the
+environment for all Gram windows). Instead, the environment is stored and passed
+along when running tasks, opening terminals, or spawning language servers.
 
 ## Where and how are environment variables used?
 
@@ -45,26 +60,32 @@ There are two sets of environment variables:
 1. Environment variables of the Gram process
 2. Environment variables stored per project
 
-The variables from (1) are always used, since they are stored on the process itself and every spawned process (tasks, terminals, language servers, ...) will inherit them by default.
+The variables from (1) are always used, since they are stored on the process
+itself and every spawned process (tasks, terminals, language servers, ...) will
+inherit them by default.
 
 The variables from (2) are used explicitly, depending on the feature.
 
 ### Tasks
 
-Tasks are spawned with an combined environment. In order of precedence (low to high, with the last overwriting the first):
+Tasks are spawned with a combined environment. In order of precedence (low to
+high, with the last overwriting the first):
 
 - the Gram process environment
 - if the project was opened from the CLI: the CLI environment
-- if the project was not opened from the CLI: the project environment variables obtained by running a login shell in the project's root folder
+- if the project was not opened from the CLI: the project environment variables
+  obtained by running a login shell in the project's root folder
 - optional, explicitly configured environment in settings
 
 ### Built-in terminal
 
-Built-in terminals, like tasks, are spawned with an combined environment. In order of precedence (low to high):
+Built-in terminals, like tasks, are spawned with an combined environment. In
+order of precedence (low to high):
 
 - the Gram process environment
 - if the project was opened from the CLI: the CLI environment
-- if the project was not opened from the CLI: the project environment variables obtained by running a login shell in the project's root folder
+- if the project was not opened from the CLI: the project environment variables
+  obtained by running a login shell in the project's root folder
 - optional, explicitly configured environment in settings
 
 ### Look-up of language servers
@@ -80,13 +101,22 @@ For some languages the language server adapters lookup the binary in the user's 
 For this look-up, Gram uses the following the environment:
 
 - if the project was opened from the CLI: the CLI environment
-- if the project was not opened from the CLI: the project environment variables obtained by running a login shell in the project's root folder
+- if the project was not opened from the CLI: the project environment variables
+  obtained by running a login shell in the project's root folder
 
 ### Language servers
 
 After looking up a language server, Gram starts them.
 
-These language server processes always inherit Gram's process environment. But, depending on the language server look-up, additional environment variables might be set or overwrite the process environment.
+These language server processes always inherit Gram's process environment. But,
+depending on the language server look-up, additional environment variables might
+be set or overwrite the process environment.
 
-- If the language server was found in the project environment's `$PATH`, then the project environment's is passed along to the language server process. Where the project environment comes from depends on how the project was opened, via CLI or not. See previous point on look-up of language servers.
-- If the language servers was not found in the project environment, Gram tries to install it globally and start it globally. In that case, the process will inherit Gram's process environment, and — if the project was opened via ClI — from the CLI.
+- If the language server was found in the project environment's `$PATH`, then
+  the project environment's is passed along to the language server process.
+  Where the project environment comes from depends on how the project was
+  opened, via CLI or not. See previous point on look-up of language servers.
+- If the language servers was not found in the project environment, Gram tries
+  to install it globally and start it globally. In that case, the process will
+  inherit Gram's process environment, and — if the project was opened via ClI —
+  from the CLI.

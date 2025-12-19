@@ -10,9 +10,9 @@ Navigating through the theme list by moving up and down will change the theme in
 
 ## Installing more Themes
 
-More themes are available from the Extensions page, which you can access via the command palette with `zed: extensions` or the [Gram website](https://gram.liten.app/extensions?filter=themes).
-
-Many popular themes have been ported to Gram, and if you're struggling to choose one, visit [zed-themes.com](https://zed-themes.com), a third-party gallery with visible previews for many of them.
+Gram can use Zed themes so you can install any theme from
+[zed-themes.com](https://zed-themes.com), a gallery with visible previews for
+many of them.
 
 ## Configuring a Theme
 
@@ -68,7 +68,6 @@ For example, add the following to your `settings.json` if you wish to override t
 To see a comprehensive list of list of captures (like `comment` and `comment.doc`) see [Language Extensions: Syntax highlighting](./extensions/languages.md#syntax-highlighting).
 
 To see a list of available theme attributes look at the JSON file for your theme.
-For example, [assets/themes/one/one.json](https://github.com/zed-industries/zed/blob/main/assets/themes/one/one.json) for the default One Dark and One Light themes.
 
 ## Local Themes
 

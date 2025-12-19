@@ -31,6 +31,6 @@ cargo test -p vim --features neovim test_visual_star_hash
 This will run your keystrokes against a headless neovim and cache the results in the test_data directory. Note that neovim must be installed and reachable on your $PATH in order to run the feature.
 
 
-## Testing zed-only behavior
+## Testing gram-only behavior
 
-Gram does more than vim/neovim in their default modes. The `VimTestContext` can be used instead. This lets you test integration with the language server and other parts of zed's UI that don't have a NeoVim equivalent.
+Gram does more than vim/neovim in their default modes. The `VimTestContext` can be used instead. This lets you test integration with the language server and other parts of gram's UI that don't have a NeoVim equivalent.

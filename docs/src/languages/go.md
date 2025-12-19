@@ -167,8 +167,8 @@ You might find yourself needing to connect to an existing instance of Delve that
   {
     "adapter": "Delve",
     "label": "Connect to a running Delve instance",
-    "program": "/Users/zed/Projects/language_repositories/golang/hello/hello",
-    "cwd": "/Users/zed/Projects/language_repositories/golang/hello",
+    "program": "/Users/gram/Projects/language_repositories/golang/hello/hello",
+    "cwd": "/Users/gram/Projects/language_repositories/golang/hello",
     "args": [],
     "env": {},
     "request": "launch",

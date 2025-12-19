@@ -4,7 +4,7 @@ Note, FreeBSD is not currently a supported platform, and so this is a work-in-pr
 
 ## Repository
 
-Clone the [Gram repository](https://github.com/zed-industries/zed).
+Clone the [Gram repository](https://codeberg.org/krig/gram).
 
 ## Dependencies
 

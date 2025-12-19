@@ -7,7 +7,7 @@ OCaml support is available through the [OCaml extension](https://github.com/zed-
 
 ## Setup Instructions
 
-If you have the development environment already setup, you can skip to [Launching Gram](#launching-zed)
+If you have the development environment already setup, you can skip to [Launching Gram](#launching-gram)
 
 ### Using Opam
 
@@ -30,7 +30,7 @@ With that aside, we can now launch Gram. Given how the OCaml package manager wor
 Once you have the cli, simply from a terminal, navigate to your project and run
 
 ```sh
-zed .
+gram .
 ```
 
 Voilà! You should have Gram running with OCaml support, no additional setup required.

@@ -68,7 +68,7 @@ pub async fn init(crash_init: InitCrashHandler) {
     let app_pid = process::id();
     // TODO: we should be able to get away with using 1 crash-handler process per machine,
     // but for now we append the PID of the current process which makes it unique per remote
-    // server or interactive zed instance. This solves an issue where occasionally the socket
+    // server or interactive gram instance. This solves an issue where occasionally the socket
     // used by the crash handler isn't destroyed correctly which causes it to stay on the file
     // system and block further attempts to initialize crash handlers with that socket path.
     let socket_name = paths::temp_dir().join(format!("gram-crash-handler-{app_pid}"));
@@ -275,7 +275,7 @@ impl minidumper::ServerHandler for CrashServer {
                 let gpu_specs: system_specs::GpuSpecs =
                     bincode::deserialize(&buffer).expect("gpu specs");
                 // we ignore the case where it was already set because this message is sent
-                // on each new window. in theory all zed windows should be using the same
+                // on each new window. in theory all gram windows should be using the same
                 // GPU so this is fine.
                 self.active_gpu.set(gpu_specs).ok();
             }

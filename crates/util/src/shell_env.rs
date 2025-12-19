@@ -94,7 +94,7 @@ async fn capture_unix(
         String::from_utf8_lossy(&process_output.stderr),
     );
 
-    // Parse the JSON output from zed --printenv
+    // Parse the JSON output from gram --printenv
     let env_map: collections::HashMap<String, String> = serde_json::from_str(&env_output)
         .with_context(|| {
             format!("Failed to deserialize environment variables from json: {env_output}")
@@ -214,7 +214,7 @@ async fn capture_windows(
     );
     let env_output = String::from_utf8_lossy(&output.stdout);
 
-    // Parse the JSON output from zed --printenv
+    // Parse the JSON output from gram --printenv
     serde_json::from_str(&env_output).with_context(|| {
         format!("Failed to deserialize environment variables from json: {env_output}")
     })

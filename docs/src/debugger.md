@@ -62,7 +62,7 @@ Gram will also load debug configurations from `.vscode/launch.json`, and show th
 If you run the same launch profiles across multiple projects, you can store them once in your user configuration. Invoke {#action gram::OpenDebugTasks} from the command palette to open the global `debug.json` file; Gram creates it next to your user `settings.json` and keeps it in sync with the debugger UI. The file lives at:
 
 - **macOS:** `~/Library/Application Support/Gram/debug.json`
-- **Linux/BSD:** `$XDG_CONFIG_HOME/zed/debug.json` (falls back to `~/.config/gram/debug.json`)
+- **Linux/BSD:** `$XDG_CONFIG_HOME/gram/debug.json` (falls back to `~/.config/gram/debug.json`)
 - **Windows:** `%APPDATA%\Gram\debug.json`
 
 Populate this file with the same array of objects you would place in `.gram/debug.json`. Any scenarios defined there are merged into every workspace, so your favorite launch presets appear automatically in the "New Debug Session" dialog.

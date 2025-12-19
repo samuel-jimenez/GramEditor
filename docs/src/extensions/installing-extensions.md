@@ -7,7 +7,7 @@ Here you can view the extensions that you currently have installed or search and
 ## Installation Location
 
 - On macOS, extensions are installed in `~/Library/Application Support/Gram/extensions`.
-- On Linux, they are installed in either `$XDG_DATA_HOME/zed/extensions` or `~/.local/share/zed/extensions`.
+- On Linux, they are installed in either `$XDG_DATA_HOME/gram/extensions` or `~/.local/share/gram/extensions`.
 
 This directory contains two subdirectories:
 

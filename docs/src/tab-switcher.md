@@ -1,10 +1,9 @@
 # Tab Switcher
 
-The Tab Switcher provides a quick way to navigate between open tabs in Zed. It
+The Tab Switcher provides a quick way to navigate between open tabs in Gram. It
 displays a list of your open tabs sorted by recent usage, making it easy to jump
 back to whatever you were just working on.
 
-![Tab Switcher with multiple panes](https://zed.dev/img/features/tab-switcher.png)
 
 ## Quick Switching
 
@@ -34,7 +33,7 @@ While the Tab Switcher is open, you can:
   the switcher was opened
 - Press {#kb tab_switcher::CloseSelectedItem} to close the currently selected tab
 
-As you navigate through the list, Zed will update the pane's active item to
+As you navigate through the list, Gram will update the pane's active item to
 match the selected tab.
 
 ## Action Reference

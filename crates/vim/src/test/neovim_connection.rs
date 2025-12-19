@@ -89,7 +89,7 @@ impl NeovimConnection {
                 .await
                 .expect("Could not attach to ui");
 
-            // Makes system act a little more like zed in terms of indentation
+            // Makes system act a little more like gram in terms of indentation
             nvim.set_option("smartindent", nvim_rs::Value::Boolean(true))
                 .await
                 .expect("Could not set smartindent on startup");
@@ -391,7 +391,7 @@ impl NeovimConnection {
         // to add one to the end in visual mode.
         match mode {
             Mode::VisualBlock if selection_row != cursor_row => {
-                // in zed we fake a block selection by using multiple cursors (one per line)
+                // in gram we fake a block selection by using multiple cursors (one per line)
                 // this code emulates that.
                 // to deal with casees where the selection is not perfectly rectangular we extract
                 // the content of the selection via the "a register to get the shape correctly.

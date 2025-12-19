@@ -25,7 +25,7 @@ use util::{ResultExt as _, debug_panic, maybe, paths::PathExt, shell::ShellKind}
 /// Path to the program used for askpass
 ///
 /// On Unix and remote servers, this defaults to the current executable
-/// On Windows, this is set to the CLI variant of zed
+/// On Windows, this is set to the CLI variant of gram
 static ASKPASS_PROGRAM: OnceLock<std::path::PathBuf> = OnceLock::new();
 
 #[derive(PartialEq, Eq)]
@@ -193,7 +193,7 @@ impl PasswordProxy {
         + Sync,
         executor: BackgroundExecutor,
     ) -> Result<Self> {
-        let temp_dir = tempfile::Builder::new().prefix("zed-askpass").tempdir()?;
+        let temp_dir = tempfile::Builder::new().prefix("gram-askpass").tempdir()?;
         let askpass_socket = temp_dir.path().join("askpass.sock");
         let askpass_script_path = temp_dir.path().join(ASKPASS_SCRIPT_NAME);
         let current_exec =

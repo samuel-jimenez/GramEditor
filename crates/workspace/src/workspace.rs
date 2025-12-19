@@ -6120,7 +6120,7 @@ pub async fn get_any_active_workspace(
         cx.update(|cx| Workspace::new_local(vec![], app_state.clone(), None, None, None, cx))?
             .await?;
     }
-    activate_any_workspace_window(&mut cx).context("could not open zed")
+    activate_any_workspace_window(&mut cx).context("could not open gram")
 }
 
 fn activate_any_workspace_window(cx: &mut AsyncApp) -> Option<WindowHandle<Workspace>> {

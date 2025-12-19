@@ -357,7 +357,7 @@ As any Gram command is available, you may find that it's helpful to remember mne
 - `:cpp` for "copy path to file"
 - `:crp` for "copy relative path"
 - `:reveal` for "reveal in finder"
-- `:zlog` for "open zed log"
+- `:zlog` for "open gram log"
 - `:clank` for "cancel language server work"
 
 ## Customizing key bindings

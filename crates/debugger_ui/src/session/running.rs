@@ -48,8 +48,8 @@ use serde_json::Value;
 use settings::Settings;
 use stack_frame_list::StackFrameList;
 use task::{
-    BuildTaskDefinition, DebugScenario, Shell, ShellBuilder, SpawnInTerminal, TaskContext,
-    GramDebugConfig, substitute_variables_in_str,
+    BuildTaskDefinition, DebugScenario, GramDebugConfig, Shell, ShellBuilder, SpawnInTerminal,
+    TaskContext, substitute_variables_in_str,
 };
 use terminal_view::TerminalView;
 use ui::{
@@ -648,7 +648,7 @@ impl RunningState {
                     .for_each(|value| Self::substitute_variables_in_config(value, context));
             }
             serde_json::Value::String(s) => {
-                // Some built-in zed tasks wrap their arguments in quotes as they might contain spaces.
+                // Some built-in gram tasks wrap their arguments in quotes as they might contain spaces.
                 if s.starts_with("\"$GRAM_") && s.ends_with('"') {
                     *s = s[1..s.len() - 1].to_string();
                 }
@@ -710,7 +710,7 @@ impl RunningState {
                     .for_each(|value| Self::relativize_paths(None, value, context));
             }
             serde_json::Value::String(s) if key == Some("program") || key == Some("cwd") => {
-                // Some built-in zed tasks wrap their arguments in quotes as they might contain spaces.
+                // Some built-in gram tasks wrap their arguments in quotes as they might contain spaces.
                 if s.starts_with("\"$GRAM_") && s.ends_with('"') {
                     *s = s[1..s.len() - 1].to_string();
                 }

@@ -215,14 +215,14 @@ When viewing files with changes, Gram displays diff hunks that can be expanded o
 
 ## Git CLI Configuration
 
-If you would like to also use Gram for your [git commit message editor](https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration#_core_editor) when committing from the command line you can use `zed --wait`:
+If you would like to also use Gram for your [git commit message editor](https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration#_core_editor) when committing from the command line you can use `gram --wait`:
 
 ```sh
-git config --global core.editor "zed --wait"
+git config --global core.editor "gram --wait"
 ```
 
 Or add the following to your shell environment (in `~/.zshrc`, `~/.bashrc`, etc):
 
 ```sh
-export GIT_EDITOR="zed --wait"
+export GIT_EDITOR="gram --wait"
 ```

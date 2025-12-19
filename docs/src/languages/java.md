@@ -91,7 +91,7 @@ JDTLS provides many configuration options that can be passed via the `initialize
         // this will be sent to JDTLS as initializationOptions:
         "initialization_options": {
           "bundles": [],
-          // use this if your zed project root folder is not the same as the java project root:
+          // use this if your gram project root folder is not the same as the java project root:
           "workspaceFolders": ["file:///home/snjeza/Project"],
           "settings": {
             "java": {

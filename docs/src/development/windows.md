@@ -4,7 +4,7 @@
 
 ## Repository
 
-Clone down the [Gram repository](https://github.com/zed-industries/zed).
+Clone down the Gram [repository](https://codeberg.org/krig/gram).
 
 ## Dependencies
 
@@ -149,7 +149,7 @@ Or, you can create a new `.cargo/config.toml` in the same folder as the Gram rep
 upper_dir
 ├── .cargo          // <-- Make this folder
 │   └── config.toml // <-- Make this file
-└── zed
+└── gram
     ├── .cargo
     │   └── config.toml
     └── crates
@@ -180,10 +180,10 @@ See this issue for more information [#12041](https://github.com/zed-industries/z
 Sometimes, depending on the security rules applied to your laptop, you may get the following error while compiling Gram:
 
 ```
-error: failed to run custom build command for `zed(C:\Users\USER\src\zed\crates\zed)`
+error: failed to run custom build command for `gram(C:\Users\USER\src\gram\crates\gram)`
 
 Caused by:
-  process didn't exit successfully: `C:\Users\USER\src\zed\target\debug\build\zed-b24f1e9300107efc\build-script-build` (exit code: 1)
+  process didn't exit successfully: `C:\Users\USER\src\gram\target\debug\build\gram-b24f1e9300107efc\build-script-build` (exit code: 1)
   --- stdout
   cargo:rerun-if-changed=../../.git/logs/HEAD
   cargo:rustc-env=GRAM_COMMIT_SHA=25e2e9c6727ba9b77415588cfa11fd969612adb7
@@ -207,7 +207,7 @@ See this [issue](https://github.com/zed-industries/zed/issues/18393) for more in
 You may receive an error like the following when building
 
 ```
-error: failed to get `pet` as a dependency of package `languages v0.1.0 (D:\a\zed-windows-builds\zed-windows-builds\crates\languages)`
+error: failed to get `pet` as a dependency of package `languages v0.1.0 (D:\a\gram-windows-builds\gram-windows-builds\crates\languages)`
 
 Caused by:
   failed to load source for dependency `pet`

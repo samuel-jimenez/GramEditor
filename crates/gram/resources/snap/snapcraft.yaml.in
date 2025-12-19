@@ -1,23 +1,25 @@
-name: zed
+name: gram
 title: Gram
 base: core24
 version: "$RELEASE_VERSION"
-summary: The editor for what's next
+summary: What cannot be mended must be transcended.
 description: |
-  Gram is a modern open-source code editor, built from the ground up in Rust with
-  a GPU-accelerated renderer. We help you build software faster than ever before.
+  Gram is a modern, fully open-source code editor which helps you
+  write code without subjecting you to telemetry, AI, proprietary
+  server components, license agreements or automatic installation
+  of binaries.
 grade: stable
 confinement: classic
 compression: lzo
-website: https://liten.app/
-source-code: https://github.com/zed-industries/zed
-issues: https://github.com/zed-industries/zed/issues
-contact: https://liten.app/community-links#support-and-feedback
+website: https://codeberg.org/krig/gram
+source-code: https://codeberg.org/krig/gram
+issues: https://codeberg.org/krig/gram/issues
+contact: https://codeberg.org/krig/gram
 
 parts:
   gram:
     plugin: dump
-    source: "https://github.com/zed-industries/zed/releases/download/v$RELEASE_VERSION/zed-linux-x86_64.tar.gz"
+    source: "https://codeberg.org/krig/gram/releases/download/v$RELEASE_VERSION/gram-linux-x86_64.tar.gz"
 
     organize:
       # These renames seem to not be necessary, but it's tidier.

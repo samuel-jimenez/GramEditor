@@ -23,7 +23,7 @@ run on the remote server.
 1. Install the editor on your main machine.
 1. Build and copy the remote editor process to your development machine. Upload
    it to `~/.gram_server/gram-remote-server-{RELEASE_CHANNEL}-{VERSION}` on the
-   server, for example `~/.gram_server/zed-remote-server-stable-0.181.6`. The
+   server, for example `~/.gram_server/gram-remote-server-stable-0.181.6`. The
    version must exactly match the version of the editor you are using.
 1. Use {#kb projects::OpenRemote} to open the "Remote Projects" dialog.
 1. Click "Connect New Server" and enter the command you use to SSH into the
@@ -70,7 +70,7 @@ file.
   "ssh_connections": [
     {
       "host": "192.168.1.10",
-      "projects": [{ "paths": ["~/code/zed/zed"] }]
+      "projects": [{ "paths": ["~/code/gram/gram"] }]
     }
   ]
 }
@@ -248,7 +248,7 @@ Any prompts that SSH needs will be shown in the UI, so you can verify host keys,
 
 Once the master connection is established, Gram will check to see if the remote server binary is present in `~/.gram_server` on the remote, and that its version matches the current version of Gram that you're using.
 
-To build the remote server binary, run `cargo build -p remote_server --release`. Upload it to `~/.gram_server/zed-remote-server-{RELEASE_CHANNEL}-{VERSION}` on the server, for example `~/.gram_server/gram-remote-server-stable-0.181.6`. The version must exactly match the version of Gram itself you are using.
+To build the remote server binary, run `cargo build -p remote_server --release`. Upload it to `~/.gram_server/gram-remote-server-{RELEASE_CHANNEL}-{VERSION}` on the server, for example `~/.gram_server/gram-remote-server-stable-0.181.6`. The version must exactly match the version of Gram itself you are using.
 
 ## Maintaining the SSH connection
 
