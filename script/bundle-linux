@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 set -euxo pipefail
-source script/lib/blob-store.sh
 
 # Function for displaying help info
 help_info() {
@@ -83,24 +82,7 @@ if [[ "$remote_server_triple" == "$musl_triple" ]]; then
 fi
 cargo build --release --target "${remote_server_triple}" --package remote_server
 
-# Upload debug info to sentry.io
-if ! command -v sentry-cli >/dev/null 2>&1; then
-    echo "sentry-cli not found. skipping sentry upload."
-    echo "install with: 'curl -sL https://sentry.io/get-cli | bash'"
-else
-    if [[ -n "${SENTRY_AUTH_TOKEN:-}" ]]; then
-        echo "Uploading gram debug symbols to sentry..."
-        # note: this uploads the unstripped binary which is needed because it contains
-        # .eh_frame data for stack unwinding. see https://github.com/getsentry/symbolic/issues/783
-        sentry-cli debug-files upload --include-sources --wait -p gram -o gram-dev \
-            "${target_dir}/${target_triple}"/release/gram \
-            "${target_dir}/${remote_server_triple}"/release/remote_server
-    else
-        echo "missing SENTRY_AUTH_TOKEN. skipping sentry upload."
-    fi
-fi
-
-# Strip debug symbols and save them for upload to DigitalOcean
+# Strip debug symbols and save them
 objcopy --strip-debug "${target_dir}/${target_triple}/release/gram"
 objcopy --strip-debug "${target_dir}/${target_triple}/release/cli"
 objcopy --strip-debug "${target_dir}/${remote_server_triple}/release/remote_server"
