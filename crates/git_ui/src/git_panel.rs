@@ -4682,7 +4682,7 @@ impl GitPanel {
 
                 this.child(
                     self.entry_label(path_name, path_color)
-                        .truncate()
+                        .truncate_start()
                         .when(strikethrough, Label::strikethrough),
                 )
             })
