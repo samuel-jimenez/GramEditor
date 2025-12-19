@@ -8,6 +8,8 @@ Unfortunately, this means that some genuinely useful functionality may be lost
 in the process. Thus, this is the plan for this project:
 
 - [x] Strip out the AI, the telemetry, the subscriptions, the auto installation.
+- [ ] Make the automatic installation of language servers optional and prompt
+  the user before installing anything (letting them decline).
 - [ ] Make everything that broke in the process work again.
 - [ ] Replace anything that was lost with better, open and respectful
   alternatives.
