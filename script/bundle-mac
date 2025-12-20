@@ -14,10 +14,15 @@ can_code_sign=false
 # APPLE_ID
 # APPLE_PASSWORD_GRAM
 # APPLE_TEAM_ID
+# APPLE_SIGNING_KEY
 #
 # APPLE_PASSWORD_GRAM must be an App-specific password.
 # Create it by logging in to account.apple.com and
 # click the "App-specific Passwords" button.
+#
+# Get the signing certificate via XCode, and view
+# the signing key using:
+# security find-identity -p codesigning
 if [[ -f ~/.local.secrets ]]; then
   . ~/.local.secrets
   export APPLE_ID
