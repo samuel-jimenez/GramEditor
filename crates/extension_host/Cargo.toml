@@ -33,7 +33,6 @@ http_client.workspace = true
 language.workspace = true
 log.workspace = true
 lsp.workspace = true
-mlua.workspace = true
 moka.workspace = true
 node_runtime.workspace = true
 paths.workspace = true
