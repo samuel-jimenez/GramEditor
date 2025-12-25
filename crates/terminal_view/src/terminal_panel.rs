@@ -365,10 +365,7 @@ impl TerminalPanel {
                         };
                         panel
                             .update_in(cx, |panel, window, cx| {
-                                panel
-                                    .center
-                                    .split(&pane, &new_pane, direction, cx)
-                                    .log_err();
+                                panel.center.split(&pane, &new_pane, direction).log_err();
                                 window.focus(&new_pane.focus_handle(cx), cx);
                             })
                             .ok();
@@ -390,7 +387,7 @@ impl TerminalPanel {
                     new_pane.update(cx, |pane, cx| {
                         pane.add_item(item, true, true, None, window, cx);
                     });
-                    self.center.split(&pane, &new_pane, direction, cx).log_err();
+                    self.center.split(&pane, &new_pane, direction).log_err();
                     window.focus(&new_pane.focus_handle(cx), cx);
                 }
             }

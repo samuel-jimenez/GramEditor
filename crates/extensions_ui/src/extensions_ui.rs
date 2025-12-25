@@ -1243,8 +1243,7 @@ impl ExtensionsPage {
                 ),
                 Feature::ExtensionRuff => self.render_feature_upsell_banner(
                     "Ruff (linter for Python) support is built-in!".into(),
-                    "https://gram.liten.app/docs/languages/python#code-formatting--linting"
-                        .into(),
+                    "https://gram.liten.app/docs/languages/python#code-formatting--linting".into(),
                     false,
                     cx,
                 ),
@@ -1500,7 +1499,7 @@ impl GitCloneModal {
         });
         let focus_handle = repo_input.focus_handle(cx);
 
-        window.focus(&focus_handle);
+        window.focus(&focus_handle, cx);
 
         Self {
             page,
