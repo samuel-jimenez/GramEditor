@@ -18,7 +18,6 @@ use editor::{
     Direction, Editor, EditorElement, EditorMode, MultiBuffer, MultiBufferOffset,
     actions::ExpandAllDiffHunks,
 };
-use futures::StreamExt as _;
 use git::commit::ParsedCommitMessage;
 use git::repository::{
     Branch, CommitDetails, CommitOptions, CommitSummary, FetchOptions, GitCommitter, PushOptions,

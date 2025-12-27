@@ -2853,20 +2853,6 @@ impl SettingsWindow {
         self.render_sub_page_items_in(page_content, items, page_index, window, cx)
     }
 
-    fn render_sub_page_items_section<'a, Items>(
-        &self,
-        items: Items,
-        page_index: Option<usize>,
-        window: &mut Window,
-        cx: &mut Context<SettingsWindow>,
-    ) -> impl IntoElement
-    where
-        Items: Iterator<Item = (usize, &'a SettingsPageItem)>,
-    {
-        let page_content = v_flex().id("settings-ui-sub-page-section").size_full();
-        self.render_sub_page_items_in(page_content, items, page_index, window, cx)
-    }
-
     fn render_sub_page_items_in<'a, Items>(
         &self,
         mut page_content: Stateful<Div>,

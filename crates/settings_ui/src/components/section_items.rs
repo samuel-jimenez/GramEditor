@@ -16,16 +16,6 @@ impl SettingsSectionHeader {
             no_padding: false,
         }
     }
-
-    pub fn icon(mut self, icon: IconName) -> Self {
-        self.icon = Some(icon);
-        self
-    }
-
-    pub fn no_padding(mut self, no_padding: bool) -> Self {
-        self.no_padding = no_padding;
-        self
-    }
 }
 
 impl RenderOnce for SettingsSectionHeader {
