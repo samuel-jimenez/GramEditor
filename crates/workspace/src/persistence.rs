@@ -2164,7 +2164,6 @@ mod tests {
                         ON DELETE CASCADE
                     ) STRICT;
                 )],
-                |_, _, _| false,
             )
             .unwrap();
         })
@@ -2213,7 +2212,6 @@ mod tests {
                                 REFERENCES workspaces(workspace_id)
                             ON DELETE CASCADE
                         ) STRICT;)],
-                |_, _, _| false,
             )
         })
         .await

@@ -5674,7 +5674,7 @@ mod tests {
     use settings::SettingsStore;
     use theme::LoadThemes;
     use util::path;
-    use util::rel_path::rel_path;
+    use util::rel_path::{rel_path, RelPath};
 
     use super::*;
 

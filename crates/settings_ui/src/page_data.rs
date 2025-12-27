@@ -1119,10 +1119,10 @@ pub(crate) fn settings_data(cx: &App) -> Vec<SettingsPage> {
                             }
                         }).collect(),
                     }),
-                    SettingsPageItem::SectionHeader("Which-key Menu"),
+                    SettingsPageItem::SectionHeader("which-key"),
                     SettingsPageItem::SettingItem(SettingItem {
-                        title: "Show Which-key Menu",
-                        description: "Display the which-key menu with matching bindings while a multi-stroke binding is pending.",
+                        title: "which-key",
+                        description: "Display menu with matching key bindings while a multi-stroke is pending.",
                         field: Box::new(SettingField {
                             json_path: Some("which_key.enabled"),
                             pick: |settings_content| {

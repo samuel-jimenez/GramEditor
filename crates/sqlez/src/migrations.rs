@@ -155,7 +155,6 @@ mod test {
                     a TEXT,
                     b TEXT
                 )"}],
-                disallow_migration_change,
             )
             .unwrap();
 
@@ -184,7 +183,6 @@ mod test {
                         d TEXT
                     )"},
                 ],
-                disallow_migration_change,
             )
             .unwrap();
 
@@ -263,11 +261,7 @@ mod test {
 
         // Run the migration verifying that the row got dropped
         connection
-            .migrate(
-                "test",
-                &["DELETE FROM test_table"],
-                disallow_migration_change,
-            )
+            .migrate("test", &["DELETE FROM test_table"])
             .unwrap();
         assert_eq!(
             connection
@@ -285,11 +279,7 @@ mod test {
 
         // Run the same migration again and verify that the table was left unchanged
         connection
-            .migrate(
-                "test",
-                &["DELETE FROM test_table"],
-                disallow_migration_change,
-            )
+            .migrate("test", &["DELETE FROM test_table"])
             .unwrap();
         assert_eq!(
             connection
@@ -312,11 +302,8 @@ mod test {
                     "CREATE TABLE test (col INTEGER)",
                     "INSERT INTO test (col) VALUES (1)",
                 ],
-                disallow_migration_change,
             )
             .unwrap();
-
-        let mut migration_changed = false;
 
         // Create another migration with the same domain but different steps
         let second_migration_result = connection.migrate(
@@ -325,58 +312,9 @@ mod test {
                 "CREATE TABLE test (color INTEGER )",
                 "INSERT INTO test (color) VALUES (1)",
             ],
-            |_, old, new| {
-                assert_eq!(old, "CREATE TABLE test (col INTEGER)");
-                assert_eq!(new, "CREATE TABLE test (color INTEGER)");
-                migration_changed = true;
-                false
-            },
         );
 
         // Verify new migration returns error when run
         assert!(second_migration_result.is_err())
-    }
-
-    #[test]
-    fn test_create_alter_drop() {
-        let connection = Connection::open_memory(Some("test_create_alter_drop"));
-
-        connection
-            .migrate(
-                "first_migration",
-                &["CREATE TABLE table1(a TEXT) STRICT;"],
-                disallow_migration_change,
-            )
-            .unwrap();
-
-        connection
-            .exec("INSERT INTO table1(a) VALUES (\"test text\");")
-            .unwrap()()
-        .unwrap();
-
-        connection
-            .migrate(
-                "second_migration",
-                &[indoc! {"
-                    CREATE TABLE table2(b TEXT) STRICT;
-
-                    INSERT INTO table2 (b)
-                    SELECT a FROM table1;
-
-                    DROP TABLE table1;
-
-                    ALTER TABLE table2 RENAME TO table1;
-                "}],
-                disallow_migration_change,
-            )
-            .unwrap();
-
-        let res = &connection.select::<String>("SELECT b FROM table1").unwrap()().unwrap()[0];
-
-        assert_eq!(res, "test text");
-    }
-
-    fn disallow_migration_change(_: usize, _: &str, _: &str) -> bool {
-        false
     }
 }
