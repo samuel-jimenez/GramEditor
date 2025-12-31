@@ -802,6 +802,7 @@ enum EntitySubscription {
     LspStore(PendingEntitySubscription<LspStore>),
     SettingsObserver(PendingEntitySubscription<SettingsObserver>),
     DapStore(PendingEntitySubscription<DapStore>),
+    BreakpointStore(PendingEntitySubscription<BreakpointStore>),
 }
 
 #[derive(Debug, Clone)]
@@ -1273,8 +1274,14 @@ impl Project {
             });
             cx.subscribe(&lsp_store, Self::on_lsp_store_event).detach();
 
-            let breakpoint_store =
-                cx.new(|_| BreakpointStore::remote(REMOTE_SERVER_PROJECT_ID, remote_proto.clone()));
+            let breakpoint_store = cx.new(|_| {
+                BreakpointStore::remote(
+                    REMOTE_SERVER_PROJECT_ID,
+                    remote_proto.clone(),
+                    buffer_store.clone(),
+                    worktree_store.clone(),
+                )
+            });
 
             let dap_store = cx.new(|cx| {
                 DapStore::new_remote(
@@ -1363,6 +1370,7 @@ impl Project {
             remote_proto.subscribe_to_entity(REMOTE_SERVER_PROJECT_ID, &this.worktree_store);
             remote_proto.subscribe_to_entity(REMOTE_SERVER_PROJECT_ID, &this.lsp_store);
             remote_proto.subscribe_to_entity(REMOTE_SERVER_PROJECT_ID, &this.dap_store);
+            remote_proto.subscribe_to_entity(REMOTE_SERVER_PROJECT_ID, &this.breakpoint_store);
             remote_proto.subscribe_to_entity(REMOTE_SERVER_PROJECT_ID, &this.settings_observer);
             remote_proto.subscribe_to_entity(REMOTE_SERVER_PROJECT_ID, &this.git_store);
 
@@ -1380,6 +1388,7 @@ impl Project {
             TaskStore::init(Some(&remote_proto));
             ToolchainStore::init(&remote_proto);
             DapStore::init(&remote_proto, cx);
+            BreakpointStore::init(&remote_proto);
             GitStore::init(&remote_proto);
 
             this
@@ -1408,6 +1417,9 @@ impl Project {
                 client.subscribe_to_entity::<SettingsObserver>(remote_id)?,
             ),
             EntitySubscription::DapStore(client.subscribe_to_entity::<DapStore>(remote_id)?),
+            EntitySubscription::BreakpointStore(
+                client.subscribe_to_entity::<BreakpointStore>(remote_id)?,
+            ),
         ];
         let committer = get_git_committer(&cx).await;
         let response = client
@@ -1432,7 +1444,7 @@ impl Project {
 
     async fn from_join_project_response(
         response: TypedEnvelope<proto::JoinProjectResponse>,
-        subscriptions: [EntitySubscription; 7],
+        subscriptions: [EntitySubscription; 8],
         client: Arc<Client>,
         run_tasks: bool,
         user_store: Entity<UserStore>,
@@ -1465,8 +1477,14 @@ impl Project {
 
         let environment =
             cx.new(|cx| ProjectEnvironment::new(None, worktree_store.downgrade(), None, true, cx))?;
-        let breakpoint_store =
-            cx.new(|_| BreakpointStore::remote(remote_id, client.clone().into()))?;
+        let breakpoint_store = cx.new(|_| {
+            BreakpointStore::remote(
+                remote_id,
+                client.clone().into(),
+                buffer_store.clone(),
+                worktree_store.clone(),
+            )
+        })?;
         let dap_store = cx.new(|cx| {
             DapStore::new_collab(
                 remote_id,
@@ -1582,7 +1600,7 @@ impl Project {
                     remote_id,
                     replica_id,
                 },
-                breakpoint_store,
+                breakpoint_store: breakpoint_store.clone(),
                 dap_store: dap_store.clone(),
                 git_store: git_store.clone(),
                 buffers_needing_diff: Default::default(),
@@ -1617,21 +1635,33 @@ impl Project {
             })
             .ok();
 
-        let _ignored = subscriptions.into_iter().map(|s| match s {
-            EntitySubscription::BufferStore(subscription) => {
-                subscription.set_entity(&buffer_store, &cx)
-            }
-            EntitySubscription::WorktreeStore(subscription) => {
-                subscription.set_entity(&worktree_store, &cx)
-            }
-            EntitySubscription::GitStore(subscription) => subscription.set_entity(&git_store, &cx),
-            EntitySubscription::SettingsObserver(subscription) => {
-                subscription.set_entity(&settings_observer, &cx)
-            }
-            EntitySubscription::Project(subscription) => subscription.set_entity(&project, &cx),
-            EntitySubscription::LspStore(subscription) => subscription.set_entity(&lsp_store, &cx),
-            EntitySubscription::DapStore(subscription) => subscription.set_entity(&dap_store, &cx),
-        });
+        let _ignored = subscriptions
+            .into_iter()
+            .map(|s| match s {
+                EntitySubscription::BufferStore(subscription) => {
+                    subscription.set_entity(&buffer_store, &cx)
+                }
+                EntitySubscription::WorktreeStore(subscription) => {
+                    subscription.set_entity(&worktree_store, &cx)
+                }
+                EntitySubscription::GitStore(subscription) => {
+                    subscription.set_entity(&git_store, &cx)
+                }
+                EntitySubscription::SettingsObserver(subscription) => {
+                    subscription.set_entity(&settings_observer, &cx)
+                }
+                EntitySubscription::Project(subscription) => subscription.set_entity(&project, &cx),
+                EntitySubscription::LspStore(subscription) => {
+                    subscription.set_entity(&lsp_store, &cx)
+                }
+                EntitySubscription::DapStore(subscription) => {
+                    subscription.set_entity(&dap_store, &cx)
+                }
+                EntitySubscription::BreakpointStore(subscription) => {
+                    subscription.set_entity(&breakpoint_store, &cx)
+                }
+            })
+            .collect::<Vec<_>>();
 
         Ok(project)
     }
@@ -4354,11 +4384,9 @@ impl Project {
     }
 
     pub fn project_path_for_absolute_path(&self, abs_path: &Path, cx: &App) -> Option<ProjectPath> {
-        self.find_worktree(abs_path, cx)
-            .map(|(worktree, relative_path)| ProjectPath {
-                worktree_id: worktree.read(cx).id(),
-                path: relative_path,
-            })
+        self.worktree_store
+            .read(cx)
+            .project_path_for_absolute_path(abs_path, cx)
     }
 
     pub fn get_workspace_root(&self, project_path: &ProjectPath, cx: &App) -> Option<PathBuf> {
