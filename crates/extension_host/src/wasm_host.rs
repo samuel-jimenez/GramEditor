@@ -37,7 +37,7 @@ use std::{
     },
     time::Duration,
 };
-use task::{DebugScenario, SpawnInTerminal, TaskTemplate, GramDebugConfig};
+use task::{DebugScenario, GramDebugConfig, SpawnInTerminal, TaskTemplate};
 use util::paths::SanitizedPath;
 use wasmtime::{
     CacheStore, Engine, Store,
@@ -511,15 +511,28 @@ impl WasmHost {
         let this = self.clone();
         let manifest = manifest.clone();
         let executor = cx.background_executor().clone();
-        let load_extension_task = async move {
-            let gram_api_version = parse_wasm_extension_version(&manifest.id, &wasm_bytes)?;
 
-            let component = Component::from_binary(&this.engine, &wasm_bytes)
-                .context("failed to compile wasm component")?;
+        // Parse version and compile component on gpui's background executor.
+        // These are cpu-bound operations that don't require a tokio runtime.
+        let compile_task = {
+            let manifest_id = manifest.id.clone();
+            let engine = this.engine.clone();
+
+            executor.spawn(async move {
+                let gram_api_version = parse_wasm_extension_version(&manifest_id, &wasm_bytes)?;
+                let component = Component::from_binary(&engine, &wasm_bytes)
+                    .context("failed to compile wasm component")?;
+
+                anyhow::Ok((gram_api_version, component))
+            })
+        };
+
+        let load_extension = |gram_api_version: SemanticVersion, component| async move {
+            let wasi_ctx = this.build_wasi_ctx(&manifest).await?;
             let mut store = wasmtime::Store::new(
                 &this.engine,
                 WasmState {
-                    ctx: this.build_wasi_ctx(&manifest).await?,
+                    ctx: wasi_ctx,
                     manifest: manifest.clone(),
                     table: ResourceTable::new(),
                     host: this.clone(),
@@ -568,11 +581,18 @@ impl WasmHost {
                 gram_api_version,
             ))
         };
+
         cx.spawn(async move |cx| {
+            let (gram_api_version, component) = compile_task.await?;
+
+            // Run wasi-dependent operations on tokio.
+            // wasmtime_wasi internally uses tokio for I/O operations.
             let (extension_task, manifest, work_dir, tx, gram_api_version) =
-                cx.background_executor().spawn(load_extension_task).await?;
-            // we need to run run the task in a tokio context as wasmtime_wasi may
-            // call into tokio, accessing its runtime handle when we trigger the `engine.increment_epoch()` above.
+                gpui_tokio::Tokio::spawn(cx, load_extension(gram_api_version, component))?
+                    .await??;
+
+            // Run the extension message loop on tokio since extension
+            // calls may invoke wasi functions that require a tokio runtime.
             let task = Arc::new(gpui_tokio::Tokio::spawn(cx, extension_task)?);
 
             Ok(WasmExtension {
