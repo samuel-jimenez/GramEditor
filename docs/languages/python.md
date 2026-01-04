@@ -93,7 +93,7 @@ These are disabled by default, but can be enabled in your settings. For example:
 }
 ```
 
-See: [Working with Language Servers](https://gram.liten.app/docs/configuring-languages#working-with-language-servers) for more information about how to enable and disable language servers.
+See: [Working with Language Servers](gram://docs/configuring-languages#working-with-language-servers) for more information about how to enable and disable language servers.
 
 ### Basedpyright
 

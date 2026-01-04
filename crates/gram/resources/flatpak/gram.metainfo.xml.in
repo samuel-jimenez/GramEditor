@@ -35,7 +35,7 @@
     <url type="homepage">https://liten.app</url>
     <url type="bugtracker">https://github.com/zed-industries/zed/issues</url>
     <url type="faq">https://liten.app/faq</url>
-    <url type="help">https://gram.liten.app/docs/getting-started</url>
+    <url type="help">gram://docs/getting-started</url>
     <url type="contact">https://liten.app/community-links</url>
     <url type="vcs-browser">https://github.com/zed-industries/zed</url>
     <url type="contribute">https://github.com/zed-industries/zed/blob/main/CONTRIBUTING.md</url>

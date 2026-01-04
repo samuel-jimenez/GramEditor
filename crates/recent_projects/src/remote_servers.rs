@@ -1510,7 +1510,7 @@ impl RemoteServerProjects {
                                             .icon_size(IconSize::XSmall)
                                             .on_click(|_, _, cx| {
                                                 cx.open_url(
-                                                    "https://gram.liten.app/docs/remote-development",
+                                                    "gram://docs/remote-development",
                                                 );
                                             }),
                                     ),

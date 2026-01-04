@@ -297,7 +297,7 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
                 MenuItem::action(
                     "Documentation",
                     super::OpenBrowser {
-                        url: "https://gram.liten.app/docs".into(),
+                        url: "gram://docs".into(),
                     },
                 ),
                 MenuItem::action("Gram Repository", feedback::OpenGramRepo),

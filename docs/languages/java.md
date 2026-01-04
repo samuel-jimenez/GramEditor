@@ -50,7 +50,7 @@ Here is a common `settings.json` including the above mentioned configurations:
 
 ## Debugging
 
-Debug support is enabled via our [Fork of Java Debug](https://github.com/zed-industries/java-debug), which the extension will automatically download and start for you. Please refer to the [Debugger Documentation](https://gram.liten.app/docs/debugger#getting-started) for general information about how debugging works in Gram.
+Debug support is enabled via our [Fork of Java Debug](https://github.com/zed-industries/java-debug), which the extension will automatically download and start for you. Please refer to the [Debugger Documentation](gram://docs/debugger#getting-started) for general information about how debugging works in Gram.
 
 To get started with Java, click the `edit debug.json` button in the Debug menu, and replace the contents of the file with the following:
 
@@ -77,7 +77,7 @@ You should then be able to start a new Debug Session with the "Launch Debugger" 
 
 This extension provides tasks for running your application and tests from within Gram via little play buttons next to tests/entry points. However, due to current limitations of Gram's extension interface, we can not provide scripts that will work across Maven and Gradle on both Windows and Unix-compatible systems, so out of the box the launch scripts only work on Mac and Linux.
 
-There is a fairly straightforward fix that you can apply to make it work on Windows by supplying your own task scripts. Please see [this Issue](https://github.com/zed-extensions/java/issues/94) for information on how to do that and read the [Tasks section in Grams documentation](https://gram.liten.app/docs/tasks) for more information.
+There is a fairly straightforward fix that you can apply to make it work on Windows by supplying your own task scripts. Please see [this Issue](https://github.com/zed-extensions/java/issues/94) for information on how to do that and read the [Tasks section in Grams documentation](gram://docs/tasks) for more information.
 
 ## Advanced Configuration/JDTLS initialization Options
 

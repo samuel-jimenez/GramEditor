@@ -106,12 +106,6 @@ impl gram::Extension for MyExtension {
 `run_dap_locator` is useful in case you cannot determine a build target deterministically. Some build systems may produce artifacts whose names are not known up-front.
 Note however that you do _not_ need to go through a 2-phase resolution; if you can determine the full debug configuration with just `dap_locator_create_scenario`, you can omit `build` property on a returned `DebugScenario`. Please also note that your locator **will be** called with tasks it's unlikely to accept; thus you should take some effort to return `None` early before performing any expensive operations.
 
-## Available Extensions
-
-Check out all the DAP servers that have already been exposed as extensions [on Gram's site](https://gram.liten.app/extensions?filter=debug-adapters).
-
-We recommend taking a look at their repositories as a way to understand how they are generally created and structured.
-
 ## Testing
 
-To test your new Debug Adapter Protocol server extension, you can [install it as a dev extension](./developing-extensions.md#developing-an-extension-locally).
+To test your new Debug Adapter Protocol server extension, you can [install it](./developing-extensions.md#developing-an-extension-locally).

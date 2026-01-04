@@ -1,7 +1,7 @@
 // Some example tasks for common languages.
 //
 // For more documentation on how to configure debug tasks,
-// see: https://gram.liten.app/docs/debugger
+// see: gram://docs/debugger
 [
   {
     "label": "Debug active Python file",

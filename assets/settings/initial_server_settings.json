@@ -1,7 +1,7 @@
 // Server-specific settings
 //
 // For a full list of overridable settings, and general information on settings,
-// see the documentation: https://gram.liten.app/docs/configuring-gram#settings-files
+// see the documentation: gram://docs/configuring-gram#settings-files
 {
   "lsp": {}
 }

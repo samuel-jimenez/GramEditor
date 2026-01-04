@@ -2302,10 +2302,10 @@ At this point, the server may or may not return hints depending on its implement
 
 The following languages have inlay hints preconfigured by Gram:
 
-- [Go](https://docs.gram.liten.app/languages/go)
-- [Rust](https://docs.gram.liten.app/languages/rust)
-- [Svelte](https://docs.gram.liten.app/languages/svelte)
-- [TypeScript](https://docs.gram.liten.app/languages/typescript)
+- Go
+- Rust
+- Svelte
+- TypeScript
 
 Use the `lsp` section for the server configuration. Examples are provided in the corresponding language documentation.
 

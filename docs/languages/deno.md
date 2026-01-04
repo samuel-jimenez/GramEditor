@@ -59,7 +59,7 @@ TBD: Deno TypeScript REPL instructions [docs/repl#typescript-deno](../repl.md#ty
 
 ## Configuration completion
 
-To get completions for `deno.json` or `package.json` you can add the following to your `settings.json`: (More info here https://gram.liten.app/docs/languages/json)
+To get completions for `deno.json` or `package.json` you can add the following to your `settings.json`: (More info here gram://docs/languages/json)
 
 ```json [settings]
 "lsp": {

@@ -434,7 +434,7 @@ fn initialize_file_watcher(window: &mut Window, cx: &mut Context<Workspace>) {
             db::indoc! {r#"
             inotify_init returned {}
 
-            This may be due to system-wide limits on inotify instances. For troubleshooting see: https://gram.liten.app/docs/linux
+            This may be due to system-wide limits on inotify instances. For troubleshooting see: gram://docs/linux
             "#},
             e
         );
@@ -448,7 +448,7 @@ fn initialize_file_watcher(window: &mut Window, cx: &mut Context<Workspace>) {
         cx.spawn(async move |_, cx| {
             if prompt.await == Ok(0) {
                 cx.update(|cx| {
-                    cx.open_url("https://gram.liten.app/docs/linux#could-not-start-inotify");
+                    cx.open_url("gram://docs/linux#could-not-start-inotify");
                     cx.quit();
                 })
                 .ok();
@@ -465,7 +465,7 @@ fn initialize_file_watcher(window: &mut Window, cx: &mut Context<Workspace>) {
             db::indoc! {r#"
             ReadDirectoryChangesW initialization failed: {}
 
-            This may occur on network filesystems and WSL paths. For troubleshooting see: https://gram.liten.app/docs/windows
+            This may occur on network filesystems and WSL paths. For troubleshooting see: gram://docs/windows
             "#},
             e
         );
@@ -479,7 +479,7 @@ fn initialize_file_watcher(window: &mut Window, cx: &mut Context<Workspace>) {
         cx.spawn(async move |_, cx| {
             if prompt.await == Ok(0) {
                 cx.update(|cx| {
-                    cx.open_url("https://gram.liten.app/docs/windows");
+                    cx.open_url("gram://docs/windows");
                     cx.quit()
                 })
                 .ok();
@@ -498,14 +498,14 @@ fn show_software_emulation_warning_if_needed(
         let (graphics_api, docs_url, open_url) = if cfg!(target_os = "windows") {
             (
                 "DirectX",
-                "https://gram.liten.app/docs/windows",
-                "https://gram.liten.app/docs/windows",
+                "gram://docs/windows",
+                "gram://docs/windows",
             )
         } else {
             (
                 "Vulkan",
-                "https://gram.liten.app/docs/linux",
-                "https://gram.liten.app/docs/linux",
+                "gram://docs/linux",
+                "gram://docs/linux",
             )
         };
         let message = format!(

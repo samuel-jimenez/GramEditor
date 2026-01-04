@@ -48,7 +48,7 @@ If your inventory file is in the YAML format, you can either:
 # yaml-language-server: $schema=https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/inventory.json
 ```
 
-- Or configure the yaml language server settings to set this schema for all your inventory files, that match your inventory pattern, under your Gram settings ([ref](https://gram.liten.app/docs/languages/yaml)):
+- Or configure the yaml language server settings to set this schema for all your inventory files, that match your inventory pattern, under your Gram settings ([ref](gram://docs/languages/yaml)):
 
 ```json [settings]
 "lsp": {

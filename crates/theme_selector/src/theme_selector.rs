@@ -495,7 +495,7 @@ impl PickerDelegate for ThemeSelectorDelegate {
                         .icon_size(IconSize::Small)
                         .icon_color(Color::Muted)
                         .on_click(cx.listener(|_, _, _, cx| {
-                            cx.open_url("https://gram.liten.app/docs/themes");
+                            cx.open_url("gram://docs/themes");
                         })),
                 )
                 .child(

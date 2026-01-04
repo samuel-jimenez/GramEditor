@@ -25,7 +25,7 @@ You'll find the Gram log in the respective location on each operating system:
 - Windows: `C:\Users\YOU\AppData\Local\Gram\logs\Gram.log`
 - Linux: `~/.local/share/gram/logs/Gram.log` or `$XDG_DATA_HOME`
 
-> Note: In some cases, it might be useful to monitor the log live, such as when [developing a Gram extension](https://gram.liten.app/docs/extensions/developing-extensions).
+> Note: In some cases, it might be useful to monitor the log live, such as when [developing a Gram extension](gram://docs/extensions/developing-extensions).
 > Example: `tail -f ~/Library/Logs/Gram/Gram.log`
 
 The log may contain enough context to help you debug the issue yourself, or you may find specific errors that are useful when filing an issue.

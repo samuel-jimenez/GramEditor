@@ -638,7 +638,7 @@ impl DebugPanel {
         let documentation_button = || {
             IconButton::new("debug-open-documentation", IconName::CircleHelp)
                 .icon_size(IconSize::Small)
-                .on_click(move |_, _, cx| cx.open_url("https://gram.liten.app/docs/debugger"))
+                .on_click(move |_, _, cx| cx.open_url("gram://docs/debugger"))
                 .tooltip(Tooltip::text("Open Documentation"))
         };
 
@@ -1729,7 +1729,7 @@ impl Render for DebugPanel {
                                 .icon_size(IconSize::Small)
                                 .icon_color(Color::Muted)
                                 .icon_position(IconPosition::Start)
-                                .on_click(|_, _, cx| cx.open_url("https://gram.liten.app/docs/debugger")),
+                                .on_click(|_, _, cx| cx.open_url("gram://docs/debugger")),
                         )
                         .child(
                             Button::new(

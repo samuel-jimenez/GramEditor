@@ -223,7 +223,7 @@ impl Render for ReplSessionsPage {
                             .child(Label::new("Install Kernels"))
                             .on_click(move |_, _, cx| {
                                 cx.open_url(
-                                    "https://gram.liten.app/docs/repl#language-specific-instructions",
+                                    "gram://docs/repl#language-specific-instructions",
                                 )
                             }),
                     ),

@@ -41,7 +41,7 @@ pub struct ImportVsCodeSettings {
 }
 
 pub const FIRST_OPEN: &str = "first_open";
-pub const DOCS_URL: &str = "https://gram.liten.app/docs/";
+pub const DOCS_URL: &str = "gram://docs/";
 
 actions!(
     onboarding,

@@ -24,7 +24,6 @@ members = [
     "crates/debugger_tools",
     "crates/debugger_ui",
     "crates/diagnostics",
-    "crates/docs_preprocessor",
     "crates/editor",
     "crates/explorer_command_injector",
     "crates/extension",

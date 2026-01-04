@@ -61,7 +61,7 @@ impl Render for BasedPyrightBanner {
                                         .icon_size(IconSize::XSmall)
                                         .icon_color(Color::Muted)
                                         .on_click(|_, _, cx| {
-                                            cx.open_url("https://gram.liten.app/docs/languages/python")
+                                            cx.open_url("gram://docs/languages/python")
                                         }),
                                 )
                                 .child(IconButton::new("dismiss", IconName::Close).icon_size(IconSize::Small).on_click(

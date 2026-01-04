@@ -139,7 +139,7 @@ impl Workspace {
             cx.new(|cx| {
                 ErrorMessagePrompt::new(err.to_string(), cx).with_link_button(
                     "See docs",
-                    "https://gram.liten.app/docs/linux#i-cant-open-any-files",
+                    "gram://docs/linux#i-cant-open-any-files",
                 )
             })
         });

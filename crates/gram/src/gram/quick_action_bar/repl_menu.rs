@@ -15,7 +15,7 @@ use util::ResultExt;
 
 use super::QuickActionBar;
 
-const GRAM_REPL_DOCUMENTATION: &str = "https://gram.liten.app/docs/repl";
+const GRAM_REPL_DOCUMENTATION: &str = "gram://docs/repl";
 
 struct ReplMenuState {
     tooltip: SharedString,

@@ -6,7 +6,7 @@ Diff support is available natively in Gram.
 
 ## Configuration
 
-Gram will not attempt to format diff files and has [`remove_trailing_whitespace_on_save`](https://gram.liten.app/docs/configuring-zed#remove-trailing-whitespace-on-save) and [`ensure-final-newline-on-save`](https://gram.liten.app/docs/configuring-zed#ensure-final-newline-on-save) set to false.
+Gram will not attempt to format diff files and has [`remove_trailing_whitespace_on_save`](gram://docs/configuring-zed#remove-trailing-whitespace-on-save) and [`ensure-final-newline-on-save`](gram://docs/configuring-zed#ensure-final-newline-on-save) set to false.
 
 Gram will automatically recognize files with `patch` and `diff` extensions as Diff files. To recognize other extensions, add them to `file_types` in your Gram settings.json:
 

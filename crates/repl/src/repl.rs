@@ -26,7 +26,7 @@ pub use crate::repl_settings::ReplSettings;
 use crate::repl_store::ReplStore;
 pub use crate::session::Session;
 
-pub const KERNEL_DOCS_URL: &str = "https://gram.liten.app/docs/repl#changing-kernels";
+pub const KERNEL_DOCS_URL: &str = "gram://docs/repl#changing-kernels";
 
 pub fn init(fs: Arc<dyn Fs>, cx: &mut App) {
     set_dispatcher(editor_dispatcher(cx));

@@ -2,7 +2,7 @@
 
 ## Installing Gram
 
-To install, you can build Gram [from source](https://gram.liten.app/docs/development/windows).
+To install, you can build Gram [from source](gram://docs/development/windows).
 
 ## Uninstall
 
