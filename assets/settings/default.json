@@ -1834,7 +1834,7 @@
     // Whether to show the which-key popup when holding down key combinations.
     "enabled": true,
     // Delay in milliseconds before showing the which-key popup.
-    "delay_ms": 1000,
+    "delay_ms": 500,
   },
   // Settings overrides to use when using Gram Stable.
   // Mostly useful for developers who are managing multiple instances of Gram.

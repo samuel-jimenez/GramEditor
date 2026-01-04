@@ -3967,7 +3967,7 @@ impl Window {
 
             if currently_pending.needs_timeout {
                 currently_pending.timer = Some(self.spawn(cx, async move |cx| {
-                    cx.background_executor.timer(Duration::from_secs(1)).await;
+                    cx.background_executor.timer(Duration::from_secs(30)).await;
                     cx.update(move |window, cx| {
                         let Some(currently_pending) = window
                             .pending_input
