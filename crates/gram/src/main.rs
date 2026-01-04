@@ -4,7 +4,7 @@ mod reliability;
 use anyhow::{Context as _, Error, Result};
 use clap::Parser;
 use cli::FORCE_CLI_MODE_ENV_VAR_NAME;
-use client::{Client, ProxySettings, UserStore, parse_editor_link};
+use client::{Client, ProxySettings, UserStore};
 use collections::HashMap;
 use crashes::InitCrashHandler;
 use db::kvp::KEY_VALUE_STORE;
@@ -145,10 +145,8 @@ fn fail_to_open_window(e: anyhow::Error, _cx: &mut App) {
                     notification_id,
                     Notification::new("Gram failed to launch")
                         .body(Some(
-                            format!(
-                                "{e:?}. See gram://docs/linux for troubleshooting steps."
-                            )
-                            .as_str(),
+                            format!("{e:?}. See gram://docs/linux for troubleshooting steps.")
+                                .as_str(),
                         ))
                         .priority(Priority::High)
                         .icon(ashpd::desktop::Icon::with_names(&[
@@ -552,6 +550,7 @@ pub fn main() {
         image_viewer::init(cx);
         repl::notebook::init(cx);
         diagnostics::init(cx);
+        docs::init(cx);
 
         workspace::init(app_state.clone(), cx);
         ui_prompt::init(cx);
@@ -779,6 +778,16 @@ fn handle_open_request(request: OpenRequest, app_state: Arc<AppState>, cx: &mut 
                     })
                     .detach();
                 });
+            }
+            OpenRequestKind::Docs { path } => {
+                cx.spawn(async move |cx| {
+                    let workspace =
+                        workspace::get_any_active_workspace(app_state, cx.clone()).await?;
+                    workspace.update(cx, |_, window, cx| {
+                        window.dispatch_action(Box::new(app_actions::OpenDocsAt { path }), cx)
+                    })
+                })
+                .detach_and_log_err(cx);
             }
             OpenRequestKind::Setting { setting_path } => {
                 // gram://settings/languages/$(language)/tab_size  - DONT SUPPORT
@@ -1227,14 +1236,13 @@ struct Args {
     printenv: bool,
 }
 
-fn parse_url_arg(arg: &str, cx: &App) -> String {
+fn parse_url_arg(arg: &str, _cx: &App) -> String {
     match std::fs::canonicalize(Path::new(&arg)) {
         Ok(path) => format!("file://{}", path.display()),
         Err(_) => {
             if arg.starts_with("file://")
                 || arg.starts_with("gram-cli://")
                 || arg.starts_with("ssh://")
-                || parse_editor_link(arg, cx).is_some()
             {
                 arg.into()
             } else {

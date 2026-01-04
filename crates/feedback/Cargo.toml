@@ -20,7 +20,6 @@ system_specs.workspace = true
 urlencoding.workspace = true
 util.workspace = true
 workspace.workspace = true
-app_actions.workspace = true
 
 [dev-dependencies]
 editor = { workspace = true, features = ["test-support"] }

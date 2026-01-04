@@ -31,7 +31,7 @@ impl GitOnboardingModal {
     }
 
     fn view_blog(&mut self, _: &ClickEvent, _: &mut Window, cx: &mut Context<Self>) {
-        cx.open_url("https://liten.app/blog/git");
+        cx.open_url("https://goto.liten.app");
         cx.notify();
     }
 

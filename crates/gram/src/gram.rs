@@ -9,7 +9,7 @@ mod quick_action_bar;
 pub(crate) mod windows_only_instance;
 
 use anyhow::Context as _;
-use app_actions::{OpenBrowser, OpenDocs, OpenGramUrl, OpenServerSettings, OpenSettingsFile, Quit};
+use app_actions::{OpenBrowser, OpenGramUrl, OpenServerSettings, OpenSettingsFile, Quit};
 pub use app_menus::*;
 use assets::Assets;
 use breadcrumbs::Breadcrumbs;
@@ -37,7 +37,6 @@ use language_tools::lsp_button::{self, LspButton};
 use language_tools::lsp_log_view::LspLogToolbarItemView;
 use migrate::{MigrationBanner, MigrationEvent, MigrationNotification, MigrationType};
 use migrator::migrate_keymap;
-use onboarding::DOCS_URL;
 use onboarding::multibuffer_hint::MultibufferHint;
 pub use open_listener::*;
 use outline_panel::OutlinePanel;
@@ -496,17 +495,9 @@ fn show_software_emulation_warning_if_needed(
 ) {
     if specs.is_software_emulated && std::env::var("GRAM_ALLOW_EMULATED_GPU").is_err() {
         let (graphics_api, docs_url, open_url) = if cfg!(target_os = "windows") {
-            (
-                "DirectX",
-                "gram://docs/windows",
-                "gram://docs/windows",
-            )
+            ("DirectX", "gram://docs/windows", "gram://docs/windows")
         } else {
-            (
-                "Vulkan",
-                "gram://docs/linux",
-                "gram://docs/linux",
-            )
+            ("Vulkan", "gram://docs/linux", "gram://docs/linux")
         };
         let message = format!(
             db::indoc! {r#"
@@ -583,7 +574,6 @@ fn register_actions(
     cx: &mut Context<Workspace>,
 ) {
     workspace
-        .register_action(|_, _: &OpenDocs, _, cx| cx.open_url(DOCS_URL))
         .register_action(|_, _: &Minimize, window, _| {
             window.minimize_window();
         })

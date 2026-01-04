@@ -38,6 +38,7 @@ debug_adapter_extension.workspace = true
 debugger_tools.workspace = true
 debugger_ui.workspace = true
 diagnostics.workspace = true
+docs.workspace = true
 editor.workspace = true
 env_logger.workspace = true
 extension.workspace = true

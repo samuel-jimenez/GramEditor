@@ -24,6 +24,7 @@ members = [
     "crates/debugger_tools",
     "crates/debugger_ui",
     "crates/diagnostics",
+    "crates/docs",
     "crates/editor",
     "crates/explorer_command_injector",
     "crates/extension",
@@ -200,6 +201,7 @@ debugger_tools = { path = "crates/debugger_tools" }
 debugger_ui = { path = "crates/debugger_ui" }
 derive_refineable = { path = "crates/refineable/derive_refineable" }
 diagnostics = { path = "crates/diagnostics" }
+docs = { path = "crates/docs" }
 editor = { path = "crates/editor" }
 extension = { path = "crates/extension" }
 extension_host = { path = "crates/extension_host" }

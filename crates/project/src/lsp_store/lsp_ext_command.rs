@@ -197,7 +197,7 @@ impl LspCommand for OpenDocs {
     type ProtoRequest = proto::LspExtOpenDocs;
 
     fn display_name(&self) -> &str {
-        "Open docs"
+        "LSP: Open docs"
     }
 
     fn check_capabilities(&self, _: AdapterServerCapabilities) -> bool {

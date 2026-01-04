@@ -115,12 +115,21 @@ pub struct IncreaseBufferFontSize {
     pub persist: bool,
 }
 
-/// Increases the font size in the editor buffer.
+/// Open the settings at a specific setting
 #[derive(PartialEq, Clone, Debug, Deserialize, JsonSchema, Action)]
 #[action(namespace = gram)]
 #[serde(deny_unknown_fields)]
 pub struct OpenSettingsAt {
     /// A path to a specific setting (e.g. `theme.mode`)
+    pub path: String,
+}
+
+/// Open the documentation viewer at the specific page
+#[derive(PartialEq, Clone, Debug, Deserialize, JsonSchema, Action)]
+#[action(namespace = gram)]
+#[serde(deny_unknown_fields)]
+pub struct OpenDocsAt {
+    /// A path to a documentation page
     pub path: String,
 }
 
@@ -257,21 +266,6 @@ pub mod project_panel {
         [
             /// Toggles focus on the project panel.
             ToggleFocus
-        ]
-    );
-}
-pub mod feedback {
-    use gpui::actions;
-
-    actions!(
-        feedback,
-        [
-            /// Opens email client to send feedback to Gram support.
-            EmailGram,
-            /// Opens the bug report form.
-            FileBugReport,
-            /// Opens the feature request form.
-            RequestFeature
         ]
     );
 }

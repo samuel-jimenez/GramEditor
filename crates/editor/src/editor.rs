@@ -76,7 +76,6 @@ use aho_corasick::{AhoCorasick, AhoCorasickBuilder, BuildError};
 use anyhow::{Context as _, Result, anyhow, bail};
 use blink_manager::BlinkManager;
 use buffer_diff::DiffHunkStatus;
-use client::parse_editor_link;
 use clock::ReplicaId;
 use code_context_menus::{
     AvailableCodeAction, CodeActionContents, CodeActionsItem, CodeActionsMenu, CodeContextMenu,
@@ -15018,12 +15017,8 @@ impl Editor {
             };
 
             if let Some(url) = url {
-                cx.update(|window, cx| {
-                    if parse_editor_link(&url, cx).is_some() {
-                        window.dispatch_action(Box::new(app_actions::OpenGramUrl { url }), cx);
-                    } else {
-                        cx.open_url(&url);
-                    }
+                cx.update(|_window, cx| {
+                    cx.open_url(&url);
                 })?;
             }
 
@@ -15179,15 +15174,8 @@ impl Editor {
                 // If there is one url or file, open it directly
                 match first_url_or_file {
                     Some(Either::Left(url)) => {
-                        cx.update(|window, cx| {
-                            if parse_editor_link(&url, cx).is_some() {
-                                window.dispatch_action(
-                                    Box::new(app_actions::OpenGramUrl { url }),
-                                    cx,
-                                );
-                            } else {
-                                cx.open_url(&url);
-                            }
+                        cx.update(|_window, cx| {
+                            cx.open_url(&url);
                         })?;
                         Ok(Navigated::Yes)
                     }

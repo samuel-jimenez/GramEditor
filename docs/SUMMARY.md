@@ -1,13 +1,13 @@
-# Summary
+# Documentation
 
-# Getting Started
+## Getting Started
 
 - [The Mission](./mission.md)
 - [Getting Started](./getting-started.md)
 - [Uninstall](./uninstall.md)
 - [Troubleshooting](./troubleshooting.md)
 
-# Configuration
+## Configuration
 
 - [Configuring Gram](./configuring-gram.md)
 - [Configuring Languages](./configuring-languages.md)
@@ -21,7 +21,7 @@
 - [Vim Mode](./vim.md)
 - [Helix Mode](./helix.md)
 
-# Using Gram
+## Using Gram
 
 - [Multibuffers](./multibuffers.md)
 - [Command Palette](./command-palette.md)
@@ -37,12 +37,12 @@
 - [Environment Variables](./environment.md)
 - [REPL](./repl.md)
 
-# Platform Support
+## Platform Support
 
 - [Windows](./windows.md)
 - [Linux](./linux.md)
 
-# Extensions
+## Extensions
 
 > [!NOTE]
 > The Zed extension system relies on a closed-source server
@@ -61,11 +61,11 @@
 - [Theme Extensions](./extensions/themes.md)
 - [Icon Theme Extensions](./extensions/icon-themes.md)
 
-# Migrate
+## Migrate
 
 - [VS Code](./migrate/vs-code.md)
 
-# Language Support
+## Language Support
 
 - [All Languages](./languages.md)
 - [Ansible](./languages/ansible.md)
@@ -139,9 +139,9 @@
 - [Yarn](./languages/yarn.md)
 - [Zig](./languages/zig.md)
 
-# Developing Gram
+## Development
 
-- [Developing Gram](./development.md)
+- [Development](./development.md)
   - [macOS](./development/macos.md)
   - [Linux](./development/linux.md)
   - [Windows](./development/windows.md)

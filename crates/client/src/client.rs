@@ -887,18 +887,3 @@ impl ProtoClient for Client {
 
 /// prefix for the gram:// url scheme
 pub const GRAM_URL_SCHEME: &str = "gram";
-
-/// A parsed Gram link that can be handled internally by the application.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum GramLink {
-    NothingYet,
-}
-
-/// Parses the given link into a Gram link.
-///
-/// Returns a [`Some`] containing the parsed link if the link is a recognized Gram link
-/// that should be handled internally by the application.
-/// Returns [`None`] for links that should be opened in the browser.
-pub fn parse_editor_link(_link: &str, _cx: &App) -> Option<GramLink> {
-    None
-}

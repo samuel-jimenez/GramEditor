@@ -7,12 +7,12 @@ use std::{
     time::Duration,
 };
 
-use client::parse_editor_link;
 use command_palette_hooks::{
     CommandInterceptItem, CommandInterceptResult, CommandPaletteFilter,
     GlobalCommandPaletteInterceptor,
 };
 
+use app_actions::command_palette::Toggle;
 use fuzzy::{StringMatch, StringMatchCandidate};
 use gpui::{
     Action, App, Context, DismissEvent, Entity, EventEmitter, FocusHandle, Focusable,
@@ -26,7 +26,6 @@ use settings::Settings;
 use ui::{HighlightedLabel, KeyBinding, ListItem, ListItemSpacing, prelude::*};
 use util::ResultExt;
 use workspace::{ModalView, Workspace, WorkspaceSettings};
-use app_actions::{OpenGramUrl, command_palette::Toggle};
 
 pub fn init(cx: &mut App) {
     command_palette_hooks::init(cx);
@@ -440,14 +439,12 @@ impl PickerDelegate for CommandPaletteDelegate {
         let (mut tx, mut rx) = postage::dispatch::channel(1);
 
         let query_str = query.as_str();
-        let is_zed_link = parse_editor_link(query_str, cx).is_some();
 
         let task = cx.background_spawn({
             let mut commands = self.all_commands.clone();
             let hit_counts = self.hit_counts();
             let executor = cx.background_executor().clone();
             let query = normalize_action_query(query_str);
-            let query_for_link = query_str.to_string();
             async move {
                 commands.sort_by_key(|action| {
                     (
@@ -473,19 +470,7 @@ impl PickerDelegate for CommandPaletteDelegate {
                 )
                 .await;
 
-                let intercept_result = if is_zed_link {
-                    CommandInterceptResult {
-                        results: vec![CommandInterceptItem {
-                            action: OpenGramUrl {
-                                url: query_for_link.clone(),
-                            }
-                            .boxed_clone(),
-                            string: query_for_link,
-                            positions: vec![],
-                        }],
-                        exclusive: false,
-                    }
-                } else if let Some(task) = intercept_task {
+                let intercept_result = if let Some(task) = intercept_task {
                     task.await
                 } else {
                     CommandInterceptResult::default()

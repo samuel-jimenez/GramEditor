@@ -23,7 +23,7 @@ pub use path_list::PathList;
 pub use toast_layer::{ToastAction, ToastLayer, ToastView};
 
 use anyhow::{Context as _, Result, anyhow};
-use app_actions::{Spawn, feedback::FileBugReport};
+use app_actions::Spawn;
 use client::{
     Client, ErrorExt, TypedEnvelope, UserStore,
     proto::{self, ErrorCode, PanelId},
@@ -5510,11 +5510,6 @@ fn notify_if_database_failed(workspace: WindowHandle<Workspace>, cx: &mut AsyncA
                     |cx| {
                         cx.new(|cx| {
                             MessageNotification::new("Failed to load the database file.", cx)
-                                .primary_message("File an Issue")
-                                .primary_icon(IconName::Plus)
-                                .primary_on_click(|window, cx| {
-                                    window.dispatch_action(Box::new(FileBugReport), cx)
-                                })
                         })
                     },
                 );

@@ -61,6 +61,9 @@ pub enum OpenRequestKind {
     GitCommit {
         sha: String,
     },
+    Docs {
+        path: String,
+    },
 }
 
 impl OpenRequest {
@@ -110,6 +113,10 @@ impl OpenRequest {
             } else if let Some(setting_path) = url.strip_prefix("gram://settings/") {
                 this.kind = Some(OpenRequestKind::Setting {
                     setting_path: Some(setting_path.to_string()),
+                });
+            } else if let Some(path) = url.strip_prefix("gram://docs/") {
+                this.kind = Some(OpenRequestKind::Docs {
+                    path: path.to_string(),
                 });
             } else if let Some(clone_path) = url.strip_prefix("gram://git/clone") {
                 this.parse_git_clone_url(clone_path)?
