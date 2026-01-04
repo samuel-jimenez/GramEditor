@@ -31,7 +31,7 @@ It should go without saying but AI is strictly banned from this project.
 
 ## Bird's-eye view of the code base
 
-The [glossary](docs/src/development/glossary.md) lists and explains some of the structures and terms you will see throughout the codebase.
+The [glossary](docs/development/glossary.md) lists and explains some of the structures and terms you will see throughout the codebase.
 
 The editor is made up of several smaller crates. This is an incomplete list of
 crates and their use.

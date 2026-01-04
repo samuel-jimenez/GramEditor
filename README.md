@@ -65,9 +65,9 @@ cargo run --release
 
 ## Developing
 
-- [Building for macOS](./docs/src/development/macos.md)
-- [Building for Linux](./docs/src/development/linux.md)
-- [Building for Windows](./docs/src/development/windows.md)
+- [Building for macOS](./docs/development/macos.md)
+- [Building for Linux](./docs/development/linux.md)
+- [Building for Windows](./docs/development/windows.md)
 
 ## Contributing
 

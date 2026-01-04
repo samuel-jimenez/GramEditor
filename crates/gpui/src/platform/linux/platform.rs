@@ -69,7 +69,7 @@ impl<T> ResultExt for anyhow::Result<T> {
                         notification_id,
                         Notification::new("Gram failed to launch")
                             .body(Some(
-                                format!("{e:?}. See docs/src/linux.md for troubleshooting steps.")
+                                format!("{e:?}. See docs/linux.md for troubleshooting steps.")
                                     .as_str(),
                             ))
                             .priority(Priority::High)
