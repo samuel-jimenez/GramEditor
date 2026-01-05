@@ -189,11 +189,7 @@ impl DocumentationView {
         let workspace_handle = workspace.weak_handle();
         let path = path.unwrap_or("SUMMARY.md".into());
         let path = path.strip_prefix("gram://docs/").unwrap_or(&path);
-        if let Some(text) = Docs::get(&path) {
-            let text = match text.data {
-                Cow::Borrowed(bytes) => Cow::Borrowed(std::str::from_utf8(bytes).unwrap()),
-                Cow::Owned(bytes) => Cow::Owned(String::from_utf8(bytes).unwrap()),
-            };
+        if let Some(text) = get_docs(&path) {
             if let Some(existing) = workspace.item_of_type::<DocumentationView>(cx) {
                 let is_active = workspace
                     .active_item(cx)
@@ -223,6 +219,17 @@ impl DocumentationView {
     }
 }
 
+fn get_docs<'b>(path: &str) -> Option<Cow<'b, str>> {
+    if let Some(text) = Docs::get(&path) {
+        Some(match text.data {
+            Cow::Borrowed(bytes) => Cow::Borrowed(std::str::from_utf8(bytes).unwrap()),
+            Cow::Owned(bytes) => Cow::Owned(String::from_utf8(bytes).unwrap()),
+        })
+    } else {
+        None
+    }
+}
+
 impl Focusable for DocumentationView {
     fn focus_handle(&self, _: &App) -> FocusHandle {
         self.focus_handle.clone()
@@ -231,10 +238,6 @@ impl Focusable for DocumentationView {
 
 impl Item for DocumentationView {
     type Event = EditorEvent;
-
-    fn tab_icon(&self, _window: &Window, _cx: &App) -> Option<Icon> {
-        Some(Icon::new(IconName::Info))
-    }
 
     fn tab_content_text(&self, _detail: usize, _cx: &App) -> SharedString {
         "Documentation".into()
