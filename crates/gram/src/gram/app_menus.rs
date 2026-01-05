@@ -1,7 +1,7 @@
+use app_actions::{ToggleFocus as ToggleDebugPanel, dev};
 use gpui::{App, Menu, MenuItem, OsAction};
 use release_channel::ReleaseChannel;
 use terminal_view::terminal_panel;
-use app_actions::{ToggleFocus as ToggleDebugPanel, dev};
 
 pub fn app_menus(cx: &mut App) -> Vec<Menu> {
     use app_actions::Quit;
@@ -296,8 +296,8 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
                 MenuItem::separator(),
                 MenuItem::action(
                     "Documentation",
-                    super::OpenBrowser {
-                        url: "gram://docs".into(),
+                    super::OpenGramUrl {
+                        url: "gram://docs/".into(),
                     },
                 ),
                 MenuItem::action("Gram Repository", feedback::OpenGramRepo),

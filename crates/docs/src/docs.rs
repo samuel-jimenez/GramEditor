@@ -4,14 +4,14 @@ use app_actions::{OpenDocs, OpenDocsAt};
 use assets::Docs;
 use editor::EditorEvent;
 use gpui::{
-    Entity, EventEmitter, FocusHandle, Focusable, ScrollHandle, StyleRefinement,
+    Entity, EventEmitter, FocusHandle, Focusable, KeyContext, ScrollHandle, StyleRefinement,
     TextStyleRefinement, WeakEntity,
 };
 use language::LanguageRegistry;
 use markdown::{Markdown, MarkdownElement, MarkdownStyle};
 use settings::Settings as _;
 use theme::ThemeSettings;
-use ui::{ScrollAxes, WithScrollbar as _, prelude::*};
+use ui::{ScrollAxes, Tooltip, WithScrollbar as _, prelude::*};
 use workspace::{Item, ItemHandle, Workspace};
 
 pub fn init(cx: &mut App) {
@@ -77,9 +77,13 @@ impl Render for DocumentationView {
             selection_background_color: cx.theme().colors().element_selection_background,
             ..Default::default()
         };
+        let theme = cx.theme();
 
         let child = v_flex()
             .id("documentation-markdown-view")
+            .max_w(Rems(48.0))
+            .size_full()
+            .gap_1_5()
             .child(
                 MarkdownElement::new(self.markdown.clone(), markdown_style)
                     .code_block_renderer(markdown::CodeBlockRenderer::Default {
@@ -89,28 +93,73 @@ impl Render for DocumentationView {
                     })
                     .on_url_click(open_doc_url),
             )
-            .track_scroll(&self.scroll_handle)
-            .gap_1_5()
-            .size_full()
-            .flex_grow();
+            .track_scroll(&self.scroll_handle);
 
         v_flex()
             .id("DocumentationView")
-            .key_context("Documentation")
             .track_focus(&self.focus_handle(cx))
-            .bg(cx.theme().colors().editor_background)
-            .p_4()
-            .size_full()
             .text_size(buffer_size)
             .line_height(line_height)
-            .child(child)
-            .custom_scrollbars(
-                ui::Scrollbars::new(ScrollAxes::Both)
-                    .tracked_scroll_handle(&self.scroll_handle)
-                    .with_track_along(ScrollAxes::Both, cx.theme().colors().panel_background)
-                    .tracked_entity(cx.entity_id()),
-                window,
-                cx,
+            .size_full()
+            .p_4()
+            .gap_2()
+            .bg(theme.colors().editor_background)
+            .child(
+                v_flex().gap_2().child(
+                    h_flex()
+                        .gap_4()
+                        .child(
+                            IconButton::new("doc-view-toc", IconName::Library)
+                                .tooltip(Tooltip::text("Table of Contents"))
+                                .on_click(move |_, window, cx| {
+                                    open_doc_url("gram://docs/SUMMARY.md".into(), window, cx);
+                                }),
+                        )
+                        .child(
+                            IconButton::new("doc-view-back", IconName::ArrowLeft)
+                                .tooltip(Tooltip::text("Back"))
+                                .on_click(|_, _window, _cx| {}),
+                        )
+                        .child(
+                            IconButton::new("doc-view-forward", IconName::ArrowRight)
+                                .tooltip(Tooltip::text("Forward"))
+                                .on_click(|_, _window, _cx| {}),
+                        )
+                        .child(
+                            h_flex()
+                                .key_context({
+                                    let mut context = KeyContext::new_with_defaults();
+                                    context.add("BufferSearchBar");
+                                    context
+                                })
+                                .size_full()
+                                .h_8()
+                                .pl_2()
+                                .pr_1()
+                                .py_1()
+                                .border_1()
+                                .border_color(theme.colors().border)
+                                .rounded_md()
+                                .child(div()),
+                        ),
+                ),
+            )
+            .child(
+                v_flex()
+                    .size_full()
+                    .p_2()
+                    .gap_4()
+                    .child(child)
+                    .overflow_hidden()
+                    .custom_scrollbars(
+                        ui::Scrollbars::new(ScrollAxes::Both)
+                            .tracked_scroll_handle(&self.scroll_handle)
+                            .with_track_along(ScrollAxes::Both, theme.colors().panel_background)
+                            .tracked_entity(cx.entity_id())
+                            .notify_content(),
+                        window,
+                        cx,
+                    ),
             )
     }
 }
@@ -121,6 +170,11 @@ pub fn open_doc_url(url: SharedString, window: &mut Window, cx: &mut App) {
         .strip_prefix("./")
         .map(|url| "gram://docs/".to_owned() + url)
         .unwrap_or(url);
+    let url = if url.starts_with("gram://docs/") && !url.ends_with(".md") {
+        url + ".md"
+    } else {
+        url
+    };
     log::info!("{}", url);
     if url.starts_with("gram://docs/") {
         window.dispatch_action(Box::new(OpenDocsAt { path: url }), cx);

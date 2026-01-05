@@ -2,7 +2,9 @@ use crate::{
     NewFile, Open, PathList, SerializedWorkspaceLocation, WORKSPACE_DB, Workspace, WorkspaceId,
     item::{Item, ItemEvent},
 };
-use app_actions::{Extensions, OpenOnboarding, OpenRecent, OpenSettings, command_palette};
+use app_actions::{
+    Extensions, OpenDocs, OpenOnboarding, OpenRecent, OpenSettings, command_palette,
+};
 use git::Clone as GitClone;
 use gpui::WeakEntity;
 use gpui::{
@@ -137,7 +139,7 @@ impl SectionEntry {
     }
 }
 
-const CONTENT: (Section<4>, Section<2>) = (
+const CONTENT: (Section<5>, Section<2>) = (
     Section {
         title: "Get Started",
         entries: [
@@ -160,6 +162,11 @@ const CONTENT: (Section<4>, Section<2>) = (
                 icon: IconName::ListCollapse,
                 title: "Open Command Palette",
                 action: &command_palette::Toggle,
+            },
+            SectionEntry {
+                icon: IconName::Library,
+                title: "Open Documentation",
+                action: &OpenDocs,
             },
         ],
     },

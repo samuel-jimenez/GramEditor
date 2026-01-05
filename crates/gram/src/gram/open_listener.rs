@@ -115,6 +115,11 @@ impl OpenRequest {
                     setting_path: Some(setting_path.to_string()),
                 });
             } else if let Some(path) = url.strip_prefix("gram://docs/") {
+                let path = if path == "" {
+                    "SUMMARY.md".to_string()
+                } else {
+                    path.to_string()
+                };
                 this.kind = Some(OpenRequestKind::Docs {
                     path: path.to_string(),
                 });
