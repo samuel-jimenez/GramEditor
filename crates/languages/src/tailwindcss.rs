@@ -5,7 +5,6 @@ use language::{LspAdapter, LspAdapterDelegate, LspInstaller, Toolchain};
 use lsp::{LanguageServerBinary, LanguageServerName, Uri};
 use node_runtime::{NodeRuntime, VersionStrategy};
 use project::lsp_store::language_server_settings;
-use semver::Version;
 use serde_json::json;
 use std::{
     ffi::OsString,
@@ -36,7 +35,7 @@ impl TailwindCssLspAdapter {
 }
 
 impl LspInstaller for TailwindCssLspAdapter {
-    type BinaryVersion = Version;
+    type BinaryVersion = String;
 
     async fn fetch_latest_server_version(
         &self,
