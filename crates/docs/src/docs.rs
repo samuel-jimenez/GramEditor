@@ -78,15 +78,21 @@ impl Render for DocumentationView {
             ..Default::default()
         };
 
-        let child = div().id("documentation-markdown-view").child(
-            MarkdownElement::new(self.markdown.clone(), markdown_style)
-                .code_block_renderer(markdown::CodeBlockRenderer::Default {
-                    copy_button: true,
-                    copy_button_on_hover: true,
-                    border: true,
-                })
-                .on_url_click(open_doc_url),
-        );
+        let child = v_flex()
+            .id("documentation-markdown-view")
+            .child(
+                MarkdownElement::new(self.markdown.clone(), markdown_style)
+                    .code_block_renderer(markdown::CodeBlockRenderer::Default {
+                        copy_button: true,
+                        copy_button_on_hover: true,
+                        border: true,
+                    })
+                    .on_url_click(open_doc_url),
+            )
+            .track_scroll(&self.scroll_handle)
+            .gap_1_5()
+            .size_full()
+            .flex_grow();
 
         v_flex()
             .id("DocumentationView")
@@ -94,11 +100,10 @@ impl Render for DocumentationView {
             .track_focus(&self.focus_handle(cx))
             .bg(cx.theme().colors().editor_background)
             .p_4()
+            .size_full()
             .text_size(buffer_size)
             .line_height(line_height)
             .child(child)
-            .overflow_y_scroll()
-            .track_scroll(&self.scroll_handle)
             .custom_scrollbars(
                 ui::Scrollbars::new(ScrollAxes::Both)
                     .tracked_scroll_handle(&self.scroll_handle)
@@ -107,7 +112,6 @@ impl Render for DocumentationView {
                 window,
                 cx,
             )
-            .occlude()
     }
 }
 
@@ -115,7 +119,7 @@ pub fn open_doc_url(url: SharedString, window: &mut Window, cx: &mut App) {
     let url = url.to_string();
     let url = url
         .strip_prefix("./")
-        .and_then(|url| Some("gram://docs/".to_owned() + url))
+        .map(|url| "gram://docs/".to_owned() + url)
         .unwrap_or(url);
     log::info!("{}", url);
     if url.starts_with("gram://docs/") {
