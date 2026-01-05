@@ -99,7 +99,9 @@ pub struct ProxySettings {
 impl ProxySettings {
     pub fn proxy_url(&self) -> Option<Url> {
         self.proxy
-            .as_ref()
+            .as_deref()
+            .map(str::trim)
+            .filter(|input| !input.is_empty())
             .and_then(|input| {
                 input
                     .parse::<Url>()
@@ -113,7 +115,12 @@ impl ProxySettings {
 impl Settings for ProxySettings {
     fn from_settings(content: &settings::SettingsContent) -> Self {
         Self {
-            proxy: content.proxy.clone(),
+            proxy: content
+                .proxy
+                .as_deref()
+                .map(str::trim)
+                .filter(|proxy| !proxy.is_empty())
+                .map(ToOwned::to_owned),
         }
     }
 }
