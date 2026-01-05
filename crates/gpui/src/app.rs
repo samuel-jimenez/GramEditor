@@ -557,6 +557,7 @@ impl SystemWindowTabController {
 /// You need a reference to an `App` to access the state of a [Entity].
 pub struct App {
     pub(crate) this: Weak<AppCell>,
+    pub(crate) liveness: std::sync::Arc<()>,
     pub(crate) platform: Rc<dyn Platform>,
     text_system: Arc<TextSystem>,
     flushing_effects: bool,
@@ -635,6 +636,7 @@ impl App {
         let app = Rc::new_cyclic(|this| AppCell {
             app: RefCell::new(App {
                 this: this.clone(),
+                liveness: std::sync::Arc::new(()),
                 platform: platform.clone(),
                 text_system,
                 text_rendering_mode: Rc::new(Cell::new(TextRenderingMode::default())),
@@ -1431,6 +1433,7 @@ impl App {
     pub fn to_async(&self) -> AsyncApp {
         AsyncApp {
             app: self.this.clone(),
+            liveness_token: std::sync::Arc::downgrade(&self.liveness),
             background_executor: self.background_executor.clone(),
             foreground_executor: self.foreground_executor.clone(),
         }
