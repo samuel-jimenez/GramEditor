@@ -4,7 +4,7 @@ use app_actions::{OpenDocs, OpenDocsAt};
 use assets::Docs;
 use editor::EditorEvent;
 use gpui::{
-    Entity, EventEmitter, FocusHandle, Focusable, KeyContext, ScrollHandle, StyleRefinement,
+    Entity, EventEmitter, FocusHandle, Focusable, ScrollHandle, StyleRefinement,
     TextStyleRefinement, WeakEntity,
 };
 use language::LanguageRegistry;
@@ -23,6 +23,9 @@ pub(crate) struct DocumentationView {
     scroll_handle: ScrollHandle,
     markdown: Entity<Markdown>,
     language_registry: Arc<LanguageRegistry>,
+    current: SharedString,
+    back: Vec<SharedString>,
+    forward: Vec<SharedString>,
 }
 
 impl EventEmitter<EditorEvent> for DocumentationView {}
@@ -97,7 +100,6 @@ impl Render for DocumentationView {
 
         v_flex()
             .id("DocumentationView")
-            .track_focus(&self.focus_handle(cx))
             .text_size(buffer_size)
             .line_height(line_height)
             .size_full()
@@ -117,35 +119,25 @@ impl Render for DocumentationView {
                         )
                         .child(
                             IconButton::new("doc-view-back", IconName::ArrowLeft)
+                                .disabled(self.back.is_empty())
                                 .tooltip(Tooltip::text("Back"))
-                                .on_click(|_, _window, _cx| {}),
+                                .on_click(cx.listener(move |this, _, _, cx| {
+                                    this.go_back(cx);
+                                })),
                         )
                         .child(
                             IconButton::new("doc-view-forward", IconName::ArrowRight)
+                                .disabled(self.forward.is_empty())
                                 .tooltip(Tooltip::text("Forward"))
-                                .on_click(|_, _window, _cx| {}),
-                        )
-                        .child(
-                            h_flex()
-                                .key_context({
-                                    let mut context = KeyContext::new_with_defaults();
-                                    context.add("BufferSearchBar");
-                                    context
-                                })
-                                .size_full()
-                                .h_8()
-                                .pl_2()
-                                .pr_1()
-                                .py_1()
-                                .border_1()
-                                .border_color(theme.colors().border)
-                                .rounded_md()
-                                .child(div()),
+                                .on_click(cx.listener(move |this, _, _, cx| {
+                                    this.go_forward(cx);
+                                })),
                         ),
                 ),
             )
             .child(
                 v_flex()
+                    .track_focus(&self.focus_handle(cx))
                     .size_full()
                     .p_2()
                     .gap_4()
@@ -175,7 +167,6 @@ pub fn open_doc_url(url: SharedString, window: &mut Window, cx: &mut App) {
     } else {
         url
     };
-    log::info!("{}", url);
     if url.starts_with("gram://docs/") {
         window.dispatch_action(Box::new(OpenDocsAt { path: url }), cx);
     } else {
@@ -208,6 +199,7 @@ impl DocumentationView {
     }
 
     fn new(
+        path: &str,
         text: SharedString,
         _workspace: WeakEntity<Workspace>,
         window: &mut Window,
@@ -218,13 +210,17 @@ impl DocumentationView {
         cx.on_focus_in(&focus_handle, window, Self::focus_in)
             .detach();
 
-        let markdown = cx.new(|cx| Markdown::new(text, Some(language_registry.clone()), None, cx));
+        let markdown =
+            cx.new(|cx| Markdown::new(text.clone(), Some(language_registry.clone()), None, cx));
 
         let this = Self {
             focus_handle,
             markdown,
             language_registry,
             scroll_handle: ScrollHandle::new(),
+            current: SharedString::from(path.to_string()),
+            back: Vec::new(),
+            forward: Vec::new(),
         };
         this
     }
@@ -233,7 +229,7 @@ impl DocumentationView {
         if self.focus_handle.is_focused(window) {}
     }
 
-    fn open_documentation_page(
+    pub(crate) fn open_documentation_page(
         workspace: &mut Workspace,
         path: Option<String>,
         window: &mut Window,
@@ -249,11 +245,14 @@ impl DocumentationView {
                     .active_item(cx)
                     .is_some_and(|item| item.item_id() == existing.item_id());
 
-                existing.update(cx, |view, cx| view.update_text(text.into(), cx));
+                existing.update(cx, |this, cx| {
+                    this.update_text(path, text.into(), false, cx)
+                });
                 workspace.activate_item(&existing, true, !is_active, window, cx);
             } else {
                 let view = cx.new(|cx| {
                     DocumentationView::new(
+                        path,
                         text.into(),
                         workspace_handle,
                         window,
@@ -266,10 +265,51 @@ impl DocumentationView {
         }
     }
 
-    pub(crate) fn update_text(&mut self, text: SharedString, cx: &mut Context<Self>) {
-        self.markdown =
-            cx.new(|cx| Markdown::new(text, Some(self.language_registry.clone()), None, cx));
-        cx.notify();
+    pub(crate) fn update_text(
+        &mut self,
+        path: &str,
+        text: SharedString,
+        nav: bool,
+        cx: &mut Context<Self>,
+    ) {
+        if self.current != path {
+            let current = self.current.clone();
+            self.current = SharedString::from(path.to_string());
+            self.back.push(current);
+            if !nav {
+                self.forward.clear();
+            }
+            self.markdown =
+                cx.new(|cx| Markdown::new(text, Some(self.language_registry.clone()), None, cx));
+            cx.notify();
+        }
+    }
+
+    pub(crate) fn go_back(&mut self, cx: &mut Context<Self>) {
+        if let Some(path) = self.back.pop() {
+            let current = self.current.clone();
+            self.current.clone_from(&path);
+            self.forward.push(current);
+            if let Some(text) = get_docs(&path) {
+                self.markdown = cx.new(|cx| {
+                    Markdown::new(
+                        SharedString::from(text),
+                        Some(self.language_registry.clone()),
+                        None,
+                        cx,
+                    )
+                });
+                cx.notify();
+            }
+        }
+    }
+
+    pub(crate) fn go_forward(&mut self, cx: &mut Context<Self>) {
+        if let Some(path) = self.forward.pop() {
+            if let Some(text) = get_docs(&path) {
+                self.update_text(&path, SharedString::from(text), true, cx);
+            }
+        }
     }
 }
 
