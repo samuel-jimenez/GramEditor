@@ -181,6 +181,11 @@ pub fn open_doc_url(url: SharedString, window: &mut Window, cx: &mut App) {
         .strip_prefix("./")
         .map(|url| "gram://docs/".to_owned() + url)
         .unwrap_or(url);
+    let url = if !url.starts_with("http") && !url.starts_with("gram://") {
+        "gram://docs/".to_owned() + &url
+    } else {
+        url
+    };
     let url = if url.starts_with("gram://docs/") && !url.ends_with(".md") {
         url + ".md"
     } else {
@@ -230,7 +235,7 @@ impl DocumentationView {
             .detach();
 
         let mut this = Self {
-            workspace: workspace.clone(),
+            workspace,
             selected_block: 0,
             focus_handle,
             language_registry,
@@ -284,7 +289,7 @@ impl DocumentationView {
             }
 
             let parsing_task = cx.background_spawn(async move {
-                parse_markdown(&text, Some(PathBuf::from(".")), Some(language_registry)).await
+                parse_markdown(&text, Some(PathBuf::new()), Some(language_registry)).await
             });
             let contents = parsing_task.await;
             view.update(cx, move |view, cx| {
