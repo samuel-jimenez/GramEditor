@@ -4602,7 +4602,7 @@ impl LspStore {
         let Some(language) = buffer.read(cx).language().cloned() else {
             return false;
         };
-        let relevant_language_servers = self
+        let registered_language_servers = self
             .languages
             .lsp_adapters(&language.name())
             .into_iter()
@@ -4611,9 +4611,13 @@ impl LspStore {
         self.language_server_statuses
             .iter()
             .filter_map(|(server_id, server_status)| {
-                relevant_language_servers
-                    .contains(&server_status.name)
-                    .then_some(server_id)
+                // Include servers that are either registered for this language OR
+                // available to be loaded (for SSH remote mode where adapters like
+                // ty/pylsp/pyright are registered via register_available_lsp_adapter
+                // but only loaded on the server side)
+                let is_relevant = registered_language_servers.contains(&server_status.name)
+                    || self.languages.is_lsp_adapter_available(&server_status.name);
+                is_relevant.then_some(server_id)
             })
             .filter_map(|server_id| self.lsp_server_capabilities.get(server_id))
             .any(check)
@@ -4631,7 +4635,7 @@ impl LspStore {
         let Some(language) = buffer.read(cx).language().cloned() else {
             return Vec::default();
         };
-        let relevant_language_servers = self
+        let registered_language_servers = self
             .languages
             .lsp_adapters(&language.name())
             .into_iter()
@@ -4640,9 +4644,13 @@ impl LspStore {
         self.language_server_statuses
             .iter()
             .filter_map(|(server_id, server_status)| {
-                relevant_language_servers
-                    .contains(&server_status.name)
-                    .then_some((server_id, &server_status.name))
+                // Include servers that are either registered for this language OR
+                // available to be loaded (for SSH remote mode where adapters like
+                // ty/pylsp/pyright are registered via register_available_lsp_adapter
+                // but only loaded on the server side)
+                let is_relevant = registered_language_servers.contains(&server_status.name)
+                    || self.languages.is_lsp_adapter_available(&server_status.name);
+                is_relevant.then_some((server_id, &server_status.name))
             })
             .filter_map(|(server_id, server_name)| {
                 self.lsp_server_capabilities
