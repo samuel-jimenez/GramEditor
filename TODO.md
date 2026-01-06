@@ -1,5 +1,9 @@
 # TODO
 
+- Suggestion from lobste.rs comment for zed, we can fix this:
+
+  > A tiny error in code marks massive amounts of code with yellow/red wiggly underlines.
+
 - Find a solution for the remote_server situation...
 
   The problem is that in dev mode we can just build the remote
@@ -8,7 +12,13 @@
   zed does) either directly on the remote or on the client machine.
   Well, I don't want to do that...
 
+  Not much of a problem in practice, just build it. Keep the protocol
+  stable as much as possible.
+
   - Build a minimal zig-based remote_server executable for all targets and bundle?
+
+    The executable is ridiculously large, but that _should_ be fixable
+    in rust too. See if we can make it smaller.
 
 - Replace the extension model
 
@@ -19,6 +29,9 @@
 - Reintroduce collab editing using https://github.com/teamtype/teamtype
 
 - Sniff out all the AI-written text and get rid of it
+
+  I absolutely hate the tone of the documentation. Tempted to rip it all
+  out and start from scratch.
 
 - LSP queries don't work on remote connection:
 

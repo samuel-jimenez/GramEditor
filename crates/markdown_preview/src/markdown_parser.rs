@@ -14,6 +14,9 @@ use std::{
 };
 use ui::SharedString;
 
+// TODO: Parse {#kb ...} and {#action ...} and render them nicely.
+// TODO: Link to the key mapping screen.
+
 pub async fn parse_markdown(
     markdown_input: &str,
     file_location_directory: Option<PathBuf>,
@@ -273,6 +276,8 @@ impl<'a> MarkdownParser<'a> {
                 // the text between them
                 Event::InlineHtml(_) => {}
 
+                // TODO: parse kb and action sections here and turn
+                // them into links
                 Event::Text(t) => {
                     text.push_str(t.as_ref());
                     let mut style = MarkdownHighlightStyle::default();
