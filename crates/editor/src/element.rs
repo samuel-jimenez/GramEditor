@@ -41,12 +41,12 @@ use git::{Oid, blame::BlameEntry, commit::ParsedCommitMessage, status::FileStatu
 use gpui::{
     Action, Along, AnyElement, App, AppContext, AvailableSpace, Axis as ScrollbarAxis, BorderStyle,
     Bounds, ClickEvent, ClipboardItem, ContentMask, Context, Corner, Corners, CursorStyle,
-    DispatchPhase, Edges, Element, ElementInputHandler, Entity, Focusable as _, FontId,
-    GlobalElementId, Hitbox, HitboxBehavior, Hsla, InteractiveElement, IntoElement, IsZero, Length,
+    DispatchPhase, Edges, Element, ElementInputHandler, Entity, Focusable as _, FontId, FontWeight,
+    GlobalElementId, Hitbox, HitboxBehavior, Hsla, InteractiveElement, IntoElement, IsZero,  Length,
     Modifiers, ModifiersChangedEvent, MouseButton, MouseClickEvent, MouseDownEvent, MouseMoveEvent,
     MousePressureEvent, MouseUpEvent, PaintQuad, ParentElement, Pixels, PressureStage, ScrollDelta,
     ScrollHandle, ScrollWheelEvent, ShapedLine, SharedString, Size, StatefulInteractiveElement,
-    Style, Styled, TextAlign, TextRun, TextStyleRefinement, WeakEntity, Window, anchored, deferred,
+    Style, Styled,  StyledText,TextAlign, TextRun, TextStyleRefinement, WeakEntity, Window, anchored, deferred,
     div, fill, linear_color_stop, linear_gradient, outline, pattern_slash, point, px, quad,
     relative, rgba, size, solid_background, transparent_black,
 };
@@ -93,8 +93,9 @@ use unicode_segmentation::UnicodeSegmentation;
 use util::post_inc;
 use util::{RangeExt, ResultExt, debug_panic};
 use workspace::{
-    ItemSettings, OpenInTerminal, OpenTerminal, RevealInProjectPanel, Workspace,
-    item::{Item, ItemBufferKind},
+    ItemHandle, ItemSettings, OpenInTerminal, OpenTerminal, RevealInProjectPanel,
+    Workspace,
+    item::{BreadcrumbText, Item, ItemBufferKind},
     notifications::NotifyTaskExt,
 };
 
@@ -7451,6 +7452,168 @@ impl EditorElement {
     }
 }
 
+pub fn render_breadcrumb_text(
+    mut segments: Vec<BreadcrumbText>,
+    prefix: Option<gpui::AnyElement>,
+    active_item: &dyn ItemHandle,
+    multibuffer_header: bool,
+    window: &mut Window,
+    cx: &App,
+) -> impl IntoElement {
+    const MAX_SEGMENTS: usize = 12;
+
+    let element = h_flex().flex_grow().text_ui(cx);
+
+    let prefix_end_ix = cmp::min(segments.len(), MAX_SEGMENTS / 2);
+    let suffix_start_ix = cmp::max(
+        prefix_end_ix,
+        segments.len().saturating_sub(MAX_SEGMENTS / 2),
+    );
+
+    if suffix_start_ix > prefix_end_ix {
+        segments.splice(
+            prefix_end_ix..suffix_start_ix,
+            Some(BreadcrumbText {
+                text: "⋯".into(),
+                highlights: None,
+                font: None,
+            }),
+        );
+    }
+
+    let highlighted_segments = segments.into_iter().enumerate().map(|(index, segment)| {
+        let mut text_style = window.text_style();
+        if let Some(ref font) = segment.font {
+            text_style.font_family = font.family.clone();
+            text_style.font_features = font.features.clone();
+            text_style.font_style = font.style;
+            text_style.font_weight = font.weight;
+        }
+        text_style.color = Color::Muted.color(cx);
+
+        if index == 0
+            && !workspace::TabBarSettings::get_global(cx).show
+            && active_item.is_dirty(cx)
+            && let Some(styled_element) = apply_dirty_filename_style(&segment, &text_style, cx)
+        {
+            return styled_element;
+        }
+
+        StyledText::new(segment.text.replace('\n', "⏎"))
+            .with_default_highlights(&text_style, segment.highlights.unwrap_or_default())
+            .into_any()
+    });
+
+    let breadcrumbs = Itertools::intersperse_with(highlighted_segments, || {
+        Label::new("›").color(Color::Placeholder).into_any_element()
+    });
+
+    let breadcrumbs_stack = h_flex()
+        .gap_1()
+        .when(multibuffer_header, |this| {
+            this.pl_2()
+                .border_l_1()
+                .border_color(cx.theme().colors().border.opacity(0.6))
+        })
+        .children(breadcrumbs);
+
+    let breadcrumbs = if let Some(prefix) = prefix {
+        h_flex().gap_1p5().child(prefix).child(breadcrumbs_stack)
+    } else {
+        breadcrumbs_stack
+    };
+
+    let editor = active_item
+        .downcast::<Editor>()
+        .map(|editor| editor.downgrade());
+
+    match editor {
+        Some(editor) => element
+            .id("breadcrumb_container")
+            .when(!multibuffer_header, |this| this.overflow_x_scroll())
+            .child(
+                ButtonLike::new("toggle outline view")
+                    .child(breadcrumbs)
+                    .when(multibuffer_header, |this| {
+                        this.style(ButtonStyle::Transparent)
+                    })
+                    .when(!multibuffer_header, |this| {
+                        let focus_handle = editor.upgrade().unwrap().focus_handle(&cx);
+
+                        this.tooltip(move |_window, cx| {
+                            Tooltip::for_action_in(
+                                "Show Symbol Outline",
+                                &app_actions::outline::ToggleOutline,
+                                &focus_handle,
+                                cx,
+                            )
+                        })
+                        .on_click({
+                            let editor = editor.clone();
+                            move |_, window, cx| {
+                                if let Some((editor, callback)) = editor
+                                    .upgrade()
+                                    .zip(app_actions::outline::TOGGLE_OUTLINE.get())
+                                {
+                                    callback(editor.to_any_view(), window, cx);
+                                }
+                            }
+                        })
+                    }),
+            )
+            .into_any_element(),
+        None => element
+            // Match the height and padding of the `ButtonLike` in the other arm.
+            .h(rems_from_px(22.))
+            .pl_1()
+            .child(breadcrumbs)
+            .into_any_element(),
+    }
+}
+
+fn apply_dirty_filename_style(
+    segment: &BreadcrumbText,
+    text_style: &gpui::TextStyle,
+    cx: &App,
+) -> Option<gpui::AnyElement> {
+    let text = segment.text.replace('\n', "⏎");
+
+    let filename_position = std::path::Path::new(&segment.text)
+        .file_name()
+        .and_then(|f| {
+            let filename_str = f.to_string_lossy();
+            segment.text.rfind(filename_str.as_ref())
+        })?;
+
+    let bold_weight = FontWeight::BOLD;
+    let default_color = Color::Default.color(cx);
+
+    if filename_position == 0 {
+        let mut filename_style = text_style.clone();
+        filename_style.font_weight = bold_weight;
+        filename_style.color = default_color;
+
+        return Some(
+            StyledText::new(text)
+                .with_default_highlights(&filename_style, [])
+                .into_any(),
+        );
+    }
+
+    let highlight_style = gpui::HighlightStyle {
+        font_weight: Some(bold_weight),
+        color: Some(default_color),
+        ..Default::default()
+    };
+
+    let highlight = vec![(filename_position..text.len(), highlight_style)];
+    Some(
+        StyledText::new(text)
+            .with_default_highlights(text_style, highlight)
+            .into_any(),
+    )
+}
+
 fn file_status_label_color(file_status: Option<FileStatus>) -> Color {
     file_status.map_or(Color::Default, |status| {
         if status.is_conflicted() {
@@ -7780,9 +7943,6 @@ pub(crate) fn render_buffer_header(
                                                 ),
                                         )
                                     })
-                                    .when(!for_excerpt.buffer.capability.editable(), |el| {
-                                        el.child(Icon::new(IconName::FileLock).color(Color::Muted))
-                                    })
                                     .when_some(breadcrumbs, |then, breadcrumbs| {
                                         then.child(render_breadcrumb_text(
                                             breadcrumbs,
@@ -7942,21 +8102,6 @@ pub(crate) fn render_buffer_header(
                 menu.context(menu_context)
             })
         })
-}
-
-pub struct AcceptEditPredictionBinding(pub(crate) Option<gpui::KeyBinding>);
-
-impl AcceptEditPredictionBinding {
-    pub fn keystroke(&self) -> Option<&KeybindingKeystroke> {
-        if let Some(binding) = self.0.as_ref() {
-            match &binding.keystrokes() {
-                [keystroke, ..] => Some(keystroke),
-                _ => None,
-            }
-        } else {
-            None
-        }
-    }
 }
 
 fn prepaint_gutter_button(

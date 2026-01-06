@@ -986,11 +986,8 @@ dependencies = [
 name = "breadcrumbs"
 version = "0.1.0"
 dependencies = [
- "app_actions",
  "editor",
  "gpui",
- "itertools 0.14.0",
- "settings",
  "theme",
  "ui",
  "workspace",
@@ -2577,6 +2574,7 @@ name = "diagnostics"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "app_actions",
  "collections",
  "component",
  "ctor",
@@ -2591,6 +2589,7 @@ dependencies = [
  "pretty_assertions",
  "project",
  "rand 0.9.2",
+ "search",
  "serde",
  "serde_json",
  "settings",
