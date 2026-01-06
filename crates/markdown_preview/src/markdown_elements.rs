@@ -299,9 +299,7 @@ impl Link {
         if let Some(file_location_directory) = file_location_directory {
             let display_path = path;
             let path = file_location_directory.join(decoded_text);
-            if path.exists() {
-                return Some(Link::Path { display_path, path });
-            }
+            return Some(Link::Path { display_path, path });
         }
 
         None

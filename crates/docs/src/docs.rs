@@ -1,31 +1,45 @@
-use std::{borrow::Cow, sync::Arc};
+use std::cmp::min;
+use std::path::PathBuf;
+use std::{borrow::Cow, sync::Arc, time::Duration};
 
+use anyhow::Result;
 use app_actions::{OpenDocs, OpenDocsAt};
 use assets::Docs;
 use editor::EditorEvent;
 use gpui::{
-    Entity, EventEmitter, FocusHandle, Focusable, ScrollHandle, StyleRefinement,
-    TextStyleRefinement, WeakEntity,
+    Entity, EventEmitter, FocusHandle, Focusable, IsZero as _, ListState, RetainAllImageCache,
+    Task, WeakEntity, list,
 };
 use language::LanguageRegistry;
-use markdown::{Markdown, MarkdownElement, MarkdownStyle};
+use markdown_preview::markdown_elements::{Link, ParsedMarkdown, ParsedMarkdownElement};
+use markdown_preview::markdown_parser::parse_markdown;
+use markdown_preview::markdown_renderer::{RenderContext, render_markdown_block};
+use markdown_preview::{
+    ScrollDown, ScrollDownByItem, ScrollPageDown, ScrollPageUp, ScrollUp, ScrollUpByItem,
+};
 use settings::Settings as _;
 use theme::ThemeSettings;
-use ui::{ScrollAxes, Tooltip, WithScrollbar as _, prelude::*};
+use ui::{Tooltip, WithScrollbar as _, prelude::*};
 use workspace::{Item, ItemHandle, Workspace};
+
+const REPARSE_DEBOUNCE: Duration = Duration::from_millis(200);
 
 pub fn init(cx: &mut App) {
     cx.observe_new(DocumentationView::register).detach();
 }
 
 pub(crate) struct DocumentationView {
+    workspace: WeakEntity<Workspace>,
+    image_cache: Entity<RetainAllImageCache>,
     focus_handle: FocusHandle,
-    scroll_handle: ScrollHandle,
-    markdown: Entity<Markdown>,
     language_registry: Arc<LanguageRegistry>,
+    contents: Option<ParsedMarkdown>,
+    selected_block: usize,
+    list_state: ListState,
     current: SharedString,
     back: Vec<SharedString>,
     forward: Vec<SharedString>,
+    parsing_markdown_task: Option<Task<Result<()>>>,
 }
 
 impl EventEmitter<EditorEvent> for DocumentationView {}
@@ -34,72 +48,20 @@ impl Render for DocumentationView {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let settings = ThemeSettings::get_global(cx);
         let buffer_size = settings.buffer_font_size(cx);
-        let ui_font_family = settings.ui_font.family.clone();
-        let ui_font_fallbacks = settings.ui_font.fallbacks.clone();
-        let ui_font_features = settings.ui_font.features.clone();
-        let buffer_font_family = settings.buffer_font.family.clone();
-        let buffer_font_features = settings.buffer_font.features.clone();
-        let buffer_font_fallbacks = settings.buffer_font.fallbacks.clone();
-        let mut base_text_style = window.text_style();
-        base_text_style.refine(&TextStyleRefinement {
-            font_family: Some(ui_font_family),
-            font_features: Some(ui_font_features),
-            font_fallbacks: ui_font_fallbacks,
-            color: Some(cx.theme().colors().editor_foreground),
-            ..Default::default()
-        });
         let line_height = (2 * buffer_size).round();
-
-        let markdown_style = MarkdownStyle {
-            base_text_style,
-            code_block: StyleRefinement::default().my(rems(1.)).font_buffer(cx),
-            inline_code: TextStyleRefinement {
-                background_color: Some(cx.theme().colors().editor_background.opacity(0.5)),
-                font_family: Some(buffer_font_family),
-                font_features: Some(buffer_font_features),
-                font_fallbacks: buffer_font_fallbacks,
-                ..Default::default()
-            },
-            rule_color: cx.theme().colors().border,
-            block_quote_border_color: Color::Muted.color(cx),
-            block_quote: TextStyleRefinement {
-                color: Some(Color::Muted.color(cx)),
-                ..Default::default()
-            },
-            link: TextStyleRefinement {
-                color: Some(Color::Accent.color(cx)),
-                underline: Some(gpui::UnderlineStyle {
-                    thickness: px(1.),
-                    color: Some(Color::Accent.color(cx)),
-                    wavy: false,
-                }),
-                ..Default::default()
-            },
-            height_is_multiple_of_line_height: true,
-            syntax: cx.theme().syntax().clone(),
-            selection_background_color: cx.theme().colors().element_selection_background,
-            ..Default::default()
-        };
         let theme = cx.theme();
 
-        let child = v_flex()
-            .id("documentation-markdown-view")
-            .max_w(Rems(48.0))
-            .size_full()
-            .gap_1_5()
-            .child(
-                MarkdownElement::new(self.markdown.clone(), markdown_style)
-                    .code_block_renderer(markdown::CodeBlockRenderer::Default {
-                        copy_button: true,
-                        copy_button_on_hover: true,
-                        border: true,
-                    })
-                    .on_url_click(open_doc_url),
-            )
-            .track_scroll(&self.scroll_handle);
-
         v_flex()
+            .image_cache(self.image_cache.clone())
             .id("DocumentationView")
+            .key_context("MarkdownPreview")
+            .track_focus(&self.focus_handle(cx))
+            .on_action(cx.listener(DocumentationView::scroll_page_up))
+            .on_action(cx.listener(DocumentationView::scroll_page_down))
+            .on_action(cx.listener(DocumentationView::scroll_up))
+            .on_action(cx.listener(DocumentationView::scroll_down))
+            .on_action(cx.listener(DocumentationView::scroll_up_by_item))
+            .on_action(cx.listener(DocumentationView::scroll_down_by_item))
             .text_size(buffer_size)
             .line_height(line_height)
             .size_full()
@@ -121,38 +83,95 @@ impl Render for DocumentationView {
                             IconButton::new("doc-view-back", IconName::ArrowLeft)
                                 .disabled(self.back.is_empty())
                                 .tooltip(Tooltip::text("Back"))
-                                .on_click(cx.listener(move |this, _, _, cx| {
-                                    this.go_back(cx);
+                                .on_click(cx.listener(move |this, _, window, cx| {
+                                    this.go_back(window, cx);
                                 })),
                         )
                         .child(
                             IconButton::new("doc-view-forward", IconName::ArrowRight)
                                 .disabled(self.forward.is_empty())
                                 .tooltip(Tooltip::text("Forward"))
-                                .on_click(cx.listener(move |this, _, _, cx| {
-                                    this.go_forward(cx);
+                                .on_click(cx.listener(move |this, _, window, cx| {
+                                    this.go_forward(window, cx);
                                 })),
                         ),
                 ),
             )
-            .child(
-                v_flex()
-                    .track_focus(&self.focus_handle(cx))
-                    .size_full()
-                    .p_2()
-                    .gap_4()
-                    .child(child)
-                    .overflow_hidden()
-                    .custom_scrollbars(
-                        ui::Scrollbars::new(ScrollAxes::Both)
-                            .tracked_scroll_handle(&self.scroll_handle)
-                            .with_track_along(ScrollAxes::Both, theme.colors().panel_background)
-                            .tracked_entity(cx.entity_id())
-                            .notify_content(),
-                        window,
-                        cx,
-                    ),
-            )
+            .child(div().flex_grow().map(|this| {
+                this.child(
+                    list(
+                        self.list_state.clone(),
+                        cx.processor(|this, ix, window, cx| {
+                            let Some(contents) = &this.contents else {
+                                return div().into_any();
+                            };
+
+                            let mut render_cx =
+                                RenderContext::new(Some(this.workspace.clone()), window, cx)
+                                    .with_link_clicked_callback(move |link: Link, window, cx| {
+                                        log::info!("link clicked! {:?}", link);
+                                        match link {
+                                            Link::Web { url } => {
+                                                open_doc_url(url.into(), window, cx)
+                                            }
+                                            Link::Path { path, .. } => open_doc_url(
+                                                SharedString::from(
+                                                    path.to_str().unwrap().to_string(),
+                                                ),
+                                                window,
+                                                cx,
+                                            ),
+                                        }
+                                    });
+
+                            let block = contents.children.get(ix).unwrap();
+                            let rendered_block = render_markdown_block(block, &mut render_cx);
+
+                            let should_apply_padding = Self::should_apply_padding_between(
+                                block,
+                                contents.children.get(ix + 1),
+                            );
+
+                            div()
+                                .id(ix)
+                                .when(should_apply_padding, |this| {
+                                    this.pb(render_cx.scaled_rems(0.75))
+                                })
+                                .group("markdown-block")
+                                .map(move |container| {
+                                    let indicator = div()
+                                        .h_full()
+                                        .w(px(4.0))
+                                        .when(ix == this.selected_block, |this| {
+                                            this.bg(cx.theme().colors().border)
+                                        })
+                                        .group_hover("markdown-block", |s| {
+                                            if ix == this.selected_block {
+                                                s
+                                            } else {
+                                                s.bg(cx.theme().colors().border_variant)
+                                            }
+                                        })
+                                        .rounded_xs();
+
+                                    container.child(
+                                        div()
+                                            .relative()
+                                            .child(
+                                                div()
+                                                    .pl(render_cx.scaled_rems(1.0))
+                                                    .child(rendered_block),
+                                            )
+                                            .child(indicator.absolute().left_0().top_0()),
+                                    )
+                                })
+                                .into_any()
+                        }),
+                    )
+                    .size_full(),
+                )
+            }))
+            .vertical_scrollbar_for(&self.list_state, window, cx)
     }
 }
 
@@ -200,29 +219,165 @@ impl DocumentationView {
 
     fn new(
         path: &str,
-        text: SharedString,
-        _workspace: WeakEntity<Workspace>,
+        workspace: WeakEntity<Workspace>,
         window: &mut Window,
         language_registry: Arc<LanguageRegistry>,
         cx: &mut Context<Self>,
     ) -> Self {
+        let list_state = ListState::new(0, gpui::ListAlignment::Top, px(1000.));
         let focus_handle = cx.focus_handle();
         cx.on_focus_in(&focus_handle, window, Self::focus_in)
             .detach();
 
-        let markdown =
-            cx.new(|cx| Markdown::new(text.clone(), Some(language_registry.clone()), None, cx));
-
-        let this = Self {
+        let mut this = Self {
+            workspace: workspace.clone(),
+            selected_block: 0,
             focus_handle,
-            markdown,
             language_registry,
-            scroll_handle: ScrollHandle::new(),
-            current: SharedString::from(path.to_string()),
+            current: SharedString::from(""),
             back: Vec::new(),
             forward: Vec::new(),
+            parsing_markdown_task: None,
+            image_cache: RetainAllImageCache::new(cx),
+            contents: None,
+            list_state,
         };
+        this.set_path(path, window, cx);
         this
+    }
+
+    fn set_path(&mut self, path: &str, window: &mut Window, cx: &mut Context<Self>) {
+        if self.current == path {
+            return;
+        }
+
+        self.current = SharedString::from(path.to_string());
+
+        self.parse_markdown_from_text(false, window, cx);
+    }
+
+    fn parse_markdown_from_text(
+        &mut self,
+        wait_for_debounce: bool,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        if let Some(text) = get_docs(&self.current) {
+            self.parsing_markdown_task =
+                Some(self.parse_markdown_in_background(wait_for_debounce, text.into(), window, cx));
+        }
+    }
+
+    fn parse_markdown_in_background(
+        &mut self,
+        wait_for_debounce: bool,
+        text: SharedString,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) -> Task<Result<()>> {
+        let language_registry = self.language_registry.clone();
+
+        cx.spawn_in(window, async move |view, cx| {
+            if wait_for_debounce {
+                // Wait for the user to stop typing
+                cx.background_executor().timer(REPARSE_DEBOUNCE).await;
+            }
+
+            let parsing_task = cx.background_spawn(async move {
+                parse_markdown(&text, Some(PathBuf::from(".")), Some(language_registry)).await
+            });
+            let contents = parsing_task.await;
+            view.update(cx, move |view, cx| {
+                let markdown_blocks_count = contents.children.len();
+                view.contents = Some(contents);
+                let scroll_top = view.list_state.logical_scroll_top();
+                view.list_state.reset(markdown_blocks_count);
+                view.list_state.scroll_to(scroll_top);
+                cx.notify();
+            })
+        })
+    }
+
+    fn should_apply_padding_between(
+        current_block: &ParsedMarkdownElement,
+        next_block: Option<&ParsedMarkdownElement>,
+    ) -> bool {
+        !(current_block.is_list_item() && next_block.map(|b| b.is_list_item()).unwrap_or(false))
+    }
+
+    fn scroll_page_up(&mut self, _: &ScrollPageUp, _window: &mut Window, cx: &mut Context<Self>) {
+        let viewport_height = self.list_state.viewport_bounds().size.height;
+        if viewport_height.is_zero() {
+            return;
+        }
+
+        self.list_state.scroll_by(-viewport_height);
+        cx.notify();
+    }
+
+    fn scroll_page_down(
+        &mut self,
+        _: &ScrollPageDown,
+        _window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        let viewport_height = self.list_state.viewport_bounds().size.height;
+        if viewport_height.is_zero() {
+            return;
+        }
+
+        self.list_state.scroll_by(viewport_height);
+        cx.notify();
+    }
+
+    fn scroll_up(&mut self, _: &ScrollUp, window: &mut Window, cx: &mut Context<Self>) {
+        let scroll_top = self.list_state.logical_scroll_top();
+        if let Some(bounds) = self.list_state.bounds_for_item(scroll_top.item_ix) {
+            let item_height = bounds.size.height;
+            // Scroll no more than the rough equivalent of a large headline
+            let max_height = window.rem_size() * 2;
+            let scroll_height = min(item_height, max_height);
+            self.list_state.scroll_by(-scroll_height);
+        }
+        cx.notify();
+    }
+
+    fn scroll_down(&mut self, _: &ScrollDown, window: &mut Window, cx: &mut Context<Self>) {
+        let scroll_top = self.list_state.logical_scroll_top();
+        if let Some(bounds) = self.list_state.bounds_for_item(scroll_top.item_ix) {
+            let item_height = bounds.size.height;
+            // Scroll no more than the rough equivalent of a large headline
+            let max_height = window.rem_size() * 2;
+            let scroll_height = min(item_height, max_height);
+            self.list_state.scroll_by(scroll_height);
+        }
+        cx.notify();
+    }
+
+    fn scroll_up_by_item(
+        &mut self,
+        _: &ScrollUpByItem,
+        _window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        let scroll_top = self.list_state.logical_scroll_top();
+        if let Some(bounds) = self.list_state.bounds_for_item(scroll_top.item_ix) {
+            self.list_state.scroll_by(-bounds.size.height);
+        }
+        cx.notify();
+    }
+
+    fn scroll_down_by_item(
+        &mut self,
+        _: &ScrollDownByItem,
+        _window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        let scroll_top = self.list_state.logical_scroll_top();
+        if let Some(bounds) = self.list_state.bounds_for_item(scroll_top.item_ix) {
+            self.list_state.scroll_by(bounds.size.height);
+        }
+        cx.notify();
     }
 
     fn focus_in(&mut self, window: &mut Window, _cx: &mut Context<Self>) {
@@ -239,76 +394,50 @@ impl DocumentationView {
         let workspace_handle = workspace.weak_handle();
         let path = path.unwrap_or("SUMMARY.md".into());
         let path = path.strip_prefix("gram://docs/").unwrap_or(&path);
-        if let Some(text) = get_docs(&path) {
-            if let Some(existing) = workspace.item_of_type::<DocumentationView>(cx) {
-                let is_active = workspace
-                    .active_item(cx)
-                    .is_some_and(|item| item.item_id() == existing.item_id());
+        if let Some(existing) = workspace.item_of_type::<DocumentationView>(cx) {
+            let is_active = workspace
+                .active_item(cx)
+                .is_some_and(|item| item.item_id() == existing.item_id());
 
-                existing.update(cx, |this, cx| {
-                    this.update_text(path, text.into(), false, cx)
-                });
-                workspace.activate_item(&existing, true, !is_active, window, cx);
-            } else {
-                let view = cx.new(|cx| {
-                    DocumentationView::new(
-                        path,
-                        text.into(),
-                        workspace_handle,
-                        window,
-                        language_registry,
-                        cx,
-                    )
-                });
-                workspace.add_item_to_active_pane(Box::new(view), None, true, window, cx);
-            }
+            existing.update(cx, |this, cx| this.update_text(path, false, window, cx));
+            workspace.activate_item(&existing, true, !is_active, window, cx);
+        } else {
+            let view = cx.new(|cx| {
+                DocumentationView::new(path, workspace_handle, window, language_registry, cx)
+            });
+            workspace.add_item_to_active_pane(Box::new(view), None, true, window, cx);
         }
     }
 
     pub(crate) fn update_text(
         &mut self,
         path: &str,
-        text: SharedString,
         nav: bool,
+        window: &mut Window,
         cx: &mut Context<Self>,
     ) {
         if self.current != path {
             let current = self.current.clone();
-            self.current = SharedString::from(path.to_string());
             self.back.push(current);
             if !nav {
                 self.forward.clear();
             }
-            self.markdown =
-                cx.new(|cx| Markdown::new(text, Some(self.language_registry.clone()), None, cx));
+            self.set_path(path, window, cx);
             cx.notify();
         }
     }
 
-    pub(crate) fn go_back(&mut self, cx: &mut Context<Self>) {
+    pub(crate) fn go_back(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         if let Some(path) = self.back.pop() {
             let current = self.current.clone();
-            self.current.clone_from(&path);
             self.forward.push(current);
-            if let Some(text) = get_docs(&path) {
-                self.markdown = cx.new(|cx| {
-                    Markdown::new(
-                        SharedString::from(text),
-                        Some(self.language_registry.clone()),
-                        None,
-                        cx,
-                    )
-                });
-                cx.notify();
-            }
+            self.set_path(&path, window, cx);
         }
     }
 
-    pub(crate) fn go_forward(&mut self, cx: &mut Context<Self>) {
+    pub(crate) fn go_forward(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         if let Some(path) = self.forward.pop() {
-            if let Some(text) = get_docs(&path) {
-                self.update_text(&path, SharedString::from(text), true, cx);
-            }
+            self.set_path(&path, window, cx);
         }
     }
 }
@@ -334,6 +463,6 @@ impl Item for DocumentationView {
     type Event = EditorEvent;
 
     fn tab_content_text(&self, _detail: usize, _cx: &App) -> SharedString {
-        "Documentation".into()
+        self.current.clone()
     }
 }

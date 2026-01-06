@@ -37,6 +37,7 @@ impl CheckboxClickedEvent {
 }
 
 type CheckboxClickedCallback = Arc<Box<dyn Fn(&CheckboxClickedEvent, &mut Window, &mut App)>>;
+type LinkClickedCallback = Arc<Box<dyn Fn(Link, &mut Window, &mut App)>>;
 
 #[derive(Clone)]
 pub struct RenderContext {
@@ -57,6 +58,7 @@ pub struct RenderContext {
     syntax_theme: Arc<SyntaxTheme>,
     indent: usize,
     checkbox_clicked_callback: Option<CheckboxClickedCallback>,
+    link_clicked_callback: Option<LinkClickedCallback>,
     is_last_child: bool,
 }
 
@@ -94,6 +96,7 @@ impl RenderContext {
             code_block_background_color: theme.colors().surface_background,
             code_span_background_color: theme.colors().editor_document_highlight_read_background,
             checkbox_clicked_callback: None,
+            link_clicked_callback: None,
             is_last_child: false,
         }
     }
@@ -103,6 +106,14 @@ impl RenderContext {
         callback: impl Fn(&CheckboxClickedEvent, &mut Window, &mut App) + 'static,
     ) -> Self {
         self.checkbox_clicked_callback = Some(Arc::new(Box::new(callback)));
+        self
+    }
+
+    pub fn with_link_clicked_callback(
+        mut self,
+        callback: impl Fn(Link, &mut Window, &mut App) + 'static,
+    ) -> Self {
+        self.link_clicked_callback = Some(Arc::new(Box::new(callback)));
         self
     }
 
@@ -707,6 +718,7 @@ fn render_markdown_text(parsed_new: &MarkdownParagraph, cx: &mut RenderContext) 
                         link_ranges.push(range.clone());
                     }
                 }
+                let link_callback = cx.link_clicked_callback.clone();
                 let workspace = workspace_clone.clone();
                 let element = div()
                     .child(
@@ -729,23 +741,30 @@ fn render_markdown_text(parsed_new: &MarkdownParagraph, cx: &mut RenderContext) 
                         })
                         .on_click(
                             link_ranges,
-                            move |clicked_range_ix, window, cx| match &links[clicked_range_ix] {
-                                Link::Web { url } => cx.open_url(url),
-                                Link::Path { path, .. } => {
-                                    if let Some(workspace) = &workspace {
-                                        _ = workspace.update(cx, |workspace, cx| {
-                                            workspace
-                                                .open_abs_path(
-                                                    normalize_path(path.clone().as_path()),
-                                                    OpenOptions {
-                                                        visible: Some(OpenVisible::None),
-                                                        ..Default::default()
-                                                    },
-                                                    window,
-                                                    cx,
-                                                )
-                                                .detach();
-                                        });
+                            move |clicked_range_ix, window, cx| {
+                                let link = &links[clicked_range_ix];
+                                if let Some(callback) = link_callback.clone() {
+                                    callback(link.clone(), window, cx);
+                                } else {
+                                    match link {
+                                        Link::Web { url } => cx.open_url(url),
+                                        Link::Path { path, .. } => {
+                                            if let Some(workspace) = &workspace {
+                                                _ = workspace.update(cx, |workspace, cx| {
+                                                    workspace
+                                                        .open_abs_path(
+                                                            normalize_path(path.clone().as_path()),
+                                                            OpenOptions {
+                                                                visible: Some(OpenVisible::None),
+                                                                ..Default::default()
+                                                            },
+                                                            window,
+                                                            cx,
+                                                        )
+                                                        .detach();
+                                                });
+                                            }
+                                        }
                                     }
                                 }
                             },
@@ -803,32 +822,45 @@ fn render_markdown_image(image: &Image, cx: &mut RenderContext) -> AnyElement {
                 .into()
             }
         })
-        .on_click({
-            let link = image.link.clone();
-            move |_, window, cx| {
-                if window.modifiers().secondary() {
-                    match &link {
-                        Link::Web { url } => cx.open_url(url),
-                        Link::Path { path, .. } => {
-                            if let Some(workspace) = &workspace {
-                                _ = workspace.update(cx, |workspace, cx| {
-                                    workspace
-                                        .open_abs_path(
-                                            path.clone(),
-                                            OpenOptions {
-                                                visible: Some(OpenVisible::None),
-                                                ..Default::default()
-                                            },
-                                            window,
-                                            cx,
-                                        )
-                                        .detach();
-                                });
+        .when_some(cx.link_clicked_callback.clone(), |this, callback| {
+            this.on_click({
+                let link = image.link.clone();
+                move |_, window, cx| {
+                    if window.modifiers().secondary() {
+                        callback(link.clone(), window, cx);
+                    }
+                }
+            })
+        })
+        .when_none(&cx.link_clicked_callback, |this| {
+            this.on_click({
+                let link = image.link.clone();
+                move |_, window, cx| {
+                    if window.modifiers().secondary() {
+                        log::info!("Not calling the callback, why??");
+                        match &link {
+                            Link::Web { url } => cx.open_url(url),
+                            Link::Path { path, .. } => {
+                                if let Some(workspace) = &workspace {
+                                    _ = workspace.update(cx, |workspace, cx| {
+                                        workspace
+                                            .open_abs_path(
+                                                path.clone(),
+                                                OpenOptions {
+                                                    visible: Some(OpenVisible::None),
+                                                    ..Default::default()
+                                                },
+                                                window,
+                                                cx,
+                                            )
+                                            .detach();
+                                    });
+                                }
                             }
                         }
                     }
                 }
-            }
+            })
         })
         .into_any()
 }
