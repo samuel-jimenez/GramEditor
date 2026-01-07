@@ -26,6 +26,7 @@ members = [
     "crates/diagnostics",
     "crates/docs",
     "crates/editor",
+    "crates/encoding_selector",
     "crates/explorer_command_injector",
     "crates/extension",
     "crates/extension_api",
@@ -203,6 +204,7 @@ derive_refineable = { path = "crates/refineable/derive_refineable" }
 diagnostics = { path = "crates/diagnostics" }
 docs = { path = "crates/docs" }
 editor = { path = "crates/editor" }
+encoding_selector = { path = "crates/encoding_selector" }
 extension = { path = "crates/extension" }
 extension_host = { path = "crates/extension_host" }
 extensions_ui = { path = "crates/extensions_ui" }
