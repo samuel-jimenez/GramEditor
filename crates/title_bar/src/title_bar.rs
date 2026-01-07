@@ -530,8 +530,14 @@ impl TitleBar {
             .anchor(Corner::TopRight)
             .menu(move |window, cx| {
                 ContextMenu::build(window, cx, |menu, _, _cx| {
-                    menu.action("Settings", app_actions::OpenSettings.boxed_clone())
+                    menu.action("Documentation", app_actions::OpenDocs.boxed_clone())
+                        .separator()
+                        .action("Settings", app_actions::OpenSettings.boxed_clone())
                         .action("Keymap", Box::new(app_actions::OpenKeymap))
+                        .action(
+                            "Extensions",
+                            app_actions::Extensions::default().boxed_clone(),
+                        )
                         .action(
                             "Themes…",
                             app_actions::theme_selector::Toggle::default().boxed_clone(),
@@ -540,16 +546,12 @@ impl TitleBar {
                             "Icon Themes…",
                             app_actions::icon_theme_selector::Toggle::default().boxed_clone(),
                         )
-                        .action(
-                            "Extensions",
-                            app_actions::Extensions::default().boxed_clone(),
-                        )
                 })
                 .into()
             })
             .map(|this| {
                 this.trigger_with_tooltip(
-                    IconButton::new("user-menu", IconName::ChevronDown).icon_size(IconSize::Small),
+                    IconButton::new("user-menu", IconName::Sword).icon_size(IconSize::Small),
                     Tooltip::text("Toggle User Menu"),
                 )
             })
