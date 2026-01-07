@@ -19,12 +19,12 @@ use crate::{
     theme_preview::{ThemePreviewStyle, ThemePreviewTile},
 };
 
-const LIGHT_THEMES: [&str; 3] = ["One Light", "Melange Light", "Catppuccin Latte"];
-const DARK_THEMES: [&str; 3] = ["One Dark", "Melange Dark", "Catppuccin Mocha"];
+const LIGHT_THEMES: [&str; 3] = ["Rosé Pine Dawn", "Melange Light", "Ayu Dark"];
+const DARK_THEMES: [&str; 3] = ["Rosé Pine", "Melange Dark", "Ayu Light"];
 const FAMILY_NAMES: [SharedString; 3] = [
-    SharedString::new_static("One"),
+    SharedString::new_static("Rosé Pine"),
     SharedString::new_static("Melange"),
-    SharedString::new_static("Catppuccin"),
+    SharedString::new_static("Ayu"),
 ];
 
 fn get_theme_family_themes(theme_name: &str) -> Option<(&'static str, &'static str)> {
