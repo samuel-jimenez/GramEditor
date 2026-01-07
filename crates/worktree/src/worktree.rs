@@ -393,7 +393,7 @@ impl Worktree {
             None
         };
 
-        cx.new(move |cx: &mut Context<Worktree>| {
+        Ok(cx.new(move |cx: &mut Context<Worktree>| {
             let mut snapshot = LocalSnapshot {
                 ignores_by_parent_abs_path: Default::default(),
                 global_gitignore: Default::default(),
@@ -472,7 +472,7 @@ impl Worktree {
             };
             worktree.start_background_scanner(scan_requests_rx, path_prefixes_to_scan_rx, cx);
             Worktree::Local(worktree)
-        })
+        }))
     }
 
     pub fn remote(
@@ -925,7 +925,7 @@ impl Worktree {
                     cx,
                 ),
             ))
-        })??;
+        })?;
         Ok(proto::ProjectEntryResponse {
             entry: match &entry.await? {
                 CreatedEntry::Included(entry) => Some(entry.into()),
@@ -949,8 +949,9 @@ impl Worktree {
                     cx,
                 ),
             )
-        })?;
-        task.context("invalid entry")?.await?;
+        });
+        task.ok_or_else(|| anyhow::anyhow!("invalid entry"))?
+            .await?;
         Ok(proto::ProjectEntryResponse {
             entry: None,
             worktree_scan_id: scan_id as u64,
@@ -964,9 +965,10 @@ impl Worktree {
     ) -> Result<proto::ExpandProjectEntryResponse> {
         let task = this.update(&mut cx, |this, cx| {
             this.expand_entry(ProjectEntryId::from_proto(request.entry_id), cx)
-        })?;
-        task.context("no such entry")?.await?;
-        let scan_id = this.read_with(&cx, |this, _| this.scan_id())?;
+        });
+        task.ok_or_else(|| anyhow::anyhow!("no such entry"))?
+            .await?;
+        let scan_id = this.read_with(&cx, |this, _| this.scan_id());
         Ok(proto::ExpandProjectEntryResponse {
             worktree_scan_id: scan_id as u64,
         })
@@ -979,9 +981,10 @@ impl Worktree {
     ) -> Result<proto::ExpandAllForProjectEntryResponse> {
         let task = this.update(&mut cx, |this, cx| {
             this.expand_all_for_entry(ProjectEntryId::from_proto(request.entry_id), cx)
-        })?;
-        task.context("no such entry")?.await?;
-        let scan_id = this.read_with(&cx, |this, _| this.scan_id())?;
+        });
+        task.ok_or_else(|| anyhow::anyhow!("no such entry"))?
+            .await?;
+        let scan_id = this.read_with(&cx, |this, _| this.scan_id());
         Ok(proto::ExpandAllForProjectEntryResponse {
             worktree_scan_id: scan_id as u64,
         })
@@ -1128,8 +1131,7 @@ impl LocalWorktree {
                             this.update_abs_path_and_refresh(new_path, cx);
                         }
                     }
-                })
-                .ok();
+                });
             }
         });
         self._background_scanner_tasks = vec![background_scanner, scan_state_updater];
@@ -1696,7 +1698,7 @@ impl LocalWorktree {
                             .refresh_entries_for_paths(paths_to_refresh.clone()),
                     )
                 },
-            )??;
+            )?;
 
             cx.background_spawn(async move {
                 refresh.next().await;
@@ -1706,12 +1708,12 @@ impl LocalWorktree {
             .log_err();
 
             let this = this.upgrade().with_context(|| "Dropped worktree")?;
-            cx.read_entity(&this, |this, _| {
+            Ok(cx.read_entity(&this, |this, _| {
                 paths_to_refresh
                     .iter()
                     .filter_map(|path| Some(this.entry_for_path(path)?.id))
                     .collect()
-            })
+            }))
         })
     }
 

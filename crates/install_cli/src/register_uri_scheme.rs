@@ -10,6 +10,6 @@ actions!(
 );
 
 pub async fn register_uri_scheme(cx: &AsyncApp) -> anyhow::Result<()> {
-    cx.update(|cx| cx.register_url_scheme(GRAM_URL_SCHEME))?
+    cx.update(|cx| cx.register_url_scheme(GRAM_URL_SCHEME))
         .await
 }

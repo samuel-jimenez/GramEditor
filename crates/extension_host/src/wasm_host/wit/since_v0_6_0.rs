@@ -902,7 +902,7 @@ impl ExtensionImports for WasmState {
             }
             .boxed_local()
         })
-        .await?
+        .await
         .to_wasmtime_result()
     }
 

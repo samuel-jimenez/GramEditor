@@ -252,7 +252,7 @@ impl ToolchainStore {
                 RelPath::empty().into()
             };
             Ok(this.activate_toolchain(ProjectPath { worktree_id, path }, toolchain, cx))
-        })??
+        })?
         .await;
         Ok(proto::Ack {})
     }
@@ -274,7 +274,7 @@ impl ToolchainStore {
                     language_name,
                     cx,
                 )
-            })?
+            })
             .await;
 
         Ok(proto::ActiveToolchainResponse {
@@ -304,7 +304,7 @@ impl ToolchainStore {
                     language_name,
                     cx,
                 ))
-            })??
+            })?
             .await;
         let has_values = toolchains.is_some();
         let groups = if let Some(Toolchains { toolchains, .. }) = &toolchains {
@@ -362,7 +362,7 @@ impl ToolchainStore {
                 let language_name = LanguageName::from_proto(envelope.payload.language_name);
                 let path = PathBuf::from(envelope.payload.abs_path);
                 this.resolve_toolchain(path, language_name, cx)
-            })?
+            })
             .await;
         let response = match toolchain {
             Ok(toolchain) => {
@@ -521,9 +521,7 @@ impl LocalToolchainStore {
                     path: Arc::from(RelPath::empty()),
                     worktree_id,
                 });
-            let abs_path = worktree
-                .update(cx, |this, _| this.absolutize(&relative_path.path))
-                .ok()?;
+            let abs_path = worktree.update(cx, |this, _| this.absolutize(&relative_path.path));
 
             let project_env = environment
                 .update(cx, |environment, cx| {
@@ -533,7 +531,6 @@ impl LocalToolchainStore {
                         cx,
                     )
                 })
-                .ok()?
                 .await;
 
             cx.background_spawn(async move {
@@ -595,7 +592,7 @@ impl LocalToolchainStore {
                         path.as_path().into(),
                         cx,
                     )
-                })?
+                })
                 .await;
             cx.background_spawn(async move {
                 toolchain_lister

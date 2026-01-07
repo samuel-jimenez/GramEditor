@@ -1173,9 +1173,9 @@ impl QuickSearchDelegate {
         buffer: &Entity<Buffer>,
         ranges: &[Range<Anchor>],
         cx: &AsyncApp,
-    ) -> anyhow::Result<Vec<SearchMatch>> {
+    ) -> Vec<SearchMatch> {
         if ranges.is_empty() {
-            return Ok(Vec::new());
+            return Vec::new();
         }
 
         let buffer_data = buffer.read_with(cx, |buf, cx| {
@@ -1604,11 +1604,7 @@ impl PickerDelegate for QuickSearchDelegate {
                 for result in results {
                     match result {
                         SearchResult::Buffer { buffer, ranges } => {
-                            if let Ok(matches) =
-                                QuickSearchDelegate::process_search_result(&buffer, &ranges, cx)
-                            {
-                                batch_matches.extend(matches);
-                            }
+                            batch_matches.extend(QuickSearchDelegate::process_search_result(&buffer, &ranges, cx));
                         }
                         SearchResult::LimitReached => {
                             limit_reached = true;

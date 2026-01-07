@@ -293,7 +293,7 @@ pub async fn connect(
         cx.update_default_global(|pool: &mut ConnectionPool, cx| {
             pool.connect(connection_options.clone(), delegate.clone(), cx)
         })
-    })?
+    })
     .await
     .map_err(|e| e.cloned())
 }
@@ -321,7 +321,7 @@ impl RemoteClient {
                         "client",
                         remote_connection.has_wsl_interop(),
                     )
-                })?;
+                });
 
                 let path_style = remote_connection.path_style();
                 let this = cx.new(|_| Self {
@@ -330,7 +330,7 @@ impl RemoteClient {
                     connection_options: remote_connection.connection_options(),
                     path_style,
                     state: Some(State::Connecting),
-                })?;
+                });
 
                 let io_task = remote_connection.start_proxy(
                     unique_identifier,
@@ -393,7 +393,7 @@ impl RemoteClient {
                         multiplex_task,
                         heartbeat_task,
                     });
-                })?;
+                });
 
                 Ok(Some(this))
             });
@@ -550,7 +550,7 @@ impl RemoteClient {
                 let ssh_connection = cx
                     .update_global(|pool: &mut ConnectionPool, cx| {
                         pool.connect(connection_options, delegate.clone(), cx)
-                    })?
+                    })
                     .await
                     .map_err(|error| error.cloned())?;
 
@@ -892,7 +892,6 @@ impl RemoteClient {
                         panic!("missing test connection")
                     }
                 })
-                .unwrap()
                 .await
                 .unwrap();
 
@@ -1049,7 +1048,7 @@ impl ConnectionPool {
                                 Err(Arc::new(error))
                             }
                         }
-                    })?
+                    })
                 }
             })
             .shared();

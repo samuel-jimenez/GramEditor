@@ -218,7 +218,6 @@ impl ActiveToolchain {
                                 cx,
                             )
                         })
-                        .ok()?
                         .await;
                 }
 
