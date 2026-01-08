@@ -1,30 +1,57 @@
 # Toolchains
 
-Gram projects offer a dedicated UI for toolchain selection, which lets you pick a set of tools for working with a given language in a current project.
+The toolchain selection UI is used to pick from a set of tools when working with
+a given language in a current project.
 
-Imagine you're working with Python project, which has virtual environments that encapsulate a set of dependencies of your project along with a suitable interpreter to run it with. The language server has to know which virtual environment you're working with, as it uses it to understand your project's code.
-With toolchain selector, you don't need to spend time configuring your language server to point it at the right virtual environment directory—you can just select the right virtual environment (toolchain) from a dropdown.
+Imagine that you are working in a Python project, which has virtual environments
+that encapsulate a set of dependencies of your project along with a suitable
+interpreter to run it with. The language server has to know which virtual
+environment you are working with, as it uses the virtual environment to resolve
+dependencies and parse the code in the project.
 
-You can even select different toolchains for different subprojects within your Gram project. A definition of a subproject is language-specific.
+The toolchain selector UI is used to pick the correct virtual environment for
+your project.
 
-In [remote projects](./remote-development.md), you can use the toolchain selector to control the active toolchain on the SSH host.
+It's also possible to select different toolchains for different sub-projects
+within a Gram project. The exact definition of a sub-project depends on the
+language used.
 
-## Why do we need toolchains?
+In [remote projects](./remote-development.md), use the toolchain selector to
+control the active toolchain on the remote host.
 
-The active toolchain is relevant for launching language servers, which may need it to function properly—it may not be able to resolve dependencies, which in turn may make functionalities like "Go to definition" or "Code completions" unavailable.
+## Why are toolchains necessary?
 
-The active toolchain is also relevant when launching a shell in the terminal panel: some toolchains provide "activation scripts" for shells, which make those toolchains available in the shell environment for your convenience. Gram will run these activation scripts automatically when you create a new terminal.
+Language servers need to use the correct toolchain / virtual environment to
+function properly. If it cannot resolve dependencies, functionality like "Go to
+definition" or code completion may be unavailable.
 
-This also applies to [tasks](./tasks.md)—Gram tasks behave "as if" you opened a new terminal tab and ran a given task invocation yourself, which in turn means that Gram task execution is affected by the active toolchain and its activation script.
+If the toolchain provides an "activation script", the integrated terminal panel
+will invoke the script automatically so that the shell environment is set up
+correctly.
+
+This also applies to [tasks](./tasks.md). Tasks behave as if they were launched
+from a new terminal tab, so any activation script will be called before
+executing a task.
 
 ## Selecting toolchains
 
-The active toolchain (if there is one) is displayed in the status bar (on the right hand side). Click on it to access the toolchain selector—you can also use an action from a command palette ({#action toolchain::Select}).
+The active toolchain (if any) is displayed in the status bar, on the right hand
+side of the editor window. Clicking it open the toolchain selector.
+Alternatively, run the command {#action toolchain::Select} from the command
+palette.
 
-Gram will automatically infer a set of toolchains to choose from based on the project you're working with. A default will also be selected on your behalf on a best-effort basis when you open a project for the first time.
+The editor will automatically try to infer a set of toolchains to choose from. A
+default will also be selected on a best-effort basis when opening a project for
+the first time.
 
-The toolchain selection applies to a current subproject, which—depending on the structure of your Gram project—might be your whole project or just a subset of it. For example, if you have a monorepo with multiple subprojects, you might want to select a different toolchain for each subproject.
+Toolchain selection applies to the current subproject. This might be the whole
+project, or in the case of a monorepo with multiple subprojects it may apply to
+the current subproject only.
 
 ## Adding toolchains manually
 
-If automatic detection does not suffice for you, you can add toolchains manually. To do that, click on the "Add toolchain" button in the toolchain selector. From there you can provide a path to a toolchain and set a name of your liking for it.
+If the automatic detection fails to discover all toolchains you can add
+additional toolchains manually using the "Add toolchain" button in the toolchain
+selector UI.
+
+Provide a path to the toolchain and give it a descriptive name.

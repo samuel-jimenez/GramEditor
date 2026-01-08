@@ -7,6 +7,11 @@
 - [Uninstall](./uninstall.md)
 - [Troubleshooting](./troubleshooting.md)
 
+## Migrate
+
+- From [Zed](./migrate/zed.md)
+- From [VS Code](./migrate/vs-code.md)
+
 ## Configuration
 
 - [Configuring Gram](./configuring-gram.md)
@@ -60,10 +65,6 @@
 - [Debugger Extensions](./extensions/debugger-extensions.md)
 - [Theme Extensions](./extensions/themes.md)
 - [Icon Theme Extensions](./extensions/icon-themes.md)
-
-## Migrate
-
-- [VS Code](./migrate/vs-code.md)
 
 ## Language Support
 

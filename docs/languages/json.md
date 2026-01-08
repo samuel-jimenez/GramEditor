@@ -1,6 +1,6 @@
 # JSON
 
-JSON support is available natively in Gram.
+JSON is natively supported in the editor.
 
 - Tree-sitter: [tree-sitter/tree-sitter-json](https://github.com/tree-sitter/tree-sitter-json)
 - Language Server: [zed-industries/json-language-server](https://github.com/zed-industries/json-language-server)

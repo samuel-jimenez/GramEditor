@@ -1,7 +1,12 @@
 # Command Palette
 
-The Command Palette is the main way to access pretty much any functionality that's available in Gram. To open it, hit: {#kb command_palette::Toggle}.
+The Command Palette is the main way to access available functionality in the
+editor. To open it, hit: {#kb command_palette::Toggle}.
 
-Open the Command Palette and type in `new file`. You should see the list of commands being filtered down to `workspace: new file`. Hit return and you end up with a new buffer.
+The list of commands can be filtered by typing part of the command name to call.
+Once the correct command is selected, hit enter to run it.
 
-Any time you see instructions that include commands of the form `gram: ...` or `editor: ...` and so on that means you need to execute them in the Command Palette.
+Any time you see instructions that include commands of the form `gram: ...`,
+`editor: ...` or similar, you should be able to find and execute the command
+from the Command Palette. You can bind the command to a key combination in the
+[keymap editor](./key-bindings.md).

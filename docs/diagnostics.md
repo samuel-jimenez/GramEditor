@@ -1,20 +1,22 @@
 # Diagnostics
 
-Gram gets its diagnostics from the language servers and supports both push and pull variants of the LSP which makes it compatible with all existing language servers.
+Gram gets its diagnostics from the language servers and supports both push and
+pull variants of the LSP which should make it compatible with all existing
+language servers.
 
 # Regular diagnostics
 
-By default, Gram displays all diagnostics as underlined text in the editor and the scrollbar.
+By default, all diagnostics are displayed as underlined text in the editor and the scrollbar.
 
-Editor diagnostics could be filtered with the
+Editor diagnostics can be filtered using the editor setting:
 
 ```json [settings]
 "diagnostics_max_severity": null
 ```
 
-editor setting (possible values: `"off"`, `"error"`, `"warning"`, `"info"`, `"hint"`, `null` (default, all diagnostics)).
+Possible values: `"off"`, `"error"`, `"warning"`, `"info"`, `"hint"`, `null` (default, all diagnostics)
 
-The scrollbar ones are configured with the
+The scrollbar diagnostics are configured using
 
 ```json [settings]
 "scrollbar": {
@@ -22,14 +24,14 @@ The scrollbar ones are configured with the
 }
 ```
 
-configuration (possible values: `"none"`, `"error"`, `"warning"`, `"information"`, `"all"` (default))
+Possible values: `"none"`, `"error"`, `"warning"`, `"information"`, `"all"` (default)
 
-The diagnostics could be hovered to display a tooltip with full, rendered diagnostic message.
+The diagnostics can be hovered to display a tooltip with full, rendered diagnostic message.
 Or, `editor::GoToDiagnostic` and `editor::GoToPreviousDiagnostic` could be used to navigate between diagnostics in the editor, showing a popover for the currently active diagnostic.
 
 # Inline diagnostics (Error lens)
 
-Gram supports showing diagnostic as lens to the right of the code.
+It's possible to display diagnostics as a lens to the right of the code.
 This is disabled by default, but can either be temporarily turned on (or off) using the editor menu, or permanently, using the
 
 ```json [settings]
@@ -45,9 +47,7 @@ This is disabled by default, but can either be temporarily turned on (or off) us
 
 ## Project Panel
 
-Project panel can have its entries coloured based on the severity of the diagnostics in the file.
-
-To configure, use
+The project panel can have its entries coloured based on the severity of the diagnostics in the file:
 
 ```json [settings]
 "project_panel": {
@@ -55,11 +55,11 @@ To configure, use
 }
 ```
 
-configuration (possible values: `"off"`, `"errors"`, `"all"` (default))
+Possible values: `"off"`, `"errors"`, `"all"` (default)
 
 ## Editor tabs
 
-Similar to the project panel, editor tabs can be colorized with the
+Editor tabs can be coloured in the same way as project panel entries:
 
 ```json [settings]
 "tabs": {
@@ -67,4 +67,4 @@ Similar to the project panel, editor tabs can be colorized with the
 }
 ```
 
-configuration (possible values: `"off"` (default), `"errors"`, `"all"`)
+Possible values: `"off"` (default), `"errors"`, `"all"`

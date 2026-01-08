@@ -1,11 +1,7 @@
----
-description: Gram is a text editor that supports lots of Git features
-title: Gram Editor Git integration documentation
----
-
 # Git
 
-Gram currently offers a set of fundamental Git features, with support coming in the future for more advanced ones, like conflict resolution tools, line by line staging, and more.
+There is integrated support for working with git and git forges in the code
+editor.
 
 Here's an overview of all currently supported features:
 
@@ -21,19 +17,19 @@ Here's an overview of all currently supported features:
 
 ## Git Panel
 
-The Git Panel gives you a birds-eye view of the state of your working tree and of Git's staging area.
+The Git Panel provides a birds-eye view of the state of the working tree and staging area.
 
-You can open the Git Panel using {#action git_panel::ToggleFocus}, or by clicking the Git icon in the status bar.
+Open the Git Panel using {#action git_panel::ToggleFocus}, or by clicking the Git icon in the status bar.
 
-In the panel you can see the state of your project at a glance—which repository and branch are active, what files have changed and the current staging state of each file.
+The Git Panel shows the state of the project: Which repository and branch are active, what files have changed and the current staging state of each file.
 
-Gram monitors your repository so that changes you make on the command line are instantly reflected.
+Gram monitors the project repository, so any changes made within or outside the editor are instantly visible in the git panel.
 
 ### Configuration
 
-You can configure how Gram hard wraps commit messages with the `preferred-line-length` setting of the "Git Commit" language. The default is `72`, but it can be set to any number of characters `0` or more.
+Configure how the editor hard wraps commit messages with the `preferred-line-length` setting of the "Git Commit" language. The default is `72`, but it can be set to any number of characters, `0` or more.
 
-The Git Panel also allows configuring the `soft_wrap` setting to adjust how commit messages display while you are typing them in the Git Panel. The default setting is `editor_width`, however, `none`, `preferred_line_length`, and `bounded` are also options.
+The Git Panel also allows configuring the `soft_wrap` setting to adjust how commit messages display while typing them in the Git Panel. The default setting is `editor_width`, however, `none`, `preferred_line_length`, and `bounded` are also options.
 
 #### Example
 
@@ -48,17 +44,15 @@ The Git Panel also allows configuring the `soft_wrap` setting to adjust how comm
 
 ## Project Diff
 
-You can see all of the changes captured by Git in Gram by opening the Project Diff ({#kb git::Diff}), accessible via the {#action git::Diff} action in the Command Palette or the Git Panel.
+See all of the current changes by opening the Project Diff ({#kb git::Diff}), accessible via the {#action git::Diff} action in the Command Palette or the Git Panel.
 
-All of the changes displayed in the Project Diff behave exactly the same as any other multibuffer: they are all editable excerpts of files.
+All of the changes displayed in the Project Diff behave the same as any other multibuffer: they are all editable excerpts of files.
 
-You can stage or unstage each hunk as well as a whole file by hitting the buttons on the tab bar or their corresponding keybindings.
-
-<!-- Add media -->
+Stage or unstage each hunk as well as a whole file by hitting the buttons on the tab bar or their corresponding keybindings.
 
 ## Fetch, push, and pull
 
-Fetch, push, or pull from your Git repository in Gram via the buttons available on the Git Panel or via the Command Palette by looking at the respective actions: {#action git::Fetch}, {#action git::Push}, and {#action git::Pull}.
+Fetch, push, or pull from the Git repository in Gram via the buttons available on the Git Panel or via the Command Palette actions: {#action git::Fetch}, {#action git::Push}, and {#action git::Pull}.
 
 ## Staging Workflow
 
@@ -66,45 +60,42 @@ Gram has two primary staging workflows, using either the Project Diff or the pan
 
 ### Using the Project Diff
 
-In the Project Diff view, you can focus on each hunk and stage them individually by clicking on the tab bar buttons or via the keybindings {#action git::StageAndNext} ({#kb git::StageAndNext}).
+In the Project Diff view it's possible to focus on each hunk and stage them individually by clicking on the tab bar buttons or via the keybindings {#action git::StageAndNext} ({#kb git::StageAndNext}).
 
 Similarly, stage all hunks at the same time with the {#action git::StageAll} ({#kb git::StageAll}) keybinding and then immediately commit with {#action git::Commit} ({#kb git::Commit}).
 
 ### Using the Git Panel
 
-From the panel, you can simply type a commit message and hit the commit button, or {#action git::Commit}. This will automatically stage all tracked files (indicated by a `[·]` in the entry's checkbox) and commit them.
-
-<!-- Show a set of changes with default staged -->
+From the panel, simply type a commit message and hit the commit button, or {#action git::Commit}. This will automatically stage all tracked files (indicated by a `[·]` in the entry's checkbox) and commit them.
 
 Entries can be staged using each individual entry's checkbox. All changes can be staged using the button at the top of the panel, or {#action git::StageAll}.
 
-<!-- Add media -->
-
 ## Committing
 
-Gram offers two commit textareas:
+There are two ways to commit changes from within the editor:
 
-1. The first one is available right at the bottom of the Git Panel. Hitting {#kb git::Commit} immediately commits all of your staged changes.
-2. The second is available via the action {#action git::ExpandCommitEditor} or via hitting the {#kb git::ExpandCommitEditor} while focused in the Git Panel commit textarea.
+1. Using the button at the bottom of the Git Panel. Hitting {#kb git::Commit} immediately commits all of your staged changes.
+2. Invoke the action {#action git::ExpandCommitEditor} or use the keyboard shortcut {#kb git::ExpandCommitEditor} while focused on the Git Panel commit text area.
 
-### Undoing a Commit
+### Undo a commit
 
-As soon as you commit in Gram, in the Git Panel, you'll see a bar right under the commit textarea, which will show the recently submitted commit.
-In there, you can use the "Uncommit" button, which performs the `git reset HEADˆ--soft` command.
+As soon as you commit in Gram, in the Git Panel, you'll see a bar right under the commit textarea which will show the most recently submitted commit.
 
-### Configuring Commit Line Length
+In there, you can use the "Uncommit" button, which will run a command similar to `git reset HEADˆ --soft`.
 
-By default, Gram sets the commit line length to `72` but it can be configured in your local `settings.json` file.
+### Commit Line Length
 
-Find more information about setting the `preferred-line-length` in the [Configuration](#configuration) section.
+By default, the commit line length is set to `72`. It can be configured in `settings.json`.
+
+See `preferred-line-length` in the [Configuration](#configuration) section.
 
 ## Stashing
 
-Git stash allows you to temporarily save your uncommitted changes and revert your working directory to a clean state. This is particularly useful when you need to quickly switch branches or pull updates without committing incomplete work.
+Git stash allows you to temporarily save your uncommitted changes and return to a clean working directory. This is useful to quickly switch branches or pull updates without committing incomplete work.
 
 ### Creating Stashes
 
-To stash all your current changes, use the {#action git::StashAll} action. This will save both staged and unstaged changes to a new stash entry and clean your working directory.
+To stash all current changes, use the {#action git::StashAll} action. This will save both staged and unstaged changes to a new stash entry and set up a clean working directory.
 
 ### Managing Stashes
 

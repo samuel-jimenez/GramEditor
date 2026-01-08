@@ -1,6 +1,6 @@
 # Globs
 
-Gram supports the use of [glob](<https://en.wikipedia.org/wiki/Glob_(programming)>) patterns that are the formal name for Unix shell-style path matching wildcards like `*.md` or `docs/**/*.md` supported by sh, bash, zsh, etc. A glob is similar but distinct from a [regex (regular expression)](https://en.wikipedia.org/wiki/Regular_expression). In Gram these are commonly used when matching filenames.
+[Glob patterns](<https://en.wikipedia.org/wiki/Glob_(programming)>) is the formal name for Unix shell-style path matching wildcards like `*.md` or `docs/**/*.md` supported by sh, bash, zsh, etc. A glob is similar but distinct from a [regex (regular expression)](https://en.wikipedia.org/wiki/Regular_expression). In Gram these are commonly used when matching filenames.
 
 ## Glob Flavor
 
@@ -9,9 +9,9 @@ Gram uses two different rust crates for matching glob patterns:
 - [ignore crate](https://docs.rs/ignore/latest/ignore/) for matching glob patterns stored in `.gitignore` files
 - [glob crate](https://docs.rs/glob/latest/glob/) for matching file paths in Gram
 
-While simple expressions are portable across environments (e.g. running `ls *.py` or `*.tmp` in a gitignore) there is significant divergence in the support for and syntax of more advanced features varies (character classes, exclusions, `**`, etc) across implementations. For the rest of this document we will be describing globs as supported in Gram via the `glob` crate implementation. Please see [References](#references) below for documentation links for glob pattern syntax for `.gitignore`, shells and other programming languages.
+While simple expressions are portable across environments (e.g. running `ls *.py` or `*.tmp` in a gitignore) there is significant divergence in the support for and syntax of more advanced features varies (character classes, exclusions, `**`, etc) across implementations. The rest of this document will be describing globs as supported in Gram via the `glob` crate implementation. See [References](#references) below for documentation links for glob pattern syntax for `.gitignore`, shells and other programming languages.
 
-The `glob` crate is implemented entirely in rust and does not rely on the `glob` / `fnmatch` interfaces provided by your platforms libc. This means that globs in Gram should behave similarly with across platforms.
+The `glob` crate is implemented entirely in rust and does not rely on the `glob` / `fnmatch` interfaces provided by libc. This means that globs in Gram should behave similarly across platforms.
 
 ## Introduction
 
