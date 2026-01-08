@@ -789,6 +789,17 @@ fn handle_open_request(request: OpenRequest, app_state: Arc<AppState>, cx: &mut 
                 })
                 .detach_and_log_err(cx);
             }
+            OpenRequestKind::Keybinding { action } => {
+                cx.spawn(async move |cx| {
+                    let workspace =
+                        workspace::get_any_active_workspace(app_state, cx.clone()).await?;
+                    workspace.update(cx, |_, window, cx| {
+                        window
+                            .dispatch_action(Box::new(app_actions::ChangeKeybinding { action }), cx)
+                    })
+                })
+                .detach_and_log_err(cx);
+            }
             OpenRequestKind::Setting { setting_path } => {
                 // gram://settings/languages/$(language)/tab_size  - DONT SUPPORT
                 // gram://settings/languages/Rust/tab_size  - SUPPORT

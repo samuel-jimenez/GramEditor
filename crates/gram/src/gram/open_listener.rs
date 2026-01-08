@@ -64,6 +64,9 @@ pub enum OpenRequestKind {
     Docs {
         path: String,
     },
+    Keybinding {
+        action: String,
+    },
 }
 
 impl OpenRequest {
@@ -107,6 +110,14 @@ impl OpenRequest {
             } else if let Some(schema_path) = url.strip_prefix("gram://schemas/") {
                 this.kind = Some(OpenRequestKind::BuiltinJsonSchema {
                     schema_path: schema_path.to_string(),
+                });
+            } else if let Some(action) = url.strip_prefix("gram://kb/") {
+                this.kind = Some(OpenRequestKind::Keybinding {
+                    action: action.to_string(),
+                });
+            } else if let Some(action) = url.strip_prefix("gram://action/") {
+                this.kind = Some(OpenRequestKind::Keybinding {
+                    action: action.to_string(),
                 });
             } else if url == "gram://settings" || url == "gram://settings/" {
                 this.kind = Some(OpenRequestKind::Setting { setting_path: None });

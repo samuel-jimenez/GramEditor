@@ -3,12 +3,12 @@ use std::path::PathBuf;
 use std::{borrow::Cow, sync::Arc, time::Duration};
 
 use anyhow::Result;
-use app_actions::{OpenDocs, OpenDocsAt};
+use app_actions::{ChangeKeybinding, OpenDocs, OpenDocsAt, OpenGramUrl};
 use assets::Docs;
 use editor::EditorEvent;
 use gpui::{
-    Entity, EventEmitter, FocusHandle, Focusable, IsZero as _, ListState, RetainAllImageCache,
-    Task, WeakEntity, list,
+    Action, Entity, EventEmitter, FocusHandle, Focusable, IsZero as _, ListState,
+    RetainAllImageCache, Task, WeakEntity, list,
 };
 use language::LanguageRegistry;
 use markdown_preview::markdown_elements::{Link, ParsedMarkdown, ParsedMarkdownElement};
@@ -17,6 +17,7 @@ use markdown_preview::markdown_renderer::{RenderContext, render_markdown_block};
 use markdown_preview::{
     ScrollDown, ScrollDownByItem, ScrollPageDown, ScrollPageUp, ScrollUp, ScrollUpByItem,
 };
+use regex::Regex;
 use settings::Settings as _;
 use theme::ThemeSettings;
 use ui::{Tooltip, WithScrollbar as _, prelude::*};
@@ -109,7 +110,6 @@ impl Render for DocumentationView {
                             let mut render_cx =
                                 RenderContext::new(Some(this.workspace.clone()), window, cx)
                                     .with_link_clicked_callback(move |link: Link, window, cx| {
-                                        log::info!("link clicked! {:?}", link);
                                         match link {
                                             Link::Web { url } => {
                                                 open_doc_url(url.into(), window, cx)
@@ -181,7 +181,10 @@ pub fn open_doc_url(url: SharedString, window: &mut Window, cx: &mut App) {
         .strip_prefix("./")
         .map(|url| "gram://docs/".to_owned() + url)
         .unwrap_or(url);
-    let url = if !url.starts_with("http") && !url.starts_with("gram://") {
+    let url = if url.starts_with("#") {
+        // TODO: Anchor links are not supported yet
+        return;
+    } else if !url.starts_with("http") && !url.starts_with("gram://") {
         "gram://docs/".to_owned() + &url
     } else {
         url
@@ -193,6 +196,14 @@ pub fn open_doc_url(url: SharedString, window: &mut Window, cx: &mut App) {
     };
     if url.starts_with("gram://docs/") {
         window.dispatch_action(Box::new(OpenDocsAt { path: url }), cx);
+    } else if url.starts_with("gram://kb/") {
+        let action = url.strip_prefix("gram://kb/").unwrap().to_string();
+        window.dispatch_action(Box::new(ChangeKeybinding { action }), cx);
+    } else if url.starts_with("gram://action/") {
+        let action = url.strip_prefix("gram://action/").unwrap().to_string();
+        window.dispatch_action(Box::new(ChangeKeybinding { action }), cx);
+    } else if url.starts_with("gram://") {
+        window.dispatch_action(Box::new(OpenGramUrl { url }), cx);
     } else {
         cx.open_url(&url);
     }
@@ -281,6 +292,7 @@ impl DocumentationView {
         cx: &mut Context<Self>,
     ) -> Task<Result<()>> {
         let language_registry = self.language_registry.clone();
+        let actions = window.available_actions(cx);
 
         cx.spawn_in(window, async move |view, cx| {
             if wait_for_debounce {
@@ -289,6 +301,7 @@ impl DocumentationView {
             }
 
             let parsing_task = cx.background_spawn(async move {
+                let text = preprocess_text(&text, actions);
                 parse_markdown(&text, Some(PathBuf::new()), Some(language_registry)).await
             });
             let contents = parsing_task.await;
@@ -447,6 +460,26 @@ impl DocumentationView {
     }
 }
 
+fn preprocess_text(text: &str, actions: Vec<Box<dyn Action>>) -> String {
+    const TABLE_KEY: &str = "{#ACTIONS_TABLE#}";
+    let text = if text.contains(TABLE_KEY) {
+        let mut sorted: Vec<String> = actions
+            .into_iter()
+            .map(|a| format!("- [{}](gram://action/{})", a.name(), a.name()))
+            .collect::<Vec<_>>();
+        sorted.sort();
+        let table_re = Regex::new(r"\{#ACTIONS_TABLE#\}").unwrap();
+        table_re.replace_all(text, &sorted.join("\n"))
+    } else {
+        text.into()
+    };
+    let kb_re = Regex::new(r"\{\#kb\s+(\w+:+\w+)\s*\}").unwrap();
+    let action_re = Regex::new(r"\{\#action\s+(\w+:+\w+)\s*\}").unwrap();
+    let text = kb_re.replace_all(&text, "[${1}](gram://kb/${1})");
+    let text = action_re.replace_all(&text, "[${1}](gram://action/${1})");
+    text.to_string()
+}
+
 fn get_docs<'b>(path: &str) -> Option<Cow<'b, str>> {
     if let Some(text) = Docs::get(&path) {
         Some(match text.data {
@@ -468,6 +501,11 @@ impl Item for DocumentationView {
     type Event = EditorEvent;
 
     fn tab_content_text(&self, _detail: usize, _cx: &App) -> SharedString {
-        self.current.clone()
+        SharedString::from(
+            self.current
+                .strip_suffix(".md")
+                .unwrap_or(&self.current)
+                .to_string(),
+        )
     }
 }

@@ -146,7 +146,7 @@ impl RenderContext {
     ///
     /// We give padding between "This is a block quote."
     /// and "And this is the next paragraph."
-    fn with_common_p(&self, element: Div) -> Div {
+    pub fn with_common_p(&self, element: Div) -> Div {
         if self.indent > 0 && !self.is_last_child {
             element.pb(self.scaled_rems(0.75))
         } else {
@@ -674,6 +674,7 @@ fn render_markdown_text(parsed_new: &MarkdownParagraph, cx: &mut RenderContext) 
     let syntax_theme = cx.syntax_theme.clone();
     let workspace_clone = cx.workspace.clone();
     let code_span_bg_color = cx.code_span_background_color;
+
     let text_style = cx.text_style.clone();
     let link_color = cx.link_color;
 

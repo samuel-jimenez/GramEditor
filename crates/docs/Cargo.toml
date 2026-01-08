@@ -29,6 +29,7 @@ markdown.workspace = true
 markdown_preview.workspace = true
 project.workspace = true
 rand.workspace = true
+regex.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 settings.workspace = true
