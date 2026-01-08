@@ -3236,6 +3236,10 @@ impl language::File for File {
     fn path_style(&self, cx: &App) -> PathStyle {
         self.worktree.read(cx).path_style()
     }
+
+    fn can_open(&self) -> bool {
+        true
+    }
 }
 
 impl language::LocalFile for File {
