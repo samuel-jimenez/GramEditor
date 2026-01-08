@@ -301,8 +301,12 @@ impl DocumentationView {
             }
 
             let parsing_task = cx.background_spawn(async move {
-                let text = preprocess_text(&text, actions);
-                parse_markdown(&text, Some(PathBuf::new()), Some(language_registry)).await
+                if text.contains("{#") {
+                    let text = preprocess_text(&text, actions);
+                    parse_markdown(&text, Some(PathBuf::new()), Some(language_registry)).await
+                } else {
+                    parse_markdown(&text, Some(PathBuf::new()), Some(language_registry)).await
+                }
             });
             let contents = parsing_task.await;
             view.update(cx, move |view, cx| {
