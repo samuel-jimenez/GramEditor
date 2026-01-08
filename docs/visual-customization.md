@@ -1,14 +1,23 @@
 # Visual Customization
 
-Various aspects of Gram's visual layout can be configured via either the settings window or the `settings.json` file, which you can access via {#action gram::OpenSettings} ({#kb gram::OpenSettings}) and {#action gram::OpenSettingsFile} ({#kb gram::OpenSettingsFile}) respectively.
+Various aspects of Gram's visual layout can be configured via either the settings window or the `settings.json` file.
+
+These commands can be used to open the settings UI or file:
+
+- {#action gram::OpenSettings} ({#kb gram::OpenSettings})
+- {#action gram::OpenSettingsFile} ({#kb gram::OpenSettingsFile})
 
 See [Configuring Gram](./configuring-gram.md) for additional information and other non-visual settings.
 
 ## Themes
 
-You can install many [themes](./themes.md) and [icon themes](./icon-themes.md) in form of extensions by running {#action gram::Extensions} from the command palette.
+[Themes](./themes.md) and [Icon themes](./icon-themes.md) can be installed as extensions. Most Zed extension themes and icon themes should be compatible.
 
-You can preview/choose amongst your installed themes and icon themes with {#action theme_selector::Toggle} ({#kb theme_selector::Toggle}) and {#action icon_theme_selector::Toggle} which will modify the following settings:
+Command: {#action gram::Extensions}.
+
+Preview and choose the current theme using the theme selectors: {#action theme_selector::Toggle} ({#kb theme_selector::Toggle}) and {#action icon_theme_selector::Toggle}.
+
+The selectors will modify these settings:
 
 ```json [settings]
 {
@@ -17,7 +26,7 @@ You can preview/choose amongst your installed themes and icon themes with {#acti
 }
 ```
 
-If you would like to use distinct themes for light mode/dark mode that can be set with:
+Distinct themes for light mode/dark mode can be set like this:
 
 ```json [settings]
 {
@@ -40,7 +49,7 @@ If you would like to use distinct themes for light mode/dark mode that can be se
 
 ```json [settings]
   // UI Font. Use ".SystemUIFont" to use the default system font (SF Pro on macOS),
-  // or ".GramSans" for the bundled default (currently IBM Plex)
+  // or ".GramSans" for the bundled default.
   "ui_font_family": ".SystemUIFont",
   "ui_font_weight": 400, // Font weight in standard CSS units from 100 to 900.
   "ui_font_size": 16,
@@ -64,9 +73,8 @@ If you would like to use distinct themes for light mode/dark mode that can be se
 
 ### Font ligatures
 
-By default Gram enable font ligatures which will visually combines certain adjacent characters.
+Font ligatures visually combine certain adjacent characters. For example, `=>` is displayed as `→` and `!=` as `≠`.
 
-For example `=>` will be displayed as `→` and `!=` will be `≠`.
 This is purely cosmetic and the individual characters remain unchanged.
 
 To disable this behavior use:
@@ -413,7 +421,7 @@ TBD: Centered layout related settings
 
 ## Project Panel
 
-Project panel can be shown/hidden with {#action project_panel::ToggleFocus} ({#kb project_panel::ToggleFocus}) or with {#action pane::RevealInProjectPanel} ({#kb pane::RevealInProjectPanel}).
+The project panel can be shown/hidden using {#action project_panel::ToggleFocus} ({#kb project_panel::ToggleFocus}) or {#action pane::RevealInProjectPanel} ({#kb pane::RevealInProjectPanel}).
 
 ```json [settings]
   // Project Panel Settings

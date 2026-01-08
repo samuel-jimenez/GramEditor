@@ -1,24 +1,16 @@
 # Vim Mode
 
-Gram includes a Vim emulation layer known as "vim mode". On this page, you will learn how to turn Gram's vim mode on or off, what tools and commands Gram provides to help you navigate and edit your code, and generally how to make the most of vim mode in Gram.
+Gram includes an emulation of Vim mode (modal editing). To learn more about Vim and modal editing, see the [Vim documentation](https://www.vim.org/docs.php).
 
-You'll learn how to:
-
-- Understand the core differences between Gram's vim mode and traditional Vim
-- Enable or disable vim mode
-- Make the most of Gram-specific features within vim mode
-- Customize vim mode key bindings
-- Configure vim mode settings
-
-Whether you're new to vim mode or an experienced Vim user looking to optimize your Gram experience, this guide will help you harness the full power of modal editing in Gram.
+Full compatibility is impossible, but many of the basic features of Vim are supported as well as some features of various vim plugins.
 
 ## Gram's vim mode design
 
-Vim mode tries to offer a familiar experience to Vim users: it replicates the behavior of motions and commands precisely when it makes sense and uses Gram-specific functionality to provide an editing experience that "just works" without requiring configuration on your part.
+The Gram Vim mode tries to offer a familiar experience to Vim users: it replicates the behavior of motions and commands precisely when it makes sense and uses Gram-specific functionality where appropriate.
 
 This includes support for semantic navigation, multiple cursors, or other features usually provided by plugins like surrounding text.
 
-So, Gram's vim mode does not replicate Vim one-to-one, but it meshes Vim's modal design with Gram's modern features to provide a more fluid experience. It's also configurable, so you can add your own key bindings or override the defaults.
+So, Gram's vim mode does not replicate Vim one-to-one, but meshes Vim's modal design with Gram's extended feature set. It's also possible to add additional key bindings or override the defaults.
 
 ### Core differences
 
@@ -27,17 +19,17 @@ There are four types of features in vim mode that use Gram's core functionality,
 1. **Motions**: vim mode uses Gram's semantic parsing to tune the behavior of motions per language. For example, in Rust, jumping to matching bracket with `%` works with the pipe character `|`. In JavaScript, `w` considers `$` to be a word character.
 2. **Visual block selections**: vim mode uses Gram's multiple cursor to emulate visual block selections, making block selections a lot more flexible. For example, anything you insert after a block selection updates on every line in real-time, and you can add or remove cursors anytime.
 3. **Macros**: vim mode uses Gram's recording system for vim macros. So, you can capture and replay more complex actions, like autocompletion.
-4. **Search and replace**: vim mode uses Gram's search system, so, the syntax for regular expressions is slightly different compared to Vim. [Head to the Regex differences section](#regex-differences) for details.
+4. **Search and replace**: vim mode uses Gram's search system, so, the syntax for regular expressions is slightly different compared to Vim. See the [Regex differences](#regex-differences) section for details.
 
-> **Note:** The foundations of Gram's vim mode should already cover many use cases, and we're always looking to improve it. If you find missing features that you rely on in your workflow, please [file an issue on GitHub](https://github.com/zed-industries/zed/issues).
+The foundations of Gram's vim mode should already cover many use cases, but patches to add features or additional functionality is always welcome.
 
 ## Enabling and disabling vim mode
 
-When you first open Gram, you'll see a checkbox on the welcome screen that allows you to enable vim mode.
+Vim mode can be enabled from the Onboarding screen shown when first installing the editor.
 
-If you missed this, you can toggle vim mode on or off anytime by opening the command palette and using the workspace command `toggle vim mode`.
+Later, vim mode can be toggled on or off at any time using the command {#action workspace::ToggleVimMode}.
 
-> **Note**: This command toggles the following property in your user settings:
+> **Note**: This command toggles the following property in `settings.json`:
 >
 > ```json [settings]
 > {
@@ -47,13 +39,13 @@ If you missed this, you can toggle vim mode on or off anytime by opening the com
 
 ## Gram-specific features
 
-Gram is built on a modern foundation that (among other things) uses Tree-sitter and language servers to understand the content of the file you're editing and supports multiple cursors out of the box.
+Gram uses Tree-sitter and the language server protocol to understand the structure of files and supports multiple cursors out of the box.
 
-Vim mode has several "core Gram" key bindings that will help you make the most of Gram's specific feature set.
+Vim mode has several "core Gram" key bindings that will help make the most of Gram's specific feature set.
 
-### Language server
+### Language server (LSP)
 
-The following commands use the language server to help you navigate and refactor your code.
+The following commands use a language server (if available) to help navigate and refactor code semantically.
 
 | Command                                  | Default Shortcut |
 | ---------------------------------------- | ---------------- |
@@ -84,7 +76,7 @@ The following commands use the language server to help you navigate and refactor
 
 ### Tree-sitter
 
-Tree-sitter is a powerful tool that Gram uses to understand the structure of your code. Gram provides motions that change the current cursor position, and text objects that can be used as the target of actions.
+[Tree-sitter](https://tree-sitter.github.io/tree-sitter/) is an open source project independent from Gram which Gram uses to understand the structure of code, and which supports many programming languages. Gram provides motions that change the current cursor position, and text objects that can be used as the target of actions.
 
 | Command                         | Default Shortcut            |
 | ------------------------------- | --------------------------- |
@@ -122,7 +114,8 @@ per language.
 
 ### Multi cursor
 
-These commands help you manage multiple cursors in Gram.
+Vim does not support multiple cursors out of the box, but these commands can be
+used in Gram to manipulate them.
 
 | Command                                                      | Default Shortcut |
 | ------------------------------------------------------------ | ---------------- |
@@ -146,7 +139,7 @@ These commands open new panes or jump to specific panes.
 
 ### In insert mode
 
-The following commands help you bring up Gram's completion menu.
+The following commands control Gram's completion menu.
 
 | Command                                                                      | Default Shortcut |
 | ---------------------------------------------------------------------------- | ---------------- |
@@ -156,17 +149,17 @@ The following commands help you bring up Gram's completion menu.
 
 ### Supported plugins
 
-Gram's vim mode includes some features that are usually provided by very popular plugins in the Vim ecosystem:
+Gram's vim mode includes some features that are usually provided by popular plugins in the Vim ecosystem:
 
-- You can surround text objects with `ys` (yank surround), change surrounding with `cs`, and delete surrounding with `ds`.
-- You can comment and uncomment selections with `gc` in visual mode and `gcc` in normal mode.
+- Surround text objects with `ys` (yank surround), change surrounding with `cs`, and delete surrounding with `ds`.
+- Comment and uncomment selections with `gc` in visual mode and `gcc` in normal mode.
 - The project panel supports many shortcuts modeled after the Vim plugin `netrw`: navigation with `hjkl`, open file with `o`, open file in a new tab with `t`, etc.
-- You can add key bindings to your keymap to navigate "camelCase" names. [Head down to the Optional key bindings](#optional-key-bindings) section to learn how.
-- You can use `gR` to do [ReplaceWithRegister](https://github.com/vim-scripts/ReplaceWithRegister).
-- You can use `cx` for [vim-exchange](https://github.com/tommcdo/vim-exchange) functionality. Note that it does not have a default binding in visual mode, but you can add one to your keymap (refer to the [optional key bindings](#optional-key-bindings) section).
-- You can navigate to indent depths relative to your cursor with the [indent wise](https://github.com/jeetsukumaran/vim-indentwise) plugin `[-`, `]-`, `[+`, `]+`, `[=`, `]=`.
-- You can select quoted text with AnyQuotes and bracketed text with AnyBrackets text objects. Gram also provides MiniQuotes and MiniBrackets which offer alternative selection behavior based on the [mini.ai](https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-ai.md) Neovim plugin. See the [Quote and Bracket text objects](#quote-and-bracket-text-objects) section below for details.
-- You can configure AnyQuotes, AnyBrackets, MiniQuotes, and MiniBrackets text objects for selecting quoted and bracketed text using different selection strategies. See the [Any Bracket Functionality](#any-bracket-functionality) section below for details.
+- It's possible to add key bindings to your keymap to navigate "camelCase" names. See the [optional key bindings](#optional-key-bindings) section to learn how.
+- Use `gR` to do [ReplaceWithRegister](https://github.com/vim-scripts/ReplaceWithRegister).
+- Use `cx` for [vim-exchange](https://github.com/tommcdo/vim-exchange) functionality. Note that it does not have a default binding in visual mode, but you can add one to your keymap (refer to the [optional key bindings](#optional-key-bindings) section).
+- Navigate to indent depths relative to your cursor with the [indent wise](https://github.com/jeetsukumaran/vim-indentwise) plugin `[-`, `]-`, `[+`, `]+`, `[=`, `]=`.
+- Select quoted text with AnyQuotes and bracketed text with AnyBrackets text objects. Gram also provides MiniQuotes and MiniBrackets which offer alternative selection behavior based on the [mini.ai](https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-ai.md) Neovim plugin. See the [Quote and Bracket text objects](#quote-and-bracket-text-objects) section below for details.
+- It's possible to configure AnyQuotes, AnyBrackets, MiniQuotes, and MiniBrackets text objects for selecting quoted and bracketed text using different selection strategies. See the [Any Bracket Functionality](#any-bracket-functionality) section below for details.
 
 ### Any Bracket Functionality
 
@@ -245,7 +238,7 @@ Vim mode allows you to open Gram's command palette with `:`. You can then type t
 
 Below, you'll find tables listing the commands you can use in the command palette. We put optional characters in square brackets to indicate that you can omit them.
 
-> **Note**: We don't emulate the full power of Vim's command line yet. In particular, commands currently do not support arguments. Please [file issues on GitHub](https://github.com/zed-industries/zed) as you find things that are missing from the command palette.
+> **Note**: Gram does not emulate the full power of Vim's command line yet. Commands currently do not support arguments, and full command history is not available.
 
 ### File and window management
 

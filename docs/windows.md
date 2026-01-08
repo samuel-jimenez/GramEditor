@@ -2,14 +2,14 @@
 
 ## Installing Gram
 
-To install, you can build Gram [from source](gram://docs/development/windows).
+Currently, Gram can only be installed on Windows by building [from source](gram://docs/development/windows).
 
 ## Uninstall
 
 - Installed via installer: Use `Settings` → `Apps` → `Installed apps`, search for Gram, and click Uninstall.
 - Built from source: Remove the build output directory you created (e.g., your target/install folder).
 
-Your settings and extensions live in your user profile. When uninstalling, you can choose to keep or remove them.
+Settings and extensions are stored in your user profile. When uninstalling, you can choose to keep or remove them.
 
 ## Remote Development (SSH)
 
