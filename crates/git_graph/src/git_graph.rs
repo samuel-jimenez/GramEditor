@@ -722,7 +722,7 @@ impl GitGraph {
         range: Range<usize>,
         _window: &mut Window,
         cx: &mut Context<Self>,
-    ) -> Vec<[AnyElement; 4]> {
+    ) -> Vec<Vec<AnyElement>> {
         let repository = self
             .project
             .read_with(cx, |project, cx| project.active_repository(cx));
@@ -749,7 +749,7 @@ impl GitGraph {
                 let Some((commit, repository)) =
                     self.graph_data.commits.get(idx).zip(repository.as_ref())
                 else {
-                    return [
+                    return vec![
                         div().h(row_height).into_any_element(),
                         div().h(row_height).into_any_element(),
                         div().h(row_height).into_any_element(),
@@ -788,7 +788,7 @@ impl GitGraph {
                     Color::Muted
                 };
 
-                [
+                vec![
                     div()
                         .id(ElementId::NamedInteger("commit-subject".into(), idx as u64))
                         .overflow_hidden()
@@ -1518,10 +1518,10 @@ impl Render for GitGraph {
                     let selected_entry_idx = self.selected_entry_idx;
                     let weak_self = cx.weak_entity();
                     div().flex_1().size_full().child(
-                        Table::new()
+                        Table::new(4)
                             .interactable(&self.table_interaction_state)
                             .hide_row_borders()
-                            .header([
+                            .header(vec![
                                 Label::new("Description")
                                     .color(Color::Muted)
                                     .into_any_element(),
@@ -1529,12 +1529,15 @@ impl Render for GitGraph {
                                 Label::new("Author").color(Color::Muted).into_any_element(),
                                 Label::new("Commit").color(Color::Muted).into_any_element(),
                             ])
-                            .column_widths([
-                                DefiniteLength::Fraction(description_width_fraction),
-                                DefiniteLength::Fraction(date_width_fraction),
-                                DefiniteLength::Fraction(author_width_fraction),
-                                DefiniteLength::Fraction(commit_width_fraction),
-                            ])
+                            .column_widths(
+                                [
+                                    DefiniteLength::Fraction(description_width_fraction),
+                                    DefiniteLength::Fraction(date_width_fraction),
+                                    DefiniteLength::Fraction(author_width_fraction),
+                                    DefiniteLength::Fraction(commit_width_fraction),
+                                ]
+                                .to_vec(),
+                            )
                             .map_row(move |(index, row), _window, cx| {
                                 let is_selected = selected_entry_idx == Some(index);
                                 let weak = weak_self.clone();
