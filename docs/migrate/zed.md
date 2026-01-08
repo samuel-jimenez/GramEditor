@@ -1,6 +1,6 @@
 # Migrating from Zed to Gram
 
-Gram is a fork of the Zed code editor made roughly around the version `0.218`.
+Gram is a fork of the Zed code editor made roughly around the version `0.217`.
 From there, a lot of "features" have been stripped out:
 
 - All telemetry was removed
