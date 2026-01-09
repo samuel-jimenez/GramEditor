@@ -1,5 +1,8 @@
 # TODO
 
+- Rename all .json files that may contain comments to .jsonc
+- Fix the settings so the LSP never tries to format .json files as .jsonc
+
 - Suggestion from lobste.rs comment for zed, we can fix this:
 
   > A tiny error in code marks massive amounts of code with yellow/red wiggly underlines.
