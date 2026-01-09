@@ -1294,6 +1294,9 @@ fn build_command(
         args.push(format!("{local_port}:{host}:{remote_port}"));
     }
 
+    // -q suppresses the "Connection to ... closed." message that SSH prints when
+    // the connection terminates with -t (pseudo-terminal allocation)
+    args.push("-q".into());
     args.push("-t".into());
     args.push(exec);
     Ok(CommandTemplate {
@@ -1333,6 +1336,7 @@ mod tests {
             [
                 "-p",
                 "2222",
+                "-q",
                 "-t",
                 "cd \"$HOME/work\" && exec env INPUT_VA=val remote_program arg1 arg2"
             ]
@@ -1365,6 +1369,7 @@ mod tests {
                 "2222",
                 "-L",
                 "1:foo:2",
+                "-q",
                 "-t",
                 "cd && exec env INPUT_VA=val /bin/fish -l"
             ]
