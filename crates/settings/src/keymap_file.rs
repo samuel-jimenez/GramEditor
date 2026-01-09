@@ -15,7 +15,6 @@ use util::ResultExt as _;
 use util::{
     asset_str,
     markdown::{MarkdownEscaped, MarkdownInlineCode, MarkdownString},
-    schemars::AllowTrailingCommas,
 };
 
 use crate::SettingsAssets;
@@ -454,9 +453,7 @@ impl KeymapFile {
     /// Creates a JSON schema generator, suitable for generating json schemas
     /// for actions
     pub fn action_schema_generator() -> schemars::SchemaGenerator {
-        schemars::generate::SchemaSettings::draft2019_09()
-            .with_transform(AllowTrailingCommas)
-            .into_generator()
+        schemars::generate::SchemaSettings::draft2019_09().into_generator()
     }
 
     pub fn generate_json_schema_for_registered_actions(cx: &mut App) -> Value {

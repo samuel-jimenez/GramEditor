@@ -25,7 +25,7 @@ use std::{
 use util::{
     ResultExt as _,
     rel_path::RelPath,
-    schemars::{AllowTrailingCommas, DefaultDenyUnknownFields, replace_subschema},
+    schemars::{DefaultDenyUnknownFields, replace_subschema},
 };
 
 pub type EditorconfigProperties = ec4rs::Properties;
@@ -1020,7 +1020,6 @@ impl SettingsStore {
     pub fn json_schema(&self, params: &SettingsJsonSchemaParams) -> Value {
         let mut generator = schemars::generate::SchemaSettings::draft2019_09()
             .with_transform(DefaultDenyUnknownFields)
-            .with_transform(AllowTrailingCommas)
             .into_generator();
 
         UserSettingsContent::json_schema(&mut generator);
