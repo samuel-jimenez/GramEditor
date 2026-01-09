@@ -6,7 +6,7 @@ use gpui::{App, AsyncApp, BorrowAppContext as _, Entity, Task, WeakEntity};
 use language::{LanguageRegistry, LspAdapterDelegate, language_settings::all_language_settings};
 use project::{LspStore, lsp_store::LocalLspAdapterDelegate};
 use settings::LSP_SETTINGS_SCHEMA_URL_PREFIX;
-use util::schemars::{AllowTrailingCommas, DefaultDenyUnknownFields};
+use util::schemars::DefaultDenyUnknownFields;
 
 // Origin: https://github.com/SchemaStore/schemastore
 const TSCONFIG_SCHEMA: &str = include_str!("schemas/tsconfig.json");
@@ -340,7 +340,6 @@ fn package_json_schema() -> serde_json::Value {
 fn jsonc_schema() -> serde_json::Value {
     let generator = schemars::generate::SchemaSettings::draft2019_09()
         .with_transform(DefaultDenyUnknownFields)
-        .with_transform(AllowTrailingCommas)
         .into_generator();
     let meta_schema = generator
         .settings()
