@@ -42,7 +42,7 @@ use crate::{
 
 use settings_json::{infer_json_indent_size, parse_json_with_comments, update_value_in_json_text};
 
-pub const LSP_SETTINGS_SCHEMA_URL_PREFIX: &str = "zed://schemas/settings/lsp/";
+pub const LSP_SETTINGS_SCHEMA_URL_PREFIX: &str = "gram://schemas/settings/lsp/";
 
 pub trait SettingsKey: 'static + Send + Sync {
     /// The name of a key within the JSON file from which this setting should
@@ -2326,6 +2326,9 @@ mod tests {
             .as_str()
             .unwrap();
 
-        assert_eq!(init_options_ref, "zed://schemas/settings/lsp/rust-analyzer");
+        assert_eq!(
+            init_options_ref,
+            "gram://schemas/settings/lsp/rust-analyzer"
+        );
     }
 }
