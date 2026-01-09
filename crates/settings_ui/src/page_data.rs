@@ -5235,7 +5235,7 @@ pub(crate) fn settings_data(cx: &App) -> Vec<SettingsPage> {
                     metadata: None,
                     files: USER,
                 }),
-                // todo(settings_ui): Figure out the right default for this value in default.json
+                // todo(settings_ui): Figure out the right default for this value in default.jsonc
                 SettingsPageItem::SettingItem(SettingItem {
                     title: "Debounce",
                     description: "Debounce threshold in milliseconds after which changes are reflected in the Git gutter.",

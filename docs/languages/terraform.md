@@ -11,9 +11,9 @@ Terraform support is available through the [Terraform extension](https://github.
 TBD: Add example using `rootModulePaths` to match upstream example https://github.com/hashicorp/terraform-ls/blob/main/docs/SETTINGS.md#vs-code
 -->
 
-The Terraform language server can be configured in your `settings.json`, e.g.:
+The Terraform language server can be configured in your `settings.jsonc`, e.g.:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "terraform-ls": {

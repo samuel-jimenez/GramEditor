@@ -415,12 +415,12 @@ fn init_renderers(cx: &mut App) {
                     settings_window,
                     item,
                     settings_file,
-                    Button::new("open-in-settings-file", "Edit in settings.json")
+                    Button::new("open-in-settings-file", "Edit in settings.jsonc")
                         .style(ButtonStyle::Outlined)
                         .size(ButtonSize::Medium)
                         .tab_index(0_isize)
                         .tooltip(Tooltip::for_action_title_in(
-                            "Edit in settings.json",
+                            "Edit in settings.jsonc",
                             &OpenCurrentFile,
                             &settings_window.focus_handle,
                         ))
@@ -1245,8 +1245,8 @@ struct SubPageLink {
     description: Option<SharedString>,
     /// See [`SettingField.json_path`]
     json_path: Option<&'static str>,
-    /// Whether or not the settings in this sub page are configurable in settings.json
-    /// Removes the "Edit in settings.json" button from the page.
+    /// Whether or not the settings in this sub page are configurable in settings.jsonc
+    /// Removes the "Edit in settings.jsonc" button from the page.
     in_json: bool,
     files: FileMask,
     render: Arc<
@@ -2262,11 +2262,11 @@ impl SettingsWindow {
                     }),
             )
             .child(
-                Button::new(edit_in_json_id, "Edit in settings.json")
+                Button::new(edit_in_json_id, "Edit in settings.jsonc")
                     .tab_index(0_isize)
                     .style(ButtonStyle::OutlinedGhost)
                     .tooltip(Tooltip::for_action_title_in(
-                        "Edit in settings.json",
+                        "Edit in settings.jsonc",
                         &OpenCurrentFile,
                         &self.focus_handle,
                     ))
@@ -2303,7 +2303,7 @@ impl SettingsWindow {
     //  Reconsider this after preview launch
     // fn file_location_str(&self) -> String {
     //     match &self.current_file {
-    //         SettingsUiFile::User => "settings.json".to_string(),
+    //         SettingsUiFile::User => "settings.jsonc".to_string(),
     //         SettingsUiFile::Project((worktree_id, path)) => self
     //             .worktree_root_dirs
     //             .get(&worktree_id)
@@ -2972,11 +2972,11 @@ impl SettingsWindow {
                         .is_none_or(|sub_page| sub_page.link.in_json),
                     |this| {
                         this.child(
-                            Button::new("open-in-settings-file", "Edit in settings.json")
+                            Button::new("open-in-settings-file", "Edit in settings.jsonc")
                                 .tab_index(0_isize)
                                 .style(ButtonStyle::OutlinedGhost)
                                 .tooltip(Tooltip::for_action_title_in(
-                                    "Edit in settings.json",
+                                    "Edit in settings.jsonc",
                                     &OpenCurrentFile,
                                     &self.focus_handle,
                                 ))
@@ -3013,7 +3013,7 @@ impl SettingsWindow {
                     )
                     .action_slot(
                         div().pr_1().pb_1().child(
-                            Button::new("fix-in-json", "Fix in settings.json")
+                            Button::new("fix-in-json", "Fix in settings.jsonc")
                                 .tab_index(0_isize)
                                 .style(ButtonStyle::Tinted(ui::TintColor::Warning))
                                 .on_click(cx.listener(|this, _, window, cx| {

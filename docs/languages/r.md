@@ -58,7 +58,7 @@ Ensure that you have installed both the [ocsmit/zed-r](https://github.com/ocsmit
 
 Enable Air in your `settings.json`:
 
-```json [settings]
+```jsonc
 {
   "languages": {
     "R": {
@@ -70,7 +70,7 @@ Enable Air in your `settings.json`:
 
 If you use the `"r_language_server"` from `REditorSupport/languageserver`, but would still like to use Air for formatting, use the following configuration:
 
-```json [settings]
+```jsonc
 {
   "languages": {
     "R": {
@@ -110,7 +110,7 @@ You can configure the [R languageserver settings](https://github.com/REditorSupp
 
 For example to disable Lintr linting and suppress code snippet suggestions (both enabled by default):
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "r_language_server": {

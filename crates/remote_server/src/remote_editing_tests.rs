@@ -304,7 +304,7 @@ async fn test_remote_settings(cx: &mut TestAppContext, server_cx: &mut TestAppCo
     fs.insert_tree(
         "/code/project1/.gram",
         json!({
-            "settings.json": r#"
+            "settings.jsonc": r#"
                   {
                     "languages": {"Rust":{"language_servers":["override-rust-analyzer"]}},
                     "lsp": {
@@ -391,7 +391,7 @@ async fn test_remote_lsp(cx: &mut TestAppContext, server_cx: &mut TestAppContext
     fs.insert_tree(
         path!("/code/project1/.gram"),
         json!({
-            "settings.json": r#"
+            "settings.jsonc": r#"
           {
             "languages": {"Rust":{"language_servers":["rust-analyzer", "fake-analyzer"]}},
             "lsp": {
@@ -630,7 +630,7 @@ async fn test_remote_cancel_language_server_work(
     fs.insert_tree(
         path!("/code/project1/.gram"),
         json!({
-            "settings.json": r#"
+            "settings.jsonc": r#"
           {
             "languages": {"Rust":{"language_servers":["rust-analyzer"]}},
             "lsp": {

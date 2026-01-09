@@ -762,7 +762,7 @@ mod tests {
             path!("/dir"),
             json!({
                 ".gram": {
-                    "tasks.json": r#"[
+                    "tasks.jsonc": r#"[
                         {
                             "label": "example task",
                             "command": "echo",
@@ -934,7 +934,7 @@ mod tests {
             path!("/dir"),
             json!({
                 ".gram": {
-                    "tasks.json": r#"[
+                    "tasks.jsonc": r#"[
                         {
                             "label": "hello from $GRAM_FILE:$GRAM_ROW:$GRAM_COLUMN",
                             "command": "echo",

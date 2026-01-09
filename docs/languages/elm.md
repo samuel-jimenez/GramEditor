@@ -21,9 +21,9 @@ Gram support for Elm requires installation of `elm`, `elm-format`, and `elm-revi
 
 ## Configuring `elm-language-server`
 
-Elm language server can be configured in your `settings.json`, e.g.:
+Elm language server can be configured in your `settings.jsonc`, e.g.:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "elm-language-server": {

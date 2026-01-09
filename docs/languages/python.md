@@ -77,7 +77,7 @@ Other built-in language servers are:
 
 These are disabled by default, but can be enabled in your settings. For example:
 
-```json [settings]
+```jsonc
 {
   "languages": {
     "Python": {
@@ -123,7 +123,7 @@ For example, in order to:
 
 You can use the following configuration:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "basedpyright": {
@@ -146,7 +146,7 @@ basedpyright reads project-specific configuration from the `pyrightconfig.json` 
 
 Here's an example `pyrightconfig.json` file that configures basedpyright to use the `strict` type-checking mode and not to issue diagnostics for any files in `__pycache__` directories:
 
-```json [settings]
+```jsonc
 {
   "typeCheckingMode": "strict",
   "ignore": ["**/__pycache__"]
@@ -196,7 +196,7 @@ Gram provides the [Ruff](https://docs.astral.sh/ruff/) formatter and linter for 
 
 You can disable format-on-save for Python files in your `settings.json`:
 
-```json [settings]
+```jsonc
 {
   "languages": {
     "Python": {
@@ -208,7 +208,7 @@ You can disable format-on-save for Python files in your `settings.json`:
 
 Alternatively, you can use the `black` command-line tool for Python formatting, while keeping Ruff enabled for linting:
 
-```json [settings]
+```jsonc
 {
   "languages": {
     "Python": {
@@ -230,7 +230,7 @@ Like basedpyright, Ruff reads options from both Gram's language server settings 
 
 Here's an example of using language server settings in Gram's `settings.json` to disable all Ruff lints in Gram (while still using Ruff as a formatter):
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "ruff": {
@@ -294,7 +294,7 @@ Gram uses `debugpy` under the hood, but no manual adapter configuration is requi
 
 ### Define Custom Debug Configurations
 
-For reusable setups, create a `.gram/debug.json` file in your project root. This gives you more control over how Gram runs and debugs your code.
+For reusable setups, create a `.gram/debug.jsonc` file in your project root. This gives you more control over how Gram runs and debugs your code.
 
 - [debugpy configuration documentation](https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings#launchattach-settings)
 

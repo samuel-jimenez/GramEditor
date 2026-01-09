@@ -16,7 +16,7 @@ If you use files with the `*.jsonc` extension when using `Format Document` or ha
 
 To workaround this behavior you can add the following to your `.prettierrc` configuration file:
 
-```json [settings]
+```jsonc
 {
   "overrides": [
     {
@@ -40,7 +40,7 @@ To specify a schema inline with your JSON files, add a `$schema` top level key l
 
 For example to for a `.luarc.json` for use with [lua-language-server](https://github.com/LuaLS/lua-language-server/):
 
-```json [settings]
+```jsonc
 {
   "$schema": "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json",
   "runtime.version": "Lua 5.4"
@@ -53,7 +53,7 @@ You can alternatively associate JSON Schemas with file paths by via Gram LSP set
 
 To
 
-```json [settings]
+```jsonc
 "lsp": {
   "json-language-server": {
     "settings": {
@@ -70,7 +70,7 @@ To
 }
 ```
 
-You can also pass any of the [supported settings](https://github.com/Microsoft/vscode/blob/main/extensions/json-language-features/server/README.md#settings) to json-language-server by specifying them in your Gram settings.json:
+You can also pass any of the [supported settings](https://github.com/Microsoft/vscode/blob/main/extensions/json-language-features/server/README.md#settings) to json-language-server by specifying them in your Gram `settings.jsonc`:
 
 <!--
 TBD: Add formatter (prettier) settings (autoformat, tab_size, etc)

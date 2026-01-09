@@ -137,7 +137,7 @@ Gram currently supports links to the hosted versions of
 
 For self-hosted GitHub, GitLab, or Bitbucket instances, add them to the `git_hosting_providers` setting so commit hashes and permalinks resolve to your domain:
 
-```json [settings]
+```jsonc
 {
   "git_hosting_providers": [
     {

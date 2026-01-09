@@ -9,7 +9,7 @@ Lua support is available through the [Lua extension](https://github.com/zed-exte
 
 To configure LuaLS you can create a `.luarc.json` file in the root of your workspace.
 
-```json [settings]
+```jsonc
 {
   "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
   "runtime.version": "Lua 5.4",
@@ -55,7 +55,7 @@ cd .. && git clone https://github.com/notpeter/playdate-luacats
 
 Then in your `.luarc.json`:
 
-```json [settings]
+```jsonc
 {
   "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
   "runtime.version": "Lua 5.4",
@@ -88,9 +88,9 @@ Then in your `.luarc.json`:
 
 To enable [Inlay Hints](../configuring-languages.md#inlay-hints) for LuaLS in Gram
 
-1. Add the following to your Gram settings.json:
+1. Add the following to your Gram settings.jsonc:
 
-```json [settings]
+```jsonc
   "languages": {
     "Lua": {
       "inlay_hints": {
@@ -111,16 +111,16 @@ To enable [Inlay Hints](../configuring-languages.md#inlay-hints) for LuaLS in Gr
 
 To enable auto-formatting with your LuaLS (provided by [CppCXY/EmmyLuaCodeStyle](https://github.com/CppCXY/EmmyLuaCodeStyle)) make sure you have `"format.enable": true,` in your .luarc.json:
 
-```json [settings]
+```jsonc
 {
   "$schema": "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json",
   "format.enable": true
 }
 ```
 
-Then add the following to your Gram `settings.json`:
+Then add the following to your Gram `settings.jsonc`:
 
-```json [settings]
+```jsonc
 {
   "languages": {
     "Lua": {
@@ -138,9 +138,9 @@ You can customize various EmmyLuaCodeStyle style options via `.editorconfig`, se
 Alternatively to use [StyLua](https://github.com/JohnnyMorganz/StyLua) for auto-formatting:
 
 1. Install [StyLua](https://github.com/JohnnyMorganz/StyLua): `brew install stylua` or `cargo install stylua --features lua52,lua53,lua54,luau,luajit` (feel free to remove any Lua versions you don't need).
-2. Add the following to your `settings.json`:
+2. Add the following to your `settings.jsonc`:
 
-```json [settings]
+```jsonc
 {
   "languages": {
     "Lua": {

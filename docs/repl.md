@@ -132,7 +132,7 @@ TBD: Improve Julia REPL instructions
 Gram automatically detects the available kernels on your system. If you need to configure a different default kernel for a
 language, you can assign a kernel for any supported language in your `settings.json`.
 
-```json [settings]
+```jsonc
 {
   "jupyter": {
     "kernel_selections": {

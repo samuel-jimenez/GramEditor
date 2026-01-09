@@ -41,7 +41,7 @@ If `gopls` is not found you will likely need to add `export PATH="$PATH:$HOME/go
 
 Gram sets the following initialization options for inlay hints:
 
-```json [settings]
+```jsonc
 "hints": {
     "assignVariableTypes": true,
     "compositeLiteralFields": true,
@@ -57,7 +57,7 @@ to make the language server send back inlay hints when Gram has them enabled in 
 
 Use
 
-```json [settings]
+```jsonc
 "lsp": {
     "gopls": {
         "initialization_options": {
@@ -77,7 +77,7 @@ See [gopls inlayHints documentation](https://github.com/golang/tools/blob/master
 
 Gram supports zero-configuration debugging of Go tests and entry points (`func main`) using Delve. Run {#action debugger::Start} ({#kb debugger::Start}) to see a contextual list of these preconfigured debug tasks.
 
-For more control, you can add debug configurations to `.gram/debug.json`. See below for examples.
+For more control, you can add debug configurations to `.gram/debug.jsonc`. See below for examples.
 
 - [Delve configuration documentation](https://github.com/go-delve/delve/blob/master/Documentation/api/dap/README.md#launch-and-attach-configurations)
 

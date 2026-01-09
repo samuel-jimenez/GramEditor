@@ -22,7 +22,7 @@ You can open your settings file from the command palette with {#action gram::Ope
 By default, Gram maintains two themes: one for light mode and one for dark mode.
 You can set the mode to `"dark"` or `"light"` to ignore the current system mode.
 
-```json [settings]
+```jsonc
 {
   "theme": {
     "mode": "system",
@@ -39,7 +39,7 @@ This setting can be used to configure theme-specific overrides.
 
 For example, add the following to your `settings.json` if you wish to override the background color of the editor and display comments and doc comments as italics:
 
-```json [settings]
+```jsonc
 {
   "theme_overrides": {
     "One Dark": {

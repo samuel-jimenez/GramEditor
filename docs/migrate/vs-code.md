@@ -316,7 +316,7 @@ Here are a few useful tweaks:
 "load_direnv": "shell_hook"
 ```
 
-**Custom Tasks**: Define build or run commands in your `tasks.json` (accessed via command palette: `gram: open tasks`):
+**Custom Tasks**: Define build or run commands in your `tasks.jsonc` (accessed via command palette: `gram: open tasks`):
 
 ```json
 [

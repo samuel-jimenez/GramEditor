@@ -7,11 +7,11 @@ Jsonnet language support in Gram is provided by the community-maintained [Jsonne
 
 ## Configuration
 
-Workspace configuration options can be passed to the language server via the `lsp` settings of the `settings.json`.
+Workspace configuration options can be passed to the language server via the `lsp` settings of the `settings.jsonc`.
 
 The following example enables support for resolving [tanka](https://tanka.dev) import paths in `jsonnet-language-server`:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "jsonnet-language-server": {

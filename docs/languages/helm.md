@@ -7,9 +7,9 @@ Support for Helm in Gram is provided by the community-maintained [Helm extension
 
 ## Setup
 
-Enable Helm language for Helm files by editing your `.gram/settings.json` and adding:
+Enable Helm language for Helm files by editing your `.gram/settings.jsonc` and adding:
 
-```json [settings]
+```jsonc
   "file_types": {
     "Helm": [
       "**/templates/**/*.tpl",

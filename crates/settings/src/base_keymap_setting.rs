@@ -86,21 +86,21 @@ impl BaseKeymap {
     pub fn asset_path(&self) -> Option<&'static str> {
         #[cfg(target_os = "macos")]
         match self {
-            BaseKeymap::JetBrains => Some("keymaps/macos/jetbrains.json"),
-            BaseKeymap::SublimeText => Some("keymaps/macos/sublime_text.json"),
-            BaseKeymap::Atom => Some("keymaps/macos/atom.json"),
-            BaseKeymap::TextMate => Some("keymaps/macos/textmate.json"),
-            BaseKeymap::Emacs => Some("keymaps/macos/emacs.json"),
+            BaseKeymap::JetBrains => Some("keymaps/macos/jetbrains.jsonc"),
+            BaseKeymap::SublimeText => Some("keymaps/macos/sublime_text.jsonc"),
+            BaseKeymap::Atom => Some("keymaps/macos/atom.jsonc"),
+            BaseKeymap::TextMate => Some("keymaps/macos/textmate.jsonc"),
+            BaseKeymap::Emacs => Some("keymaps/macos/emacs.jsonc"),
             BaseKeymap::VSCode => None,
             BaseKeymap::None => None,
         }
 
         #[cfg(not(target_os = "macos"))]
         match self {
-            BaseKeymap::JetBrains => Some("keymaps/linux/jetbrains.json"),
-            BaseKeymap::SublimeText => Some("keymaps/linux/sublime_text.json"),
-            BaseKeymap::Atom => Some("keymaps/linux/atom.json"),
-            BaseKeymap::Emacs => Some("keymaps/linux/emacs.json"),
+            BaseKeymap::JetBrains => Some("keymaps/linux/jetbrains.jsonc"),
+            BaseKeymap::SublimeText => Some("keymaps/linux/sublime_text.jsonc"),
+            BaseKeymap::Atom => Some("keymaps/linux/atom.jsonc"),
+            BaseKeymap::Emacs => Some("keymaps/linux/emacs.jsonc"),
             BaseKeymap::TextMate => None,
             BaseKeymap::VSCode => None,
             BaseKeymap::None => None,

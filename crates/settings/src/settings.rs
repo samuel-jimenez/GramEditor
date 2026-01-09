@@ -94,52 +94,52 @@ pub fn init(cx: &mut App) {
 }
 
 pub fn default_settings() -> Cow<'static, str> {
-    asset_str::<SettingsAssets>("settings/default.json")
+    asset_str::<SettingsAssets>("settings/default.jsonc")
 }
 
 #[cfg(target_os = "macos")]
-pub const DEFAULT_KEYMAP_PATH: &str = "keymaps/default-macos.json";
+pub const DEFAULT_KEYMAP_PATH: &str = "keymaps/default-macos.jsonc";
 
 #[cfg(target_os = "windows")]
-pub const DEFAULT_KEYMAP_PATH: &str = "keymaps/default-windows.json";
+pub const DEFAULT_KEYMAP_PATH: &str = "keymaps/default-windows.jsonc";
 
 #[cfg(not(any(target_os = "macos", target_os = "windows")))]
-pub const DEFAULT_KEYMAP_PATH: &str = "keymaps/default-linux.json";
+pub const DEFAULT_KEYMAP_PATH: &str = "keymaps/default-linux.jsonc";
 
 pub fn default_keymap() -> Cow<'static, str> {
     asset_str::<SettingsAssets>(DEFAULT_KEYMAP_PATH)
 }
 
-pub const VIM_KEYMAP_PATH: &str = "keymaps/vim.json";
+pub const VIM_KEYMAP_PATH: &str = "keymaps/vim.jsonc";
 
 pub fn vim_keymap() -> Cow<'static, str> {
     asset_str::<SettingsAssets>(VIM_KEYMAP_PATH)
 }
 
 pub fn initial_user_settings_content() -> Cow<'static, str> {
-    asset_str::<SettingsAssets>("settings/initial_user_settings.json")
+    asset_str::<SettingsAssets>("settings/initial_user_settings.jsonc")
 }
 
 pub fn initial_server_settings_content() -> Cow<'static, str> {
-    asset_str::<SettingsAssets>("settings/initial_server_settings.json")
+    asset_str::<SettingsAssets>("settings/initial_server_settings.jsonc")
 }
 
 pub fn initial_project_settings_content() -> Cow<'static, str> {
-    asset_str::<SettingsAssets>("settings/initial_local_settings.json")
+    asset_str::<SettingsAssets>("settings/initial_local_settings.jsonc")
 }
 
 pub fn initial_keymap_content() -> Cow<'static, str> {
-    asset_str::<SettingsAssets>("keymaps/initial.json")
+    asset_str::<SettingsAssets>("keymaps/initial.jsonc")
 }
 
 pub fn initial_tasks_content() -> Cow<'static, str> {
-    asset_str::<SettingsAssets>("settings/initial_tasks.json")
+    asset_str::<SettingsAssets>("settings/initial_tasks.jsonc")
 }
 
 pub fn initial_debug_tasks_content() -> Cow<'static, str> {
-    asset_str::<SettingsAssets>("settings/initial_debug_tasks.json")
+    asset_str::<SettingsAssets>("settings/initial_debug_tasks.jsonc")
 }
 
 pub fn initial_local_debug_tasks_content() -> Cow<'static, str> {
-    asset_str::<SettingsAssets>("settings/initial_local_debug_tasks.json")
+    asset_str::<SettingsAssets>("settings/initial_local_debug_tasks.jsonc")
 }

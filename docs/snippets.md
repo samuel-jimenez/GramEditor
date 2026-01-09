@@ -6,7 +6,7 @@ The snippets are located in `~/.config/gram/snippets` directory to which you can
 
 ## Example configuration
 
-```json [settings]
+```jsonc
 {
   // Each snippet must have a name and body, but the prefix and description are optional.
   // The prefix is used to trigger the snippet, but when omitted then the name is used.
@@ -44,7 +44,7 @@ The `feature_paths` option in `simple-completion-language-server` is disabled by
 
 If you want to enable it you can add the following to your `settings.json`:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "snippet-completion-server": {

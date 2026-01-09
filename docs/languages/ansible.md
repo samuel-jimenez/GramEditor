@@ -9,9 +9,9 @@ Support for Ansible in Gram is provided via a community-maintained [Ansible exte
 
 ### File detection
 
-To avoid mishandling non-Ansible YAML files, the Ansible Language is not associated with any file extensions by default. To change this behavior you can add a `"file_types"` section to Gram settings inside your project (`.gram/settings.json`) or your Gram user settings (`~/.config/gram/settings.json`) to match your folder/naming conventions. For example:
+To avoid mishandling non-Ansible YAML files, the Ansible Language is not associated with any file extensions by default. To change this behavior you can add a `"file_types"` section to Gram settings inside your project (`.gram/settings.jsonc`) or your Gram user settings (`~/.config/gram/settings.jsonc`) to match your folder/naming conventions. For example:
 
-```json [settings]
+```jsonc
 "file_types": {
     "Ansible": [
       "**.ansible.yml",
@@ -50,7 +50,7 @@ If your inventory file is in the YAML format, you can either:
 
 - Or configure the yaml language server settings to set this schema for all your inventory files, that match your inventory pattern, under your Gram settings ([ref](gram://docs/languages/yaml)):
 
-```json [settings]
+```jsonc
 "lsp": {
     "yaml-language-server": {
       "settings": {
@@ -71,7 +71,7 @@ If your inventory file is in the YAML format, you can either:
 
 By default, the following default config is passed to the Ansible language server. It conveniently mirrors the defaults set by [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig/blob/03bc581e05e81d33808b42b2d7e76d70adb3b595/lua/lspconfig/configs/ansiblels.lua) for the Ansible language server:
 
-```json [settings]
+```jsonc
 {
   "ansible": {
     "ansible": {
@@ -99,7 +99,7 @@ By default, the following default config is passed to the Ansible language serve
 
 When desired, any of the above default settings can be overridden under the `"lsp"` section of your Gram settings file. For example:
 
-```json [settings]
+```jsonc
 "lsp": {
   // Note, the Gram Ansible extension prefixes all settings with `ansible`
   // so instead of using `ansible.ansible.path` use `ansible.path`.

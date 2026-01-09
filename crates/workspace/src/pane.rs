@@ -1658,7 +1658,7 @@ impl Pane {
 
     fn close_items_on_settings_change(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         let target = self.max_tabs.map(|m| m.get() + 1);
-        // The active item in this case is the settings.json file, which should be protected from being closed
+        // The active item in this case is the settings.jsonc file, which should be protected from being closed
         let protect_active_item = true;
         self.close_items_to_target_count(target, protect_active_item, window, cx);
     }

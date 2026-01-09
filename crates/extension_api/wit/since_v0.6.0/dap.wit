@@ -69,7 +69,7 @@ interface dap {
         template: build-task-template
     }
 
-    /// Debug Scenario is the user-facing configuration type (used in debug.json). It is still concerned with what to debug and not necessarily how to do it (except for any
+    /// Debug Scenario is the user-facing configuration type (used in debug.jsonc). It is still concerned with what to debug and not necessarily how to do it (except for any
     /// debug-adapter-specific configuration options).
     record debug-scenario {
         /// Unsubstituted label for the task.DebugAdapterBinary

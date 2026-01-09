@@ -6,9 +6,9 @@ Deno support is available through the [Deno extension](https://github.com/zed-ex
 
 ## Deno Configuration
 
-To use the Deno Language Server with TypeScript and TSX files, you will likely wish to disable the default language servers and enable deno by adding the following to your `settings.json`:
+To use the Deno Language Server with TypeScript and TSX files, you will likely wish to disable the default language servers and enable deno by adding the following to your `settings.jsonc`:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "deno": {
@@ -59,9 +59,9 @@ TBD: Deno TypeScript REPL instructions [docs/repl#typescript-deno](../repl.md#ty
 
 ## Configuration completion
 
-To get completions for `deno.json` or `package.json` you can add the following to your `settings.json`: (More info here gram://docs/languages/json)
+To get completions for `deno.json` or `package.json` you can add the following to your `settings.jsonc`: (More info here gram://docs/languages/json)
 
-```json [settings]
+```jsonc
 "lsp": {
     "json-language-server": {
       "settings": {
@@ -89,7 +89,7 @@ To get completions for `deno.json` or `package.json` you can add the following t
 
 ## DAP support
 
-To debug deno programs, add this to `.gram/debug.json`
+To debug deno programs, add this to `.gram/debug.jsonc`
 
 ```json [debug]
 [
@@ -109,7 +109,7 @@ To debug deno programs, add this to `.gram/debug.json`
 
 ## Runnable support
 
-To run deno tasks like tests from the ui, add this to `.gram/tasks.json`
+To run deno tasks like tests from the ui, add this to `.gram/tasks.jsonc`
 
 ```json [tasks]
 [

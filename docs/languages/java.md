@@ -33,7 +33,7 @@ For the majority of users, Java support should work out of the box.
 
 - To support [Lombok](https://projectlombok.org/), the lombok-jar must be downloaded and registered as a Java-Agent when launching JDTLS. By default the extension automatically takes care of that, but in case you don't want that you can set the `lombok_support` configuration-option to `false`.
 
-Here is a common `settings.json` including the above mentioned configurations:
+Here is a common `settings.jsonc` including the above mentioned configurations:
 
 ```jsonc
 {
@@ -52,7 +52,7 @@ Here is a common `settings.json` including the above mentioned configurations:
 
 Debug support is enabled via our [Fork of Java Debug](https://github.com/zed-industries/java-debug), which the extension will automatically download and start for you. Please refer to the [Debugger Documentation](gram://docs/debugger#getting-started) for general information about how debugging works in Gram.
 
-To get started with Java, click the `edit debug.json` button in the Debug menu, and replace the contents of the file with the following:
+To get started with Java, click the `edit debug.jsonc` button in the Debug menu, and replace the contents of the file with the following:
 
 ```jsonc
 [
@@ -81,7 +81,7 @@ There is a fairly straightforward fix that you can apply to make it work on Wind
 
 ## Advanced Configuration/JDTLS initialization Options
 
-JDTLS provides many configuration options that can be passed via the `initialize` LSP-request. The extension will pass the JSON-object from `lsp.jdtls.settings.initialization_options` in your settings on to JDTLS. Please refer to the [JDTLS Configuration Wiki Page](https://github.com/eclipse-jdtls/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request) for the available options and values. Below is an example `settings.json` that would pass on the example configuration from the above wiki page to JDTLS:
+JDTLS provides many configuration options that can be passed via the `initialize` LSP-request. The extension will pass the JSON-object from `lsp.jdtls.settings.initialization_options` in your settings on to JDTLS. Please refer to the [JDTLS Configuration Wiki Page](https://github.com/eclipse-jdtls/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request) for the available options and values. Below is an example `settings.jsonc` that would pass on the example configuration from the above wiki page to JDTLS:
 
 ```jsonc
 {

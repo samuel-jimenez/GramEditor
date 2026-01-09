@@ -412,7 +412,7 @@ mod tests {
             path!("/dir"),
             json!({
                 ".gram": {
-                    "tasks.json": r#"[
+                    "tasks.jsonc": r#"[
                             {
                                 "label": "example task",
                                 "command": "echo",

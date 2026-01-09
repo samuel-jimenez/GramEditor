@@ -248,7 +248,7 @@ fn find_rust_analyzer_server(
                 .and_then(|buffer| {
                     project.language_server_id_for_name(buffer.read(cx), &RUST_ANALYZER_NAME, cx)
                 })
-                // If no rust-analyzer found for the current buffer (e.g. `settings.json`), fall back to the project lookup
+                // If no rust-analyzer found for the current buffer (e.g. `settings.jsonc`), fall back to the project lookup
                 // and use project's rust-analyzer if it's the only one.
                 .or_else(|| {
                     let rust_analyzer_servers = project

@@ -227,7 +227,7 @@ impl ThemeSelectorDelegate {
 
 /// Overrides the global (in-memory) theme settings.
 ///
-/// Note that this does **not** update the user's `settings.json` file (see the
+/// Note that this does **not** update the user's `settings.jsonc` file (see the
 /// [`ThemeSelectorDelegate::confirm`] method and [`theme::set_theme`] function).
 fn override_global_theme(
     store: &mut SettingsStore,

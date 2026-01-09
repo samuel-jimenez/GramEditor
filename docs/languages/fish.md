@@ -18,7 +18,7 @@ fish_indent --version
 
 2. Configure Gram to automatically format fish code with `fish_indent`:
 
-```json [settings]
+```jsonc
   "languages": {
     "Fish": {
       "formatter": {

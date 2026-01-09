@@ -211,46 +211,46 @@ pub fn crashes_retired_dir() -> &'static Option<PathBuf> {
     CRASHES_RETIRED_DIR.get_or_init(|| crashes_dir().as_ref().map(|dir| dir.join("Retired")))
 }
 
-/// Returns the path to the `settings.json` file.
+/// Returns the path to the `settings.jsonc` file.
 pub fn settings_file() -> &'static PathBuf {
     static SETTINGS_FILE: OnceLock<PathBuf> = OnceLock::new();
-    SETTINGS_FILE.get_or_init(|| config_dir().join("settings.json"))
+    SETTINGS_FILE.get_or_init(|| config_dir().join("settings.jsonc"))
 }
 
 /// Returns the path to the global settings file.
 pub fn global_settings_file() -> &'static PathBuf {
     static GLOBAL_SETTINGS_FILE: OnceLock<PathBuf> = OnceLock::new();
-    GLOBAL_SETTINGS_FILE.get_or_init(|| config_dir().join("global_settings.json"))
+    GLOBAL_SETTINGS_FILE.get_or_init(|| config_dir().join("global_settings.jsonc"))
 }
 
 /// Returns the path to the `settings_backup.json` file.
 pub fn settings_backup_file() -> &'static PathBuf {
     static SETTINGS_FILE: OnceLock<PathBuf> = OnceLock::new();
-    SETTINGS_FILE.get_or_init(|| config_dir().join("settings_backup.json"))
+    SETTINGS_FILE.get_or_init(|| config_dir().join("settings_backup.jsonc"))
 }
 
 /// Returns the path to the `keymap.json` file.
 pub fn keymap_file() -> &'static PathBuf {
     static KEYMAP_FILE: OnceLock<PathBuf> = OnceLock::new();
-    KEYMAP_FILE.get_or_init(|| config_dir().join("keymap.json"))
+    KEYMAP_FILE.get_or_init(|| config_dir().join("keymap.jsonc"))
 }
 
 /// Returns the path to the `keymap_backup.json` file.
 pub fn keymap_backup_file() -> &'static PathBuf {
     static KEYMAP_FILE: OnceLock<PathBuf> = OnceLock::new();
-    KEYMAP_FILE.get_or_init(|| config_dir().join("keymap_backup.json"))
+    KEYMAP_FILE.get_or_init(|| config_dir().join("keymap_backup.jsonc"))
 }
 
 /// Returns the path to the `tasks.json` file.
 pub fn tasks_file() -> &'static PathBuf {
     static TASKS_FILE: OnceLock<PathBuf> = OnceLock::new();
-    TASKS_FILE.get_or_init(|| config_dir().join("tasks.json"))
+    TASKS_FILE.get_or_init(|| config_dir().join("tasks.jsonc"))
 }
 
 /// Returns the path to the `debug.json` file.
 pub fn debug_scenarios_file() -> &'static PathBuf {
     static DEBUG_SCENARIOS_FILE: OnceLock<PathBuf> = OnceLock::new();
-    DEBUG_SCENARIOS_FILE.get_or_init(|| config_dir().join("debug.json"))
+    DEBUG_SCENARIOS_FILE.get_or_init(|| config_dir().join("debug.jsonc"))
 }
 
 /// Returns the path to the extensions directory.
@@ -398,40 +398,40 @@ pub fn local_vscode_folder_name() -> &'static str {
     ".vscode"
 }
 
-/// Returns the relative path to a `settings.json` file within a project.
+/// Returns the relative path to a `settings.jsonc` file within a project.
 pub fn local_settings_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::unix(".gram/settings.json").unwrap());
+        LazyLock::new(|| RelPath::unix(".gram/settings.jsonc").unwrap());
     *CACHED
 }
 
 /// Returns the relative path to a `tasks.json` file within a project.
 pub fn local_tasks_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::unix(".gram/tasks.json").unwrap());
+        LazyLock::new(|| RelPath::unix(".gram/tasks.jsonc").unwrap());
     *CACHED
 }
 
 /// Returns the relative path to a `.vscode/tasks.json` file within a project.
 pub fn local_vscode_tasks_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::unix(".vscode/tasks.json").unwrap());
+        LazyLock::new(|| RelPath::unix(".vscode/tasks.jsonc").unwrap());
     *CACHED
 }
 
 pub fn debug_task_file_name() -> &'static str {
-    "debug.json"
+    "debug.jsonc"
 }
 
 pub fn task_file_name() -> &'static str {
-    "tasks.json"
+    "tasks.jsonc"
 }
 
 /// Returns the relative path to a `debug.json` file within a project.
 /// .gram/debug.json
 pub fn local_debug_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::unix(".gram/debug.json").unwrap());
+        LazyLock::new(|| RelPath::unix(".gram/debug.jsonc").unwrap());
     *CACHED
 }
 

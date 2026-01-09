@@ -17,9 +17,9 @@ which haskell-language-server-wrapper
 
 ## Configuring HLS
 
-If you need to configure haskell-language-server (hls) you can add configuration options to your Gram settings.json:
+If you need to configure haskell-language-server (hls) you can add configuration options to your Gram `settings.jsonc`:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "hls": {
@@ -37,7 +37,7 @@ See the official [configuring haskell-language-server](https://haskell-language-
 
 If you would like to use a specific hls binary, or perhaps use [static-ls](https://github.com/josephsumabat/static-ls) as a drop-in replacement instead, you can specify the binary path and arguments:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "hls": {

@@ -24,7 +24,7 @@ The Gram PowerShell extensions will attempt to download [PowerShell Editor Servi
 
 If want to use a specific binary, you can specify in your that in your Gram settings.json:
 
-```json [settings]
+```jsonc
   "lsp": {
     "powershell-es": {
       "binary": {

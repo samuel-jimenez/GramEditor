@@ -165,7 +165,7 @@ async fn test_editorconfig_support(cx: &mut gpui::TestAppContext) {
             max_line_length = off
         "#,
         ".gram": {
-            "settings.json": r#"{
+            "settings.jsonc": r#"{
                 "tab_size": 8,
                 "hard_tabs": false,
                 "ensure_final_newline_on_save": false,
@@ -236,7 +236,7 @@ async fn test_editorconfig_support(cx: &mut gpui::TestAppContext) {
         // "indent_size" is not set, so "tab_width" is used
         assert_eq!(Some(settings_c.tab_size), NonZeroU32::new(10));
 
-        // When max_line_length is "off", default to .gram/settings.json
+        // When max_line_length is "off", default to .gram/settings.jsonc
         assert_eq!(settings_b.preferred_line_length, 64);
         assert_eq!(settings_c.preferred_line_length, 64);
 
@@ -261,7 +261,7 @@ async fn test_git_provider_project_setting(cx: &mut gpui::TestAppContext) {
         path!("/dir"),
         json!({
             ".gram": {
-                "settings.json": r#"{
+                "settings.jsonc": r#"{
                     "git_hosting_providers": [
                         {
                             "provider": "gitlab",
@@ -291,7 +291,7 @@ async fn test_git_provider_project_setting(cx: &mut gpui::TestAppContext) {
     });
 
     fs.atomic_write(
-        Path::new(path!("/dir/.gram/settings.json")).to_owned(),
+        Path::new(path!("/dir/.gram/settings.jsonc")).to_owned(),
         "{}".into(),
     )
     .await
@@ -320,8 +320,8 @@ async fn test_managing_project_specific_settings(cx: &mut gpui::TestAppContext) 
         path!("/dir"),
         json!({
             ".gram": {
-                "settings.json": r#"{ "tab_size": 8 }"#,
-                "tasks.json": r#"[{
+                "settings.jsonc": r#"{ "tab_size": 8 }"#,
+                "tasks.jsonc": r#"[{
                     "label": "cargo check all",
                     "command": "cargo",
                     "args": ["check", "--all"]
@@ -332,8 +332,8 @@ async fn test_managing_project_specific_settings(cx: &mut gpui::TestAppContext) 
             },
             "b": {
                 ".gram": {
-                    "settings.json": r#"{ "tab_size": 2 }"#,
-                    "tasks.json": r#"[{
+                    "settings.jsonc": r#"{ "tab_size": 2 }"#,
+                    "tasks.jsonc": r#"[{
                         "label": "cargo check",
                         "command": "cargo",
                         "args": ["check"]
@@ -494,7 +494,7 @@ async fn test_managing_project_specific_settings(cx: &mut gpui::TestAppContext) 
             (
                 TaskSourceKind::AbsPath {
                     abs_path: paths::tasks_file().clone(),
-                    id_base: "global tasks.json".into(),
+                    id_base: "global tasks.jsonc".into(),
                 },
                 "cargo check unstable".to_string(),
                 vec![
@@ -521,7 +521,7 @@ async fn test_fallback_to_single_worktree_tasks(cx: &mut gpui::TestAppContext) {
         path!("/dir"),
         json!({
             ".gram": {
-                "tasks.json": r#"[{
+                "tasks.jsonc": r#"[{
                     "label": "test worktree root",
                     "command": "echo $GRAM_WORKTREE_ROOT"
                 }]"#,
@@ -640,7 +640,7 @@ async fn test_running_multiple_instances_of_a_single_server_in_one_worktree(
         path!("/the-root"),
         json!({
             ".gram": {
-                "settings.json": r#"
+                "settings.jsonc": r#"
                 {
                     "languages": {
                         "Python": {
@@ -1239,7 +1239,7 @@ async fn test_language_server_relative_path(cx: &mut gpui::TestAppContext) {
         path!("/the-root"),
         json!({
             ".gram": {
-                "settings.json": settings_json_contents.to_string(),
+                "settings.jsonc": settings_json_contents.to_string(),
             },
             ".relative_path": {
                 "to": {
@@ -1316,7 +1316,7 @@ async fn test_language_server_tilde_path(cx: &mut gpui::TestAppContext) {
         path!("/root"),
         json!({
             ".gram": {
-                "settings.json": settings_json_contents.to_string(),
+                "settings.jsonc": settings_json_contents.to_string(),
             },
             "src": {
                 "main.rs": "fn main() {}",

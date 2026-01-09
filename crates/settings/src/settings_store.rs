@@ -66,10 +66,10 @@ pub trait Settings: 'static + Send + Sync + Sized {
     /// user settings match the current version of the settings.
     const PRESERVED_KEYS: Option<&'static [&'static str]> = None;
 
-    /// Read the value from default.json.
+    /// Read the value from default.jsonc.
     ///
     /// This function *should* panic if default values are missing,
-    /// and you should add a default to default.json for documentation.
+    /// and you should add a default to default.jsonc for documentation.
     fn from_settings(content: &SettingsContent) -> Self;
 
     #[track_caller]

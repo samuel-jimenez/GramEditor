@@ -499,8 +499,8 @@ mod test {
             "/jupyter",
             json!({
                 ".gram": {
-                    "settings.json": r#"{ "tab_size": 8 }"#,
-                    "tasks.json": r#"[{
+                    "settings.jsonc": r#"{ "tab_size": 8 }"#,
+                    "tasks.jsonc": r#"[{
                         "label": "cargo check",
                         "command": "cargo",
                         "args": ["check", "--all"]
@@ -508,7 +508,7 @@ mod test {
                 },
                 "kernels": {
                     "python": {
-                        "kernel.json": r#"{
+                        "kernel.jsonc": r#"{
                             "display_name": "Python 3",
                             "language": "python",
                             "argv": ["python3", "-m", "ipykernel_launcher", "-f", "{connection_file}"],
@@ -516,7 +516,7 @@ mod test {
                         }"#
                     },
                     "deno": {
-                        "kernel.json": r#"{
+                        "kernel.jsonc": r#"{
                             "display_name": "Deno",
                             "language": "typescript",
                             "argv": ["deno", "run", "--unstable", "--allow-net", "--allow-read", "https://deno.land/std/http/file_server.ts", "{connection_file}"],

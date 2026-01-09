@@ -65,7 +65,7 @@ You can edit this list using the Remote Projects dialog
 checks that the connection can be established before writing it to the settings
 file.
 
-```json [settings]
+```jsonc
 {
   "ssh_connections": [
     {
@@ -81,7 +81,7 @@ configuration you have in `~/.ssh/config` for the given host. That said, if you
 need to override anything you can configure the following additional options on
 each connection:
 
-```json [settings]
+```jsonc
 {
   "ssh_connections": [
     {
@@ -99,7 +99,7 @@ each connection:
 
 You can also set a nickname for the remote server:
 
-```json [settings]
+```jsonc
 {
   "ssh_connections": [
     {
@@ -147,7 +147,7 @@ To open a folder that's already located inside of a WSL container, use the `proj
 
 If you'd like to be able to connect to ports on your remote server from your local machine, you can configure port forwarding in your settings file. This is particularly useful for developing websites so you can load the site in your browser while working.
 
-```json [settings]
+```jsonc
 {
   "ssh_connections": [
     {
@@ -162,7 +162,7 @@ This will cause requests from your local machine to `localhost:8080` to be forwa
 
 By default these ports are bound to localhost, so other computers in the same network as your development machine cannot access them. You can set the local_host to bind to a different interface, for example, 0.0.0.0 will bind to all local interfaces.
 
-```json [settings]
+```jsonc
 {
   "ssh_connections": [
     {
@@ -181,7 +181,7 @@ By default these ports are bound to localhost, so other computers in the same ne
 
 These ports also default to the `localhost` interface on the remote host. If you need to change this, you can also set the remote host:
 
-```json [settings]
+```jsonc
 {
   "ssh_connections": [
     {
@@ -281,4 +281,3 @@ Note that we deliberately disallow some options (for example `-t` or `-T`) that 
 ## Known Limitations
 
 - You can't open files from the remote Terminal by typing the `gram` command.
-

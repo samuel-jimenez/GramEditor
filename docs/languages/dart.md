@@ -20,9 +20,9 @@ which dart
 dart --version
 ```
 
-If you would like to use a specific dart binary or use dart via FVM you can specify the `dart` binary in your Gram settings.jsons file:
+If you would like to use a specific dart binary or use dart via FVM you can specify the `dart` binary in your Gram settings.jsonc file:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "dart": {
@@ -37,9 +37,9 @@ If you would like to use a specific dart binary or use dart via FVM you can spec
 
 ### Formatting
 
-Dart by-default uses a very conservative maximum line length (80). If you would like the dart LSP to permit a longer line length when auto-formatting, add the following to your Gram settings.json:
+Dart by-default uses a very conservative maximum line length (80). If you would like the dart LSP to permit a longer line length when auto-formatting, add the following to your Gram settings.jsonc:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "dart": {

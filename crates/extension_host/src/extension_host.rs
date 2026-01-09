@@ -955,7 +955,7 @@ impl ExtensionStore {
                     let config: LanguageConfig = ::toml::from_str(&config)?;
                     let queries = load_plugin_queries(&language_path);
                     let context_provider =
-                        std::fs::read_to_string(language_path.join("tasks.json"))
+                        std::fs::read_to_string(language_path.join("tasks.jsonc"))
                             .ok()
                             .and_then(|contents| {
                                 let definitions =

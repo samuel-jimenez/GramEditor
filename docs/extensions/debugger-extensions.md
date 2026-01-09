@@ -45,7 +45,7 @@ impl gram::Extension for MyExtension {
 }
 ```
 
-These two functions are sufficient to expose your debug adapter in `debug.json`-based user workflows, but you should strongly consider implementing `dap_config_to_scenario` as well.
+These two functions are sufficient to expose your debug adapter in `debug.jsonc`-based user workflows, but you should strongly consider implementing `dap_config_to_scenario` as well.
 
 ```rust
 impl gram::Extension for MyExtension {

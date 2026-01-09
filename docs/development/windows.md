@@ -18,7 +18,7 @@ Clone down the Gram [repository](https://codeberg.org/krig/gram).
 
 If you can't compile Gram, make sure that you have at least the following components installed in case of a Visual Studio installation:
 
-```json [settings]
+```jsonc
 {
   "version": "1.0",
   "components": [
@@ -36,7 +36,7 @@ If you can't compile Gram, make sure that you have at least the following compon
 
 Or if in case of just Build Tools, the following components:
 
-```json [settings]
+```jsonc
 {
   "version": "1.0",
   "components": [

@@ -11,7 +11,7 @@ C# support is available through the [C# extension](https://github.com/zed-extens
 
 The `OmniSharp` binary can be configured in a Gram settings file with:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "omnisharp": {

@@ -4,9 +4,9 @@
 
 ## Language Server Code Completions {#code-completions}
 
-When there is an appropriate language server available, Gram will provide completions of variable names, functions, and other symbols in the current file. You can disable these by adding the following to your Gram `settings.json` file:
+When there is an appropriate language server available, Gram will provide completions of variable names, functions, and other symbols in the current file. You can disable these by adding the following to your Gram `settings.jsonc` file:
 
-```json [settings]
+```jsonc
 "show_completions_on_input": false
 ```
 

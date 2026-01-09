@@ -8,7 +8,7 @@ Gram has built-in support for Tailwind CSS autocomplete, linting, and hover prev
 
 To configure the Tailwind CSS language server, refer [to the extension settings](https://github.com/tailwindlabs/tailwindcss-intellisense?tab=readme-ov-file#extension-settings) and add them to the `lsp` section of your `settings.json`:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "tailwindcss-language-server": {
@@ -41,7 +41,7 @@ Languages which can be used with Tailwind CSS in Gram:
 
 Gram supports Prettier out of the box, which means that if you have the [Tailwind CSS Prettier plugin](https://github.com/tailwindlabs/prettier-plugin-tailwindcss) installed, adding it to your Prettier configuration will make it work automatically:
 
-```json [settings]
+```jsonc
 // .prettierrc
 {
   "plugins": ["prettier-plugin-tailwindcss"]

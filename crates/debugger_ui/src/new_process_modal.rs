@@ -19,7 +19,7 @@ use gpui::{
 use itertools::Itertools as _;
 use picker::{Picker, PickerDelegate, highlighted_match_with_paths::HighlightedMatch};
 use project::{DebugScenarioContext, Project, TaskContexts, TaskSourceKind, task_store::TaskStore};
-use task::{DebugScenario, RevealTarget, GramDebugConfig, VariableName};
+use task::{DebugScenario, GramDebugConfig, RevealTarget, VariableName};
 use ui::{
     ContextMenu, DropdownMenu, FluentBuilder, IconWithIndicator, Indicator, KeyBinding, ListItem,
     ListItemSpacing, Switch, SwitchLabelPosition, ToggleButtonGroup, ToggleButtonSimple,
@@ -442,7 +442,7 @@ impl NewProcessModal {
                 cx.emit(DismissEvent);
             })
         })
-        .detach_and_prompt_err("Failed to edit debug.json", window, cx, |_, _, _| None);
+        .detach_and_prompt_err("Failed to edit debug.jsonc", window, cx, |_, _, _| None);
     }
 
     fn adapter_drop_down_menu(
@@ -672,7 +672,7 @@ impl Render for NewProcessModal {
                         container
                             .child(
                                 h_flex().child(
-                                    Button::new("edit-custom-debug", "Edit in debug.json")
+                                    Button::new("edit-custom-debug", "Edit in debug.jsonc")
                                         .on_click(cx.listener(|this, _, window, cx| {
                                             this.save_debug_scenario(window, cx);
                                         }))
@@ -719,7 +719,7 @@ impl Render for NewProcessModal {
                         let secondary_action = menu::SecondaryConfirm.boxed_clone();
                         container
                             .child(div().child({
-                                Button::new("edit-attach-task", "Edit in debug.json")
+                                Button::new("edit-attach-task", "Edit in debug.jsonc")
                                     .key_binding(KeyBinding::for_action(&*secondary_action, cx))
                                     .on_click(move |_, window, cx| {
                                         window.dispatch_action(secondary_action.boxed_clone(), cx)
@@ -1008,7 +1008,7 @@ impl DebugDelegate {
 
                     match path.components().next_back() {
                         Some(".gram") => {
-                            path.push(RelPath::unix("debug.json").unwrap());
+                            path.push(RelPath::unix("debug.jsonc").unwrap());
                         }
                         Some(".vscode") => {
                             path.push(RelPath::unix("launch.json").unwrap());
@@ -1423,7 +1423,7 @@ impl PickerDelegate for DebugDelegate {
             .child({
                 let action = menu::SecondaryConfirm.boxed_clone();
                 if self.matches.is_empty() {
-                    Button::new("edit-debug-json", "Edit debug.json").on_click(cx.listener(
+                    Button::new("edit-debug-json", "Edit debug.jsonc").on_click(cx.listener(
                         |_picker, _, window, cx| {
                             window.dispatch_action(
                                 app_actions::OpenProjectDebugTasks.boxed_clone(),
@@ -1433,7 +1433,7 @@ impl PickerDelegate for DebugDelegate {
                         },
                     ))
                 } else {
-                    Button::new("edit-debug-task", "Edit in debug.json")
+                    Button::new("edit-debug-task", "Edit in debug.jsonc")
                         .key_binding(KeyBinding::for_action(&*action, cx))
                         .on_click(move |_, window, cx| {
                             window.dispatch_action(action.boxed_clone(), cx)

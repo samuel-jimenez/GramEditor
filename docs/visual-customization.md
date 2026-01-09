@@ -19,7 +19,7 @@ Preview and choose the current theme using the theme selectors: {#action theme_s
 
 The selectors will modify these settings:
 
-```json [settings]
+```jsonc
 {
   "theme": "One Dark",
   "icon_theme": "Gram (Default)"
@@ -28,7 +28,7 @@ The selectors will modify these settings:
 
 Distinct themes for light mode/dark mode can be set like this:
 
-```json [settings]
+```jsonc
 {
   "theme": {
     "dark": "One Dark",
@@ -47,7 +47,7 @@ Distinct themes for light mode/dark mode can be set like this:
 
 ## Fonts
 
-```json [settings]
+```jsonc
   // UI Font. Use ".SystemUIFont" to use the default system font (SF Pro on macOS),
   // or ".GramSans" for the bundled default.
   "ui_font_family": ".SystemUIFont",
@@ -79,7 +79,7 @@ This is purely cosmetic and the individual characters remain unchanged.
 
 To disable this behavior use:
 
-```json [settings]
+```jsonc
 {
   "buffer_font_features": {
     "calt": false // Disable ligatures
@@ -89,7 +89,7 @@ To disable this behavior use:
 
 ### Status Bar
 
-```json [settings]
+```jsonc
 {
   // Whether to show full labels in line indicator or short ones
   //   - `short`: "2 s, 15 l, 32 c"
@@ -109,7 +109,7 @@ To disable this behavior use:
 
 ### Titlebar
 
-```json [settings]
+```jsonc
   // Control which items are shown/hidden in the title bar
   "title_bar": {
     "show_branch_icon": false,      // Show/hide branch icon beside branch switcher
@@ -124,7 +124,7 @@ To disable this behavior use:
 
 ## Workspace
 
-```json [settings]
+```jsonc
 {
   // Force usage of Gram build in path prompts (file and directory pickers)
   // instead of OS native pickers (false).
@@ -152,7 +152,7 @@ To disable this behavior use:
 
 <!--
 TBD: Centered layout related settings
-```json [settings]
+```jsonc
     "centered_layout": {
     // The relative width of the left padding of the central pane from the
     // workspace when the centered layout is used.
@@ -166,7 +166,7 @@ TBD: Centered layout related settings
 
 ## Editor
 
-```json [settings]
+```jsonc
   // Whether the cursor blinks in the editor.
   "cursor_blink": true,
 
@@ -226,7 +226,7 @@ TBD: Centered layout related settings
 
 ### Git Blame {#editor-blame}
 
-```json [settings]
+```jsonc
   "git": {
     "inline_blame": {
       "enabled": true,             // Show/hide inline blame
@@ -241,7 +241,7 @@ TBD: Centered layout related settings
 
 ### Editor Toolbar
 
-```json [settings]
+```jsonc
   // Editor toolbar related settings
   "toolbar": {
     "breadcrumbs": true, // Whether to show breadcrumbs.
@@ -253,7 +253,7 @@ TBD: Centered layout related settings
 
 ### Editor Scrollbar and Minimap {#editor-scrollbar}
 
-```json [settings]
+```jsonc
   // Scrollbar related settings
   "scrollbar": {
     // When to show the scrollbar in the editor (auto, system, always, never)
@@ -294,7 +294,7 @@ TBD: Centered layout related settings
 
 ### Editor Tabs
 
-```json [settings]
+```jsonc
   // Maximum number of tabs per pane. Unset for unlimited.
   "max_tabs": null,
 
@@ -316,7 +316,7 @@ TBD: Centered layout related settings
 
 ### Status Bar
 
-```json [settings]
+```jsonc
   "status_bar": {
     // Show/hide a button that displays the active buffer's language.
     // Clicking the button brings up the language selector.
@@ -345,7 +345,7 @@ TBD: Centered layout related settings
 
 ### Multibuffer
 
-```json [settings]
+```jsonc
 {
   // The default number of lines to expand excerpts in the multibuffer by.
   "expand_excerpt_lines": 5,
@@ -356,7 +356,7 @@ TBD: Centered layout related settings
 
 ### Editor Completions, Snippets, Actions, Diagnostics {#editor-lsp}
 
-```json [settings]
+```jsonc
   "snippet_sort_order": "inline",        // Snippets completions: top, inline, bottom, none
   "show_completions_on_input": true,     // Show completions while typing
   "show_completion_documentation": true, // Show documentation in completions
@@ -382,7 +382,7 @@ TBD: Centered layout related settings
 
 ### Editor Inlay Hints
 
-```json [settings]
+```jsonc
 {
   "inlay_hints": {
     "enabled": false,
@@ -413,7 +413,7 @@ TBD: Centered layout related settings
 
 ## File Finder
 
-```json [settings]
+```jsonc
   // File Finder Settings
   "file_finder": {
     "file_icons": true,         // Show/hide file icons
@@ -427,7 +427,7 @@ TBD: Centered layout related settings
 
 The project panel can be shown/hidden using {#action project_panel::ToggleFocus} ({#kb project_panel::ToggleFocus}) or {#action pane::RevealInProjectPanel} ({#kb pane::RevealInProjectPanel}).
 
-```json [settings]
+```jsonc
   // Project Panel Settings
   "project_panel": {
     "button": true,                 // Show/hide button in the status bar
@@ -462,7 +462,7 @@ The project panel can be shown/hidden using {#action project_panel::ToggleFocus}
 
 ## Terminal Panel
 
-```json [settings]
+```jsonc
   // Terminal Panel Settings
   "terminal": {
     "dock": "bottom",                   // Where to dock: left, right, bottom
@@ -499,7 +499,7 @@ See [Terminal settings](./configuring-gram.md#terminal) for additional non-visua
 
 ### Other Panels
 
-```json [settings]
+```jsonc
   // Git Panel
   "git_panel": {
     "button": true,               // Show/hide status bar icon

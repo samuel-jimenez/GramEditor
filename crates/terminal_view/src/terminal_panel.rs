@@ -1302,7 +1302,7 @@ impl Render for FailedToSpawnTerminal {
                     context_menu
                         .action("Open Settings", app_actions::OpenSettings.boxed_clone())
                         .action(
-                            "Edit settings.json",
+                            "Edit settings.jsonc",
                             app_actions::OpenSettingsFile.boxed_clone(),
                         )
                 }))

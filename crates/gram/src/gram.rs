@@ -4106,7 +4106,7 @@ mod tests {
         app_state
             .fs
             .save(
-                "/settings.json".as_ref(),
+                "/settings.jsonc".as_ref(),
                 &r#"{"base_keymap": "Atom"}"#.into(),
                 Default::default(),
             )
@@ -4116,7 +4116,7 @@ mod tests {
         app_state
             .fs
             .save(
-                "/keymap.json".as_ref(),
+                "/keymap.jsonc".as_ref(),
                 &r#"[{"bindings": {"backspace": "test_only::ActionA"}}]"#.into(),
                 Default::default(),
             )
@@ -4127,17 +4127,17 @@ mod tests {
             let settings_rx = watch_config_file(
                 &executor,
                 app_state.fs.clone(),
-                PathBuf::from("/settings.json"),
+                PathBuf::from("/settings.jsonc"),
             );
             let keymap_rx = watch_config_file(
                 &executor,
                 app_state.fs.clone(),
-                PathBuf::from("/keymap.json"),
+                PathBuf::from("/keymap.jsonc"),
             );
             let global_settings_rx = watch_config_file(
                 &executor,
                 app_state.fs.clone(),
-                PathBuf::from("/global_settings.json"),
+                PathBuf::from("/global_settings.jsonc"),
             );
             handle_settings_file_changes(settings_rx, global_settings_rx, cx);
             handle_keymap_file_changes(keymap_rx, cx);
@@ -4164,7 +4164,7 @@ mod tests {
         app_state
             .fs
             .save(
-                "/keymap.json".as_ref(),
+                "/keymap.jsonc".as_ref(),
                 &r#"[{"bindings": {"backspace": "test_only::ActionB"}}]"#.into(),
                 Default::default(),
             )
@@ -4184,7 +4184,7 @@ mod tests {
         app_state
             .fs
             .save(
-                "/settings.json".as_ref(),
+                "/settings.jsonc".as_ref(),
                 &r#"{"base_keymap": "JetBrains"}"#.into(),
                 Default::default(),
             )
@@ -4224,7 +4224,7 @@ mod tests {
         app_state
             .fs
             .save(
-                "/settings.json".as_ref(),
+                "/settings.jsonc".as_ref(),
                 &r#"{"base_keymap": "Atom"}"#.into(),
                 Default::default(),
             )
@@ -4233,7 +4233,7 @@ mod tests {
         app_state
             .fs
             .save(
-                "/keymap.json".as_ref(),
+                "/keymap.jsonc".as_ref(),
                 &r#"[{"bindings": {"backspace": "test_only::ActionA"}}]"#.into(),
                 Default::default(),
             )
@@ -4244,18 +4244,18 @@ mod tests {
             let settings_rx = watch_config_file(
                 &executor,
                 app_state.fs.clone(),
-                PathBuf::from("/settings.json"),
+                PathBuf::from("/settings.jsonc"),
             );
             let keymap_rx = watch_config_file(
                 &executor,
                 app_state.fs.clone(),
-                PathBuf::from("/keymap.json"),
+                PathBuf::from("/keymap.jsonc"),
             );
 
             let global_settings_rx = watch_config_file(
                 &executor,
                 app_state.fs.clone(),
-                PathBuf::from("/global_settings.json"),
+                PathBuf::from("/global_settings.jsonc"),
             );
             handle_settings_file_changes(settings_rx, global_settings_rx, cx);
             handle_keymap_file_changes(keymap_rx, cx);
@@ -4276,7 +4276,7 @@ mod tests {
         app_state
             .fs
             .save(
-                "/keymap.json".as_ref(),
+                "/keymap.jsonc".as_ref(),
                 &r#"[{"bindings": {"backspace": null}}]"#.into(),
                 Default::default(),
             )
@@ -4296,7 +4296,7 @@ mod tests {
         app_state
             .fs
             .save(
-                "/settings.json".as_ref(),
+                "/settings.jsonc".as_ref(),
                 &r#"{"base_keymap": "JetBrains"}"#.into(),
                 Default::default(),
             )
@@ -4643,13 +4643,13 @@ mod tests {
                 Path::new("/root"),
                 json!({
                     ".gram": {
-                        "settings.json": settings_init
+                        "settings.jsonc": settings_init
                     }
                 }),
             )
             .await;
 
-        eprintln!("Created project with .gram/settings.json containing UNIQUEVALUE");
+        eprintln!("Created project with .gram/settings.jsonc containing UNIQUEVALUE");
 
         // 2. Create a project with the file system and load it
         let project = Project::test(app_state.fs.clone(), [Path::new("/root")], cx).await;
@@ -4657,7 +4657,7 @@ mod tests {
         // Save original settings content for comparison
         let original_settings = app_state
             .fs
-            .load(Path::new("/root/.gram/settings.json"))
+            .load(Path::new("/root/.gram/settings.jsonc"))
             .await
             .unwrap();
 
@@ -4721,7 +4721,7 @@ mod tests {
         // 8. Verify file contents after calling function
         let new_content = app_state
             .fs
-            .load(Path::new("/root/.gram/settings.json"))
+            .load(Path::new("/root/.gram/settings.jsonc"))
             .await
             .unwrap();
 

@@ -16,7 +16,7 @@ TBD: Document the difference between Language servers
 By default Gram uses [vtsls](https://github.com/yioneko/vtsls) for TypeScript, TSX, and JavaScript files.
 You can configure the use of [typescript-language-server](https://github.com/typescript-language-server/typescript-language-server) per language in your settings file:
 
-```json [settings]
+```jsonc
 {
   "languages": {
     "TypeScript": {
@@ -34,7 +34,7 @@ You can configure the use of [typescript-language-server](https://github.com/typ
 
 Prettier will also be used for TypeScript files by default. To disable this:
 
-```json [settings]
+```jsonc
 {
   "languages": {
     "TypeScript": {
@@ -49,7 +49,7 @@ Prettier will also be used for TypeScript files by default. To disable this:
 
 `vtsls` may run out of memory on very large projects. We default the limit to 8092 (8 GiB) vs. the default of 3072 but this may not be sufficient for you:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "vtsls": {
@@ -68,9 +68,9 @@ Prettier will also be used for TypeScript files by default. To disable this:
 
 Gram sets the following initialization options to make the language server send back inlay hints (that is, when Gram has inlay hints enabled in the settings).
 
-You can override these settings in your Gram `settings.json` when using `typescript-language-server`:
+You can override these settings in your Gram `settings.jsonc` when using `typescript-language-server`:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "typescript-language-server": {
@@ -95,7 +95,7 @@ See [typescript-language-server inlayhints documentation](https://github.com/typ
 
 When using `vtsls`:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "vtsls": {
@@ -172,7 +172,7 @@ Run {#action debugger::Start} ({#kb debugger::Start}) to see a contextual list o
 
 As for all languages, configurations from `.vscode/launch.json` are also available for debugging in Gram.
 
-If your use-case isn't covered by any of these, you can take full control by adding debug configurations to `.gram/debug.json`. See below for example configurations.
+If your use-case isn't covered by any of these, you can take full control by adding debug configurations to `.gram/debug.jsonc`. See below for example configurations.
 
 ### Configuring JavaScript debug tasks
 

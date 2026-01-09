@@ -1032,7 +1032,7 @@ impl Fs for RealFs {
         let pending_paths: Arc<Mutex<Vec<PathEvent>>> = Default::default();
         let watcher = Arc::new(fs_watcher::FsWatcher::new(tx, pending_paths.clone()));
 
-        // If the path doesn't exist yet (e.g. settings.json), watch the parent dir to learn when it's created.
+        // If the path doesn't exist yet (e.g. settings.jsonc), watch the parent dir to learn when it's created.
         if let Err(e) = watcher.add(path)
             && let Some(parent) = path.parent()
             && let Err(parent_e) = watcher.add(parent)

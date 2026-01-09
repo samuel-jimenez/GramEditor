@@ -21,7 +21,7 @@ You can open your settings file from the command palette with {#action gram::Ope
 Just like with themes, Gram allows for configuring different icon themes for light and dark mode.
 You can set the mode to `"light"` or `"dark"` to ignore the current system mode.
 
-```json [settings]
+```jsonc
 {
   "icon_theme": {
     "mode": "system",

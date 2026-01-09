@@ -64,8 +64,8 @@ Keep `"use_new_terminal": false` and set `"allow_concurrent_runs": true` to allo
 
 Tasks can be defined:
 
-- in the global `tasks.json` file; such tasks are available in all Gram projects you work on. This file is usually located in `~/.config/gram/tasks.json`. You can edit them by using the `gram: open tasks` action.
-- in the worktree-specific (local) `.gram/tasks.json` file; such tasks are available only when working on a project with that worktree included. You can edit worktree-specific tasks by using the `gram: open project tasks` action.
+- in the global `tasks.jsonc` file; such tasks are available in all Gram projects you work on. This file is usually located in `~/.config/gram/tasks.json`. You can edit them by using the `gram: open tasks` action.
+- in the worktree-specific (local) `.gram/tasks.jsonc` file; such tasks are available only when working on a project with that worktree included. You can edit worktree-specific tasks by using the `gram: open project tasks` action.
 - on the fly with [oneshot tasks](#oneshot-tasks). These tasks are project-specific and do not persist across sessions.
 - by language extension.
 
@@ -89,7 +89,7 @@ These variables allow you to pull information from the current editor and use it
 
 To use a variable in a task, prefix it with a dollar sign (`$`):
 
-```json [settings]
+```jsonc
 {
   "label": "echo current file's path",
   "command": "echo $GRAM_FILE"
@@ -106,7 +106,7 @@ When working with paths containing spaces or other special characters, please en
 
 For example, instead of this (which will fail if the path has a space):
 
-```json [settings]
+```jsonc
 {
   "label": "stat current file",
   "command": "stat $GRAM_FILE"
@@ -115,7 +115,7 @@ For example, instead of this (which will fail if the path has a space):
 
 Provide the following:
 
-```json [settings]
+```jsonc
 {
   "label": "stat current file",
   "command": "stat",
@@ -125,7 +125,7 @@ Provide the following:
 
 Or explicitly include escaped quotes like so:
 
-```json [settings]
+```jsonc
 {
   "label": "stat current file",
   "command": "stat \"$GRAM_FILE\""
@@ -137,7 +137,7 @@ Or explicitly include escaped quotes like so:
 Task definitions with variables which are not present at the moment the task list is determined are filtered out.
 For example, the following task will appear in the spawn modal only if there is a text selection:
 
-```json [settings]
+```jsonc
 {
   "label": "selected text",
   "command": "echo \"$GRAM_SELECTED_TEXT\""
@@ -146,7 +146,7 @@ For example, the following task will appear in the spawn modal only if there is 
 
 Set default values to such variables to have such tasks always displayed:
 
-```json [settings]
+```jsonc
 {
   "label": "selected text with default",
   "command": "echo \"${GRAM_SELECTED_TEXT:no text selected}\""
@@ -172,7 +172,7 @@ By default, tasks capture their variables into a context once, and this "resolve
 
 This can be controlled with the `"reevaluate_context"` argument to the task: setting it to `true` will force the task to be reevaluated before each run.
 
-```json [keymap]
+```jsonc
 {
   "context": "Workspace",
   "bindings": {
@@ -185,7 +185,7 @@ This can be controlled with the `"reevaluate_context"` argument to the task: set
 
 You can define your own keybindings for your tasks via an additional argument to `task::Spawn`. If you wanted to bind the aforementioned `echo current file's path` task to `alt-g`, you would add the following snippet in your [`keymap.json`](./key-bindings.md) file:
 
-```json [keymap]
+```jsonc
 {
   "context": "Workspace",
   "bindings": {
@@ -198,15 +198,15 @@ Note that these tasks can also have a 'target' specified to control where the sp
 This could be useful for launching a terminal application that you want to use in the center area:
 
 ```json [tasks]
-// In tasks.json
+// In tasks.jsonc
 {
   "label": "start lazygit",
   "command": "lazygit -p $GRAM_WORKTREE_ROOT"
 }
 ```
 
-```json [keymap]
-// In keymap.json
+```jsonc
+// In keymap.jsonc
 {
   "context": "Workspace",
   "bindings": {
@@ -220,15 +220,15 @@ This could be useful for launching a terminal application that you want to use i
 
 ## Binding runnable tags to task templates
 
-Gram supports overriding the default action for inline runnable indicators via workspace-local and global `tasks.json` file with the following precedence hierarchy:
+Gram supports overriding the default action for inline runnable indicators via workspace-local and global `tasks.jsonc` file with the following precedence hierarchy:
 
-1. Workspace `tasks.json`
-2. Global `tasks.json`
+1. Workspace `tasks.jsonc`
+2. Global `tasks.jsonc`
 3. Language-provided tag bindings (default).
 
 To tag a task, add the runnable tag name to the `tags` field on the task template:
 
-```json [settings]
+```jsonc
 {
   "label": "echo current file's path",
   "command": "echo $GRAM_FILE",

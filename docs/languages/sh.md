@@ -8,7 +8,7 @@ Shell Scripts (bash, zsh, dash, sh) are supported natively by Gram.
 
 You can configure various settings for Shell Scripts in your Gram User Settings (`~/.config/gram/settings.json`) or Gram Project Settings (`.gram/settings.json`):
 
-```json [settings]
+```jsonc
   "languages": {
     "Shell Script": {
       "tab_size": 2,
@@ -41,7 +41,7 @@ shfmt --version
 
 3. Configure Gram to automatically format Shell Scripts with `shfmt` on save:
 
-```json [settings]
+```jsonc
   "languages": {
     "Shell Script": {
       "format_on_save": "on",

@@ -9,6 +9,7 @@ use crate::{
 };
 use any_vec::AnyVec;
 use anyhow::Context as _;
+use app_actions::{outline::ToggleOutline, workspace::CopyPath, workspace::CopyRelativePath};
 use collections::HashMap;
 use editor::{
     DisplayPoint, Editor, EditorSettings, MultiBufferOffset,
@@ -29,7 +30,6 @@ use schemars::JsonSchema;
 use serde::Deserialize;
 use settings::Settings;
 use std::sync::Arc;
-use app_actions::{outline::ToggleOutline, workspace::CopyPath, workspace::CopyRelativePath};
 
 use ui::{
     BASE_REM_SIZE_IN_PX, IconButton, IconButtonShape, IconName, Tooltip, h_flex, prelude::*,
@@ -1700,7 +1700,7 @@ mod tests {
         let mut editor = None;
         let window = cx.add_window(|window, cx| {
             let default_key_bindings = settings::KeymapFile::load_asset_allow_partial_failure(
-                "keymaps/default-macos.json",
+                "keymaps/default-macos.jsonc",
                 cx,
             )
             .unwrap();

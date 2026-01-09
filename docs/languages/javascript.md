@@ -14,9 +14,9 @@ But many JavaScript projects use other command-line code-formatting tools, such 
 You can use one of these tools by specifying an _external_ code formatter for JavaScript in your settings.
 See [the configuration docs](../configuring-gram.md) for more information.
 
-For example, if you have Prettier installed and on your `PATH`, you can use it to format JavaScript files by adding the following to your `settings.json`:
+For example, if you have Prettier installed and on your `PATH`, you can use it to format JavaScript files by adding the following to your `settings.jsonc`:
 
-```json [settings]
+```jsonc
 {
   "languages": {
     "JavaScript": {
@@ -46,7 +46,7 @@ Gram uses [tree-sitter/tree-sitter-jsdoc](https://github.com/tree-sitter/tree-si
 
 You can configure Gram to format code using `eslint --fix` by running the ESLint code action when formatting:
 
-```json [settings]
+```jsonc
 {
   "languages": {
     "JavaScript": {
@@ -60,7 +60,7 @@ You can configure Gram to format code using `eslint --fix` by running the ESLint
 
 You can also only execute a single ESLint rule when using `fixAll`:
 
-```json [settings]
+```jsonc
 {
   "languages": {
     "JavaScript": {
@@ -89,7 +89,7 @@ You can also only execute a single ESLint rule when using `fixAll`:
 If you **only** want to run ESLint on save, you can configure code actions as
 the formatter:
 
-```json [settings]
+```jsonc
 {
   "languages": {
     "JavaScript": {
@@ -106,7 +106,7 @@ the formatter:
 
 You can configure ESLint's `nodePath` setting:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "eslint": {
@@ -124,7 +124,7 @@ You can configure ESLint's `problems` setting.
 
 For example, here's how to set `problems.shortenToSingleLine`:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "eslint": {
@@ -142,7 +142,7 @@ For example, here's how to set `problems.shortenToSingleLine`:
 
 You can configure ESLint's `rulesCustomizations` setting:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "eslint": {
@@ -161,7 +161,7 @@ You can configure ESLint's `rulesCustomizations` setting:
 
 You can configure ESLint's `workingDirectory` setting:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "eslint": {
@@ -191,7 +191,7 @@ Run {#action debugger::Start} ({#kb debugger::Start}) to see a contextual list o
 
 As for all languages, configurations from `.vscode/launch.json` are also available for debugging in Gram.
 
-If your use-case isn't covered by any of these, you can take full control by adding debug configurations to `.gram/debug.json`. See below for example configurations.
+If your use-case isn't covered by any of these, you can take full control by adding debug configurations to `.gram/debug.jsonc`. See below for example configurations.
 
 ### Configuring JavaScript debug tasks
 

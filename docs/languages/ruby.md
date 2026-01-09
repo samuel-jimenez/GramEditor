@@ -46,7 +46,7 @@ For all supported Ruby language servers (`solargraph`, `ruby-lsp`, `rubocop`, `s
 
 You can skip step 1 and force using the system executable by setting `use_bundler` to `false` in your settings:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "<SERVER_NAME>": {
@@ -66,7 +66,7 @@ You can skip step 1 and force using the system executable by setting `use_bundle
 
 To switch to `ruby-lsp`, add the following to your `settings.json`:
 
-```json [settings]
+```jsonc
 {
   "languages": {
     "Ruby": {
@@ -96,7 +96,7 @@ The Ruby extension also provides support for `rubocop` language server for offen
 
 To enable it, add the following to your `settings.json`:
 
-```json [settings]
+```jsonc
 {
   "languages": {
     "Ruby": {
@@ -108,7 +108,7 @@ To enable it, add the following to your `settings.json`:
 
 Or, conversely, you can disable `ruby-lsp` and enable `solargraph` and `rubocop` by adding the following to your `settings.json`:
 
-```json [settings]
+```jsonc
 {
   "languages": {
     "Ruby": {
@@ -122,7 +122,7 @@ Or, conversely, you can disable `ruby-lsp` and enable `solargraph` and `rubocop`
 
 Solargraph has formatting and diagnostics disabled by default. We can tell Gram to enable them by adding the following to your `settings.json`:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "solargraph": {
@@ -143,7 +143,7 @@ Solargraph reads its configuration from a file called `.solargraph.yml` in the r
 
 You can pass Ruby LSP configuration to `initialization_options`, e.g.
 
-```json [settings]
+```jsonc
 {
   "languages": {
     "Ruby": {
@@ -162,9 +162,9 @@ You can pass Ruby LSP configuration to `initialization_options`, e.g.
 }
 ```
 
-LSP `settings` and `initialization_options` can also be project-specific. For example to use [standardrb/standard](https://github.com/standardrb/standard) as a formatter and linter for a particular project, add this to a `.gram/settings.json` inside your project repo:
+LSP `settings` and `initialization_options` can also be project-specific. For example to use [standardrb/standard](https://github.com/standardrb/standard) as a formatter and linter for a particular project, add this to a `.gram/settings.jsonc` inside your project repo:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "ruby-lsp": {
@@ -181,7 +181,7 @@ LSP `settings` and `initialization_options` can also be project-specific. For ex
 
 Rubocop has unsafe autocorrection disabled by default. We can tell Gram to enable it by adding the following to your `settings.json`:
 
-```json [settings]
+```jsonc
 {
   "languages": {
     "Ruby": {
@@ -212,7 +212,7 @@ Rubocop has unsafe autocorrection disabled by default. We can tell Gram to enabl
 
 To enable Sorbet, add `\"sorbet\"` to the `language_servers` list for Ruby in your `settings.json`. You may want to disable other language servers if Sorbet is intended to be your primary LSP, or if you plan to use it alongside another LSP for specific features like type checking.
 
-```json [settings]
+```jsonc
 {
   "languages": {
     "Ruby": {
@@ -236,7 +236,7 @@ For all aspects of installing Sorbet, setting it up in your project, and configu
 
 To enable Steep, add `\"steep\"` to the `language_servers` list for Ruby in your `settings.json`. You may need to adjust the order or disable other LSPs depending on your desired setup.
 
-```json [settings]
+```jsonc
 {
   "languages": {
     "Ruby": {
@@ -262,7 +262,7 @@ It's possible to use the [Tailwind CSS Language Server](https://github.com/tailw
 
 In order to do that, you need to configure the language server so that it knows about where to look for CSS classes in Ruby/ERB files by adding the following to your `settings.json`:
 
-```json [settings]
+```jsonc
 {
   "languages": {
     "Ruby": {
@@ -298,7 +298,7 @@ end
 
 ## Running tests
 
-To run tests in your Ruby project, you can set up custom tasks in your local `.gram/tasks.json` configuration file. These tasks can be defined to work with different test frameworks like Minitest, RSpec, quickdraw, and tldr. Below are some examples of how to set up these tasks to run your tests from within your editor.
+To run tests in your Ruby project, you can set up custom tasks in your local `.gram/tasks.jsonc` configuration file. These tasks can be defined to work with different test frameworks like Minitest, RSpec, quickdraw, and tldr. Below are some examples of how to set up these tasks to run your tests from within your editor.
 
 ### Minitest with Rails
 
@@ -402,7 +402,7 @@ The Ruby extension provides a debug adapter for debugging Ruby code. Gram's name
 
 To format ERB templates, you can use the `erb-formatter` formatter. This formatter uses the [`erb-formatter`](https://rubygems.org/gems/erb-formatter) gem to format ERB templates.
 
-```json [settings]
+```jsonc
 {
   "HTML+ERB": {
     "formatter": {

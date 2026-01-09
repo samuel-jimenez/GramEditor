@@ -30,7 +30,7 @@ which protols
 
 ## Configuration
 
-```json [settings]
+```jsonc
 "lsp": {
   "protobuf-language-server": {
     "binary": {
@@ -62,7 +62,7 @@ ColumnLimit: 120
 
 Or you can have gram directly invoke `clang-format` by specifying it as a formatter in your settings:
 
-```json [settings]
+```jsonc
   "languages": {
     "Proto": {
       "format_on_save": "on",

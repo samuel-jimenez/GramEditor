@@ -19,9 +19,9 @@ The Elixir extension offers language server support for `expert`, `elixir-ls`, `
 
 ### Expert
 
-To switch to `expert`, add the following to your `settings.json`:
+To switch to `expert`, add the following to your `settings.jsonc`:
 
-```json [settings]
+```jsonc
   "languages": {
     "Elixir": {
       "language_servers": ["expert", "!elixir-ls", "!next-ls", "!lexical", "..."]
@@ -34,9 +34,9 @@ To switch to `expert`, add the following to your `settings.json`:
 
 ### Next LS
 
-To switch to `next-ls`, add the following to your `settings.json`:
+To switch to `next-ls`, add the following to your `settings.jsonc`:
 
-```json [settings]
+```jsonc
   "languages": {
     "Elixir": {
       "language_servers": ["next-ls", "!expert", "!elixir-ls", "!lexical", "..."]
@@ -49,9 +49,9 @@ To switch to `next-ls`, add the following to your `settings.json`:
 
 ### Lexical
 
-To switch to `lexical`, add the following to your `settings.json`:
+To switch to `lexical`, add the following to your `settings.jsonc`:
 
-```json [settings]
+```jsonc
   "languages": {
     "Elixir": {
       "language_servers": ["lexical", "!expert", "!elixir-ls", "!next-ls", "..."]
@@ -82,9 +82,9 @@ brew install elixir-ls
 
 ### Formatting with Mix
 
-If you prefer to format your code with [Mix](https://hexdocs.pm/mix/Mix.html), use the following snippet in your `settings.json` file to configure it as an external formatter. Formatting will occur on file save.
+If you prefer to format your code with [Mix](https://hexdocs.pm/mix/Mix.html), use the following snippet in your `settings.jsonc` file to configure it as an external formatter. Formatting will occur on file save.
 
-```json [settings]
+```jsonc
 {
   "languages": {
     "Elixir": {
@@ -102,11 +102,11 @@ If you prefer to format your code with [Mix](https://hexdocs.pm/mix/Mix.html), u
 
 ### Additional workspace configuration options
 
-You can pass additional elixir-ls workspace configuration options via lsp settings in `settings.json`.
+You can pass additional elixir-ls workspace configuration options via lsp settings in `settings.jsonc`.
 
 The following example disables dialyzer:
 
-```json [settings]
+```jsonc
   "lsp": {
     "elixir-ls": {
       "settings": {

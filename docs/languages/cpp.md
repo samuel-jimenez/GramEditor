@@ -11,9 +11,9 @@ You can configure which `clangd` binary Gram should use.
 
 By default, Gram will try to find a `clangd` in your `$PATH` and try to use that. If that binary successfully executes, it's used. Otherwise, Gram will fall back to installing its own `clangd` version and use that.
 
-If you want to install a pre-release `clangd` version instead you can instruct Gram to do so by setting `pre_release` to `true` in your `settings.json`:
+If you want to install a pre-release `clangd` version instead you can instruct Gram to do so by setting `pre_release` to `true` in your `settings.jsonc`:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "clangd": {
@@ -25,9 +25,9 @@ If you want to install a pre-release `clangd` version instead you can instruct G
 }
 ```
 
-If you want to disable Gram looking for a `clangd` binary, you can set `ignore_system_version` to `true` in your `settings.json`:
+If you want to disable Gram looking for a `clangd` binary, you can set `ignore_system_version` to `true` in your `settings.jsonc`:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "clangd": {
@@ -41,7 +41,7 @@ If you want to disable Gram looking for a `clangd` binary, you can set `ignore_s
 
 If you want to use a binary in a custom location, you can specify a `path` and optional `arguments`:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "clangd": {
@@ -60,7 +60,7 @@ This `"path"` has to be an absolute path.
 
 You can pass any number of arguments to clangd. To see a full set of available options, run `clangd --help` from the command line. For example with `--function-arg-placeholders=0` completions contain only parentheses for function calls, while the default (`--function-arg-placeholders=1`) completions also contain placeholders for method parameters.
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "clangd": {
@@ -94,7 +94,7 @@ See [Clang-Format Style Options](https://clang.llvm.org/docs/ClangFormatStyleOpt
 
 You can trigger formatting via {#kb editor::Format} or the `editor: format` action from the command palette or by adding `format_on_save` to your Gram settings:
 
-```json [settings]
+```jsonc
   "languages": {
     "C++": {
       "format_on_save": "on",
@@ -173,7 +173,7 @@ Allows switching between corresponding C++ source files (e.g., `.cpp`) and heade
 by running the command {#action editor::SwitchSourceHeader} from the command palette or by setting
 a keybinding for the `editor::SwitchSourceHeader` action.
 
-```json [settings]
+```jsonc
 {
   "context": "Editor",
   "bindings": {

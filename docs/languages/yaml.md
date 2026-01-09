@@ -7,9 +7,9 @@ YAML support is available natively in Gram.
 
 ## Configuration
 
-You can configure various [yaml-language-server settings](https://github.com/redhat-developer/yaml-language-server?tab=readme-ov-file#language-server-settings) by adding them to your Gram settings.json in a `yaml-language-server` block under the `lsp` key. For example:
+You can configure various [yaml-language-server settings](https://github.com/redhat-developer/yaml-language-server?tab=readme-ov-file#language-server-settings) by adding them to your Gram `settings.jsonc` in a `yaml-language-server` block under the `lsp` key. For example:
 
-```json [settings]
+```jsonc
   "lsp": {
     "yaml-language-server": {
       "settings": {
@@ -38,7 +38,7 @@ By default, Gram uses Prettier for formatting YAML files.
 
 You can customize the formatting behavior of Prettier. For example to use single-quotes in yaml files add the following to your `.prettierrc` configuration file:
 
-```json [settings]
+```jsonc
 {
   "overrides": [
     {
@@ -55,7 +55,7 @@ You can customize the formatting behavior of Prettier. For example to use single
 
 To use `yaml-language-server` instead of Prettier for YAML formatting, add the following to your Gram `settings.json`:
 
-```json [settings]
+```jsonc
   "languages": {
     "YAML": {
       "formatter": "language_server"
@@ -79,7 +79,7 @@ on:
 
 You can disable the automatic detection and retrieval of schemas from the JSON Schema if desired:
 
-```json [settings]
+```jsonc
   "lsp": {
     "yaml-language-server": {
       "settings": {
@@ -99,7 +99,7 @@ Yaml-language-server supports [custom tags](https://github.com/redhat-developer/
 
 For example Amazon CloudFormation YAML uses a number of custom tags, to support these you can add the following to your settings.json:
 
-```json [settings]
+```jsonc
   "lsp": {
     "yaml-language-server": {
       "settings": {

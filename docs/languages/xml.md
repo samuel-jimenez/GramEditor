@@ -8,7 +8,7 @@ XML support is available through the [XML extension](https://github.com/sweetppr
 
 If you have additional file extensions that are not being automatically recognized as XML just add them to [file_types](../configuring-gram.md#file-types) in your Gram settings:
 
-```json [settings]
+```jsonc
   "file_types": {
     "XML": ["rdf", "gpx", "kml"]
   }

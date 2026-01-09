@@ -16,7 +16,7 @@ TBD: Provide explicit examples not just `....`
 
 The following configuration can be used to change the inlay hint settings for `rust-analyzer` in Rust:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "rust-analyzer": {
@@ -43,7 +43,7 @@ See [Inlay Hints](https://rust-analyzer.github.io/book/features.html#inlay-hints
 
 The `rust-analyzer` target directory can be set in `initialization_options`:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "rust-analyzer": {
@@ -67,7 +67,7 @@ By default, Gram will try to find a `rust-analyzer` in your `$PATH` and try to u
 
 If you want to install pre-release `rust-analyzer` version instead you can instruct Gram to do so by setting `pre_release` to `true` in your `settings.json`:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "rust-analyzer": {
@@ -81,7 +81,7 @@ If you want to install pre-release `rust-analyzer` version instead you can instr
 
 If you want to disable Gram looking for a `rust-analyzer` binary, you can set `ignore_system_version` to `true` in your `settings.json`:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "rust-analyzer": {
@@ -95,7 +95,7 @@ If you want to disable Gram looking for a `rust-analyzer` binary, you can set `i
 
 If you want to use a binary in a custom location, you can specify a `path` and optional `arguments`:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "rust-analyzer": {
@@ -114,7 +114,7 @@ This `"path"` has to be an absolute path.
 
 If you want rust-analyzer to provide diagnostics for a target other than your current platform (e.g. for windows when running on macOS) you can use the following Gram lsp settings:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "rust-analyzer": {
@@ -139,7 +139,7 @@ rustup target list --installed
 Gram provides tasks using tree-sitter, but rust-analyzer has an LSP extension method for querying file-related tasks via LSP.
 This is enabled by default and can be configured as
 
-```json [settings]
+```jsonc
 "lsp": {
   "rust-analyzer": {
     "enable_lsp_tasks": true,
@@ -191,7 +191,7 @@ Check on save feature is responsible for returning part of the diagnostics based
 Consider more `rust-analyzer.cargo.` and `rust-analyzer.check.` and `rust-analyzer.diagnostics.` settings from the manual for more fine-grained configuration.
 Here's a snippet for Gram settings.json (the language server will restart automatically after the `lsp.rust-analyzer` section is edited and saved):
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "rust-analyzer": {
@@ -225,7 +225,7 @@ Here's a snippet for Gram settings.json (the language server will restart automa
 If you want rust-analyzer to analyze multiple Rust projects in the same folder that are not listed in `[members]` in the Cargo workspace,
 you can list them in `linkedProjects` in the local project settings:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "rust-analyzer": {
@@ -241,7 +241,7 @@ you can list them in `linkedProjects` in the local project settings:
 
 There's a way to get custom completion items from rust-analyzer, that will transform the code according to the snippet body:
 
-```json [settings]
+```jsonc
 {
   "lsp": {
     "rust-analyzer": {
@@ -296,7 +296,7 @@ There's a way to get custom completion items from rust-analyzer, that will trans
 
 Gram supports debugging Rust binaries and tests out of the box with `CodeLLDB` and `GDB`. Run {#action debugger::Start} ({#kb debugger::Start}) to launch one of these preconfigured debug tasks.
 
-For more control, you can add debug configurations to `.gram/debug.json`. See the examples below.
+For more control, you can add debug configurations to `.gram/debug.jsonc`. See the examples below.
 
 - [CodeLLDB configuration documentation](https://github.com/vadimcn/codelldb/blob/master/MANUAL.md#starting-a-new-debug-session)
 - [GDB configuration documentation](https://sourceware.org/gdb/current/onlinedocs/gdb.html/Debugger-Adapter-Protocol.html)

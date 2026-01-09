@@ -21,6 +21,7 @@ use gpui::{
     WeakEntity, anchored, deferred,
 };
 
+use app_actions::ToggleFocus;
 use itertools::Itertools as _;
 use language::Buffer;
 use project::debugger::session::{Session, SessionQuirks, SessionState, SessionStateEvent};
@@ -40,7 +41,6 @@ use workspace::{
     Item, Pane, Workspace,
     dock::{DockPosition, Panel, PanelEvent},
 };
-use app_actions::ToggleFocus;
 
 const DEBUG_PANEL_KEY: &str = "DebugPanel";
 
@@ -632,7 +632,7 @@ impl DebugPanel {
                 .on_click(|_, window, cx| {
                     window.dispatch_action(app_actions::OpenProjectDebugTasks.boxed_clone(), cx);
                 })
-                .tooltip(Tooltip::text("Edit debug.json"))
+                .tooltip(Tooltip::text("Edit debug.jsonc"))
         };
 
         let documentation_button = || {
@@ -1064,9 +1064,9 @@ impl DebugPanel {
                 ..
             } => {
                 let relative_path = if dir.ends_with(RelPath::unix(".vscode").unwrap()) {
-                    dir.join(RelPath::unix("launch.json").unwrap())
+                    dir.join(RelPath::unix("launch.jsonc").unwrap())
                 } else {
-                    dir.join(RelPath::unix("debug.json").unwrap())
+                    dir.join(RelPath::unix("debug.jsonc").unwrap())
                 };
                 ProjectPath {
                     worktree_id: id,
@@ -1156,7 +1156,7 @@ impl DebugPanel {
                             .read(cx)
                             .project_path_for_absolute_path(path, cx)
                             .context(
-                                "Couldn't get project path for .gram/debug.json in active worktree",
+                                "Couldn't get project path for .gram/debug.jsonc in active worktree",
                             )
                     })??;
 
@@ -1214,7 +1214,7 @@ impl DebugPanel {
         let mut cursor = tree_sitter::QueryCursor::new();
         let syntax_tree = parser
             .parse(&content, None)
-            .context("could not parse debug.json")?;
+            .context("could not parse debug.jsonc")?;
         let mut matches = cursor.matches(
             &LAST_ITEM_QUERY,
             syntax_tree.root_node(),
@@ -1711,7 +1711,7 @@ impl Render for DebugPanel {
                                 }),
                         )
                         .child(
-                            Button::new("edit-debug-settings", "Edit debug.json")
+                            Button::new("edit-debug-settings", "Edit debug.jsonc")
                                 .icon(IconName::Code)
                                 .icon_size(IconSize::Small)
                                 .icon_color(Color::Muted)

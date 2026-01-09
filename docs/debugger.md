@@ -36,7 +36,7 @@ For most languages, the fastest way to get started is to run {#action debugger::
 
 You can open the same modal by clicking the "plus" button at the top right of the debug panel.
 
-For languages that don't provide preconfigured debug tasks (this includes C, C++, and some extension-supported languages), you can define debug configurations in the `.gram/debug.json` file in your project root. This file should be an array of configuration objects:
+For languages that don't provide preconfigured debug tasks (this includes C, C++, and some extension-supported languages), you can define debug configurations in the `.gram/debug.jsonc` file in your project root. This file should be an array of configuration objects:
 
 ```json [debug]
 [
@@ -53,19 +53,19 @@ For languages that don't provide preconfigured debug tasks (this includes C, C++
 ]
 ```
 
-Check the documentation for your language for example configurations covering typical use-cases. Once you've added configurations to `.gram/debug.json`, they'll appear in the list in the new process modal.
+Check the documentation for your language for example configurations covering typical use-cases. Once you've added configurations to `.gram/debug.jsonc`, they'll appear in the list in the new process modal.
 
-Gram will also load debug configurations from `.vscode/launch.json`, and show them in the new process modal if no configurations are found in `.gram/debug.json`.
+Gram will also load debug configurations from `.vscode/launch.json`, and show them in the new process modal if no configurations are found in `.gram/debug.jsonc`.
 
 #### Global debug configurations
 
-If you run the same launch profiles across multiple projects, you can store them once in your user configuration. Invoke {#action gram::OpenDebugTasks} from the command palette to open the global `debug.json` file; Gram creates it next to your user `settings.json` and keeps it in sync with the debugger UI. The file lives at:
+If you run the same launch profiles across multiple projects, you can store them once in your user configuration. Invoke {#action gram::OpenDebugTasks} from the command palette to open the global `debug.jsonc` file; Gram creates it next to your user `settings.jsonc` and keeps it in sync with the debugger UI. The file lives at:
 
-- **macOS:** `~/Library/Application Support/Gram/debug.json`
-- **Linux/BSD:** `$XDG_CONFIG_HOME/gram/debug.json` (falls back to `~/.config/gram/debug.json`)
-- **Windows:** `%APPDATA%\Gram\debug.json`
+- **macOS:** `~/Library/Application Support/Gram/debug.jsonc`
+- **Linux/BSD:** `$XDG_CONFIG_HOME/gram/debug.jsonc` (falls back to `~/.config/gram/debug.jsonc`)
+- **Windows:** `%APPDATA%\Gram\debug.jsonc`
 
-Populate this file with the same array of objects you would place in `.gram/debug.json`. Any scenarios defined there are merged into every workspace, so your favorite launch presets appear automatically in the "New Debug Session" dialog.
+Populate this file with the same array of objects you would place in `.gram/debug.jsonc`. Any scenarios defined there are merged into every workspace, so your favorite launch presets appear automatically in the "New Debug Session" dialog.
 
 ### Launching & Attaching
 
@@ -160,7 +160,7 @@ The debug adapter will then stop whenever an exception of a given kind occurs. W
 
 ## Settings
 
-The settings for the debugger are grouped under the `debugger` key in `settings.json`:
+The settings for the debugger are grouped under the `debugger` key in `settings.jsonc`:
 
 - `dock`: Determines the position of the debug panel in the UI.
 - `stepping_granularity`: Determines the stepping granularity.
@@ -182,7 +182,7 @@ The settings for the debugger are grouped under the `debugger` key in `settings.
 2. `right` - The debug panel will be docked to the right side of the UI.
 3. `bottom` - The debug panel will be docked to the bottom of the UI.
 
-```json [settings]
+```jsonc
 "debugger": {
   "dock": "bottom"
 },
@@ -200,7 +200,7 @@ The settings for the debugger are grouped under the `debugger` key in `settings.
    The meaning of a statement is determined by the adapter and it may be considered equivalent to a line.
    For example 'for(int i = 0; i < 10; i++)' could be considered to have 3 statements 'int i = 0', 'i < 10', and 'i++'.
 
-```json [settings]
+```jsonc
 {
   "debugger": {
     "stepping_granularity": "statement"
@@ -210,7 +210,7 @@ The settings for the debugger are grouped under the `debugger` key in `settings.
 
 2. Line - The step should allow the program to run until the current source line has executed.
 
-```json [settings]
+```jsonc
 {
   "debugger": {
     "stepping_granularity": "line"
@@ -220,7 +220,7 @@ The settings for the debugger are grouped under the `debugger` key in `settings.
 
 3. Instruction - The step should allow one instruction to execute (e.g. one x86 instruction).
 
-```json [settings]
+```jsonc
 {
   "debugger": {
     "stepping_granularity": "instruction"
@@ -238,7 +238,7 @@ The settings for the debugger are grouped under the `debugger` key in `settings.
 
 `boolean` values
 
-```json [settings]
+```jsonc
 {
   "debugger": {
     "save_breakpoints": true
@@ -256,7 +256,7 @@ The settings for the debugger are grouped under the `debugger` key in `settings.
 
 `boolean` values
 
-```json [settings]
+```jsonc
 {
   "debugger": {
     "show_button": true
@@ -274,7 +274,7 @@ The settings for the debugger are grouped under the `debugger` key in `settings.
 
 `integer` values
 
-```json [settings]
+```jsonc
 {
   "debugger": {
     "timeout": 3000
@@ -290,7 +290,7 @@ The settings for the debugger are grouped under the `debugger` key in `settings.
 
 **Options**
 
-```json [settings]
+```jsonc
 {
   "inlay_hints": {
     "show_value_hints": false
@@ -310,7 +310,7 @@ Inline value hints can also be toggled from the Editor Controls menu in the edit
 
 `boolean` values
 
-```json [settings]
+```jsonc
 {
   "debugger": {
     "log_dap_communications": true
@@ -328,7 +328,7 @@ Inline value hints can also be toggled from the Editor Controls menu in the edit
 
 `boolean` values
 
-```json [settings]
+```jsonc
 {
   "debugger": {
     "format_dap_log_messages": true
@@ -344,7 +344,7 @@ Inline value hints can also be toggled from the Editor Controls menu in the edit
 
 You can pass `binary`, `args`, or both. `binary` should be a path to a _debug adapter_ (like `lldb-dap`) not a _debugger_ (like `lldb` itself). The `args` setting overrides any arguments that Gram would otherwise pass to the adapter.
 
-```json [settings]
+```jsonc
 {
   "dap": {
     "CodeLLDB": {

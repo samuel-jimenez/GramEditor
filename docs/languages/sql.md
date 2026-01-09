@@ -23,7 +23,7 @@ sql-formatter --version
 
 3. Configure Gram to automatically format SQL with `sql-formatter`:
 
-```json [settings]
+```jsonc
   "languages": {
     "SQL": {
       "formatter": {
@@ -44,7 +44,7 @@ You can add this to Gram project settings (`.gram/settings.json`) or via your Gr
 
 Sql-formatter also allows more precise control by providing [sql-formatter configuration options](https://github.com/sql-formatter-org/sql-formatter#configuration-options). To provide these, create a `.sql-formatter.json` file in your project:
 
-```json [settings]
+```jsonc
 {
   "language": "postgresql",
   "tabWidth": 2,
@@ -55,7 +55,7 @@ Sql-formatter also allows more precise control by providing [sql-formatter confi
 
 When using a `.sql-formatter.json` file you can use a more simplified set of Gram settings since the language need not be specified inline:
 
-```json [settings]
+```jsonc
   "languages": {
     "SQL": {
       "formatter": {

@@ -34,7 +34,7 @@ Here is a common `settings.json` including the above mentioned configurations:
       // Note: Invalid values will default to "always"
       // If custom paths (below) are provided, check_updates is IGNORED for that component
       "check_updates": "always",
-      
+
       // Use custom installations instead of managed downloads
       // When these are set, the extension will not download or manage these components
       "jdtls_launcher": "/path/to/your/jdt-language-server/bin/jdtls",
@@ -49,7 +49,7 @@ Here is a common `settings.json` including the above mentioned configurations:
 
 Debug support is enabled via our [Fork of Java Debug](https://github.com/zed-industries/java-debug), which the extension will automatically download and start for you. Please refer to the [Zed Documentation](https://zed.dev/docs/debugger#getting-started) for general information about how debugging works in Zed.
 
-To get started with Java, click the `edit debug.json` button in the Debug menu, and replace the contents of the file with the following:
+To get started with Java, click the `edit debug.jsonc` button in the Debug menu, and replace the contents of the file with the following:
 ```jsonc
 [
   {

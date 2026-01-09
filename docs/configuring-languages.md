@@ -23,12 +23,12 @@ to create new [Language Extensions](./extensions/languages.md).
 ## Language-specific Settings
 
 It is possible to override global settings for individual languages. These
-custom configurations are defined in the `settings.json` file under the
+custom configurations are defined in the `settings.jsonc` file under the
 `languages` key.
 
 Here's an example of language-specific settings:
 
-```json [settings]
+```jsonc
 "languages": {
   "Python": {
     "tab_size": 4,
@@ -64,9 +64,9 @@ Some of the settings that can be customized include:
 
 Gram automatically detects file types based on their extensions, but you can customize these associations.
 
-To set up custom file associations, use the [`file_types`](./configuring-gram.md#file-types) setting in your `settings.json`:
+To set up custom file associations, use the [`file_types`](./configuring-gram.md#file-types) setting in your `settings.jsonc`:
 
-```json [settings]
+```jsonc
 "file_types": {
   "C++": ["c"],
   "TOML": ["MyLockFile"],
@@ -124,7 +124,7 @@ which language servers are used and in what order.
 
 Specify preferences using the `language_servers` setting:
 
-```json [settings]
+```jsonc
   "languages": {
     "PHP": {
       "language_servers": ["intelephense", "!phpactor", "!phptools", "..."]
@@ -154,9 +154,9 @@ those that do, you can specify the toolchain from a toolchain picker (via
 ### Configuring Language Servers
 
 Custom configuration options for language servers are configured using the `lsp`
-section of `settings.json`:
+section of `settings.jsonc`:
 
-```json [settings]
+```jsonc
   "lsp": {
     "rust-analyzer": {
       "initialization_options": {
@@ -183,9 +183,9 @@ Suppose you want to configure the following settings for TypeScript:
 - Enable strict null checks
 - Set the target ECMAScript version to ES2020
 
-Here's how you would structure these settings in `settings.json`:
+Here's how you would structure these settings in `settings.jsonc`:
 
-```json [settings]
+```jsonc
 "lsp": {
   "typescript-language-server": {
     "initialization_options": {
@@ -215,7 +215,7 @@ be restarted for changes to be applied.
 
 For example, rust-analyzer and clangd are configured this way.
 
-```json [settings]
+```jsonc
   "lsp": {
     "rust-analyzer": {
       "initialization_options": {
@@ -229,7 +229,7 @@ For example, rust-analyzer and clangd are configured this way.
 
 Most language servers use settings that can be updated without restarting.
 
-```json [settings]
+```jsonc
 "lsp": {
   "tailwindcss-language-server": {
     "settings": {
@@ -248,7 +248,7 @@ TODO: This should be opt in.
 
 If you wish to specify an explicit alternate binary you can specify that in settings:
 
-```json [settings]
+```jsonc
   "lsp": {
     "rust-analyzer": {
       "binary": {
@@ -268,7 +268,7 @@ If you wish to specify an explicit alternate binary you can specify that in sett
 
 You can toggle language server support globally or per-language:
 
-```json [settings]
+```jsonc
   "languages": {
     "Markdown": {
       "enable_language_server": false
@@ -278,7 +278,7 @@ You can toggle language server support globally or per-language:
 
 This disables the language server for Markdown files, which can be useful for
 performance in large documentation projects. You can configure this globally in
-your `~/.config/gram/settings.json` or inside a `.gram/settings.json` in your
+your `~/.config/gram/settings.jsonc` or inside a `.gram/settings.jsonc` in your
 project directory.
 
 ## Formatting and Linting
@@ -287,9 +287,9 @@ project directory.
 
 Gram supports both built-in and external formatters. See
 [`formatter`](./configuring-gram.md#formatter) docs for more.
-Configure formatters globally or per-language in `settings.json`:
+Configure formatters globally or per-language in `settings.jsonc`:
 
-```json [settings]
+```jsonc
 "languages": {
   "JavaScript": {
     "formatter": {
@@ -311,7 +311,7 @@ This example uses Prettier for JavaScript and the language server's formatter fo
 
 To disable formatting for a specific language:
 
-```json [settings]
+```jsonc
 "languages": {
   "Markdown": {
     "format_on_save": "off"
@@ -325,7 +325,7 @@ Linting is typically handled by language servers.
 
 Many language servers allow you to configure linting rules:
 
-```json [settings]
+```jsonc
 "lsp": {
   "eslint": {
     "settings": {
@@ -341,7 +341,7 @@ This configuration sets up ESLint to organize imports on save for JavaScript fil
 
 To run linter fixes automatically on save:
 
-```json [settings]
+```jsonc
 "languages": {
   "JavaScript": {
     "formatter": {
@@ -356,7 +356,7 @@ To run linter fixes automatically on save:
 Here's an example that uses Prettier for formatting and ESLint for linting
 JavaScript files automatically on save:
 
-```json [settings]
+```jsonc
 "languages": {
   "JavaScript": {
     "formatter": [
@@ -391,7 +391,7 @@ Gram uses Tree-sitter grammars for syntax highlighting. Override the default hig
 
 This example makes comments italic and changes the color of strings:
 
-```json [settings]
+```jsonc
 "theme_overrides": {
   "One Dark": {
     "syntax": {
@@ -411,9 +411,9 @@ This example makes comments italic and changes the color of strings:
 To change the editor theme:
 
 1. Use the theme selector ({#kb theme_selector::Toggle})
-2. Or set it in `settings.json`:
+2. Or set it in `settings.jsonc`:
 
-```json [settings]
+```jsonc
 "theme": {
   "mode": "dark",
   "dark": "One Dark",
@@ -434,9 +434,9 @@ To create your own theme extension, refer to the [Developing Theme Extensions](.
 
 ### Inlay Hints
 
-Inlay hints provide additional information inline in code, such as parameter names or inferred types. Configure inlay hints in `settings.json`:
+Inlay hints provide additional information inline in code, such as parameter names or inferred types. Configure inlay hints in `settings.jsonc`:
 
-```json [settings]
+```jsonc
 "inlay_hints": {
   "enabled": true,
   "show_type_hints": true,

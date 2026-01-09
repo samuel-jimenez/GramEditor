@@ -595,7 +595,7 @@ mod tests {
             TreeDiff {
                 entries: [
                     (
-                        RepoPath::new(".gram/settings.json").unwrap(),
+                        RepoPath::new(".gram/settings.jsonc").unwrap(),
                         TreeDiffStatus::Added,
                     ),
                     (

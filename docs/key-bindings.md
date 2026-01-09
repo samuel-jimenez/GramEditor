@@ -2,7 +2,7 @@
 
 ## Predefined Keymaps
 
-If you're used to a specific editor's defaults, you can change your `base_keymap` through the settings window ({#kb gram::OpenSettings}) or directly through your `settings.json` file ({#kb gram::OpenSettingsFile}).
+If you're used to a specific editor's defaults, you can change your `base_keymap` through the settings window ({#kb gram::OpenSettings}) or directly through your `settings.jsonc` file ({#kb gram::OpenSettingsFile}).
 
 The following keymap styles are currently supported:
 
@@ -27,14 +27,14 @@ In there, you can see all of the existing actions in Gram as well as the associa
 
 You can also customize them right from there, either by clicking on the pencil icon that appears when you hover over a particular action, by double-clicking on the action row, or by pressing the `enter` key.
 
-Anything that you end up doing on the keymap editor also gets reflected on the `keymap.json` file.
+Anything that you end up doing on the keymap editor also gets reflected on the `keymap.jsonc` file.
 
 ## User Keymaps
 
 The keymap file is stored in the following locations for each platform:
 
-- macOS/Linux: `~/.config/gram/keymap.json`
-- Windows: `~\AppData\Roaming\Gram/keymap.json`
+- macOS/Linux: `~/.config/gram/keymap.jsonc`
+- Windows: `~\AppData\Roaming\Gram/keymap.jsonc`
 
 You can open the keymap with the {#action gram::OpenKeymapFile} action from the command palette.
 
@@ -49,7 +49,7 @@ If you are using a non-QWERTY, Latin-character keyboard, you may want to set `us
 
 For example:
 
-```json [keymap]
+```jsonc
 [
   {
     "bindings": {
@@ -85,7 +85,7 @@ The keys can be any single Unicode codepoint that your keyboard generates (for e
 
 A few examples:
 
-```json [settings]
+```jsonc
  "bindings": {
    "cmd-k cmd-s": "gram::OpenKeymap", // matches ⌘-k then ⌘-s
    "space e": "editor::Complete", // type space then e
@@ -173,7 +173,7 @@ On keyboards that support extended Latin alphabets (French AZERTY, German QWERTZ
 
 If you are defining shortcuts in your personal keymap, you can opt into the key equivalent mapping by setting `use_key_equivalents` to `true` in your keymap:
 
-```json [keymap]
+```jsonc
 [
   {
     "use_key_equivalents": true,
@@ -199,7 +199,7 @@ If you'd like a given binding to do nothing in a given context, you can use
 want to disable it, or if you want to type the character that would be typed by
 the sequence, or if you want to disable multikey bindings starting with that key.
 
-```json [keymap]
+```jsonc
 [
   {
     "context": "Workspace",
@@ -214,7 +214,7 @@ A `null` binding follows the same precedence rules as normal actions, so it disa
 
 This is useful for preventing Gram from falling back to a default key binding when the action you specified is conditional and propagates. For example, `buffer_search::DeployReplace` only triggers when the search bar is not in view. If the search bar is in view, it would propagate and trigger the default action set for that key binding, such as opening the right dock. To prevent this from happening:
 
-```json [keymap]
+```jsonc
 [
   {
     "context": "Workspace",
@@ -235,7 +235,7 @@ This is useful for preventing Gram from falling back to a default key binding wh
 
 A common request is to be able to map from a single keystroke to a sequence. You can do this with the `workspace::SendKeystrokes` action.
 
-```json [keymap]
+```jsonc
 [
   {
     "bindings": {
@@ -274,7 +274,7 @@ If you're on Linux or Windows, you might find yourself wanting to forward key co
 
 For example, `ctrl-n` creates a new tab in Gram on Linux. If you want to send `ctrl-n` to the built-in terminal when it's focused, add the following to your keymap:
 
-```json [settings]
+```jsonc
 {
   "context": "Terminal",
   "bindings": {
@@ -285,5 +285,5 @@ For example, `ctrl-n` creates a new tab in Gram on Linux. If you want to send `c
 
 ### Task Key bindings
 
-You can also bind keys to launch Gram Tasks defined in your `tasks.json`.
+You can also bind keys to launch Gram Tasks defined in your `tasks.jsonc`.
 See the [tasks documentation](tasks.md#custom-keybindings-for-tasks) for more.

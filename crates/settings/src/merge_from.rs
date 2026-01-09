@@ -1,6 +1,6 @@
 /// Trait for recursively merging settings structures.
 ///
-/// When Gram starts it loads settings from `default.json` to initialize
+/// When Gram starts it loads settings from `default.jsonc` to initialize
 /// everything. These may be further refined by loading the user's settings,
 /// and any settings profiles; and then further refined by loading any
 /// local project settings.

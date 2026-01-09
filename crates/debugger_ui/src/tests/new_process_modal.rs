@@ -208,9 +208,9 @@ async fn test_save_debug_scenario_to_file(executor: BackgroundExecutor, cx: &mut
         .unwrap();
 
     let debug_json_content = fs
-        .load(path!("/project/.gram/debug.json").as_ref())
+        .load(path!("/project/.gram/debug.jsonc").as_ref())
         .await
-        .expect("debug.json should exist")
+        .expect("debug.jsonc should exist")
         .lines()
         .filter(|line| !line.starts_with("//"))
         .collect::<Vec<_>>()
@@ -271,9 +271,9 @@ async fn test_save_debug_scenario_to_file(executor: BackgroundExecutor, cx: &mut
         ]"#};
 
     let debug_json_content = fs
-        .load(path!("/project/.gram/debug.json").as_ref())
+        .load(path!("/project/.gram/debug.jsonc").as_ref())
         .await
-        .expect("debug.json should exist")
+        .expect("debug.jsonc should exist")
         .lines()
         .filter(|line| !line.starts_with("//"))
         .collect::<Vec<_>>()
@@ -294,7 +294,7 @@ async fn test_debug_modal_subtitles_with_multiple_worktrees(
         path!("/workspace1"),
         json!({
             ".gram": {
-                "debug.json": r#"[
+                "debug.jsonc": r#"[
                     {
                         "adapter": "fake-adapter",
                         "label": "Debug App 1",
@@ -344,7 +344,7 @@ async fn test_debug_modal_subtitles_with_multiple_worktrees(
 
     assert_eq!(
         subtitles.as_slice(),
-        [path!(".gram/debug.json"), path!(".gram/debug.json")]
+        [path!(".gram/debug.jsonc"), path!(".gram/debug.jsonc")]
     );
 }
 

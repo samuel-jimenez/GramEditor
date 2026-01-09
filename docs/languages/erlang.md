@@ -13,9 +13,9 @@ The Erlang extension offers language server support for `erlang_ls` and `erlang-
 
 `erlang_ls` is enabled by default.
 
-To switch to `erlang-language-platform`, add the following to your `settings.json`:
+To switch to `erlang-language-platform`, add the following to your `settings.jsonc`:
 
-```json [settings]
+```jsonc
 {
   "languages": {
     "Erlang": {

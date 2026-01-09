@@ -10,7 +10,7 @@ By default, all diagnostics are displayed as underlined text in the editor and t
 
 Editor diagnostics can be filtered using the editor setting:
 
-```json [settings]
+```jsonc
 "diagnostics_max_severity": null
 ```
 
@@ -18,7 +18,7 @@ Possible values: `"off"`, `"error"`, `"warning"`, `"info"`, `"hint"`, `null` (de
 
 The scrollbar diagnostics are configured using
 
-```json [settings]
+```jsonc
 "scrollbar": {
   "diagnostics": "all",
 }
@@ -34,7 +34,7 @@ Or, `editor::GoToDiagnostic` and `editor::GoToPreviousDiagnostic` could be used 
 It's possible to display diagnostics as a lens to the right of the code.
 This is disabled by default, but can either be temporarily turned on (or off) using the editor menu, or permanently, using the
 
-```json [settings]
+```jsonc
 "diagnostics": {
   "inline": {
     "enabled": true,
@@ -49,7 +49,7 @@ This is disabled by default, but can either be temporarily turned on (or off) us
 
 The project panel can have its entries coloured based on the severity of the diagnostics in the file:
 
-```json [settings]
+```jsonc
 "project_panel": {
   "show_diagnostics": "all",
 }
@@ -61,7 +61,7 @@ Possible values: `"off"`, `"errors"`, `"all"` (default)
 
 Editor tabs can be coloured in the same way as project panel entries:
 
-```json [settings]
+```jsonc
 "tabs": {
   "show_diagnostics": "off",
 }

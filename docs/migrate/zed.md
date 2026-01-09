@@ -21,7 +21,7 @@ However, some functionality has also been added or changed that is not available
 ## Configuration
 
 The configuration should be mostly compatible: Try copying your `keymap.json`
-and `setting.json` files from `~/.config/zed/` to `~/.config/gram/`. It might
+and `settings.json` files from `~/.config/zed/` to `~/.config/gram/` and renaming them `keymap.jsonc` and `settings.jsonc`. It might
 work.
 
 ## Extension support

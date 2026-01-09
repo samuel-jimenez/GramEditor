@@ -687,7 +687,7 @@ mod tests {
             json!({
                 ".config": {
                     "gram": {
-                        "settings.json": r#"{ "formatter": "auto" }"#,
+                        "settings.jsonc": r#"{ "formatter": "auto" }"#,
                     },
                 },
                 "work": {
@@ -721,7 +721,7 @@ mod tests {
             Prettier::locate_prettier_installation(
                 fs.as_ref(),
                 &HashSet::default(),
-                Path::new("/root/.config/gram/settings.json"),
+                Path::new("/root/.config/gram/settings.jsonc"),
             )
             .await
             .unwrap(),

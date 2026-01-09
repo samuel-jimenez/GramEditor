@@ -63,12 +63,12 @@ trait InventoryContents: Clone {
 }
 
 impl InventoryContents for TaskTemplate {
-    const GLOBAL_SOURCE_FILE: &'static str = "tasks.json";
+    const GLOBAL_SOURCE_FILE: &'static str = "tasks.jsonc";
     const LABEL: &'static str = "tasks";
 }
 
 impl InventoryContents for DebugScenario {
-    const GLOBAL_SOURCE_FILE: &'static str = "debug.json";
+    const GLOBAL_SOURCE_FILE: &'static str = "debug.jsonc";
 
     const LABEL: &'static str = "debug scenarios";
 }
@@ -1404,21 +1404,21 @@ mod tests {
         let worktree_independent_tasks = vec![
             (
                 TaskSourceKind::AbsPath {
-                    id_base: "global tasks.json".into(),
+                    id_base: "global tasks.jsonc".into(),
                     abs_path: paths::tasks_file().clone(),
                 },
                 common_name.to_string(),
             ),
             (
                 TaskSourceKind::AbsPath {
-                    id_base: "global tasks.json".into(),
+                    id_base: "global tasks.jsonc".into(),
                     abs_path: paths::tasks_file().clone(),
                 },
                 "static_source_1".to_string(),
             ),
             (
                 TaskSourceKind::AbsPath {
-                    id_base: "global tasks.json".into(),
+                    id_base: "global tasks.jsonc".into(),
                     abs_path: paths::tasks_file().clone(),
                 },
                 "static_source_2".to_string(),
