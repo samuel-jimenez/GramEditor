@@ -787,7 +787,10 @@ pub trait GitRepository: Send + Sync {
         target_checkpoint: GitRepositoryCheckpoint,
     ) -> BoxFuture<'_, Result<String>>;
 
-    fn default_branch(&self) -> BoxFuture<'_, Result<Option<SharedString>>>;
+    fn default_branch(
+        &self,
+        include_remote_name: bool,
+    ) -> BoxFuture<'_, Result<Option<SharedString>>>;
 
     /// Runs `git rev-list --parents` to get the commit graph structure.
     /// Returns commit SHAs and their parent SHAs for building the graph visualization.
@@ -2450,7 +2453,10 @@ impl GitRepository for RealGitRepository {
             .boxed()
     }
 
-    fn default_branch(&self) -> BoxFuture<'_, Result<Option<SharedString>>> {
+    fn default_branch(
+        &self,
+        include_remote_name: bool,
+    ) -> BoxFuture<'_, Result<Option<SharedString>>> {
         let working_directory = self.working_directory();
         let git_binary_path = self.any_git_binary_path.clone();
 
@@ -2460,19 +2466,31 @@ impl GitRepository for RealGitRepository {
                 let working_directory = working_directory?;
                 let git = GitBinary::new(git_binary_path, working_directory, executor);
 
+                let strip_prefix = if include_remote_name {
+                    "refs/remotes/"
+                } else {
+                    "refs/remotes/upstream/"
+                };
+
                 if let Ok(output) = git
                     .run(&["symbolic-ref", "refs/remotes/upstream/HEAD"])
                     .await
                 {
                     let output = output
-                        .strip_prefix("refs/remotes/upstream/")
+                        .strip_prefix(strip_prefix)
                         .map(|s| SharedString::from(s.to_owned()));
                     return Ok(output);
                 }
 
+                let strip_prefix = if include_remote_name {
+                    "refs/remotes/"
+                } else {
+                    "refs/remotes/origin/"
+                };
+
                 if let Ok(output) = git.run(&["symbolic-ref", "refs/remotes/origin/HEAD"]).await {
                     return Ok(output
-                        .strip_prefix("refs/remotes/origin/")
+                        .strip_prefix(strip_prefix)
                         .map(|s| SharedString::from(s.to_owned())));
                 }
 
