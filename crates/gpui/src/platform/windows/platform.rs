@@ -91,7 +91,7 @@ impl WindowsPlatformState {
 }
 
 impl WindowsPlatform {
-    pub(crate) fn new(liveness: std::sync::Weak<()>) -> Result<Self> {
+    pub(crate) fn new() -> Result<Self> {
         unsafe {
             OleInitialize(None).context("unable to initialize Windows OLE")?;
         }
@@ -146,7 +146,7 @@ impl WindowsPlatform {
         let disable_direct_composition = std::env::var(DISABLE_DIRECT_COMPOSITION)
             .is_ok_and(|value| value == "true" || value == "1");
         let background_executor = BackgroundExecutor::new(dispatcher.clone());
-        let foreground_executor = ForegroundExecutor::new(dispatcher, liveness);
+        let foreground_executor = ForegroundExecutor::new(dispatcher);
 
         let drop_target_helper: IDropTargetHelper = unsafe {
             CoCreateInstance(&CLSID_DragDropHelper, None, CLSCTX_INPROC_SERVER)

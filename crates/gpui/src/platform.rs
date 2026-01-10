@@ -24,10 +24,9 @@ use crate::{
     Action, AnyWindowHandle, App, AsyncWindowContext, BackgroundExecutor, Bounds,
     DEFAULT_WINDOW_SIZE, DevicePixels, DispatchEventResult, Font, FontId, FontMetrics, FontRun,
     ForegroundExecutor, GlyphId, GpuSpecs, ImageSource, Keymap, LineLayout, Pixels, PlatformInput,
-    Point, Priority, RealtimePriority, RenderGlyphParams, RenderImage, RenderImageParams,
-    RenderSvgParams, Scene, ShapedGlyph, ShapedRun, SharedString, Size, SvgRenderer,
-    SystemWindowTab, Task, TaskLabel, TaskTiming, ThreadTaskTimings, Window, WindowControlArea,
-    hash, point, px, size,
+    Point, Priority, RenderGlyphParams, RenderImage, RenderImageParams, RenderSvgParams, Scene,
+    ShapedGlyph, ShapedRun, SharedString, Size, SvgRenderer, SystemWindowTab, Task, TaskTiming,
+    ThreadTaskTimings, Window, WindowControlArea, hash, point, px, size,
 };
 use anyhow::Result;
 use async_task::Runnable;
@@ -35,6 +34,7 @@ use futures::channel::oneshot;
 use image::codecs::gif::GifDecoder;
 use image::{AnimationDecoder as _, Frame};
 use raw_window_handle::{HasDisplayHandle, HasWindowHandle};
+pub use scheduler::RunnableMeta;
 use schemars::JsonSchema;
 use seahash::SeaHasher;
 use serde::{Deserialize, Serialize};
@@ -76,20 +76,18 @@ pub use test::TestDispatcher;
 
 /// Returns a background executor for the current platform.
 pub fn background_executor() -> BackgroundExecutor {
-    // For standalone background executor, use a dead liveness since there's no App.
-    // Weak::new() creates a weak reference that always returns None on upgrade.
-    current_platform(true, std::sync::Weak::new()).background_executor()
+    current_platform(true).background_executor()
 }
 
 #[cfg(target_os = "macos")]
-pub(crate) fn current_platform(headless: bool, liveness: std::sync::Weak<()>) -> Rc<dyn Platform> {
-    Rc::new(MacPlatform::new(headless, liveness))
+pub(crate) fn current_platform(headless: bool) -> Rc<dyn Platform> {
+    Rc::new(MacPlatform::new(headless))
 }
 
 #[cfg(any(target_os = "linux", target_os = "freebsd"))]
-pub(crate) fn current_platform(headless: bool, liveness: std::sync::Weak<()>) -> Rc<dyn Platform> {
+pub(crate) fn current_platform(headless: bool) -> Rc<dyn Platform> {
     if headless {
-        return Rc::new(HeadlessClient::new(liveness));
+        return Rc::new(HeadlessClient::new());
     }
 
     #[cfg(all(feature = "wayland", feature = "x11"))]
@@ -119,9 +117,9 @@ pub(crate) fn current_platform(headless: bool, liveness: std::sync::Weak<()>) ->
 }
 
 #[cfg(target_os = "windows")]
-pub(crate) fn current_platform(_headless: bool, liveness: std::sync::Weak<()>) -> Rc<dyn Platform> {
+pub(crate) fn current_platform(_headless: bool) -> Rc<dyn Platform> {
     Rc::new(
-        WindowsPlatform::new(liveness)
+        WindowsPlatform::new()
             .inspect_err(|err| show_error("Failed to launch", err.to_string()))
             .unwrap(),
     )
@@ -476,40 +474,10 @@ pub(crate) trait PlatformWindow: HasWindowHandle + HasDisplayHandle {
     }
 }
 
-/// This type is public so that our test macro can generate and use it, but it should not
-/// be considered part of our public API.
+/// Type alias for runnables with metadata.
+/// Previously an enum with a single variant, now simplified to a direct type alias.
 #[doc(hidden)]
-pub struct RunnableMeta {
-    /// Location of the runnable
-    pub location: &'static core::panic::Location<'static>,
-    /// Weak reference to check if the app is still alive before running this task
-    pub app: Option<std::sync::Weak<()>>,
-}
-
-impl std::fmt::Debug for RunnableMeta {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("RunnableMeta")
-            .field("location", &self.location)
-            .field("app_alive", &self.is_app_alive())
-            .finish()
-    }
-}
-
-impl RunnableMeta {
-    /// Returns true if the app is still alive (or if no app tracking is configured).
-    pub fn is_app_alive(&self) -> bool {
-        match &self.app {
-            Some(weak) => weak.strong_count() > 0,
-            None => true,
-        }
-    }
-}
-
-#[doc(hidden)]
-pub enum RunnableVariant {
-    Meta(Runnable<RunnableMeta>),
-    Compat(Runnable),
-}
+pub type RunnableVariant = Runnable<RunnableMeta>;
 
 /// This type is public so that our test macro can generate and use it, but it should not
 /// be considered part of our public API.
@@ -518,10 +486,10 @@ pub trait PlatformDispatcher: Send + Sync {
     fn get_all_timings(&self) -> Vec<ThreadTaskTimings>;
     fn get_current_thread_timings(&self) -> Vec<TaskTiming>;
     fn is_main_thread(&self) -> bool;
-    fn dispatch(&self, runnable: RunnableVariant, label: Option<TaskLabel>, priority: Priority);
+    fn dispatch(&self, runnable: RunnableVariant, priority: Priority);
     fn dispatch_on_main_thread(&self, runnable: RunnableVariant, priority: Priority);
     fn dispatch_after(&self, duration: Duration, runnable: RunnableVariant);
-    fn spawn_realtime(&self, priority: RealtimePriority, f: Box<dyn FnOnce() + Send>);
+    fn spawn_realtime(&self, f: Box<dyn FnOnce() + Send>);
 
     fn now(&self) -> Instant {
         Instant::now()

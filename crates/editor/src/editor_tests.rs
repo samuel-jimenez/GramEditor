@@ -11895,7 +11895,6 @@ async fn test_document_format_during_save(cx: &mut TestAppContext) {
     });
     assert!(cx.read(|cx| editor.is_dirty(cx)));
 
-    cx.executor().start_waiting();
     let fake_server = fake_servers.next().await.unwrap();
 
     {
@@ -11925,7 +11924,6 @@ async fn test_document_format_during_save(cx: &mut TestAppContext) {
                 )
             })
             .unwrap();
-        cx.executor().start_waiting();
         save.await;
 
         assert_eq!(
@@ -11966,7 +11964,6 @@ async fn test_document_format_during_save(cx: &mut TestAppContext) {
             })
             .unwrap();
         cx.executor().advance_clock(super::FORMAT_TIMEOUT);
-        cx.executor().start_waiting();
         save.await;
         assert_eq!(
             editor.update(cx, |editor, cx| editor.text(cx)),
@@ -12012,7 +12009,6 @@ async fn test_document_format_during_save(cx: &mut TestAppContext) {
                 )
             })
             .unwrap();
-        cx.executor().start_waiting();
         save.await;
     }
 }
@@ -12169,7 +12165,6 @@ async fn test_redo_after_noop_format(cx: &mut TestAppContext) {
                 )
             })
             .unwrap();
-        cx.executor().start_waiting();
         save.await;
         assert!(!cx.read(|cx| editor.is_dirty(cx)));
     }
@@ -12338,7 +12333,6 @@ async fn test_multibuffer_format_during_save(cx: &mut TestAppContext) {
     });
     cx.executor().run_until_parked();
 
-    cx.executor().start_waiting();
     let save = multi_buffer_editor
         .update_in(cx, |editor, window, cx| {
             editor.save(
@@ -12600,7 +12594,6 @@ async fn setup_range_format_test(
         build_editor_with_project(project.clone(), buffer, window, cx)
     });
 
-    cx.executor().start_waiting();
     let fake_server = fake_servers.next().await.unwrap();
 
     (project, editor, cx, fake_server)
@@ -12642,7 +12635,6 @@ async fn test_range_format_on_save_success(cx: &mut TestAppContext) {
         })
         .next()
         .await;
-    cx.executor().start_waiting();
     save.await;
     assert_eq!(
         editor.update(cx, |editor, cx| editor.text(cx)),
@@ -12685,7 +12677,6 @@ async fn test_range_format_on_save_timeout(cx: &mut TestAppContext) {
         })
         .unwrap();
     cx.executor().advance_clock(super::FORMAT_TIMEOUT);
-    cx.executor().start_waiting();
     save.await;
     assert_eq!(
         editor.update(cx, |editor, cx| editor.text(cx)),
@@ -12717,7 +12708,6 @@ async fn test_range_format_not_called_for_clean_buffer(cx: &mut TestAppContext) 
             panic!("Should not be invoked");
         })
         .next();
-    cx.executor().start_waiting();
     save.await;
     cx.run_until_parked();
 }
@@ -12824,7 +12814,6 @@ async fn test_document_format_manual_trigger(cx: &mut TestAppContext) {
         editor.set_text("one\ntwo\nthree\n", window, cx)
     });
 
-    cx.executor().start_waiting();
     let fake_server = fake_servers.next().await.unwrap();
 
     let format = editor
@@ -12852,7 +12841,6 @@ async fn test_document_format_manual_trigger(cx: &mut TestAppContext) {
         })
         .next()
         .await;
-    cx.executor().start_waiting();
     format.await;
     assert_eq!(
         editor.update(cx, |editor, cx| editor.text(cx)),
@@ -12885,7 +12873,6 @@ async fn test_document_format_manual_trigger(cx: &mut TestAppContext) {
         })
         .unwrap();
     cx.executor().advance_clock(super::FORMAT_TIMEOUT);
-    cx.executor().start_waiting();
     format.await;
     assert_eq!(
         editor.update(cx, |editor, cx| editor.text(cx)),
@@ -12939,8 +12926,6 @@ async fn test_multiple_formatters(cx: &mut TestAppContext) {
     let (editor, cx) = cx.add_window_view(|window, cx| {
         build_editor_with_project(project.clone(), buffer, window, cx)
     });
-
-    cx.executor().start_waiting();
 
     let fake_server = fake_servers.next().await.unwrap();
     fake_server.set_request_handler::<lsp::request::Formatting, _, _>(
@@ -13043,7 +13028,6 @@ async fn test_multiple_formatters(cx: &mut TestAppContext) {
         }
     });
 
-    cx.executor().start_waiting();
     editor
         .update_in(cx, |editor, window, cx| {
             editor.perform_format(
@@ -13211,7 +13195,6 @@ async fn test_organize_imports_manual_trigger(cx: &mut TestAppContext) {
         )
     });
 
-    cx.executor().start_waiting();
     let fake_server = fake_servers.next().await.unwrap();
 
     let format = editor
@@ -13257,7 +13240,6 @@ async fn test_organize_imports_manual_trigger(cx: &mut TestAppContext) {
         })
         .next()
         .await;
-    cx.executor().start_waiting();
     format.await;
     assert_eq!(
         editor.update(cx, |editor, cx| editor.text(cx)),
@@ -13293,7 +13275,6 @@ async fn test_organize_imports_manual_trigger(cx: &mut TestAppContext) {
         })
         .unwrap();
     cx.executor().advance_clock(super::CODE_ACTION_TIMEOUT);
-    cx.executor().start_waiting();
     format.await;
     assert_eq!(
         editor.update(cx, |editor, cx| editor.text(cx)),
@@ -13346,9 +13327,7 @@ async fn test_concurrent_format_requests(cx: &mut TestAppContext) {
 
     // Wait for both format requests to complete
     cx.executor().advance_clock(Duration::from_millis(200));
-    cx.executor().start_waiting();
     format_1.await.unwrap();
-    cx.executor().start_waiting();
     format_2.await.unwrap();
 
     // The formatting edits only happens once.
@@ -14870,6 +14849,7 @@ async fn test_completion_in_multibuffer_with_replace_range(cx: &mut TestAppConte
     });
 
     let fake_server = fake_servers.next().await.unwrap();
+    cx.run_until_parked();
 
     editor.update_in(cx, |editor, window, cx| {
         editor.change_selections(SelectionEffects::no_scroll(), window, cx, |s| {
@@ -15241,6 +15221,7 @@ async fn test_completion_can_run_commands(cx: &mut TestAppContext) {
         .downcast::<Editor>()
         .unwrap();
     let _fake_server = fake_servers.next().await.unwrap();
+    cx.run_until_parked();
 
     editor.update_in(cx, |editor, window, cx| {
         cx.focus_self(window);
@@ -15981,6 +15962,7 @@ async fn test_multiline_completion(cx: &mut TestAppContext) {
         .downcast::<Editor>()
         .unwrap();
     let fake_server = fake_servers.next().await.unwrap();
+    cx.run_until_parked();
 
     let multiline_label = "StickyHeaderExcerpt {\n            excerpt,\n            next_excerpt_controls_present,\n            next_buffer_row,\n        }: StickyHeaderExcerpt<'_>,";
     let multiline_label_2 = "a\nb\nc\n";
@@ -18187,7 +18169,6 @@ async fn test_on_type_formatting_not_triggered(cx: &mut TestAppContext) {
         .downcast::<Editor>()
         .unwrap();
 
-    cx.executor().start_waiting();
     let fake_server = fake_servers.next().await.unwrap();
 
     fake_server.set_request_handler::<lsp::request::OnTypeFormatting, _, _>(
@@ -25209,6 +25190,7 @@ async fn test_html_linked_edits_on_completion(cx: &mut TestAppContext) {
         .unwrap();
 
     let fake_server = fake_servers.next().await.unwrap();
+    cx.run_until_parked();
     editor.update_in(cx, |editor, window, cx| {
         editor.set_text("<ad></ad>", window, cx);
         editor.change_selections(SelectionEffects::no_scroll(), window, cx, |selections| {
