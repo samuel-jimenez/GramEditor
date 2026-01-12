@@ -77,7 +77,7 @@ impl Render for DocumentationView {
                             IconButton::new("doc-view-toc", IconName::Library)
                                 .tooltip(Tooltip::text("Table of Contents"))
                                 .on_click(move |_, window, cx| {
-                                    open_doc_url("gram://docs/SUMMARY.md".into(), window, cx);
+                                    open_doc_url("gram://docs/index.md".into(), window, cx);
                                 }),
                         )
                         .child(
@@ -414,7 +414,7 @@ impl DocumentationView {
     ) {
         let language_registry = workspace.project().read(cx).languages().clone();
         let workspace_handle = workspace.weak_handle();
-        let path = path.unwrap_or("SUMMARY.md".into());
+        let path = path.unwrap_or("index.md".into());
         let path = path.strip_prefix("gram://docs/").unwrap_or(&path);
         if let Some(existing) = workspace.item_of_type::<DocumentationView>(cx) {
             let is_active = workspace

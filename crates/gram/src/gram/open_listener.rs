@@ -127,7 +127,7 @@ impl OpenRequest {
                 });
             } else if let Some(path) = url.strip_prefix("gram://docs/") {
                 let path = if path == "" {
-                    "SUMMARY.md".to_string()
+                    "index.md".to_string()
                 } else {
                     path.to_string()
                 };

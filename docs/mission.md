@@ -4,6 +4,8 @@
 
 ― Ursula K. Le Guin, The Dispossessed
 
+![NO AI](https://rfmedia.b-cdn.net/no-ai-small.png)
+
 The Gram text editor is an opinionated fork of the Zed text editor. This
 document tries to explain why this fork exists.
 
