@@ -506,7 +506,7 @@ pub fn main() {
         debugger_tools::init(cx);
         client::init(&client, cx);
 
-        let session = cx.foreground_executor().block_on(session);
+        let session = cx.background_executor().block(session);
         let app_session = cx.new(|cx| AppSession::new(session, cx));
 
         let app_state = Arc::new(AppState {
@@ -1272,7 +1272,7 @@ fn load_embedded_fonts(cx: &App) {
     let embedded_fonts = Mutex::new(Vec::new());
     let executor = cx.background_executor();
 
-    cx.foreground_executor().block_on(executor.scoped(|scope| {
+    executor.block(executor.scoped(|scope| {
         for font_path in &font_paths {
             if !font_path.ends_with(".ttf") {
                 continue;

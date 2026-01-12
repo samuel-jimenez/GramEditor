@@ -1,7 +1,7 @@
 use crate::{Client, Connection, Credentials, EstablishConnectionError, UserStore};
 use anyhow::{Context as _, Result, anyhow};
 use futures::{StreamExt, stream::BoxStream};
-use gpui::{AppContext as _, Entity, TestAppContext};
+use gpui::{AppContext as _, BackgroundExecutor, Entity, TestAppContext};
 use http_client::{AsyncBody, Method, Request, http};
 use parking_lot::Mutex;
 use rpc::{ConnectionId, Peer, Receipt, TypedEnvelope, proto};
@@ -11,6 +11,7 @@ pub struct FakeServer {
     peer: Arc<Peer>,
     state: Arc<Mutex<FakeServerState>>,
     user_id: u64,
+    executor: BackgroundExecutor,
 }
 
 #[derive(Default)]
@@ -32,6 +33,7 @@ impl FakeServer {
             peer: Peer::new(0),
             state: Default::default(),
             user_id: client_user_id,
+            executor: cx.executor(),
         };
 
         client.http_client().as_fake().replace_handler({
@@ -170,6 +172,8 @@ impl FakeServer {
 
     #[allow(clippy::await_holding_lock)]
     pub async fn receive<M: proto::EnvelopedMessage>(&self) -> Result<TypedEnvelope<M>> {
+        self.executor.start_waiting();
+
         let message = self
             .state
             .lock()
@@ -179,6 +183,7 @@ impl FakeServer {
             .next()
             .await
             .context("other half hung up")?;
+        self.executor.finish_waiting();
         let type_name = message.payload_type_name();
         let message = message.into_any();
 
