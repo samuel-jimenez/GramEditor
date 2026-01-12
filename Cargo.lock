@@ -350,9 +350,9 @@ dependencies = [
 
 [[package]]
 name = "ashpd"
-version = "0.11.0"
+version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6cbdf310d77fd3aaee6ea2093db7011dc2d35d2eb3481e5607f1f8d942ed99df"
+checksum = "618a409b91d5265798a99e3d1d0b226911605e581c4e7255e83c1e397b172bce"
 dependencies = [
  "async-fs",
  "async-net",
@@ -366,24 +366,6 @@ dependencies = [
  "wayland-backend",
  "wayland-client",
  "wayland-protocols 0.32.9",
- "zbus",
-]
-
-[[package]]
-name = "ashpd"
-version = "0.12.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "da0986d5b4f0802160191ad75f8d33ada000558757db3defb70299ca95d9fcbd"
-dependencies = [
- "async-fs",
- "async-net",
- "enumflags2",
- "futures-channel",
- "futures-util",
- "rand 0.9.2",
- "serde",
- "serde_repr",
- "url",
  "zbus",
 ]
 
@@ -3851,7 +3833,7 @@ name = "fs"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "ashpd 0.11.0",
+ "ashpd",
  "async-tar",
  "async-trait",
  "cocoa 0.26.0",
@@ -4410,7 +4392,7 @@ version = "0.2.2"
 dependencies = [
  "anyhow",
  "as-raw-xcb-connection",
- "ashpd 0.11.0",
+ "ashpd",
  "async-task",
  "backtrace",
  "bindgen",
@@ -4538,7 +4520,7 @@ dependencies = [
  "anyhow",
  "app_actions",
  "app_env_vars",
- "ashpd 0.11.0",
+ "ashpd",
  "askpass",
  "assets",
  "bincode",
@@ -7291,7 +7273,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e3299dd401feaf1d45afd8fd1c0586f10fcfb22f244bb9afa942cec73503b89d"
 dependencies = [
  "aes",
- "ashpd 0.12.0",
+ "ashpd",
  "async-fs",
  "async-io",
  "async-lock 3.4.1",
