@@ -4418,6 +4418,7 @@ mod tests {
                 "git_graph",
                 "git_onboarding",
                 "git_panel",
+                "git_picker",
                 "go_to_line",
                 "icon_theme_selector",
                 "image_viewer",

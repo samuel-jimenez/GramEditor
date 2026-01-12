@@ -36,14 +36,6 @@ actions!(
     ]
 );
 
-pub fn register(workspace: &mut Workspace) {
-    workspace.register_action(|workspace, branch: &app_actions::git::Branch, window, cx| {
-        open(workspace, branch, window, cx);
-    });
-    workspace.register_action(switch);
-    workspace.register_action(checkout_branch);
-}
-
 pub fn checkout_branch(
     workspace: &mut Workspace,
     _: &app_actions::git::CheckoutBranch,
@@ -96,6 +88,16 @@ pub fn popover(
     })
 }
 
+pub fn create_embedded(
+    workspace: WeakEntity<Workspace>,
+    repository: Option<Entity<Repository>>,
+    width: Rems,
+    window: &mut Window,
+    cx: &mut Context<BranchList>,
+) -> BranchList {
+    BranchList::new_embedded(workspace, repository, width, window, cx)
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 enum BranchListStyle {
     Modal,
@@ -106,7 +108,8 @@ pub struct BranchList {
     width: Rems,
     pub picker: Entity<Picker<BranchListDelegate>>,
     picker_focus_handle: FocusHandle,
-    _subscription: Subscription,
+    _subscription: Option<Subscription>,
+    embedded: bool,
 }
 
 impl BranchList {
@@ -118,9 +121,26 @@ impl BranchList {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) -> Self {
+        let mut this = Self::new_inner(workspace, repository, style, width, false, window, cx);
+        this._subscription = Some(cx.subscribe(&this.picker, |_, _, _, cx| {
+            cx.emit(DismissEvent);
+        }));
+        this
+    }
+
+    fn new_inner(
+        workspace: WeakEntity<Workspace>,
+        repository: Option<Entity<Repository>>,
+        style: BranchListStyle,
+        width: Rems,
+        embedded: bool,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) -> Self {
         let all_branches_request = repository
             .clone()
             .map(|repository| repository.update(cx, |repository, _| repository.branches()));
+
         let default_branch_request = repository.clone().map(|repository| {
             repository.update(cx, |repository, _| repository.default_branch(false))
         });
@@ -179,25 +199,45 @@ impl BranchList {
         .detach_and_log_err(cx);
 
         let delegate = BranchListDelegate::new(workspace, repository, style, cx);
-        let picker = cx.new(|cx| Picker::uniform_list(delegate, window, cx));
+        let picker = cx.new(|cx| Picker::uniform_list(delegate, window, cx).modal(!embedded));
         let picker_focus_handle = picker.focus_handle(cx);
+
         picker.update(cx, |picker, _| {
             picker.delegate.focus_handle = picker_focus_handle.clone();
-        });
-
-        let _subscription = cx.subscribe(&picker, |_, _, _, cx| {
-            cx.emit(DismissEvent);
         });
 
         Self {
             picker,
             picker_focus_handle,
             width,
-            _subscription,
+            _subscription: None,
+            embedded,
         }
     }
 
-    fn handle_modifiers_changed(
+    fn new_embedded(
+        workspace: WeakEntity<Workspace>,
+        repository: Option<Entity<Repository>>,
+        width: Rems,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) -> Self {
+        let mut this = Self::new_inner(
+            workspace,
+            repository,
+            BranchListStyle::Modal,
+            width,
+            true,
+            window,
+            cx,
+        );
+        this._subscription = Some(cx.subscribe(&this.picker, |_, _, _, cx| {
+            cx.emit(DismissEvent);
+        }));
+        this
+    }
+
+    pub fn handle_modifiers_changed(
         &mut self,
         ev: &ModifiersChangedEvent,
         _: &mut Window,
@@ -207,7 +247,7 @@ impl BranchList {
             .update(cx, |picker, _| picker.delegate.modifiers = ev.modifiers)
     }
 
-    fn handle_delete(
+    pub fn handle_delete(
         &mut self,
         _: &branch_picker::DeleteBranch,
         window: &mut Window,
@@ -220,7 +260,7 @@ impl BranchList {
         })
     }
 
-    fn handle_filter(
+    pub fn handle_filter(
         &mut self,
         _: &branch_picker::FilterRemotes,
         window: &mut Window,
@@ -252,10 +292,12 @@ impl Render for BranchList {
             .on_action(cx.listener(Self::handle_delete))
             .on_action(cx.listener(Self::handle_filter))
             .child(self.picker.clone())
-            .on_mouse_down_out({
-                cx.listener(move |this, _, window, cx| {
-                    this.picker.update(cx, |this, cx| {
-                        this.cancel(&Default::default(), window, cx);
+            .when(!self.embedded, |this| {
+                this.on_mouse_down_out({
+                    cx.listener(move |this, _, window, cx| {
+                        this.picker.update(cx, |this, cx| {
+                            this.cancel(&Default::default(), window, cx);
+                        })
                     })
                 })
             })
@@ -1317,7 +1359,8 @@ mod tests {
                         picker,
                         picker_focus_handle,
                         width: rems(34.),
-                        _subscription,
+                        _subscription: Some(_subscription),
+                        embedded: false,
                     }
                 })
             })
