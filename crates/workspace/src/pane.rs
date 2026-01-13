@@ -3114,6 +3114,7 @@ impl Pane {
                                             window.dispatch_action(
                                                 OpenTerminal {
                                                     working_directory: parent_abs_path.clone(),
+                                                    local: false,
                                                 }
                                                 .boxed_clone(),
                                                 cx,
@@ -3755,7 +3756,7 @@ fn default_render_tab_bar_buttons(
                             )
                             .action("Search Symbols", ToggleProjectSymbols.boxed_clone())
                             .separator()
-                            .action("New Terminal", NewTerminal.boxed_clone())
+                            .action("New Terminal", NewTerminal::default().boxed_clone())
                     }))
                 }),
         )

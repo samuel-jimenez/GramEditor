@@ -213,8 +213,6 @@ actions!(
         Feedback,
         /// Moves the focused panel to the next position.
         MoveFocusedPanelToNextPosition,
-        /// Opens a new terminal in the center.
-        NewCenterTerminal,
         /// Creates a new file.
         NewFile,
         /// Creates a new file in a vertical split.
@@ -223,8 +221,6 @@ actions!(
         NewFileSplitHorizontal,
         /// Opens a new search.
         NewSearch,
-        /// Opens a new terminal.
-        NewTerminal,
         /// Opens a new window.
         NewWindow,
         /// Opens a file or directory.
@@ -376,6 +372,26 @@ pub struct ToggleFileFinder {
     pub separate_history: bool,
 }
 
+/// Opens a new terminal in the center.
+#[derive(Default, PartialEq, Eq, Clone, Deserialize, JsonSchema, Action)]
+#[action(namespace = workspace)]
+#[serde(deny_unknown_fields)]
+pub struct NewCenterTerminal {
+    /// If true, creates a local terminal even in remote projects.
+    #[serde(default)]
+    pub local: bool,
+}
+
+/// Opens a new terminal.
+#[derive(Default, PartialEq, Eq, Clone, Deserialize, JsonSchema, Action)]
+#[action(namespace = workspace)]
+#[serde(deny_unknown_fields)]
+pub struct NewTerminal {
+    /// If true, creates a local terminal even in remote projects.
+    #[serde(default)]
+    pub local: bool,
+}
+
 /// Increases size of a currently focused dock by a given amount of pixels.
 #[derive(Clone, PartialEq, Deserialize, JsonSchema, Action)]
 #[action(namespace = workspace)]
@@ -505,6 +521,9 @@ impl PartialEq for Toast {
 #[serde(deny_unknown_fields)]
 pub struct OpenTerminal {
     pub working_directory: PathBuf,
+    /// If true, creates a local terminal even in remote projects.
+    #[serde(default)]
+    pub local: bool,
 }
 
 #[derive(Clone, Copy, Debug, Default, Hash, PartialEq, Eq, PartialOrd, Ord)]
