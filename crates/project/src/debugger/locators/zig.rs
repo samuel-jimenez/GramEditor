@@ -6,6 +6,7 @@ use anyhow::Result;
 use async_trait::async_trait;
 use dap::{DapLocator, DebugRequest, adapters::DebugAdapterName};
 use gpui::SharedString;
+use gpui::BackgroundExecutor;
 use serde_json::{Value, json};
 use std::path::Path;
 use task::{BuildTaskDefinition, DebugScenario, LaunchRequest, SpawnInTerminal, TaskTemplate};
@@ -75,7 +76,11 @@ impl DapLocator for ZigLocator {
         })
     }
 
-    async fn run(&self, build_config: SpawnInTerminal) -> Result<DebugRequest> {
+    async fn run(
+        &self,
+        build_config: SpawnInTerminal,
+        _executor: BackgroundExecutor,
+    ) -> Result<DebugRequest> {
         let is_build = build_config.args.first().is_some_and(|arg| arg == "build");
         let is_test = build_config.args.first().is_some_and(|arg| arg == "test");
         anyhow::ensure!(is_build || is_test, "Unsupported build task");

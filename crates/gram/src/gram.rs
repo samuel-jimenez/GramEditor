@@ -335,7 +335,7 @@ pub fn initialize_workspace(app_state: Arc<AppState>, cx: &mut App) {
         })
         .detach();
 
-        #[cfg(not(target_os = "macos"))]
+        #[cfg(not(any(test, target_os = "macos")))]
         initialize_file_watcher(window, cx);
 
         if let Some(specs) = window.gpu_specs() {
@@ -424,6 +424,7 @@ pub fn initialize_workspace(app_state: Arc<AppState>, cx: &mut App) {
 fn unstable_version_notification(_cx: &mut App) {}
 
 #[cfg(any(target_os = "linux", target_os = "freebsd"))]
+#[allow(unused)]
 fn initialize_file_watcher(window: &mut Window, cx: &mut Context<Workspace>) {
     if let Err(e) = fs::fs_watcher::global(|_| {}) {
         let message = format!(
@@ -454,6 +455,7 @@ fn initialize_file_watcher(window: &mut Window, cx: &mut Context<Workspace>) {
 }
 
 #[cfg(target_os = "windows")]
+#[allow(unused)]
 fn initialize_file_watcher(window: &mut Window, cx: &mut Context<Workspace>) {
     if let Err(e) = fs::fs_watcher::global(|_| {}) {
         let message = format!(
@@ -1275,12 +1277,12 @@ pub fn handle_settings_file_changes(
 
     // Initial load of both settings files
     let global_content = cx
-        .background_executor()
-        .block(global_settings_file_rx.next())
+        .foreground_executor()
+        .block_on(global_settings_file_rx.next())
         .unwrap();
     let user_content = cx
-        .background_executor()
-        .block(user_settings_file_rx.next())
+        .foreground_executor()
+        .block_on(user_settings_file_rx.next())
         .unwrap();
 
     SettingsStore::update_global(cx, |store, cx| {
@@ -1866,7 +1868,7 @@ pub(crate) fn eager_load_active_theme_and_icon_theme(fs: Arc<dyn Fs>, cx: &mut A
         return;
     }
 
-    executor.block(executor.scoped(|scope| {
+    cx.foreground_executor().block_on(executor.scoped(|scope| {
         for load_target in themes_to_load {
             let theme_registry = &theme_registry;
             let reload_tasks = &reload_tasks;

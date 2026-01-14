@@ -1184,6 +1184,7 @@ struct ChannelClient {
     task: Mutex<Task<Result<()>>>,
     remote_started: Signal<()>,
     has_wsl_interop: bool,
+    executor: BackgroundExecutor,
 }
 
 impl ChannelClient {
@@ -1202,6 +1203,7 @@ impl ChannelClient {
             message_handlers: Default::default(),
             buffer: Mutex::new(VecDeque::new()),
             name,
+            executor: cx.background_executor().clone(),
             task: Mutex::new(Self::start_handling_messages(
                 this.clone(),
                 incoming_rx,
@@ -1385,7 +1387,7 @@ impl ChannelClient {
                 Ok(())
             },
             async {
-                smol::Timer::after(timeout).await;
+                self.executor.timer(timeout).await;
                 anyhow::bail!("Timed out resyncing remote client")
             },
         )
@@ -1399,7 +1401,7 @@ impl ChannelClient {
                 Ok(())
             },
             async {
-                smol::Timer::after(timeout).await;
+                self.executor.timer(timeout).await;
                 anyhow::bail!("Timed out pinging remote client")
             },
         )
