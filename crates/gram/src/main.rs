@@ -1252,6 +1252,7 @@ fn parse_url_arg(arg: &str, _cx: &App) -> String {
         Ok(path) => format!("file://{}", path.display()),
         Err(_) => {
             if arg.starts_with("file://")
+                || arg.starts_with("gram://")
                 || arg.starts_with("gram-cli://")
                 || arg.starts_with("ssh://")
             {
