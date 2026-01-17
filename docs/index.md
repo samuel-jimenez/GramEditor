@@ -1,5 +1,18 @@
 # Documentation
 
+Gram is a **hard fork** of the Zed editor, with
+the following list (incomplete) of changes:
+
+- Integrated documentation viewer
+- No license agreement on installation
+- All AI integration has been removed
+- All Telemetry has been removed
+- No proprietary server component
+- No auto updates
+- All collaboration integration has been removed
+- Extensions are installed from source only
+- Partial support for WASM extensions (due to AI removal)
+
 ## Getting Started
 
 - [The Mission](./mission.md)

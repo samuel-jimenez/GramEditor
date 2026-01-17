@@ -113,16 +113,10 @@ Gram has two main binaries:
 - If you are going to provide a `.desktop` file you can find a template in `crates/gram/resources/gram.desktop.in`, and use `envsubst` to populate it with the values required. This file should also be renamed to `$APP_ID.desktop` so that the file [follows the FreeDesktop standards](https://github.com/zed-industries/zed/issues/12707#issuecomment-2168742761). You should also make this desktop file executable (`chmod 755`).
 - You will need to ensure that the necessary libraries are installed. You can get the current list by [inspecting the built binary](https://github.com/zed-industries/zed/blob/935cf542aebf55122ce6ed1c91d0fe8711970c82/script/bundle-linux#L65-L67) on your system.
 - For an example of a complete build script, see [script/bundle-linux](https://github.com/zed-industries/zed/blob/935cf542aebf55122ce6ed1c91d0fe8711970c82/script/bundle-linux).
-- You can disable Gram's auto updates and provide instructions for users who try to update Gram manually by building (or running) Gram with the environment variable `GRAM_UPDATE_EXPLANATION`. For example: `GRAM_UPDATE_EXPLANATION="Please use flatpak to update gram."`.
+- You can provide instructions for users who try to update Gram manually by building (or running) Gram with the environment variable `GRAM_UPDATE_EXPLANATION`. For example: `GRAM_UPDATE_EXPLANATION="Please use flatpak to update gram."`.
 - Make sure to update the contents of the `crates/gram/RELEASE_CHANNEL` file to 'stable' with no newline. This will cause Gram to use the credentials manager to remember a user's login.
 
 ### Other things to note
-
-Gram is a fork of the Zed editor, and its developers are vibe-coding and
-hustle-grinding like there is no tomorrow. Whether we will continue to keep pace
-with the Zed project or move to a separate (less hectic) trajectory remains to
-be seen. That said, we want to turn this into a stable and reliable project both
-for developers and distributions.
 
 Zed comes with some (in our opinion) pretty severe caveats:
 
