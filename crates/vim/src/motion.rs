@@ -3213,7 +3213,6 @@ mod test {
         state::Mode,
         test::{NeovimBackedTestContext, VimTestContext},
     };
-    use editor::Inlay;
     use gpui::KeyBinding;
     use indoc::indoc;
 
