@@ -1,4 +1,4 @@
-use std::{path::PathBuf, sync::Arc};
+use std::sync::Arc;
 
 use collections::{BTreeMap, HashMap};
 use schemars::JsonSchema;
@@ -190,96 +190,6 @@ pub struct SessionSettingsContent {
     ///
     /// Default: true
     pub restore_unsaved_buffers: Option<bool>,
-}
-
-#[derive(Deserialize, Serialize, Clone, PartialEq, Eq, JsonSchema, MergeFrom, Debug)]
-#[serde(untagged, rename_all = "snake_case")]
-pub enum ContextServerSettingsContent {
-    Custom {
-        /// Whether the context server is enabled.
-        #[serde(default = "default_true")]
-        enabled: bool,
-
-        #[serde(flatten)]
-        command: ContextServerCommand,
-    },
-    Http {
-        /// Whether the context server is enabled.
-        #[serde(default = "default_true")]
-        enabled: bool,
-        /// The URL of the remote context server.
-        url: String,
-        /// Optional headers to send.
-        #[serde(skip_serializing_if = "HashMap::is_empty", default)]
-        headers: HashMap<String, String>,
-    },
-    Extension {
-        /// Whether the context server is enabled.
-        #[serde(default = "default_true")]
-        enabled: bool,
-        /// The settings for this context server specified by the extension.
-        ///
-        /// Consult the documentation for the context server to see what settings
-        /// are supported.
-        settings: serde_json::Value,
-    },
-}
-
-impl ContextServerSettingsContent {
-    pub fn set_enabled(&mut self, enabled: bool) {
-        match self {
-            ContextServerSettingsContent::Custom {
-                enabled: custom_enabled,
-                ..
-            } => {
-                *custom_enabled = enabled;
-            }
-            ContextServerSettingsContent::Extension {
-                enabled: ext_enabled,
-                ..
-            } => *ext_enabled = enabled,
-            ContextServerSettingsContent::Http {
-                enabled: remote_enabled,
-                ..
-            } => *remote_enabled = enabled,
-        }
-    }
-}
-
-#[with_fallible_options]
-#[derive(Deserialize, Serialize, Clone, PartialEq, Eq, JsonSchema, MergeFrom)]
-pub struct ContextServerCommand {
-    #[serde(rename = "command")]
-    pub path: PathBuf,
-    pub args: Vec<String>,
-    pub env: Option<HashMap<String, String>>,
-    /// Timeout for tool calls in milliseconds. Defaults to 60000 (60 seconds) if not specified.
-    pub timeout: Option<u64>,
-}
-
-impl std::fmt::Debug for ContextServerCommand {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let filtered_env = self.env.as_ref().map(|env| {
-            env.iter()
-                .map(|(k, v)| {
-                    (
-                        k,
-                        if util::redact::should_redact(k) {
-                            "[REDACTED]"
-                        } else {
-                            v
-                        },
-                    )
-                })
-                .collect::<Vec<_>>()
-        });
-
-        f.debug_struct("ContextServerCommand")
-            .field("path", &self.path)
-            .field("args", &self.args)
-            .field("env", &filtered_env)
-            .finish()
-    }
 }
 
 #[with_fallible_options]
