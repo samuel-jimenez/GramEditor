@@ -368,12 +368,6 @@ impl Render for WelcomePage {
                 .into_any_element()
         };
 
-        let welcome_label = if self.fallback_to_recent_projects {
-            "ᚷᚱᚨᛗ"
-        } else {
-            "ᚷᚱᚨᛗ"
-        };
-
         h_flex()
             .key_context("Welcome")
             .track_focus(&self.focus_handle(cx))
@@ -407,10 +401,7 @@ impl Render for WelcomePage {
                                     .child(Vector::new(VectorName::Logo, rems(2.), rems(2.5))) //rems_from_px(45.)))
                                     .child(
                                         v_flex()
-                                            .child(
-                                                Headline::new(welcome_label)
-                                                    .size(HeadlineSize::Large),
-                                            )
+                                            .child(Headline::new("GRAM").size(HeadlineSize::Large))
                                             .child(
                                                 Label::new(
                                                     r#"What cannot be mended must be transcended."#,

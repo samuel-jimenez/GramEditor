@@ -261,8 +261,8 @@ impl Render for Onboarding {
                                                     )
                                                     .child(
                                                         Label::new(r#"What cannot be mended must be transcended."#)
-                                                            .color(Color::Muted)
                                                             .size(LabelSize::Small)
+                                                            .color(Color::Muted)
                                                             .italic(),
                                                     ),
                                             ),
