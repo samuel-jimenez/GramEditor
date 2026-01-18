@@ -3,9 +3,9 @@ use std::{str::FromStr, sync::Arc};
 
 use anyhow::{Context as _, Result};
 use gpui::{App, AsyncApp, BorrowAppContext as _, Entity, Task, WeakEntity};
-use language::{LanguageRegistry, LspAdapterDelegate, language_settings::all_language_settings};
+use language::{LanguageRegistry, LspAdapterDelegate, language_settings::AllLanguageSettings};
 use project::{LspStore, lsp_store::LocalLspAdapterDelegate};
-use settings::LSP_SETTINGS_SCHEMA_URL_PREFIX;
+use settings::{LSP_SETTINGS_SCHEMA_URL_PREFIX, Settings as _, SettingsLocation};
 use util::schemars::DefaultDenyUnknownFields;
 
 // Origin: https://github.com/SchemaStore/schemastore
@@ -234,6 +234,7 @@ const JSONC_LANGUAGE_NAME: &str = "JSONC";
 
 pub fn all_schema_file_associations(
     languages: &Arc<LanguageRegistry>,
+    path: Option<SettingsLocation<'_>>,
     cx: &mut App,
 ) -> serde_json::Value {
     let extension_globs = languages
@@ -243,7 +244,7 @@ pub fn all_schema_file_associations(
         .flatten()
         // Path suffixes can be entire file names or just their extensions.
         .flat_map(|path_suffix| [format!("*.{path_suffix}"), path_suffix]);
-    let override_globs = all_language_settings(None, cx)
+    let override_globs = AllLanguageSettings::get(path, cx)
         .file_types
         .get(JSONC_LANGUAGE_NAME)
         .into_iter()
