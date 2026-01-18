@@ -16,7 +16,8 @@ use crate::traits::transformable::Transformable;
 pub enum VectorName {
     DebuggerGrid,
     Grid,
-    Logo,
+    LogoDark,
+    LogoLight,
 }
 
 impl VectorName {
@@ -119,7 +120,7 @@ impl Component for Vector {
                         vec![
                             single_example(
                                 "Default",
-                                Vector::square(VectorName::Logo, size).into_any_element(),
+                                Vector::square(VectorName::LogoDark, size).into_any_element(),
                             ),
                             single_example(
                                 "Custom Size",
@@ -127,7 +128,7 @@ impl Component for Vector {
                                     .h(rems_from_px(120.))
                                     .justify_center()
                                     .child(Vector::new(
-                                        VectorName::Logo,
+                                        VectorName::LogoDark,
                                         rems_from_px(120.),
                                         rems_from_px(200.),
                                     ))
@@ -140,13 +141,13 @@ impl Component for Vector {
                         vec![
                             single_example(
                                 "Accent Color",
-                                Vector::square(VectorName::Logo, size)
+                                Vector::square(VectorName::LogoDark, size)
                                     .color(Color::Accent)
                                     .into_any_element(),
                             ),
                             single_example(
                                 "Error Color",
-                                Vector::square(VectorName::Logo, size)
+                                Vector::square(VectorName::LogoDark, size)
                                     .color(Color::Error)
                                     .into_any_element(),
                             ),
@@ -156,7 +157,8 @@ impl Component for Vector {
                         "Different Vectors",
                         vec![single_example(
                             "Gram Logo",
-                            Vector::square(VectorName::Logo, rems_from_px(8.)).into_any_element(),
+                            Vector::square(VectorName::LogoDark, rems_from_px(8.))
+                                .into_any_element(),
                         )],
                     ),
                 ])
@@ -171,6 +173,6 @@ mod tests {
 
     #[test]
     fn vector_path() {
-        assert_eq!(VectorName::Logo.path().as_ref(), "images/logo.svg");
+        assert_eq!(VectorName::LogoDark.path().as_ref(), "images/logo_dark.svg");
     }
 }

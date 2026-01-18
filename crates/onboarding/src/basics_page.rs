@@ -19,8 +19,8 @@ use crate::{
     theme_preview::{ThemePreviewStyle, ThemePreviewTile},
 };
 
-const LIGHT_THEMES: [&str; 3] = ["Rosé Pine Dawn", "Melange Light", "Ayu Dark"];
-const DARK_THEMES: [&str; 3] = ["Rosé Pine", "Melange Dark", "Ayu Light"];
+const LIGHT_THEMES: [&str; 3] = ["Rosé Pine Dawn", "Melange Light", "Ayu Light"];
+const DARK_THEMES: [&str; 3] = ["Rosé Pine", "Melange Dark", "Ayu Dark"];
 const FAMILY_NAMES: [SharedString; 3] = [
     SharedString::new_static("Rosé Pine"),
     SharedString::new_static("Melange"),

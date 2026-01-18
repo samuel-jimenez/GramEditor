@@ -11,8 +11,9 @@ use gpui::{
 use notifications::status_toast::{StatusToast, ToastIcon};
 use schemars::JsonSchema;
 use serde::Deserialize;
-use settings::{SettingsStore, VsCodeSettingsSource};
+use settings::{Settings as _, SettingsStore, VsCodeSettingsSource};
 use std::sync::Arc;
+use theme::Appearance;
 use ui::{
     Divider, KeyBinding, ParentElement as _, StatefulInteractiveElement, Vector, VectorName,
     WithScrollbar as _, prelude::*, rems_from_px,
@@ -209,6 +210,23 @@ impl Onboarding {
 
 impl Render for Onboarding {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        let theme_selection = theme::ThemeSettings::get_global(cx).theme.clone();
+        let system_appearance = theme::SystemAppearance::global(cx);
+        let theme_mode = theme_selection
+            .mode()
+            .unwrap_or_else(|| match *system_appearance {
+                Appearance::Light => theme::ThemeAppearanceMode::Light,
+                Appearance::Dark => theme::ThemeAppearanceMode::Dark,
+            });
+        let image = match theme_mode {
+            theme::ThemeAppearanceMode::Light => VectorName::LogoLight,
+            theme::ThemeAppearanceMode::Dark => VectorName::LogoDark,
+            theme::ThemeAppearanceMode::System => match *system_appearance {
+                Appearance::Light => VectorName::LogoLight,
+                Appearance::Dark => VectorName::LogoDark,
+            },
+        };
+
         div()
             .image_cache(gpui::retain_all("onboarding-page"))
             .key_context({
@@ -252,16 +270,16 @@ impl Render for Onboarding {
                                     .child(
                                         h_flex()
                                             .gap_4()
-                                            .child(Vector::square(VectorName::Logo, rems(2.5)))
+                                            .child(Vector::square(image, rems_from_px(90.0)))
                                             .child(
                                                 v_flex()
                                                     .child(
-                                                        Headline::new("GRAM")
-                                                            .size(HeadlineSize::Small),
+                                                        Headline::new("Gram")
+                                                            .size(HeadlineSize::Large),
                                                     )
                                                     .child(
                                                         Label::new(r#"What cannot be mended must be transcended."#)
-                                                            .size(LabelSize::Small)
+                                                            .size(LabelSize::Default)
                                                             .color(Color::Muted)
                                                             .italic(),
                                                     ),

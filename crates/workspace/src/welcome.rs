@@ -15,6 +15,8 @@ use menu::{SelectNext, SelectPrevious};
 use remote::RemoteConnectionOptions;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+use settings::Settings as _;
+use theme::{Appearance, ThemeSettings};
 use ui::{ButtonLike, Divider, DividerColor, KeyBinding, Vector, VectorName, prelude::*};
 use util::ResultExt;
 
@@ -368,6 +370,23 @@ impl Render for WelcomePage {
                 .into_any_element()
         };
 
+        let theme_selection = ThemeSettings::get_global(cx).theme.clone();
+        let system_appearance = theme::SystemAppearance::global(cx);
+        let theme_mode = theme_selection
+            .mode()
+            .unwrap_or_else(|| match *system_appearance {
+                Appearance::Light => theme::ThemeAppearanceMode::Light,
+                Appearance::Dark => theme::ThemeAppearanceMode::Dark,
+            });
+        let image = match theme_mode {
+            theme::ThemeAppearanceMode::Light => VectorName::LogoLight,
+            theme::ThemeAppearanceMode::Dark => VectorName::LogoDark,
+            theme::ThemeAppearanceMode::System => match *system_appearance {
+                Appearance::Light => VectorName::LogoLight,
+                Appearance::Dark => VectorName::LogoDark,
+            },
+        };
+
         h_flex()
             .key_context("Welcome")
             .track_focus(&self.focus_handle(cx))
@@ -398,10 +417,10 @@ impl Render for WelcomePage {
                                     .justify_center()
                                     .mb_4()
                                     .gap_4()
-                                    .child(Vector::new(VectorName::Logo, rems(2.), rems(2.5))) //rems_from_px(45.)))
+                                    .child(Vector::square(image, rems_from_px(90.)))
                                     .child(
                                         v_flex()
-                                            .child(Headline::new("GRAM").size(HeadlineSize::Large))
+                                            .child(Headline::new("Gram").size(HeadlineSize::Large))
                                             .child(
                                                 Label::new(
                                                     r#"What cannot be mended must be transcended."#,
