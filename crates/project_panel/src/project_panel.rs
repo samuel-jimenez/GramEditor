@@ -2,6 +2,7 @@ mod project_panel_settings;
 mod utils;
 
 use anyhow::{Context as _, Result};
+use app_actions::{project_panel::ToggleFocus, workspace::OpenWithSystem};
 use client::{ErrorCode, ErrorExt};
 use collections::{BTreeSet, HashMap, hash_map};
 use command_palette_hooks::CommandPaletteFilter;
@@ -70,7 +71,6 @@ use workspace::{
     notifications::{DetachAndPromptErr, NotifyResultExt, NotifyTaskExt},
 };
 use worktree::CreatedEntry;
-use app_actions::{project_panel::ToggleFocus, workspace::OpenWithSystem};
 
 const PROJECT_PANEL_KEY: &str = "ProjectPanel";
 const NEW_ENTRY_ID: ProjectEntryId = ProjectEntryId::MAX;
@@ -1161,6 +1161,10 @@ impl ProjectPanel {
                             .when(has_git_repo, |menu| {
                                 menu.separator()
                                     .action("View File History", Box::new(git::FileHistory))
+                            })
+                            .when(is_dir, |menu| {
+                                menu.separator()
+                                    .action("Git History", Box::new(git::FileHistory))
                             })
                             .when(!should_hide_rename, |menu| {
                                 menu.separator().action("Rename", Box::new(Rename))
