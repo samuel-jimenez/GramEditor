@@ -1175,7 +1175,7 @@
       "cmd-shift-backspace": "branch_picker::DeleteBranch",
       "cmd-shift-i": "branch_picker::FilterRemotes"
     }
-  }
+  },
   {
     "context": "ImageViewer",
     "use_key_equivalents": true,
