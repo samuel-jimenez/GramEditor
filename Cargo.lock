@@ -2933,6 +2933,7 @@ dependencies = [
  "ui",
  "unicode-script",
  "unicode-segmentation",
+ "unicode-width 0.2.2",
  "unindent",
  "url",
  "util",

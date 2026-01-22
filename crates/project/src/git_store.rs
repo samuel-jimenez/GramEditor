@@ -3135,7 +3135,7 @@ impl BufferGitState {
                         unstaged_diff.read(cx).update_diff(
                             buffer.clone(),
                             index,
-                            index_changed,
+                            index_changed.then_some(false),
                             language.clone(),
                             cx,
                         )
@@ -3158,7 +3158,7 @@ impl BufferGitState {
                             uncommitted_diff.read(cx).update_diff(
                                 buffer.clone(),
                                 head,
-                                head_changed,
+                                head_changed.then_some(true),
                                 language.clone(),
                                 cx,
                             )

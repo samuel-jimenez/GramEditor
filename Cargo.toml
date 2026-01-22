@@ -587,6 +587,7 @@ tree-sitter-zig = { git = "https://github.com/tree-sitter-grammars/tree-sitter-z
 unicase = "2.6"
 unicode-script = "0.5.7"
 unicode-segmentation = "1.10"
+unicode-width = "0.2"
 unindent = "0.2.0"
 url = "2.2"
 urlencoding = "2.1.2"
