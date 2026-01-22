@@ -113,14 +113,14 @@ that should not exist.
 I don't want my software to update itself automatically, or to download binaries
 without me explicitly asking it to.
 
-The editor can offer to download and run something, but it should tell me
-exactly what it wants to download and from where, and it should ask first. In
-Zed, everything bad is opt out: AI, Telemetry, auto updates - auto-installation
-isn't even offered as something to opt out of.
+The editor can offer to download and install something from source, but it
+should tell you exactly what it wants to download and from where, and it should
+ask first. In Zed, everything invasive and exploitative is opt out: AI,
+Telemetry, auto updates - auto-installation isn't even offered as something to
+opt out of. Zed does not respect you.
 
-Zed even copies the VS Code misfeature of auto-running tasks - meaning arbitrary
-code. You can't even look at source code using those editors without risking
-arbitrary code execution.
+I believe that the tools I use should belong to me. My tools are not there for
+corporations to bind me with.
 
 ## Curiosity and spite
 
@@ -162,7 +162,7 @@ capable, general-purpose, open source text editor, what other options are there?
 Here are some other editors that I have used and would consider reasonable
 alternatives to Zed.
 
-- [Flow Control](https://flow-control.dev) - A TUI-based and very promising
-  editor with planned collaboration features.
 - [Neovim](https://neovim.io) / [Vim](https://www.vim.org)
 - [Emacs](https://www.gnu.org/software/emacs/)
+- [Flow Control](https://flow-control.dev) - A TUI-based and very promising
+  editor with planned collaboration features.
