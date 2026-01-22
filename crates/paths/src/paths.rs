@@ -408,14 +408,14 @@ pub fn local_settings_file_relative_path() -> &'static RelPath {
 /// Returns the relative path to a `tasks.json` file within a project.
 pub fn local_tasks_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::unix(".gram/tasks.jsonc").unwrap());
+        LazyLock::new(|| RelPath::unix(".gram/tasks.json").unwrap());
     *CACHED
 }
 
 /// Returns the relative path to a `.vscode/tasks.json` file within a project.
 pub fn local_vscode_tasks_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::unix(".vscode/tasks.jsonc").unwrap());
+        LazyLock::new(|| RelPath::unix(".vscode/tasks.json").unwrap());
     *CACHED
 }
 
