@@ -1172,6 +1172,7 @@ impl Terminal {
                         self.process_hyperlink(hyperlink, *open, cx);
                     }
                     None => {
+                        self.last_content.last_hovered_word = None;
                         cx.emit(Event::NewNavigationTarget(None));
                     }
                 }
