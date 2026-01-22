@@ -4,8 +4,8 @@
 
 ― Ursula K. Le Guin, The Dispossessed
 
-The Gram text editor is an opinionated fork of the Zed text editor. This
-document explains why this fork exists.
+The Gram text editor is a fork of the Zed text editor. This
+document is an attempt to explain why the fork exists.
 
 ## Performance, but at what cost?
 
@@ -137,6 +137,11 @@ cause close to his heart](https://en.wikipedia.org/wiki/ICCF_Holland) in return.
 This is the result. Feel free to build it and see if it works for you. There
 is no license agreement or subscription beyond the open source license of the
 code (GPLv3). It is yours now, to do with as you please.
+
+To be honest, I am happy in Neovim. For most projects I still prefer it over
+this editor. Don't expect this project to keep pace with Zed or to be a
+Zed-killer, unless other people take it and keep building from here. This
+project is mainly therapeutic. I had to get it out of my system.
 
 ## Features
 

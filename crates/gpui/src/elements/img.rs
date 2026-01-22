@@ -61,8 +61,10 @@ impl From<SharedUri> for ImageSource {
 impl<'a> From<&'a str> for ImageSource {
     fn from(s: &'a str) -> Self {
         if is_uri(s) {
+            log::info!("{:?} is a uri", s);
             Self::Resource(Resource::Uri(s.to_string().into()))
         } else {
+            log::info!("{:?} is not a uri", s);
             Self::Resource(Resource::Embedded(s.to_string().into()))
         }
     }
@@ -600,8 +602,24 @@ impl Asset for ImageAssetLoader {
         let asset_source = cx.asset_source().clone();
         async move {
             let bytes = match source.clone() {
-                Resource::Path(uri) => fs::read(uri.as_ref())?,
+                Resource::Path(uri) => {
+                    log::info!("Matched a path: {:?}", uri);
+                    // Try loading embedded first
+                    if uri.is_relative()
+                        && let Some(path) = uri.to_str()
+                    {
+                        let data = asset_source.load(path).ok().flatten();
+                        if let Some(data) = data {
+                            data.to_vec()
+                        } else {
+                            fs::read(uri.as_ref())?
+                        }
+                    } else {
+                        fs::read(uri.as_ref())?
+                    }
+                }
                 Resource::Uri(uri) => {
+                    log::info!("Matched a URI: {:?}", uri);
                     let mut response = client
                         .get(uri.as_ref(), ().into(), true)
                         .await
@@ -621,6 +639,7 @@ impl Asset for ImageAssetLoader {
                     body
                 }
                 Resource::Embedded(path) => {
+                    log::info!("Matched embedded: {:?}", path);
                     let data = asset_source.load(&path).ok().flatten();
                     if let Some(data) = data {
                         data.to_vec()

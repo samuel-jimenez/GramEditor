@@ -923,7 +923,7 @@ pub(crate) fn font_name_with_fallbacks<'a>(name: &'a str, system: &'a str) -> &'
     match name {
         ".SystemUIFont" => system,
         ".GramSans" => "Fira Sans",
-        ".GramMono" => "Fira Code",
+        ".GramMono" => "Myna",
         _ => name,
     }
 }

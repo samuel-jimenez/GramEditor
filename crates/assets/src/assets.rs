@@ -58,9 +58,7 @@ impl Assets {
 
     pub fn load_test_fonts(&self, cx: &App) {
         cx.text_system()
-            .add_fonts(vec![
-                self.load("fonts/fira-code/fira-code.ttf").unwrap().unwrap(),
-            ])
+            .add_fonts(vec![self.load("fonts/myna/Myna.ttf").unwrap().unwrap()])
             .unwrap()
     }
 }

@@ -4439,10 +4439,7 @@ mod tests {
     fn test_bundled_settings_and_themes(cx: &mut App) {
         cx.text_system()
             .add_fonts(vec![
-                Assets
-                    .load("fonts/fira-code/fira-code.ttf")
-                    .unwrap()
-                    .unwrap(),
+                Assets.load("fonts/myna/Myna.ttf").unwrap().unwrap(),
                 Assets
                     .load("fonts/fira-sans/FiraSans-Regular.ttf")
                     .unwrap()
