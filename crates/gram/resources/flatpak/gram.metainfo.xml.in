@@ -32,13 +32,8 @@
         <content_attribute id="social-audio">intense</content_attribute>
     </content_rating>
 
-    <url type="homepage">https://liten.app</url>
-    <url type="bugtracker">https://github.com/zed-industries/zed/issues</url>
-    <url type="faq">https://liten.app/faq</url>
-    <url type="help">gram://docs/getting-started</url>
-    <url type="contact">https://liten.app/community-links</url>
-    <url type="vcs-browser">https://github.com/zed-industries/zed</url>
-    <url type="contribute">https://github.com/zed-industries/zed/blob/main/CONTRIBUTING.md</url>
+    <url type="homepage">https://codeberg.org/krig/gram</url>
+    <url type="vcs-browser">https://codeberg.org/krig/gram</url>
 
     <supports>
         <internet>offline-only</internet>

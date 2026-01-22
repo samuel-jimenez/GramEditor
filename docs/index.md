@@ -20,10 +20,31 @@ the following list (incomplete) of changes:
 - [Uninstall](./uninstall.md)
 - [Troubleshooting](./troubleshooting.md)
 
-## Migrate
+### Migrating
 
 - From [Zed](./migrate/zed.md)
 - From [VS Code](./migrate/vs-code.md)
+
+## Features
+
+- [Debugger](./debugger.md): Integrated support for DAP, the debugger adapter
+  protocol.
+- [Remote Development](./remote-development.md): Connect to remote servers via
+  SSH and edit as if working on a local project.
+- [Extensions](./extensions.md): Add support for additional languages, themes
+  and icons using the extension system.
+
+## Development
+
+- [Development](./development.md)
+  - [macOS](./development/macos.md)
+  - [Linux](./development/linux.md)
+  - [Windows](./development/windows.md)
+  - [FreeBSD](./development/freebsd.md)
+  - [Using Debuggers](./development/debuggers.md)
+  - [Glossary](./development/glossary.md)
+- [Debugging Crashes](./development/debugging-crashes.md)
+
 
 ## Configuration
 
@@ -60,15 +81,40 @@ the following list (incomplete) of changes:
 - [Windows](./windows.md)
 - [Linux](./linux.md)
 
+
+## Legal note on accepting contributions
+
+If you have previously installed Zed and agreed to their license agreement, you
+may be legally prevented from contributing to Gram despite the open source
+license of the code. I am not a lawyer and I suspect that the license that they
+use would not hold up at least in European court, but I don't know. For that
+exact reason, I never agreed to their license. This is the main reason this fork
+even exists.
+
+If you do want to contribute patches, you will have to accept full responsibility
+for ensuring and warranting that you are legally allowed to do so.
+
+## You are the community
+
+Gram is proudly open source, in spirit, not just in words. That said, we have
+strong opinions about what we want to include in the editor. For example, the
+main reason for this fork from Zed is to remove certain "features" that we
+disagree with, morally. However, you are of course free to make it your own in
+any way you see fit.
+
+I don't use AI and if you submit a patch created with AI I might reject it
+(especially if it doesn't work and you can't explain or fix it). That said, the
+upstream Zed project does use it, so this project is not AI free in any sense.
+
+There is no official discord or reddit community.
+
 ## Extensions
 
-> [!NOTE]
-> The Zed extension system relies on a closed-source server
-> component, which is stripped from Gram. Instead, all
-> extensions have to be built from source.
-> Currently, there is no extension registry so the extensions
-> have to be installed either via the suggestion popups or
-> an URL.
+> The Zed extension system relies on a closed-source server component, which is
+> stripped from Gram. Instead, all extensions have to be built from source.
+> Currently, there is no extension registry so the extensions have to be
+> installed either via the suggestion popups or an URL and WASM extensions need
+> rustup installed in order to compile.
 
 - [Overview](./extensions.md)
 - [Installing Extensions](./extensions/installing-extensions.md)
@@ -153,13 +199,3 @@ the following list (incomplete) of changes:
 - [Yarn](./languages/yarn.md)
 - [Zig](./languages/zig.md)
 
-## Development
-
-- [Development](./development.md)
-  - [macOS](./development/macos.md)
-  - [Linux](./development/linux.md)
-  - [Windows](./development/windows.md)
-  - [FreeBSD](./development/freebsd.md)
-  - [Using Debuggers](./development/debuggers.md)
-  - [Glossary](./development/glossary.md)
-- [Debugging Crashes](./development/debugging-crashes.md)
