@@ -23,7 +23,7 @@ use ui::{
 use util::{ResultExt, rel_path::RelPath};
 use workspace::{StatusItemView, Workspace};
 
-use crate::lsp_log_view;
+use crate::{lsp_config_view::OpenLanguageServerConfig, lsp_log_view};
 
 actions!(
     lsp_tool,
@@ -42,7 +42,7 @@ pub struct LspButton {
 }
 
 #[derive(Debug)]
-struct LanguageServerState {
+pub struct LanguageServerState {
     items: Vec<LspMenuItem>,
     workspace: WeakEntity<Workspace>,
     lsp_store: WeakEntity<LspStore>,
@@ -66,32 +66,32 @@ impl std::fmt::Debug for ActiveEditor {
 }
 
 #[derive(Debug, Default, Clone)]
-struct LanguageServers {
+pub(crate) struct LanguageServers {
     health_statuses: HashMap<LanguageServerId, LanguageServerHealthStatus>,
-    binary_statuses: HashMap<LanguageServerName, LanguageServerBinaryStatus>,
+    pub(crate) binary_statuses: HashMap<LanguageServerName, LanguageServerBinaryStatus>,
     servers_per_buffer_abs_path: HashMap<PathBuf, ServersForPath>,
 }
 
 #[derive(Debug, Clone)]
-struct ServersForPath {
+pub(crate) struct ServersForPath {
     servers: HashMap<LanguageServerId, Option<LanguageServerName>>,
     worktree: Option<WeakEntity<Worktree>>,
 }
 
 #[derive(Debug, Clone)]
-struct LanguageServerHealthStatus {
+pub(crate) struct LanguageServerHealthStatus {
     name: LanguageServerName,
     health: Option<(Option<SharedString>, ServerHealth)>,
 }
 
 #[derive(Debug, Clone)]
-struct LanguageServerBinaryStatus {
-    status: BinaryStatus,
-    message: Option<SharedString>,
+pub(crate) struct LanguageServerBinaryStatus {
+    pub(crate) status: BinaryStatus,
+    pub(crate) message: Option<SharedString>,
 }
 
 #[derive(Debug, Clone)]
-struct ServerInfo {
+pub(crate) struct ServerInfo {
     name: LanguageServerName,
     id: LanguageServerId,
     health: Option<ServerHealth>,
@@ -100,11 +100,11 @@ struct ServerInfo {
 }
 
 impl ServerInfo {
-    fn server_selector(&self) -> LanguageServerSelector {
+    pub fn server_selector(&self) -> LanguageServerSelector {
         LanguageServerSelector::Id(self.id)
     }
 
-    fn can_stop(&self) -> bool {
+    pub fn can_stop(&self) -> bool {
         self.binary_status.as_ref().is_none_or(|status| {
             matches!(status.status, BinaryStatus::None | BinaryStatus::Starting)
         })
@@ -112,11 +112,11 @@ impl ServerInfo {
 }
 
 impl LanguageServerHealthStatus {
-    fn health(&self) -> Option<ServerHealth> {
+    pub fn health(&self) -> Option<ServerHealth> {
         self.health.as_ref().map(|(_, health)| *health)
     }
 
-    fn message(&self) -> Option<SharedString> {
+    pub fn message(&self) -> Option<SharedString> {
         self.health
             .as_ref()
             .and_then(|(message, _)| message.clone())
@@ -192,6 +192,7 @@ impl LanguageServerState {
                                         // Do not try to use IDs as we have stopped all servers already, when allowing to restart them all
                                         .flat_map(|item| match item {
                                             LspMenuItem::Header { .. } => None,
+                                            LspMenuItem::OpenConfigView => None,
                                             LspMenuItem::ToggleServersButton { .. } => None,
                                             LspMenuItem::WithHealthCheck { health, .. } => Some(
                                                 LanguageServerSelector::Name(health.name.clone()),
@@ -226,6 +227,15 @@ impl LanguageServerState {
                     .when(*separator, |menu| menu.separator())
                     .when_some(header.as_ref(), |menu, header| menu.header(header));
                 continue;
+            } else {
+                match item {
+                    LspMenuItem::OpenConfigView => {
+                        menu = menu.entry("Configure Servers", None, move |window, cx| {
+                            window.dispatch_action(Box::new(OpenLanguageServerConfig), cx);
+                        })
+                    }
+                    _ => {}
+                }
             }
 
             let Some(server_info) = item.server_info() else {
@@ -618,6 +628,7 @@ enum LspMenuItem {
     ToggleServersButton {
         restart: bool,
     },
+    OpenConfigView,
     Header {
         header: Option<SharedString>,
         separator: bool,
@@ -629,6 +640,7 @@ impl LspMenuItem {
         match self {
             Self::Header { .. } => None,
             Self::ToggleServersButton { .. } => None,
+            Self::OpenConfigView => None,
             Self::WithHealthCheck {
                 server_id,
                 health,
@@ -1026,6 +1038,7 @@ impl LspButton {
                     new_lsp_items.push(LspMenuItem::ToggleServersButton { restart: true });
                 }
             }
+            new_lsp_items.push(LspMenuItem::OpenConfigView {});
 
             state.items = new_lsp_items;
         });
