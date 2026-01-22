@@ -207,6 +207,8 @@ actions!(
         ToggleAllDocks,
         /// Closes the current window.
         CloseWindow,
+        /// Closes the current project.
+        CloseProject,
         /// Opens the feedback dialog.
         Feedback,
         /// Moves the focused panel to the next position.
@@ -6336,7 +6338,7 @@ pub fn open_new(
     let task = Workspace::new_local(
         Vec::new(),
         app_state,
-        None,
+        open_options.replace_window,
         open_options.env,
         Some(Box::new(init)),
         cx,
