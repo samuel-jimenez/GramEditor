@@ -382,7 +382,7 @@ impl LocalLspStore {
             settings,
             toolchain.clone(),
             delegate.clone(),
-            true,
+            false, // TODO: Expose this in LSP UI so user can toggle this themselves
             cx,
         );
         let pending_workspace_folders: Arc<Mutex<BTreeSet<Uri>>> = Default::default();
