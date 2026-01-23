@@ -622,6 +622,9 @@ impl GitGraph {
 
         if let Some(repository) = project.read(cx).active_repository(cx) {
             repository.update(cx, |repository, cx| {
+                // This won't overlap with loading commits from the repository because
+                // we either have all commits or commits loaded in chunks and loading commits
+                // from the repository event is always adding the last chunk of commits.
                 let commits =
                     repository.graph_data(log_source.clone(), log_order, 0..usize::MAX, cx);
                 graph.add_commits(commits);
@@ -690,6 +693,8 @@ impl GitGraph {
             }
             _ => {}
         }
+
+        cx.notify();
     }
 
     fn render_badge(&self, name: &SharedString, accent_color: gpui::Hsla) -> impl IntoElement {
