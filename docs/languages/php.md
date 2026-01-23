@@ -35,9 +35,9 @@ To switch to `intelephense`, add the following to your `settings.json`:
 {
   "languages": {
     "PHP": {
-      "language_servers": ["intelephense", "!phpactor", "!phptools", "..."]
-    }
-  }
+      "language_servers": ["intelephense", "!phpactor", "!phptools", "..."],
+    },
+  },
 }
 ```
 
@@ -48,10 +48,10 @@ To use the premium features, you can place your [licence.txt file](https://intel
   "lsp": {
     "intelephense": {
       "initialization_options": {
-        "licenceKey": "/path/to/licence.txt"
-      }
-    }
-  }
+        "licenceKey": "/path/to/licence.txt",
+      },
+    },
+  },
 }
 ```
 

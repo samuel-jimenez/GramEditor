@@ -20,15 +20,15 @@ You can configure the use of [typescript-language-server](https://github.com/typ
 {
   "languages": {
     "TypeScript": {
-      "language_servers": ["typescript-language-server", "!vtsls", "..."]
+      "language_servers": ["typescript-language-server", "!vtsls", "..."],
     },
     "TSX": {
-      "language_servers": ["typescript-language-server", "!vtsls", "..."]
+      "language_servers": ["typescript-language-server", "!vtsls", "..."],
     },
     "JavaScript": {
-      "language_servers": ["typescript-language-server", "!vtsls", "..."]
-    }
-  }
+      "language_servers": ["typescript-language-server", "!vtsls", "..."],
+    },
+  },
 }
 ```
 
@@ -38,10 +38,10 @@ Prettier will also be used for TypeScript files by default. To disable this:
 {
   "languages": {
     "TypeScript": {
-      "prettier": { "allowed": false }
-    }
+      "prettier": { "allowed": false },
+    },
     //...
-  }
+  },
 }
 ```
 
@@ -57,10 +57,10 @@ Prettier will also be used for TypeScript files by default. To disable this:
         // For TypeScript:
         "typescript": { "tsserver": { "maxTsServerMemory": 16184 } },
         // For JavaScript:
-        "javascript": { "tsserver": { "maxTsServerMemory": 16184 } }
-      }
-    }
-  }
+        "javascript": { "tsserver": { "maxTsServerMemory": 16184 } },
+      },
+    },
+  },
 }
 ```
 
@@ -83,11 +83,11 @@ You can override these settings in your Gram `settings.jsonc` when using `typesc
           "includeInlayVariableTypeHintsWhenTypeMatchesName": true,
           "includeInlayPropertyDeclarationTypeHints": true,
           "includeInlayFunctionLikeReturnTypeHints": true,
-          "includeInlayEnumMemberValueHints": true
-        }
-      }
-    }
-  }
+          "includeInlayEnumMemberValueHints": true,
+        },
+      },
+    },
+  },
 }
 ```
 
@@ -105,54 +105,54 @@ When using `vtsls`:
           "inlayHints": {
             "parameterNames": {
               "enabled": "all",
-              "suppressWhenArgumentMatchesName": false
+              "suppressWhenArgumentMatchesName": false,
             },
             "parameterTypes": {
-              "enabled": true
+              "enabled": true,
             },
             "variableTypes": {
               "enabled": true,
-              "suppressWhenTypeMatchesName": true
+              "suppressWhenTypeMatchesName": true,
             },
             "propertyDeclarationTypes": {
-              "enabled": true
+              "enabled": true,
             },
             "functionLikeReturnTypes": {
-              "enabled": true
+              "enabled": true,
             },
             "enumMemberValues": {
-              "enabled": true
-            }
-          }
+              "enabled": true,
+            },
+          },
         },
         // For TypeScript:
         "typescript": {
           "inlayHints": {
             "parameterNames": {
               "enabled": "all",
-              "suppressWhenArgumentMatchesName": false
+              "suppressWhenArgumentMatchesName": false,
             },
             "parameterTypes": {
-              "enabled": true
+              "enabled": true,
             },
             "variableTypes": {
               "enabled": true,
-              "suppressWhenTypeMatchesName": true
+              "suppressWhenTypeMatchesName": true,
             },
             "propertyDeclarationTypes": {
-              "enabled": true
+              "enabled": true,
             },
             "functionLikeReturnTypes": {
-              "enabled": true
+              "enabled": true,
             },
             "enumMemberValues": {
-              "enabled": true
-            }
-          }
-        }
-      }
-    }
-  }
+              "enabled": true,
+            },
+          },
+        },
+      },
+    },
+  },
 }
 ```
 

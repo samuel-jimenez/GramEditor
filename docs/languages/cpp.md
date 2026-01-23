@@ -18,10 +18,10 @@ If you want to install a pre-release `clangd` version instead you can instruct G
   "lsp": {
     "clangd": {
       "fetch": {
-        "pre_release": true
-      }
-    }
-  }
+        "pre_release": true,
+      },
+    },
+  },
 }
 ```
 
@@ -32,10 +32,10 @@ If you want to disable Gram looking for a `clangd` binary, you can set `ignore_s
   "lsp": {
     "clangd": {
       "binary": {
-        "ignore_system_version": true
-      }
-    }
-  }
+        "ignore_system_version": true,
+      },
+    },
+  },
 }
 ```
 
@@ -47,10 +47,10 @@ If you want to use a binary in a custom location, you can specify a `path` and o
     "clangd": {
       "binary": {
         "path": "/path/to/clangd",
-        "arguments": []
-      }
-    }
-  }
+        "arguments": [],
+      },
+    },
+  },
 }
 ```
 
@@ -66,10 +66,10 @@ You can pass any number of arguments to clangd. To see a full set of available o
     "clangd": {
       "binary": {
         "path": "/path/to/clangd",
-        "arguments": ["--function-arg-placeholders=0"]
-      }
-    }
-  }
+        "arguments": ["--function-arg-placeholders=0"],
+      },
+    },
+  },
 }
 ```
 
@@ -177,7 +177,7 @@ a keybinding for the `editor::SwitchSourceHeader` action.
 {
   "context": "Editor",
   "bindings": {
-    "alt-enter": "editor::SwitchSourceHeader"
-  }
+    "alt-enter": "editor::SwitchSourceHeader",
+  },
 }
 ```

@@ -139,9 +139,9 @@ language, you can assign a kernel for any supported language in your `settings.j
       "python": "conda-env",
       "typescript": "deno",
       "javascript": "deno",
-      "r": "ark"
-    }
-  }
+      "r": "ark",
+    },
+  },
 }
 ```
 

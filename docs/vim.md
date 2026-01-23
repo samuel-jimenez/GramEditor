@@ -33,7 +33,7 @@ Later, vim mode can be toggled on or off at any time using the command {#action 
 >
 > ```jsonc
 > {
->   "vim_mode": true
+>   "vim_mode": true,
 > }
 > ```
 
@@ -141,11 +141,11 @@ These commands open new panes or jump to specific panes.
 
 The following commands control Gram's completion menu.
 
-| Command                                                                      | Default Shortcut |
-| ---------------------------------------------------------------------------- | ---------------- |
-| Open the completion menu                                                     | `ctrl-x ctrl-o`  |
-| Open the code actions menu                                                   | `ctrl-x ctrl-l`  |
-| Hides all suggestions                                                        | `ctrl-x ctrl-z`  |
+| Command                    | Default Shortcut |
+| -------------------------- | ---------------- |
+| Open the completion menu   | `ctrl-x ctrl-o`  |
+| Open the code actions menu | `ctrl-x ctrl-l`  |
+| Hides all suggestions      | `ctrl-x ctrl-z`  |
 
 ### Supported plugins
 
@@ -220,8 +220,8 @@ To use these text objects, you need to add bindings to your keymap. Here's an ex
 
     // mini.ai plugin behavior
     "Q": "vim::MiniQuotes",
-    "B": "vim::MiniBrackets"
-  }
+    "B": "vim::MiniBrackets",
+  },
 }
 ```
 
@@ -244,27 +244,27 @@ Below, you'll find tables listing the commands you can use in the command palett
 
 This table shows commands for managing windows, tabs, and panes. As commands don't support arguments currently, you cannot specify a filename when saving or creating a new file.
 
-| Command        | Description                                          |
-| -------------- | ---------------------------------------------------- |
-| `:w[rite][!]`  | Save the current file                                |
-| `:wq[!]`       | Save the file and close the buffer                   |
-| `:q[uit][!]`   | Close the buffer                                     |
-| `:wa[ll][!]`   | Save all open files                                  |
-| `:wqa[ll][!]`  | Save all open files and close all buffers            |
-| `:qa[ll][!]`   | Close all buffers                                    |
-| `:[e]x[it][!]` | Close the buffer                                     |
-| `:up[date]`    | Save the current file                                |
+| Command        | Description                                           |
+| -------------- | ----------------------------------------------------- |
+| `:w[rite][!]`  | Save the current file                                 |
+| `:wq[!]`       | Save the file and close the buffer                    |
+| `:q[uit][!]`   | Close the buffer                                      |
+| `:wa[ll][!]`   | Save all open files                                   |
+| `:wqa[ll][!]`  | Save all open files and close all buffers             |
+| `:qa[ll][!]`   | Close all buffers                                     |
+| `:[e]x[it][!]` | Close the buffer                                      |
+| `:up[date]`    | Save the current file                                 |
 | `:cq`          | Quit completely (close all running instances of Gram) |
-| `:vs[plit]`    | Split the pane vertically                            |
-| `:sp[lit]`     | Split the pane horizontally                          |
-| `:new`         | Create a new file in a horizontal split              |
-| `:vne[w]`      | Create a new file in a vertical split                |
-| `:tabedit`     | Create a new file in a new tab                       |
-| `:tabnew`      | Create a new file in a new tab                       |
-| `:tabn[ext]`   | Go to the next tab                                   |
-| `:tabp[rev]`   | Go to previous tab                                   |
-| `:tabc[lose]`  | Close the current tab                                |
-| `:ls`          | Show all buffers                                     |
+| `:vs[plit]`    | Split the pane vertically                             |
+| `:sp[lit]`     | Split the pane horizontally                           |
+| `:new`         | Create a new file in a horizontal split               |
+| `:vne[w]`      | Create a new file in a vertical split                 |
+| `:tabedit`     | Create a new file in a new tab                        |
+| `:tabnew`      | Create a new file in a new tab                        |
+| `:tabn[ext]`   | Go to the next tab                                    |
+| `:tabp[rev]`   | Go to previous tab                                    |
+| `:tabc[lose]`  | Close the current tab                                 |
+| `:ls`          | Show all buffers                                      |
 
 > **Note:** The `!` character is used to force the command to execute without saving changes or prompting before overwriting a file.
 
@@ -369,8 +369,8 @@ Gram's key bindings are evaluated only when the `"context"` property matches you
 {
   "context": "Editor",
   "bindings": {
-    "ctrl-s": "file::Save"
-  }
+    "ctrl-s": "file::Save",
+  },
 }
 ```
 
@@ -381,8 +381,8 @@ Contexts are nested, so when you're editing a file, the context is the `"Editor"
 {
   "context": "Workspace",
   "bindings": {
-    "ctrl-s": "workspace::Save"
-  }
+    "ctrl-s": "workspace::Save",
+  },
 }
 ```
 
@@ -413,19 +413,19 @@ Here's a template with useful vim mode contexts to help you customize your vim m
     "context": "VimControl && !menu",
     "bindings": {
       // Put key bindings here if you want them to work in normal & visual mode.
-    }
+    },
   },
   {
     "context": "vim_mode == normal && !menu",
     "bindings": {
       // "shift-y": ["workspace::SendKeystrokes", "y $"] // Use neovim's yank behavior: yank to end of line.
-    }
+    },
   },
   {
     "context": "vim_mode == insert",
     "bindings": {
       // "j k": "vim::NormalBefore" // In insert mode, make jk escape to normal mode.
-    }
+    },
   },
   {
     "context": "EmptyPane",
@@ -433,8 +433,8 @@ Here's a template with useful vim mode contexts to help you customize your vim m
       // Put key bindings here (in addition to the context above) if you want them to
       // work when no editor exists.
       // "space f": "file_finder::Toggle"
-    }
-  }
+    },
+  },
 ]
 ```
 
@@ -453,9 +453,9 @@ But you cannot use the same shortcuts to move between all the editor docks (the 
     "ctrl-w h": "workspace::ActivatePaneLeft",
     "ctrl-w l": "workspace::ActivatePaneRight",
     "ctrl-w k": "workspace::ActivatePaneUp",
-    "ctrl-w j": "workspace::ActivatePaneDown"
+    "ctrl-w j": "workspace::ActivatePaneDown",
     // ... or other keybindings
-  }
+  },
 }
 ```
 
@@ -468,8 +468,8 @@ Subword motion, which allows you to navigate and select individual words in `cam
     "w": "vim::NextSubwordStart",
     "b": "vim::PreviousSubwordStart",
     "e": "vim::NextSubwordEnd",
-    "g e": "vim::PreviousSubwordEnd"
-  }
+    "g e": "vim::PreviousSubwordEnd",
+  },
 }
 ```
 
@@ -482,8 +482,8 @@ Vim mode comes with shortcuts to surround the selection in normal mode (`ys`), b
 {
   "context": "vim_mode == visual",
   "bindings": {
-    "shift-s": "vim::PushAddSurrounds"
-  }
+    "shift-s": "vim::PushAddSurrounds",
+  },
 }
 ```
 
@@ -498,8 +498,8 @@ In non-modal text editors, cursor navigation typically wraps when moving past li
     "left": "vim::WrappingLeft",
     "right": "vim::WrappingRight",
     "h": "vim::WrappingLeft",
-    "l": "vim::WrappingRight"
-  }
+    "l": "vim::WrappingRight",
+  },
 }
 ```
 
@@ -510,8 +510,8 @@ The [Sneak motion](https://github.com/justinmk/vim-sneak) feature allows for qui
   "context": "vim_mode == normal || vim_mode == visual",
   "bindings": {
     "s": "vim::PushSneak",
-    "shift-s": "vim::PushSneakBackward"
-  }
+    "shift-s": "vim::PushSneakBackward",
+  },
 }
 ```
 
@@ -521,8 +521,8 @@ The [vim-exchange](https://github.com/tommcdo/vim-exchange) feature does not hav
 {
   "context": "vim_mode == visual",
   "bindings": {
-    "shift-x": "vim::Exchange"
-  }
+    "shift-x": "vim::Exchange",
+  },
 }
 ```
 
@@ -567,9 +567,9 @@ Here's an example of adding a digraph for the zombie emoji. This allows you to t
 {
   "vim": {
     "custom_digraphs": {
-      "fz": "🧟‍♀️"
-    }
-  }
+      "fz": "🧟‍♀️",
+    },
+  },
 }
 ```
 
@@ -584,9 +584,9 @@ Here's an example of these settings changed:
     "relative_line_numbers": "enabled",
     "highlight_on_yank_duration": 50,
     "custom_digraphs": {
-      "fz": "🧟‍♀️"
-    }
-  }
+      "fz": "🧟‍♀️",
+    },
+  },
 }
 ```
 
@@ -620,13 +620,13 @@ Here's an example of these settings changed:
   "vertical_scroll_margin": 0,
   "gutter": {
     // Disable line numbers completely
-    "line_numbers": false
+    "line_numbers": false,
   },
   "command_aliases": {
     "W": "w",
     "Wq": "wq",
-    "Q": "q"
-  }
+    "Q": "q",
+  },
 }
 ```
 

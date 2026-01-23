@@ -54,15 +54,15 @@ For example:
   {
     "bindings": {
       "ctrl-right": "editor::SelectLargerSyntaxNode",
-      "ctrl-left": "editor::SelectSmallerSyntaxNode"
-    }
+      "ctrl-left": "editor::SelectSmallerSyntaxNode",
+    },
   },
   {
     "context": "ProjectPanel && not_editing",
     "bindings": {
-      "o": "project_panel::Open"
-    }
-  }
+      "o": "project_panel::Open",
+    },
+  },
 ]
 ```
 
@@ -178,9 +178,9 @@ If you are defining shortcuts in your personal keymap, you can opt into the key 
   {
     "use_key_equivalents": true,
     "bindings": {
-      "ctrl->": "editor::Indent" // parsed as ctrl-: when a German QWERTZ keyboard is active
-    }
-  }
+      "ctrl->": "editor::Indent", // parsed as ctrl-: when a German QWERTZ keyboard is active
+    },
+  },
 ]
 ```
 
@@ -204,9 +204,9 @@ the sequence, or if you want to disable multikey bindings starting with that key
   {
     "context": "Workspace",
     "bindings": {
-      "cmd-r": null // cmd-r will do nothing when the Workspace context is active
-    }
-  }
+      "cmd-r": null, // cmd-r will do nothing when the Workspace context is active
+    },
+  },
 ]
 ```
 
@@ -219,15 +219,15 @@ This is useful for preventing Gram from falling back to a default key binding wh
   {
     "context": "Workspace",
     "bindings": {
-      "cmd-r": null // cmd-r will do nothing when the search bar is in view
-    }
+      "cmd-r": null, // cmd-r will do nothing when the search bar is in view
+    },
   },
   {
     "context": "Workspace",
     "bindings": {
-      "cmd-r": "buffer_search::DeployReplace" // cmd-r will deploy replace when the search bar is not in view
-    }
-  }
+      "cmd-r": "buffer_search::DeployReplace", // cmd-r will deploy replace when the search bar is not in view
+    },
+  },
 ]
 ```
 
@@ -245,16 +245,16 @@ A common request is to be able to map from a single keystroke to a sequence. You
       // copy to the clipboard; and then undo the selection expansion.
       "cmd-alt-c": [
         "workspace::SendKeystrokes",
-        "ctrl-shift-right ctrl-shift-right ctrl-shift-right cmd-c ctrl-shift-left ctrl-shift-left ctrl-shift-left"
-      ]
-    }
+        "ctrl-shift-right ctrl-shift-right ctrl-shift-right cmd-c ctrl-shift-left ctrl-shift-left ctrl-shift-left",
+      ],
+    },
   },
   {
     "context": "Editor && vim_mode == insert",
     "bindings": {
-      "j k": ["workspace::SendKeystrokes", "escape"]
-    }
-  }
+      "j k": ["workspace::SendKeystrokes", "escape"],
+    },
+  },
 ]
 ```
 
@@ -278,8 +278,8 @@ For example, `ctrl-n` creates a new tab in Gram on Linux. If you want to send `c
 {
   "context": "Terminal",
   "bindings": {
-    "ctrl-n": ["terminal::SendKeystroke", "ctrl-n"]
-  }
+    "ctrl-n": ["terminal::SendKeystroke", "ctrl-n"],
+  },
 }
 ```
 

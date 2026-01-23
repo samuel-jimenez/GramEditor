@@ -51,8 +51,8 @@ They are merged into the base configuration with settings from these keys taking
   "theme": "sunset",
   "vim_mode": false,
   "stable": {
-    "theme": "gram-dark"
-  }
+    "theme": "gram-dark",
+  },
 }
 ```
 
@@ -74,8 +74,8 @@ Find below an extensive run-through of many supported settings by Gram.
 {
   "active_pane_modifiers": {
     "border_size": 0.0,
-    "inactive_opacity": 1.0
-  }
+    "inactive_opacity": 1.0,
+  },
 }
 ```
 
@@ -111,7 +111,7 @@ Non-negative `float` values
 
 ```jsonc
 {
-  "bottom_dock_layout": "contained"
+  "bottom_dock_layout": "contained",
 }
 ```
 
@@ -119,7 +119,7 @@ Non-negative `float` values
 
 ```jsonc
 {
-  "bottom_dock_layout": "full"
+  "bottom_dock_layout": "full",
 }
 ```
 
@@ -127,7 +127,7 @@ Non-negative `float` values
 
 ```jsonc
 {
-  "bottom_dock_layout": "left_aligned"
+  "bottom_dock_layout": "left_aligned",
 }
 ```
 
@@ -135,7 +135,7 @@ Non-negative `float` values
 
 ```jsonc
 {
-  "bottom_dock_layout": "right_aligned"
+  "bottom_dock_layout": "right_aligned",
 }
 ```
 
@@ -151,7 +151,7 @@ Non-negative `float` values
 
 ```jsonc
 {
-  "allow_rewrap": "in_comments"
+  "allow_rewrap": "in_comments",
 }
 ```
 
@@ -159,7 +159,7 @@ Non-negative `float` values
 
 ```jsonc
 {
-  "allow_rewrap": "in_selections"
+  "allow_rewrap": "in_selections",
 }
 ```
 
@@ -167,7 +167,7 @@ Non-negative `float` values
 
 ```jsonc
 {
-  "allow_rewrap": "anywhere"
+  "allow_rewrap": "anywhere",
 }
 ```
 
@@ -223,7 +223,7 @@ ls ~/.local/share/gram/extensions/installed
 
 ```jsonc
 {
-  "autosave": "off"
+  "autosave": "off",
 }
 ```
 
@@ -231,7 +231,7 @@ ls ~/.local/share/gram/extensions/installed
 
 ```jsonc
 {
-  "autosave": "on_focus_change"
+  "autosave": "on_focus_change",
 }
 ```
 
@@ -239,7 +239,7 @@ ls ~/.local/share/gram/extensions/installed
 
 ```jsonc
 {
-  "autosave": "on_window_change"
+  "autosave": "on_window_change",
 }
 ```
 
@@ -249,9 +249,9 @@ ls ~/.local/share/gram/extensions/installed
 {
   "autosave": {
     "after_delay": {
-      "milliseconds": 1000
-    }
-  }
+      "milliseconds": 1000,
+    },
+  },
 }
 ```
 
@@ -299,7 +299,7 @@ Note that a save will be triggered when an unsaved tab is closed, even if this i
 
 ```jsonc
 {
-  "base_keymap": "VSCode"
+  "base_keymap": "VSCode",
 }
 ```
 
@@ -307,7 +307,7 @@ Note that a save will be triggered when an unsaved tab is closed, even if this i
 
 ```jsonc
 {
-  "base_keymap": "Atom"
+  "base_keymap": "Atom",
 }
 ```
 
@@ -315,7 +315,7 @@ Note that a save will be triggered when an unsaved tab is closed, even if this i
 
 ```jsonc
 {
-  "base_keymap": "JetBrains"
+  "base_keymap": "JetBrains",
 }
 ```
 
@@ -323,7 +323,7 @@ Note that a save will be triggered when an unsaved tab is closed, even if this i
 
 ```jsonc
 {
-  "base_keymap": "None"
+  "base_keymap": "None",
 }
 ```
 
@@ -331,7 +331,7 @@ Note that a save will be triggered when an unsaved tab is closed, even if this i
 
 ```jsonc
 {
-  "base_keymap": "SublimeText"
+  "base_keymap": "SublimeText",
 }
 ```
 
@@ -339,7 +339,7 @@ Note that a save will be triggered when an unsaved tab is closed, even if this i
 
 ```jsonc
 {
-  "base_keymap": "TextMate"
+  "base_keymap": "TextMate",
 }
 ```
 
@@ -369,8 +369,8 @@ For example, to disable font ligatures, add the following to your settings:
 ```jsonc
 {
   "buffer_font_features": {
-    "calt": false
-  }
+    "calt": false,
+  },
 }
 ```
 
@@ -379,8 +379,8 @@ You can also set other OpenType features, like setting `cv01` to `7`:
 ```jsonc
 {
   "buffer_font_features": {
-    "cv01": 7
-  }
+    "cv01": 7,
+  },
 }
 ```
 
@@ -397,7 +397,7 @@ For example, to use `Nerd Font` as a fallback, add the following to your setting
 
 ```jsonc
 {
-  "buffer_font_fallbacks": ["Nerd Font"]
+  "buffer_font_fallbacks": ["Nerd Font"],
 }
 ```
 
@@ -485,7 +485,7 @@ Note: Dirty files (files with unsaved changes) will not be automatically closed 
 
 ```jsonc
 {
-  "diagnostics_max_severity": "all"
+  "diagnostics_max_severity": "all",
 }
 ```
 
@@ -493,7 +493,7 @@ Note: Dirty files (files with unsaved changes) will not be automatically closed 
 
 ```jsonc
 {
-  "diagnostics_max_severity": "error"
+  "diagnostics_max_severity": "error",
 }
 ```
 
@@ -501,7 +501,7 @@ Note: Dirty files (files with unsaved changes) will not be automatically closed 
 
 ```jsonc
 {
-  "diagnostics_max_severity": "warning"
+  "diagnostics_max_severity": "warning",
 }
 ```
 
@@ -509,7 +509,7 @@ Note: Dirty files (files with unsaved changes) will not be automatically closed 
 
 ```jsonc
 {
-  "diagnostics_max_severity": "info"
+  "diagnostics_max_severity": "info",
 }
 ```
 
@@ -517,7 +517,7 @@ Note: Dirty files (files with unsaved changes) will not be automatically closed 
 
 ```jsonc
 {
-  "diagnostics_max_severity": "hint"
+  "diagnostics_max_severity": "hint",
 }
 ```
 
@@ -549,7 +549,7 @@ There are three options to choose from:
 
 ```jsonc
 {
-  "double_click_in_multibuffer": "select"
+  "double_click_in_multibuffer": "select",
 }
 ```
 
@@ -557,7 +557,7 @@ There are three options to choose from:
 
 ```jsonc
 {
-  "double_click_in_multibuffer": "open"
+  "double_click_in_multibuffer": "open",
 }
 ```
 
@@ -672,8 +672,8 @@ For the case of "open", regular selection behavior can be achieved by holding `a
     "runnables": true,
     "breakpoints": true,
     "folds": true,
-    "min_line_number_digits": 4
-  }
+    "min_line_number_digits": 4,
+  },
 }
 ```
 
@@ -867,7 +867,7 @@ Diagnostic indicators appear as colored marks showing errors, warnings, and othe
 
 ```jsonc
 {
-  "show_diagnostics": "all"
+  "show_diagnostics": "all",
 }
 ```
 
@@ -875,7 +875,7 @@ Diagnostic indicators appear as colored marks showing errors, warnings, and othe
 
 ```jsonc
 {
-  "show_diagnostics": "off"
+  "show_diagnostics": "off",
 }
 ```
 
@@ -883,7 +883,7 @@ Diagnostic indicators appear as colored marks showing errors, warnings, and othe
 
 ```jsonc
 {
-  "show_diagnostics": "error"
+  "show_diagnostics": "error",
 }
 ```
 
@@ -891,7 +891,7 @@ Diagnostic indicators appear as colored marks showing errors, warnings, and othe
 
 ```jsonc
 {
-  "show_diagnostics": "warning"
+  "show_diagnostics": "warning",
 }
 ```
 
@@ -899,7 +899,7 @@ Diagnostic indicators appear as colored marks showing errors, warnings, and othe
 
 ```jsonc
 {
-  "show_diagnostics": "info"
+  "show_diagnostics": "info",
 }
 ```
 
@@ -950,8 +950,8 @@ Diagnostic indicators appear as colored marks showing errors, warnings, and othe
     "show": "never",
     "thumb": "always",
     "thumb_border": "left_open",
-    "current_line_highlight": null
-  }
+    "current_line_highlight": null,
+  },
 }
 ```
 
@@ -967,7 +967,7 @@ Diagnostic indicators appear as colored marks showing errors, warnings, and othe
 
 ```jsonc
 {
-  "show": "always"
+  "show": "always",
 }
 ```
 
@@ -975,7 +975,7 @@ Diagnostic indicators appear as colored marks showing errors, warnings, and othe
 
 ```jsonc
 {
-  "show": "auto"
+  "show": "auto",
 }
 ```
 
@@ -983,7 +983,7 @@ Diagnostic indicators appear as colored marks showing errors, warnings, and othe
 
 ```jsonc
 {
-  "show": "never"
+  "show": "never",
 }
 ```
 
@@ -999,7 +999,7 @@ Diagnostic indicators appear as colored marks showing errors, warnings, and othe
 
 ```jsonc
 {
-  "thumb": "hover"
+  "thumb": "hover",
 }
 ```
 
@@ -1007,7 +1007,7 @@ Diagnostic indicators appear as colored marks showing errors, warnings, and othe
 
 ```jsonc
 {
-  "thumb": "always"
+  "thumb": "always",
 }
 ```
 
@@ -1023,7 +1023,7 @@ Diagnostic indicators appear as colored marks showing errors, warnings, and othe
 
 ```jsonc
 {
-  "thumb_border": "full"
+  "thumb_border": "full",
 }
 ```
 
@@ -1031,7 +1031,7 @@ Diagnostic indicators appear as colored marks showing errors, warnings, and othe
 
 ```jsonc
 {
-  "thumb_border": "left_open"
+  "thumb_border": "left_open",
 }
 ```
 
@@ -1039,7 +1039,7 @@ Diagnostic indicators appear as colored marks showing errors, warnings, and othe
 
 ```jsonc
 {
-  "thumb_border": "right_open"
+  "thumb_border": "right_open",
 }
 ```
 
@@ -1047,7 +1047,7 @@ Diagnostic indicators appear as colored marks showing errors, warnings, and othe
 
 ```jsonc
 {
-  "thumb_border": "left_only"
+  "thumb_border": "left_only",
 }
 ```
 
@@ -1055,7 +1055,7 @@ Diagnostic indicators appear as colored marks showing errors, warnings, and othe
 
 ```jsonc
 {
-  "thumb_border": "none"
+  "thumb_border": "none",
 }
 ```
 
@@ -1072,8 +1072,8 @@ Diagnostic indicators appear as colored marks showing errors, warnings, and othe
 ```jsonc
 {
   "minimap": {
-    "current_line_highlight": null
-  }
+    "current_line_highlight": null,
+  },
 }
 ```
 
@@ -1082,8 +1082,8 @@ Diagnostic indicators appear as colored marks showing errors, warnings, and othe
 ```jsonc
 {
   "minimap": {
-    "current_line_highlight": "line"
-  }
+    "current_line_highlight": "line",
+  },
 }
 ```
 
@@ -1092,8 +1092,8 @@ or
 ```jsonc
 {
   "minimap": {
-    "current_line_highlight": "all"
-  }
+    "current_line_highlight": "all",
+  },
 }
 ```
 
@@ -1102,8 +1102,8 @@ or
 ```jsonc
 {
   "minimap": {
-    "current_line_highlight": "gutter"
-  }
+    "current_line_highlight": "gutter",
+  },
 }
 ```
 
@@ -1112,8 +1112,8 @@ or
 ```jsonc
 {
   "minimap": {
-    "current_line_highlight": "none"
-  }
+    "current_line_highlight": "none",
+  },
 }
 ```
 
@@ -1190,7 +1190,7 @@ or
 
 ```jsonc
 {
-  "close_position": "right"
+  "close_position": "right",
 }
 ```
 
@@ -1198,7 +1198,7 @@ or
 
 ```jsonc
 {
-  "close_position": "left"
+  "close_position": "left",
 }
 ```
 
@@ -1226,7 +1226,7 @@ or
 
 ```jsonc
 {
-  "activate_on_close": "history"
+  "activate_on_close": "history",
 }
 ```
 
@@ -1234,7 +1234,7 @@ or
 
 ```jsonc
 {
-  "activate_on_close": "neighbour"
+  "activate_on_close": "neighbour",
 }
 ```
 
@@ -1242,7 +1242,7 @@ or
 
 ```jsonc
 {
-  "activate_on_close": "left_neighbour"
+  "activate_on_close": "left_neighbour",
 }
 ```
 
@@ -1258,7 +1258,7 @@ or
 
 ```jsonc
 {
-  "show_close_button": "hover"
+  "show_close_button": "hover",
 }
 ```
 
@@ -1266,7 +1266,7 @@ or
 
 ```jsonc
 {
-  "show_close_button": "always"
+  "show_close_button": "always",
 }
 ```
 
@@ -1274,7 +1274,7 @@ or
 
 ```jsonc
 {
-  "show_close_button": "hidden"
+  "show_close_button": "hidden",
 }
 ```
 
@@ -1290,7 +1290,7 @@ or
 
 ```jsonc
 {
-  "show_diagnostics": "off"
+  "show_diagnostics": "off",
 }
 ```
 
@@ -1298,7 +1298,7 @@ or
 
 ```jsonc
 {
-  "show_diagnostics": "errors"
+  "show_diagnostics": "errors",
 }
 ```
 
@@ -1306,7 +1306,7 @@ or
 
 ```jsonc
 {
-  "show_diagnostics": "all"
+  "show_diagnostics": "all",
 }
 ```
 
@@ -1489,8 +1489,8 @@ While other options may be changed at a runtime and should be placed under `sett
 ```jsonc
 {
   "global_lsp_settings": {
-    "button": true
-  }
+    "button": true,
+  },
 }
 ```
 
@@ -1516,8 +1516,7 @@ While other options may be changed at a runtime and should be placed under `sett
 
 ```jsonc
 {
-  "features": {
-  }
+  "features": {},
 }
 ```
 
@@ -1533,7 +1532,7 @@ While other options may be changed at a runtime and should be placed under `sett
 
 ```jsonc
 {
-  "format_on_save": "on"
+  "format_on_save": "on",
 }
 ```
 
@@ -1541,7 +1540,7 @@ While other options may be changed at a runtime and should be placed under `sett
 
 ```jsonc
 {
-  "format_on_save": "off"
+  "format_on_save": "off",
 }
 ```
 
@@ -1557,7 +1556,7 @@ While other options may be changed at a runtime and should be placed under `sett
 
 ```jsonc
 {
-  "formatter": "language_server"
+  "formatter": "language_server",
 }
 ```
 
@@ -1568,9 +1567,9 @@ While other options may be changed at a runtime and should be placed under `sett
   "formatter": {
     "external": {
       "command": "sed",
-      "arguments": ["-e", "s/ *$//"]
-    }
-  }
+      "arguments": ["-e", "s/ *$//"],
+    },
+  },
 }
 ```
 
@@ -1595,8 +1594,8 @@ WARNING: `{buffer_path}` should not be used to direct your formatter to read fro
     // Use ESLint's --fix:
     { "code_action": "source.fixAll.eslint" },
     // Organize imports on save:
-    { "code_action": "source.organizeImports" }
-  ]
+    { "code_action": "source.organizeImports" },
+  ],
 }
 ```
 
@@ -1609,10 +1608,10 @@ WARNING: `{buffer_path}` should not be used to direct your formatter to read fro
     {
       "external": {
         "command": "sed",
-        "arguments": ["-e", "s/ *$//"]
-      }
-    }
-  ]
+        "arguments": ["-e", "s/ *$//"],
+      },
+    },
+  ],
 }
 ```
 
@@ -1702,8 +1701,8 @@ To interpret all `.c` files as C++, files called `MyLockFile` as TOML and files 
   "file_types": {
     "C++": ["c"],
     "TOML": ["MyLockFile"],
-    "Dockerfile": ["Dockerfile*"]
-  }
+    "Dockerfile": ["Dockerfile*"],
+  },
 }
 ```
 
@@ -1718,12 +1717,12 @@ To interpret all `.c` files as C++, files called `MyLockFile` as TOML and files 
   "diagnostics": {
     "include_warnings": true,
     "inline": {
-      "enabled": false
+      "enabled": false,
     },
     "update_with_cursor": false,
     "primary_only": false,
-    "use_rendered": false
-  }
+    "use_rendered": false,
+  },
 }
 ```
 
@@ -1741,9 +1740,9 @@ To interpret all `.c` files as C++, files called `MyLockFile` as TOML and files 
       "update_debounce_ms": 150,
       "padding": 4,
       "min_column": 0,
-      "max_severity": null
-    }
-  }
+      "max_severity": null,
+    },
+  },
 }
 ```
 
@@ -1755,9 +1754,9 @@ To interpret all `.c` files as C++, files called `MyLockFile` as TOML and files 
 {
   "diagnostics": {
     "inline": {
-      "enabled": true
-    }
-  }
+      "enabled": true,
+    },
+  },
 }
 ```
 
@@ -1768,9 +1767,9 @@ To interpret all `.c` files as C++, files called `MyLockFile` as TOML and files 
   "diagnostics": {
     "inline": {
       "enabled": true,
-      "update_debounce_ms": 150
-    }
-  }
+      "update_debounce_ms": 150,
+    },
+  },
 }
 ```
 
@@ -1781,9 +1780,9 @@ To interpret all `.c` files as C++, files called `MyLockFile` as TOML and files 
   "diagnostics": {
     "inline": {
       "enabled": true,
-      "padding": 4
-    }
-  }
+      "padding": 4,
+    },
+  },
 }
 ```
 
@@ -1794,9 +1793,9 @@ To interpret all `.c` files as C++, files called `MyLockFile` as TOML and files 
   "diagnostics": {
     "inline": {
       "enabled": true,
-      "min_column": 80
-    }
-  }
+      "min_column": 80,
+    },
+  },
 }
 ```
 
@@ -1807,9 +1806,9 @@ To interpret all `.c` files as C++, files called `MyLockFile` as TOML and files 
   "diagnostics": {
     "inline": {
       "enabled": true,
-      "max_severity": "warning"
-    }
-  }
+      "max_severity": "warning",
+    },
+  },
 }
 ```
 
@@ -1824,13 +1823,13 @@ To interpret all `.c` files as C++, files called `MyLockFile` as TOML and files 
   "git": {
     "git_gutter": "tracked_files",
     "inline_blame": {
-      "enabled": true
+      "enabled": true,
     },
     "branch_picker": {
-      "show_author_name": true
+      "show_author_name": true,
     },
-    "hunk_style": "staged_hollow"
-  }
+    "hunk_style": "staged_hollow",
+  },
 }
 ```
 
@@ -1847,8 +1846,8 @@ To interpret all `.c` files as C++, files called `MyLockFile` as TOML and files 
 ```jsonc
 {
   "git": {
-    "git_gutter": "tracked_files"
-  }
+    "git_gutter": "tracked_files",
+  },
 }
 ```
 
@@ -1857,8 +1856,8 @@ To interpret all `.c` files as C++, files called `MyLockFile` as TOML and files 
 ```jsonc
 {
   "git": {
-    "git_gutter": "hide"
-  }
+    "git_gutter": "hide",
+  },
 }
 ```
 
@@ -1877,8 +1876,8 @@ Example:
 ```jsonc
 {
   "git": {
-    "gutter_debounce": 100
-  }
+    "gutter_debounce": 100,
+  },
 }
 ```
 
@@ -1892,9 +1891,9 @@ Example:
 {
   "git": {
     "inline_blame": {
-      "enabled": true
-    }
-  }
+      "enabled": true,
+    },
+  },
 }
 ```
 
@@ -1906,9 +1905,9 @@ Example:
 {
   "git": {
     "inline_blame": {
-      "enabled": false
-    }
-  }
+      "enabled": false,
+    },
+  },
 }
 ```
 
@@ -1918,9 +1917,9 @@ Example:
 {
   "git": {
     "inline_blame": {
-      "delay_ms": 500
-    }
-  }
+      "delay_ms": 500,
+    },
+  },
 }
 ```
 
@@ -1930,9 +1929,9 @@ Example:
 {
   "git": {
     "inline_blame": {
-      "show_commit_summary": true
-    }
-  }
+      "show_commit_summary": true,
+    },
+  },
 }
 ```
 
@@ -1942,9 +1941,9 @@ Example:
 {
   "git": {
     "inline_blame": {
-      "min_column": 80
-    }
-  }
+      "min_column": 80,
+    },
+  },
 }
 ```
 
@@ -1954,9 +1953,9 @@ Example:
 {
   "git": {
     "inline_blame": {
-      "padding": 10
-    }
-  }
+      "padding": 10,
+    },
+  },
 }
 ```
 
@@ -1970,9 +1969,9 @@ Example:
 {
   "git": {
     "branch_picker": {
-      "show_author_name": false
-    }
-  }
+      "show_author_name": false,
+    },
+  },
 }
 ```
 
@@ -1984,9 +1983,9 @@ Example:
 {
   "git": {
     "branch_picker": {
-      "show_author_name": true
-    }
-  }
+      "show_author_name": true,
+    },
+  },
 }
 ```
 
@@ -1999,8 +1998,8 @@ Example:
 ```jsonc
 {
   "git": {
-    "hunk_style": "staged_hollow"
-  }
+    "hunk_style": "staged_hollow",
+  },
 }
 ```
 
@@ -2011,8 +2010,8 @@ Example:
 ```jsonc
 {
   "git": {
-    "hunk_style": "staged_hollow"
-  }
+    "hunk_style": "staged_hollow",
+  },
 }
 ```
 
@@ -2021,8 +2020,8 @@ Example:
 ```jsonc
 {
   "git": {
-    "hunk_style": "unstaged_hollow"
-  }
+    "hunk_style": "unstaged_hollow",
+  },
 }
 ```
 
@@ -2038,7 +2037,7 @@ Example:
 
 ```jsonc
 {
-  "go_to_definition_fallback": "none"
+  "go_to_definition_fallback": "none",
 }
 ```
 
@@ -2046,7 +2045,7 @@ Example:
 
 ```jsonc
 {
-  "go_to_definition_fallback": "find_all_references"
+  "go_to_definition_fallback": "find_all_references",
 }
 ```
 
@@ -2083,8 +2082,8 @@ Example:
     "line_width": 1,
     "active_line_width": 1,
     "coloring": "fixed",
-    "background_coloring": "disabled"
-  }
+    "background_coloring": "disabled",
+  },
 }
 ```
 
@@ -2095,8 +2094,8 @@ Example:
 ```jsonc
 {
   "indent_guides": {
-    "enabled": false
-  }
+    "enabled": false,
+  },
 }
 ```
 
@@ -2107,10 +2106,10 @@ Example:
   "languages": {
     "Python": {
       "indent_guides": {
-        "enabled": true
-      }
-    }
-  }
+        "enabled": true,
+      },
+    },
+  },
 }
 ```
 
@@ -2121,8 +2120,8 @@ Example:
 {
   "indent_guides": {
     "enabled": true,
-    "coloring": "indent_aware"
-  }
+    "coloring": "indent_aware",
+  },
 }
 ```
 
@@ -2134,8 +2133,8 @@ Example:
   "indent_guides": {
     "enabled": true,
     "coloring": "indent_aware",
-    "background_coloring": "indent_aware"
-  }
+    "background_coloring": "indent_aware",
+  },
 }
 ```
 
@@ -2191,7 +2190,7 @@ Example:
 
 ```jsonc
 {
-  "mode": "dark"
+  "mode": "dark",
 }
 ```
 
@@ -2199,7 +2198,7 @@ Example:
 
 ```jsonc
 {
-  "mode": "light"
+  "mode": "light",
 }
 ```
 
@@ -2207,7 +2206,7 @@ Example:
 
 ```jsonc
 {
-  "mode": "system"
+  "mode": "system",
 }
 ```
 
@@ -2240,8 +2239,8 @@ Run the {#action icon_theme_selector::Toggle} action in the command palette to s
 ```jsonc
 {
   "image_viewer": {
-    "unit": "binary"
-  }
+    "unit": "binary",
+  },
 }
 ```
 
@@ -2260,8 +2259,8 @@ Run the {#action icon_theme_selector::Toggle} action in the command palette to s
 ```jsonc
 {
   "image_viewer": {
-    "unit": "binary"
-  }
+    "unit": "binary",
+  },
 }
 ```
 
@@ -2270,8 +2269,8 @@ Run the {#action icon_theme_selector::Toggle} action in the command palette to s
 ```jsonc
 {
   "image_viewer": {
-    "unit": "decimal"
-  }
+    "unit": "decimal",
+  },
 }
 ```
 
@@ -2364,7 +2363,7 @@ Unspecified values have a `false` value, hints won't be toggled if all the modif
 
 ```jsonc
 {
-  "hour_format": "hour12"
+  "hour_format": "hour12",
 }
 ```
 
@@ -2372,7 +2371,7 @@ Unspecified values have a `false` value, hints won't be toggled if all the modif
 
 ```jsonc
 {
-  "hour_format": "hour24"
+  "hour_format": "hour24",
 }
 ```
 
@@ -2385,8 +2384,8 @@ Unspecified values have a `false` value, hints won't be toggled if all the modif
 ```jsonc
 {
   "jsx_tag_auto_close": {
-    "enabled": true
-  }
+    "enabled": true,
+  },
 }
 ```
 
@@ -2447,7 +2446,7 @@ These values take in the same options as the root-level settings with the same n
 
 ```jsonc
 {
-  "line_indicator_format": "short"
+  "line_indicator_format": "short",
 }
 ```
 
@@ -2455,7 +2454,7 @@ These values take in the same options as the root-level settings with the same n
 
 ```jsonc
 {
-  "line_indicator_format": "long"
+  "line_indicator_format": "long",
 }
 ```
 
@@ -2511,7 +2510,7 @@ Positive `integer` values or `null` for unlimited tabs
 
 ```jsonc
 {
-  "multi_cursor_modifier": "alt"
+  "multi_cursor_modifier": "alt",
 }
 ```
 
@@ -2519,7 +2518,7 @@ Positive `integer` values or `null` for unlimited tabs
 
 ```jsonc
 {
-  "multi_cursor_modifier": "cmd_or_ctrl" // alias: "cmd", "ctrl"
+  "multi_cursor_modifier": "cmd_or_ctrl", // alias: "cmd", "ctrl"
 }
 ```
 
@@ -2534,8 +2533,8 @@ Positive `integer` values or `null` for unlimited tabs
   "node": {
     "ignore_system_version": false,
     "path": null,
-    "npm_path": null
-  }
+    "npm_path": null,
+  },
 }
 ```
 
@@ -2572,7 +2571,7 @@ For example, to set an `http` proxy, add the following to your settings:
 
 ```jsonc
 {
-  "proxy": "http://127.0.0.1:10809"
+  "proxy": "http://127.0.0.1:10809",
 }
 ```
 
@@ -2580,7 +2579,7 @@ Or to set a `socks5` proxy:
 
 ```jsonc
 {
-  "proxy": "socks5h://localhost:10808"
+  "proxy": "socks5h://localhost:10808",
 }
 ```
 
@@ -2598,7 +2597,7 @@ If you wish to exclude certain hosts from using the proxy, set the `NO_PROXY` en
 
 ```jsonc
 {
-  "on_last_window_closed": "platform_default"
+  "on_last_window_closed": "platform_default",
 }
 ```
 
@@ -2606,7 +2605,7 @@ If you wish to exclude certain hosts from using the proxy, set the `NO_PROXY` en
 
 ```jsonc
 {
-  "on_last_window_closed": "quit_app"
+  "on_last_window_closed": "quit_app",
 }
 ```
 
@@ -2626,9 +2625,9 @@ Configuration object for defining settings profiles. Example:
     "presentation": {
       "buffer_font_size": 20,
       "ui_font_size": 18,
-      "theme": "One Light"
-    }
-  }
+      "theme": "One Light",
+    },
+  },
 }
 ```
 
@@ -2751,7 +2750,7 @@ Configuration object for defining settings profiles. Example:
 
 ```jsonc
 {
-  "pane_split_direction_horizontal": "up"
+  "pane_split_direction_horizontal": "up",
 }
 ```
 
@@ -2759,7 +2758,7 @@ Configuration object for defining settings profiles. Example:
 
 ```jsonc
 {
-  "pane_split_direction_horizontal": "down"
+  "pane_split_direction_horizontal": "down",
 }
 ```
 
@@ -2775,7 +2774,7 @@ Configuration object for defining settings profiles. Example:
 
 ```jsonc
 {
-  "pane_split_direction_vertical": "left"
+  "pane_split_direction_vertical": "left",
 }
 ```
 
@@ -2783,7 +2782,7 @@ Configuration object for defining settings profiles. Example:
 
 ```jsonc
 {
-  "pane_split_direction_vertical": "right"
+  "pane_split_direction_vertical": "right",
 }
 ```
 
@@ -2849,7 +2848,7 @@ List of `string` glob patterns
 
 ```jsonc
 {
-  "relative_line_numbers": "enabled"
+  "relative_line_numbers": "enabled",
 }
 ```
 
@@ -2857,7 +2856,7 @@ List of `string` glob patterns
 
 ```jsonc
 {
-  "relative_line_numbers": "wrapped"
+  "relative_line_numbers": "wrapped",
 }
 ```
 
@@ -2865,7 +2864,7 @@ List of `string` glob patterns
 
 ```jsonc
 {
-  "relative_line_numbers": "disabled"
+  "relative_line_numbers": "disabled",
 }
 ```
 
@@ -2915,7 +2914,7 @@ List of strings containing any combination of:
 
 ```jsonc
 {
-  "restore_on_startup": "last_session"
+  "restore_on_startup": "last_session",
 }
 ```
 
@@ -2923,7 +2922,7 @@ List of strings containing any combination of:
 
 ```jsonc
 {
-  "restore_on_startup": "last_workspace"
+  "restore_on_startup": "last_workspace",
 }
 ```
 
@@ -2931,7 +2930,7 @@ List of strings containing any combination of:
 
 ```jsonc
 {
-  "restore_on_startup": "empty_tab"
+  "restore_on_startup": "empty_tab",
 }
 ```
 
@@ -2939,7 +2938,7 @@ List of strings containing any combination of:
 
 ```jsonc
 {
-  "restore_on_startup": "launchpad"
+  "restore_on_startup": "launchpad",
 }
 ```
 
@@ -2955,7 +2954,7 @@ List of strings containing any combination of:
 
 ```jsonc
 {
-  "scroll_beyond_last_line": "one_page"
+  "scroll_beyond_last_line": "one_page",
 }
 ```
 
@@ -2963,7 +2962,7 @@ List of strings containing any combination of:
 
 ```jsonc
 {
-  "scroll_beyond_last_line": "vertical_scroll_margin"
+  "scroll_beyond_last_line": "vertical_scroll_margin",
 }
 ```
 
@@ -2971,7 +2970,7 @@ List of strings containing any combination of:
 
 ```jsonc
 {
-  "scroll_beyond_last_line": "off"
+  "scroll_beyond_last_line": "off",
 }
 ```
 
@@ -3127,8 +3126,8 @@ Examples:
     "words_min_length": 3,
     "lsp": true,
     "lsp_fetch_timeout_ms": 0,
-    "lsp_insert_mode": "replace_suffix"
-  }
+    "lsp_insert_mode": "replace_suffix",
+  },
 }
 ```
 
@@ -3231,8 +3230,8 @@ Positive integer values
 {
   "whitespace_map": {
     "space": "•",
-    "tab": "→"
-  }
+    "tab": "→",
+  },
 }
 ```
 
@@ -3331,8 +3330,8 @@ List of `integer` column numbers
   "tasks": {
     "variables": {},
     "enabled": true,
-    "prefer_lsp": false
-  }
+    "prefer_lsp": false,
+  },
 }
 ```
 
@@ -3371,8 +3370,8 @@ List of `integer` column numbers
     "detect_venv": {
       "on": {
         "directories": [".env", "env", ".venv", "venv"],
-        "activate_script": "default"
-      }
+        "activate_script": "default",
+      },
     },
     "env": {},
     "font_family": null,
@@ -3385,13 +3384,13 @@ List of `integer` column numbers
     "shell": "system",
     "scroll_multiplier": 3.0,
     "toolbar": {
-      "breadcrumbs": false
+      "breadcrumbs": false,
     },
     "working_directory": "current_project_directory",
     "scrollbar": {
-      "show": null
-    }
-  }
+      "show": null,
+    },
+  },
 }
 ```
 
@@ -3418,8 +3417,8 @@ List of `integer` column numbers
 ```jsonc
 {
   "terminal": {
-    "alternate_scroll": "off"
-  }
+    "alternate_scroll": "off",
+  },
 }
 ```
 
@@ -3428,8 +3427,8 @@ List of `integer` column numbers
 ```jsonc
 {
   "terminal": {
-    "alternate_scroll": "on"
-  }
+    "alternate_scroll": "on",
+  },
 }
 ```
 
@@ -3446,8 +3445,8 @@ List of `integer` column numbers
 ```jsonc
 {
   "terminal": {
-    "blinking": "off"
-  }
+    "blinking": "off",
+  },
 }
 ```
 
@@ -3456,8 +3455,8 @@ List of `integer` column numbers
 ```jsonc
 {
   "terminal": {
-    "blinking": "terminal_controlled"
-  }
+    "blinking": "terminal_controlled",
+  },
 }
 ```
 
@@ -3466,8 +3465,8 @@ List of `integer` column numbers
 ```jsonc
 {
   "terminal": {
-    "blinking": "on"
-  }
+    "blinking": "on",
+  },
 }
 ```
 
@@ -3486,8 +3485,8 @@ List of `integer` column numbers
 ```jsonc
 {
   "terminal": {
-    "copy_on_select": true
-  }
+    "copy_on_select": true,
+  },
 }
 ```
 
@@ -3504,8 +3503,8 @@ List of `integer` column numbers
 ```jsonc
 {
   "terminal": {
-    "cursor_shape": "block"
-  }
+    "cursor_shape": "block",
+  },
 }
 ```
 
@@ -3514,8 +3513,8 @@ List of `integer` column numbers
 ```jsonc
 {
   "terminal": {
-    "cursor_shape": "bar"
-  }
+    "cursor_shape": "bar",
+  },
 }
 ```
 
@@ -3524,8 +3523,8 @@ List of `integer` column numbers
 ```jsonc
 {
   "terminal": {
-    "cursor_shape": "underline"
-  }
+    "cursor_shape": "underline",
+  },
 }
 ```
 
@@ -3534,8 +3533,8 @@ List of `integer` column numbers
 ```jsonc
 {
   "terminal": {
-    "cursor_shape": "hollow"
-  }
+    "cursor_shape": "hollow",
+  },
 }
 ```
 
@@ -3554,8 +3553,8 @@ List of `integer` column numbers
 ```jsonc
 {
   "terminal": {
-    "keep_selection_on_copy": false
-  }
+    "keep_selection_on_copy": false,
+  },
 }
 ```
 
@@ -3572,9 +3571,9 @@ List of `integer` column numbers
   "terminal": {
     "env": {
       "GRAM": "1",
-      "KEY": "value1:value2"
-    }
-  }
+      "KEY": "value1:value2",
+    },
+  },
 }
 ```
 
@@ -3591,8 +3590,8 @@ List of `integer` column numbers
 ```jsonc
 {
   "terminal": {
-    "font_size": 15
-  }
+    "font_size": 15,
+  },
 }
 ```
 
@@ -3609,8 +3608,8 @@ The name of any font family installed on the user's system
 ```jsonc
 {
   "terminal": {
-    "font_family": "Berkeley Mono"
-  }
+    "font_family": "Berkeley Mono",
+  },
 }
 ```
 
@@ -3629,10 +3628,10 @@ See Buffer Font Features
 {
   "terminal": {
     "font_features": {
-      "calt": false
+      "calt": false,
       // See Buffer Font Features for more features
-    }
-  }
+    },
+  },
 }
 ```
 
@@ -3649,8 +3648,8 @@ See Buffer Font Features
 ```jsonc
 {
   "terminal": {
-    "line_height": "comfortable"
-  }
+    "line_height": "comfortable",
+  },
 }
 ```
 
@@ -3659,8 +3658,8 @@ See Buffer Font Features
 ```jsonc
 {
   "terminal": {
-    "line_height": "standard"
-  }
+    "line_height": "standard",
+  },
 }
 ```
 
@@ -3670,9 +3669,9 @@ See Buffer Font Features
 {
   "terminal": {
     "line_height": {
-      "custom": 2
-    }
-  }
+      "custom": 2,
+    },
+  },
 }
 ```
 
@@ -3695,8 +3694,8 @@ See Buffer Font Features
 ```jsonc
 {
   "terminal": {
-    "minimum_contrast": 45
-  }
+    "minimum_contrast": 45,
+  },
 }
 ```
 
@@ -3713,8 +3712,8 @@ See Buffer Font Features
 ```jsonc
 {
   "terminal": {
-    "option_as_meta": true
-  }
+    "option_as_meta": true,
+  },
 }
 ```
 
@@ -3731,8 +3730,8 @@ See Buffer Font Features
 ```jsonc
 {
   "terminal": {
-    "shell": "system"
-  }
+    "shell": "system",
+  },
 }
 ```
 
@@ -3742,9 +3741,9 @@ See Buffer Font Features
 {
   "terminal": {
     "shell": {
-      "program": "sh"
-    }
-  }
+      "program": "sh",
+    },
+  },
 }
 ```
 
@@ -3756,10 +3755,10 @@ See Buffer Font Features
     "shell": {
       "with_arguments": {
         "program": "/bin/bash",
-        "args": ["--login"]
-      }
-    }
-  }
+        "args": ["--login"],
+      },
+    },
+  },
 }
 ```
 
@@ -3779,10 +3778,10 @@ See Buffer Font Features
         // in your project's settings, rather than globally.
         "directories": [".env", "env", ".venv", "venv"],
         // Can also be `csh`, `fish`, and `nushell`
-        "activate_script": "default"
-      }
-    }
-  }
+        "activate_script": "default",
+      },
+    },
+  },
 }
 ```
 
@@ -3791,8 +3790,8 @@ Disable with:
 ```jsonc
 {
   "terminal": {
-    "detect_venv": "off"
-  }
+    "detect_venv": "off",
+  },
 }
 ```
 
@@ -3826,9 +3825,9 @@ Positive floating point values. Values less than or equal to 0 will be clamped t
 {
   "terminal": {
     "toolbar": {
-      "breadcrumbs": false
-    }
-  }
+      "breadcrumbs": false,
+    },
+  },
 }
 ```
 
@@ -3855,8 +3854,8 @@ Example command to set the title: `echo -e "\e]2;New Title\007";`
 ```jsonc
 {
   "terminal": {
-    "button": false
-  }
+    "button": false,
+  },
 }
 ```
 
@@ -3873,8 +3872,8 @@ Example command to set the title: `echo -e "\e]2;New Title\007";`
 ```jsonc
 {
   "terminal": {
-    "working_directory": "current_project_directory"
-  }
+    "working_directory": "current_project_directory",
+  },
 }
 ```
 
@@ -3883,8 +3882,8 @@ Example command to set the title: `echo -e "\e]2;New Title\007";`
 ```jsonc
 {
   "terminal": {
-    "working_directory": "first_project_directory"
-  }
+    "working_directory": "first_project_directory",
+  },
 }
 ```
 
@@ -3893,8 +3892,8 @@ Example command to set the title: `echo -e "\e]2;New Title\007";`
 ```jsonc
 {
   "terminal": {
-    "working_directory": "always_home"
-  }
+    "working_directory": "always_home",
+  },
 }
 ```
 
@@ -3905,10 +3904,10 @@ Example command to set the title: `echo -e "\e]2;New Title\007";`
   "terminal": {
     "working_directory": {
       "always": {
-        "directory": "~/gram/projects/"
-      }
-    }
-  }
+        "directory": "~/gram/projects/",
+      },
+    },
+  },
 }
 ```
 
@@ -3946,10 +3945,10 @@ Example command to set the title: `echo -e "\e]2;New Title\007";`
         "# which may be followed by trailing punctuation",
         "[.,:)}\\]>]*",
         "# and always includes trailing whitespace or end of line",
-        "([ ]+|$)"
-      ]
-    ]
-  }
+        "([ ]+|$)",
+      ],
+    ],
+  },
 }
 ```
 
@@ -4008,7 +4007,7 @@ Example command to set the title: `echo -e "\e]2;New Title\007";`
 
 ```jsonc
 {
-  "mode": "dark"
+  "mode": "dark",
 }
 ```
 
@@ -4016,7 +4015,7 @@ Example command to set the title: `echo -e "\e]2;New Title\007";`
 
 ```jsonc
 {
-  "mode": "light"
+  "mode": "light",
 }
 ```
 
@@ -4024,7 +4023,7 @@ Example command to set the title: `echo -e "\e]2;New Title\007";`
 
 ```jsonc
 {
-  "mode": "system"
+  "mode": "system",
 }
 ```
 
@@ -4094,7 +4093,7 @@ Run the {#action theme_selector::Toggle} action in the command palette to see a 
 
 ```jsonc
 {
-  "when_closing_with_no_tabs": "platform_default"
+  "when_closing_with_no_tabs": "platform_default",
 }
 ```
 
@@ -4102,7 +4101,7 @@ Run the {#action theme_selector::Toggle} action in the command palette to see a 
 
 ```jsonc
 {
-  "when_closing_with_no_tabs": "close_window"
+  "when_closing_with_no_tabs": "close_window",
 }
 ```
 
@@ -4110,7 +4109,7 @@ Run the {#action theme_selector::Toggle} action in the command palette to see a 
 
 ```jsonc
 {
-  "when_closing_with_no_tabs": "keep_window_open"
+  "when_closing_with_no_tabs": "keep_window_open",
 }
 ```
 
@@ -4135,12 +4134,12 @@ Run the {#action theme_selector::Toggle} action in the command palette to see a 
     "auto_fold_dirs": true,
     "drag_and_drop": true,
     "scrollbar": {
-      "show": null
+      "show": null,
     },
     "sticky_scroll": true,
     "show_diagnostics": "all",
     "indent_guides": {
-      "show": "always"
+      "show": "always",
     },
     "sort_mode": "directories_first",
     "hide_root": false,
@@ -4149,9 +4148,9 @@ Run the {#action theme_selector::Toggle} action in the command palette to see a 
     "auto_open": {
       "on_create": true,
       "on_paste": true,
-      "on_drop": true
-    }
-  }
+      "on_drop": true,
+    },
+  },
 }
 ```
 
@@ -4167,7 +4166,7 @@ Run the {#action theme_selector::Toggle} action in the command palette to see a 
 
 ```jsonc
 {
-  "dock": "left"
+  "dock": "left",
 }
 ```
 
@@ -4175,7 +4174,7 @@ Run the {#action theme_selector::Toggle} action in the command palette to see a 
 
 ```jsonc
 {
-  "dock": "right"
+  "dock": "right",
 }
 ```
 
@@ -4191,7 +4190,7 @@ Run the {#action theme_selector::Toggle} action in the command palette to see a 
 
 ```jsonc
 {
-  "entry_spacing": "comfortable"
+  "entry_spacing": "comfortable",
 }
 ```
 
@@ -4199,7 +4198,7 @@ Run the {#action theme_selector::Toggle} action in the command palette to see a 
 
 ```jsonc
 {
-  "entry_spacing": "standard"
+  "entry_spacing": "standard",
 }
 ```
 
@@ -4215,7 +4214,7 @@ Run the {#action theme_selector::Toggle} action in the command palette to see a 
 
 ```jsonc
 {
-  "git_status": true
+  "git_status": true,
 }
 ```
 
@@ -4223,7 +4222,7 @@ Run the {#action theme_selector::Toggle} action in the command palette to see a 
 
 ```jsonc
 {
-  "git_status": false
+  "git_status": false,
 }
 ```
 
@@ -4249,7 +4248,7 @@ Run the {#action theme_selector::Toggle} action in the command palette to see a 
 
 ```jsonc
 {
-  "auto_reveal_entries": true
+  "auto_reveal_entries": true,
 }
 ```
 
@@ -4257,7 +4256,7 @@ Run the {#action theme_selector::Toggle} action in the command palette to see a 
 
 ```jsonc
 {
-  "auto_reveal_entries": false
+  "auto_reveal_entries": false,
 }
 ```
 
@@ -4273,7 +4272,7 @@ Run the {#action theme_selector::Toggle} action in the command palette to see a 
 
 ```jsonc
 {
-  "auto_fold_dirs": true
+  "auto_fold_dirs": true,
 }
 ```
 
@@ -4281,7 +4280,7 @@ Run the {#action theme_selector::Toggle} action in the command palette to see a 
 
 ```jsonc
 {
-  "auto_fold_dirs": false
+  "auto_fold_dirs": false,
 }
 ```
 
@@ -4310,8 +4309,8 @@ Run the {#action theme_selector::Toggle} action in the command palette to see a 
 ```jsonc
 {
   "indent_guides": {
-    "show": "always"
-  }
+    "show": "always",
+  },
 }
 ```
 
@@ -4320,8 +4319,8 @@ Run the {#action theme_selector::Toggle} action in the command palette to see a 
 ```jsonc
 {
   "indent_guides": {
-    "show": "never"
-  }
+    "show": "never",
+  },
 }
 ```
 
@@ -4344,8 +4343,8 @@ Run the {#action theme_selector::Toggle} action in the command palette to see a 
 ```jsonc
 {
   "scrollbar": {
-    "show": "always"
-  }
+    "show": "always",
+  },
 }
 ```
 
@@ -4354,8 +4353,8 @@ Run the {#action theme_selector::Toggle} action in the command palette to see a 
 ```jsonc
 {
   "scrollbar": {
-    "show": "never"
-  }
+    "show": "never",
+  },
 }
 ```
 
@@ -4371,7 +4370,7 @@ Run the {#action theme_selector::Toggle} action in the command palette to see a 
 
 ```jsonc
 {
-  "sort_mode": "directories_first"
+  "sort_mode": "directories_first",
 }
 ```
 
@@ -4379,7 +4378,7 @@ Run the {#action theme_selector::Toggle} action in the command palette to see a 
 
 ```jsonc
 {
-  "sort_mode": "mixed"
+  "sort_mode": "mixed",
 }
 ```
 
@@ -4387,7 +4386,7 @@ Run the {#action theme_selector::Toggle} action in the command palette to see a 
 
 ```jsonc
 {
-  "sort_mode": "files_first"
+  "sort_mode": "files_first",
 }
 ```
 
@@ -4423,8 +4422,8 @@ Run the {#action theme_selector::Toggle} action in the command palette to see a 
     "stepping_granularity": "line",
     "save_breakpoints": true,
     "dock": "bottom",
-    "button": true
-  }
+    "button": true,
+  },
 }
 ```
 
@@ -4447,9 +4446,9 @@ See the [debugger page](./debugger.md) for more information about debugging supp
     "sort_by_path": false,
     "collapse_untracked_diff": false,
     "scrollbar": {
-      "show": null
-    }
-  }
+      "show": null,
+    },
+  },
 }
 ```
 
@@ -4486,9 +4485,9 @@ You can define these in user or project settings; project settings are merged on
     {
       "provider": "github",
       "name": "BigCorp GitHub",
-      "base_url": "https://git.example.corp"
-    }
-  ]
+      "base_url": "https://git.example.corp",
+    },
+  ],
 }
 ```
 
@@ -4562,7 +4561,7 @@ Float values between `0.0` and `0.9`, where:
 
 ```jsonc
 {
-  "unnecessary_code_fade": 0.5
+  "unnecessary_code_fade": 0.5,
 }
 ```
 
@@ -4599,8 +4598,8 @@ For example, to disable font ligatures, add the following to your settings:
 ```jsonc
 {
   "ui_font_features": {
-    "calt": false
-  }
+    "calt": false,
+  },
 }
 ```
 
@@ -4609,8 +4608,8 @@ You can also set other OpenType features, like setting `cv01` to `7`:
 ```jsonc
 {
   "ui_font_features": {
-    "cv01": 7
-  }
+    "cv01": 7,
+  },
 }
 ```
 
@@ -4627,7 +4626,7 @@ For example, to use `Nerd Font` as a fallback, add the following to your setting
 
 ```jsonc
 {
-  "ui_font_fallbacks": ["Nerd Font"]
+  "ui_font_fallbacks": ["Nerd Font"],
 }
 ```
 
@@ -4705,15 +4704,15 @@ To preview and enable a settings profile, open the command palette via {#kb comm
   "projects_online_by_default": true,
   "terminal": {
     "font_family": "FiraCode Nerd Font Mono",
-    "blinking": "off"
+    "blinking": "off",
   },
   "languages": {
     "C": {
       "format_on_save": "on",
       "formatter": "language_server",
       "preferred_line_length": 64,
-      "soft_wrap": "preferred_line_length"
-    }
-  }
+      "soft_wrap": "preferred_line_length",
+    },
+  },
 }
 ```

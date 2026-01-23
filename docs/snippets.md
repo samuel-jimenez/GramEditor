@@ -16,8 +16,8 @@ The snippets are located in `~/.config/gram/snippets` directory to which you can
   "Log to console": {
     "prefix": "log",
     "body": ["console.info(\"Hello, ${1:World}!\")", "$0"],
-    "description": "Logs to console"
-  }
+    "description": "Logs to console",
+  },
 }
 ```
 
@@ -49,10 +49,10 @@ If you want to enable it you can add the following to your `settings.json`:
   "lsp": {
     "snippet-completion-server": {
       "settings": {
-        "feature_paths": true
-      }
-    }
-  }
+        "feature_paths": true,
+      },
+    },
+  },
 }
 ```
 

@@ -27,12 +27,12 @@ The following example changes the JVM target from `default` (which is 1.8) to
       "settings": {
         "compiler": {
           "jvm": {
-            "target": "17"
-          }
-        }
-      }
-    }
-  }
+            "target": "17",
+          },
+        },
+      },
+    },
+  },
 }
 ```
 
@@ -46,10 +46,10 @@ To use a specific java installation, just specify the `JAVA_HOME` environment va
     "kotlin-language-server": {
       "binary": {
         "env": {
-          "JAVA_HOME": "/Users/whatever/Applications/Work/Android Studio.app/Contents/jbr/Contents/Home"
-        }
-      }
-    }
-  }
+          "JAVA_HOME": "/Users/whatever/Applications/Work/Android Studio.app/Contents/jbr/Contents/Home",
+        },
+      },
+    },
+  },
 }
 ```

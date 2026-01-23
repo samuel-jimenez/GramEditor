@@ -70,9 +70,9 @@ file.
   "ssh_connections": [
     {
       "host": "192.168.1.10",
-      "projects": [{ "paths": ["~/code/gram/gram"] }]
-    }
-  ]
+      "projects": [{ "paths": ["~/code/gram/gram"] }],
+    },
+  ],
 }
 ```
 
@@ -91,9 +91,9 @@ each connection:
       "args": ["-i", "~/.ssh/work_id_file"],
       "port": 22, // defaults to 22
       // defaults to your username on your local machine
-      "username": "me"
-    }
-  ]
+      "username": "me",
+    },
+  ],
 }
 ```
 
@@ -106,9 +106,9 @@ You can also set a nickname for the remote server:
       "host": "192.168.1.10",
       "projects": [{ "paths": ["~/code/gram/gram"] }],
       // Shown in the UI to help distinguish multiple hosts.
-      "nickname": "lil-linux"
-    }
-  ]
+      "nickname": "lil-linux",
+    },
+  ],
 }
 ```
 
@@ -152,9 +152,9 @@ If you'd like to be able to connect to ports on your remote server from your loc
   "ssh_connections": [
     {
       "host": "192.168.1.10",
-      "port_forwards": [{ "local_port": 8080, "remote_port": 80 }]
-    }
-  ]
+      "port_forwards": [{ "local_port": 8080, "remote_port": 80 }],
+    },
+  ],
 }
 ```
 
@@ -171,11 +171,11 @@ By default these ports are bound to localhost, so other computers in the same ne
         {
           "local_port": 8080,
           "remote_port": 80,
-          "local_host": "0.0.0.0"
-        }
-      ]
-    }
-  ]
+          "local_host": "0.0.0.0",
+        },
+      ],
+    },
+  ],
 }
 ```
 
@@ -190,11 +190,11 @@ These ports also default to the `localhost` interface on the remote host. If you
         {
           "local_port": 8080,
           "remote_port": 80,
-          "remote_host": "docker-host"
-        }
-      ]
-    }
-  ]
+          "remote_host": "docker-host",
+        },
+      ],
+    },
+  ],
 }
 ```
 

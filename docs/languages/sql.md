@@ -49,7 +49,7 @@ Sql-formatter also allows more precise control by providing [sql-formatter confi
   "language": "postgresql",
   "tabWidth": 2,
   "keywordCase": "upper",
-  "linesBetweenQueries": 2
+  "linesBetweenQueries": 2,
 }
 ```
 

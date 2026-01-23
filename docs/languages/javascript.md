@@ -23,11 +23,11 @@ For example, if you have Prettier installed and on your `PATH`, you can use it t
       "formatter": {
         "external": {
           "command": "prettier",
-          "arguments": ["--stdin-filepath", "{buffer_path}"]
-        }
-      }
-    }
-  }
+          "arguments": ["--stdin-filepath", "{buffer_path}"],
+        },
+      },
+    },
+  },
 }
 ```
 
@@ -51,10 +51,10 @@ You can configure Gram to format code using `eslint --fix` by running the ESLint
   "languages": {
     "JavaScript": {
       "code_actions_on_format": {
-        "source.fixAll.eslint": true
-      }
-    }
-  }
+        "source.fixAll.eslint": true,
+      },
+    },
+  },
 }
 ```
 
@@ -65,19 +65,19 @@ You can also only execute a single ESLint rule when using `fixAll`:
   "languages": {
     "JavaScript": {
       "code_actions_on_format": {
-        "source.fixAll.eslint": true
-      }
-    }
+        "source.fixAll.eslint": true,
+      },
+    },
   },
   "lsp": {
     "eslint": {
       "settings": {
         "codeActionOnSave": {
-          "rules": ["import/order"]
-        }
-      }
-    }
-  }
+          "rules": ["import/order"],
+        },
+      },
+    },
+  },
 }
 ```
 
@@ -95,10 +95,10 @@ the formatter:
     "JavaScript": {
       "formatter": [],
       "code_actions_on_format": {
-        "source.fixAll.eslint": true
-      }
-    }
-  }
+        "source.fixAll.eslint": true,
+      },
+    },
+  },
 }
 ```
 
@@ -111,10 +111,10 @@ You can configure ESLint's `nodePath` setting:
   "lsp": {
     "eslint": {
       "settings": {
-        "nodePath": ".yarn/sdks"
-      }
-    }
-  }
+        "nodePath": ".yarn/sdks",
+      },
+    },
+  },
 }
 ```
 
@@ -130,11 +130,11 @@ For example, here's how to set `problems.shortenToSingleLine`:
     "eslint": {
       "settings": {
         "problems": {
-          "shortenToSingleLine": true
-        }
-      }
-    }
-  }
+          "shortenToSingleLine": true,
+        },
+      },
+    },
+  },
 }
 ```
 
@@ -149,11 +149,11 @@ You can configure ESLint's `rulesCustomizations` setting:
       "settings": {
         "rulesCustomizations": [
           // set all eslint errors/warnings to show as warnings
-          { "rule": "*", "severity": "warn" }
-        ]
-      }
-    }
-  }
+          { "rule": "*", "severity": "warn" },
+        ],
+      },
+    },
+  },
 }
 ```
 
@@ -167,11 +167,11 @@ You can configure ESLint's `workingDirectory` setting:
     "eslint": {
       "settings": {
         "workingDirectory": {
-          "mode": "auto"
-        }
-      }
-    }
-  }
+          "mode": "auto",
+        },
+      },
+    },
+  },
 }
 ```
 

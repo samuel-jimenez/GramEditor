@@ -143,9 +143,9 @@ For self-hosted GitHub, GitLab, or Bitbucket instances, add them to the `git_hos
     {
       "provider": "gitlab",
       "name": "Corp GitLab",
-      "base_url": "https://git.example.corp"
-    }
-  ]
+      "base_url": "https://git.example.corp",
+    },
+  ],
 }
 ```
 

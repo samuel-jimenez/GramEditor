@@ -86,10 +86,10 @@ These are disabled by default, but can be enabled in your settings. For example:
         // use the default configuration.
         "ty",
         "!basedpyright",
-        "..."
-      ]
-    }
-  }
+        "...",
+      ],
+    },
+  },
 }
 ```
 
@@ -131,12 +131,12 @@ You can use the following configuration:
         "basedpyright.analysis": {
           "diagnosticMode": "workspace",
           "inlayHints": {
-            "callArgumentNames": false
-          }
-        }
-      }
-    }
-  }
+            "callArgumentNames": false,
+          },
+        },
+      },
+    },
+  },
 }
 ```
 
@@ -149,7 +149,7 @@ Here's an example `pyrightconfig.json` file that configures basedpyright to use 
 ```jsonc
 {
   "typeCheckingMode": "strict",
-  "ignore": ["**/__pycache__"]
+  "ignore": ["**/__pycache__"],
 }
 ```
 
@@ -200,9 +200,9 @@ You can disable format-on-save for Python files in your `settings.json`:
 {
   "languages": {
     "Python": {
-      "format_on_save": "off"
-    }
-  }
+      "format_on_save": "off",
+    },
+  },
 }
 ```
 
@@ -215,12 +215,12 @@ Alternatively, you can use the `black` command-line tool for Python formatting, 
       "formatter": {
         "external": {
           "command": "black",
-          "arguments": ["--stdin-filename", "{buffer_path}", "-"]
-        }
-      }
+          "arguments": ["--stdin-filename", "{buffer_path}", "-"],
+        },
+      },
       // Or use `"formatter": null` to disable formatting entirely.
-    }
-  }
+    },
+  },
 }
 ```
 
@@ -236,11 +236,11 @@ Here's an example of using language server settings in Gram's `settings.json` to
     "ruff": {
       "initialization_options": {
         "settings": {
-          "exclude": ["*"]
-        }
-      }
-    }
-  }
+          "exclude": ["*"],
+        },
+      },
+    },
+  },
 }
 ```
 

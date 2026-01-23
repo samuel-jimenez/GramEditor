@@ -17,9 +17,9 @@ The `OmniSharp` binary can be configured in a Gram settings file with:
     "omnisharp": {
       "binary": {
         "path": "/path/to/OmniSharp",
-        "arguments": ["optional", "additional", "args", "-lsp"]
-      }
-    }
-  }
+        "arguments": ["optional", "additional", "args", "-lsp"],
+      },
+    },
+  },
 }
 ```

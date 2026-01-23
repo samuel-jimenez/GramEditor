@@ -92,11 +92,11 @@ If you prefer to format your code with [Mix](https://hexdocs.pm/mix/Mix.html), u
       "formatter": {
         "external": {
           "command": "mix",
-          "arguments": ["format", "--stdin-filename", "{buffer_path}", "-"]
-        }
-      }
-    }
-  }
+          "arguments": ["format", "--stdin-filename", "{buffer_path}", "-"],
+        },
+      },
+    },
+  },
 }
 ```
 

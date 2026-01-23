@@ -182,6 +182,7 @@ lot of CPU. It's not useful for debugging hangs or memory usage.
 ### Later
 
 - Build Gram with symbols:
+
   - Check out the commit found previously and modify `Cargo.toml`.
   - Apply the following diff, then make a release build.
 

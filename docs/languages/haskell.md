@@ -25,11 +25,11 @@ If you need to configure haskell-language-server (hls) you can add configuration
     "hls": {
       "initialization_options": {
         "haskell": {
-          "formattingProvider": "fourmolu"
-        }
-      }
-    }
-  }
+          "formattingProvider": "fourmolu",
+        },
+      },
+    },
+  },
 }
 ```
 
@@ -43,9 +43,9 @@ If you would like to use a specific hls binary, or perhaps use [static-ls](https
     "hls": {
       "binary": {
         "path": "static-ls",
-        "arguments": ["--experimentalFeatures"]
-      }
-    }
-  }
+        "arguments": ["--experimentalFeatures"],
+      },
+    },
+  },
 }
 ```

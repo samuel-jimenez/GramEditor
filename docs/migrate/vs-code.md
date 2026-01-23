@@ -151,11 +151,11 @@ The following VS Code settings are automatically imported when you use **Import 
 
 **Other**
 
-| VS Code Setting            | Gram Setting                                             |
-| -------------------------- | -------------------------------------------------------- |
-| `http.proxy`               | `proxy`                                                  |
-| `npm.packageManager`       | `node.npm_path`                                          |
-| `outline.icons`            | `outline_panel.file_icons`, `outline_panel.folder_icons` |
+| VS Code Setting      | Gram Setting                                             |
+| -------------------- | -------------------------------------------------------- |
+| `http.proxy`         | `proxy`                                                  |
+| `npm.packageManager` | `node.npm_path`                                          |
+| `outline.icons`      | `outline_panel.file_icons`, `outline_panel.folder_icons` |
 
 Gram doesn’t import extensions or keybindings, but this is the fastest way to get a familiar feel while trying something new. If you skip that step during setup, you can still import settings manually later via the command palette:
 
@@ -223,7 +223,7 @@ Here’s a quick reference guide for how our keybindings compare to what you’r
 
 ### Different Keybindings (Gram <> VS Code)
 
-| Action              | VS Code               | Gram                    |
+| Action              | VS Code               | Gram                   |
 | ------------------- | --------------------- | ---------------------- |
 | Open recent project | `Ctrl + R`            | `Cmd + Opt + O`        |
 | Move lines up/down  | `Opt + Up/Down`       | `Cmd + Ctrl + Up/Down` |

@@ -75,22 +75,22 @@ By default, the following default config is passed to the Ansible language serve
 {
   "ansible": {
     "ansible": {
-      "path": "ansible"
+      "path": "ansible",
     },
     "executionEnvironment": {
-      "enabled": false
+      "enabled": false,
     },
     "python": {
-      "interpreterPath": "python3"
+      "interpreterPath": "python3",
     },
     "validation": {
       "enabled": true,
       "lint": {
         "enabled": true,
-        "path": "ansible-lint"
-      }
-    }
-  }
+        "path": "ansible-lint",
+      },
+    },
+  },
 }
 ```
 

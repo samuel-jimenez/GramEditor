@@ -15,11 +15,11 @@ To configure the Tailwind CSS language server, refer [to the extension settings]
       "settings": {
         "classFunctions": ["cva", "cx"],
         "experimental": {
-          "classRegex": ["[cls|className]\\s\\:\\=\\s\"([^\"]*)"]
-        }
-      }
-    }
-  }
+          "classRegex": ["[cls|className]\\s\\:\\=\\s\"([^\"]*)"],
+        },
+      },
+    },
+  },
 }
 ```
 
@@ -44,6 +44,6 @@ Gram supports Prettier out of the box, which means that if you have the [Tailwin
 ```jsonc
 // .prettierrc
 {
-  "plugins": ["prettier-plugin-tailwindcss"]
+  "plugins": ["prettier-plugin-tailwindcss"],
 }
 ```

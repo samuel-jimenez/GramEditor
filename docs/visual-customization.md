@@ -22,7 +22,7 @@ The selectors will modify these settings:
 ```jsonc
 {
   "theme": "One Dark",
-  "icon_theme": "Gram (Default)"
+  "icon_theme": "Gram (Default)",
 }
 ```
 
@@ -34,14 +34,14 @@ Distinct themes for light mode/dark mode can be set like this:
     "dark": "One Dark",
     "light": "One Light",
     // Mode to use (dark, light) or "system" to follow the OS's light/dark mode (default)
-    "mode": "system"
+    "mode": "system",
   },
   "icon_theme": {
     "dark": "Gram (Default)",
     "light": "Gram (Default)",
     // Mode to use (dark, light) or "system" to follow the OS's light/dark mode (default)
-    "mode": "system"
-  }
+    "mode": "system",
+  },
 }
 ```
 
@@ -82,8 +82,8 @@ To disable this behavior use:
 ```jsonc
 {
   "buffer_font_features": {
-    "calt": false // Disable ligatures
-  }
+    "calt": false, // Disable ligatures
+  },
 }
 ```
 
@@ -94,7 +94,7 @@ To disable this behavior use:
   // Whether to show full labels in line indicator or short ones
   //   - `short`: "2 s, 15 l, 32 c"
   //   - `long`: "2 selections, 15 lines, 32 characters"
-  "line_indicator_format": "long"
+  "line_indicator_format": "long",
 
   // Individual status bar icons can be hidden:
   // "project_panel": {"button": false },
@@ -138,7 +138,7 @@ To disable this behavior use:
     // Inset border size of the active pane, in pixels.
     "border_size": 0.0,
     // Opacity of the inactive panes. 0 means transparent, 1 means opaque.
-    "inactive_opacity": 1.0
+    "inactive_opacity": 1.0,
   },
 
   // Layout mode of the bottom dock: contained, full, left_aligned, right_aligned
@@ -146,7 +146,7 @@ To disable this behavior use:
 
   // Whether to resize all the panels in a dock when resizing the dock.
   // Can be a combination of "left", "right" and "bottom".
-  "resize_all_panels_in_dock": ["left"]
+  "resize_all_panels_in_dock": ["left"],
 }
 ```
 
@@ -350,7 +350,7 @@ TBD: Centered layout related settings
   // The default number of lines to expand excerpts in the multibuffer by.
   "expand_excerpt_lines": 5,
   // The default number of lines of context provided for excerpts in the multibuffer by.
-  "excerpt_context_lines": 2
+  "excerpt_context_lines": 2,
 }
 ```
 
@@ -405,9 +405,9 @@ TBD: Centered layout related settings
       "shift": false,
       "alt": false,
       "platform": false,
-      "function": false
-    }
-  }
+      "function": false,
+    },
+  },
 }
 ```
 

@@ -27,8 +27,8 @@ You can set the mode to `"dark"` or `"light"` to ignore the current system mode.
   "theme": {
     "mode": "system",
     "light": "One Light",
-    "dark": "One Dark"
-  }
+    "dark": "One Dark",
+  },
 }
 ```
 
@@ -46,11 +46,11 @@ For example, add the following to your `settings.json` if you wish to override t
       "editor.background": "#333",
       "syntax": {
         "comment": {
-          "font_style": "italic"
+          "font_style": "italic",
         },
         "comment.doc": {
-          "font_style": "italic"
-        }
+          "font_style": "italic",
+        },
       },
       "accents": [
         "#ff0000",
@@ -58,10 +58,10 @@ For example, add the following to your `settings.json` if you wish to override t
         "#ffff00",
         "#00ff00",
         "#0000ff",
-        "#8b00ff"
-      ]
-    }
-  }
+        "#8b00ff",
+      ],
+    },
+  },
 }
 ```
 

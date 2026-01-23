@@ -203,8 +203,8 @@ The settings for the debugger are grouped under the `debugger` key in `settings.
 ```jsonc
 {
   "debugger": {
-    "stepping_granularity": "statement"
-  }
+    "stepping_granularity": "statement",
+  },
 }
 ```
 
@@ -213,8 +213,8 @@ The settings for the debugger are grouped under the `debugger` key in `settings.
 ```jsonc
 {
   "debugger": {
-    "stepping_granularity": "line"
-  }
+    "stepping_granularity": "line",
+  },
 }
 ```
 
@@ -223,8 +223,8 @@ The settings for the debugger are grouped under the `debugger` key in `settings.
 ```jsonc
 {
   "debugger": {
-    "stepping_granularity": "instruction"
-  }
+    "stepping_granularity": "instruction",
+  },
 }
 ```
 
@@ -241,8 +241,8 @@ The settings for the debugger are grouped under the `debugger` key in `settings.
 ```jsonc
 {
   "debugger": {
-    "save_breakpoints": true
-  }
+    "save_breakpoints": true,
+  },
 }
 ```
 
@@ -259,8 +259,8 @@ The settings for the debugger are grouped under the `debugger` key in `settings.
 ```jsonc
 {
   "debugger": {
-    "show_button": true
-  }
+    "show_button": true,
+  },
 }
 ```
 
@@ -277,8 +277,8 @@ The settings for the debugger are grouped under the `debugger` key in `settings.
 ```jsonc
 {
   "debugger": {
-    "timeout": 3000
-  }
+    "timeout": 3000,
+  },
 }
 ```
 
@@ -293,8 +293,8 @@ The settings for the debugger are grouped under the `debugger` key in `settings.
 ```jsonc
 {
   "inlay_hints": {
-    "show_value_hints": false
-  }
+    "show_value_hints": false,
+  },
 }
 ```
 
@@ -313,8 +313,8 @@ Inline value hints can also be toggled from the Editor Controls menu in the edit
 ```jsonc
 {
   "debugger": {
-    "log_dap_communications": true
-  }
+    "log_dap_communications": true,
+  },
 }
 ```
 
@@ -331,8 +331,8 @@ Inline value hints can also be toggled from the Editor Controls menu in the edit
 ```jsonc
 {
   "debugger": {
-    "format_dap_log_messages": true
-  }
+    "format_dap_log_messages": true,
+  },
 }
 ```
 
@@ -349,9 +349,9 @@ You can pass `binary`, `args`, or both. `binary` should be a path to a _debug ad
   "dap": {
     "CodeLLDB": {
       "binary": "/Users/name/bin/lldb-dap",
-      "args": ["--wait-for-debugger"]
-    }
-  }
+      "args": ["--wait-for-debugger"],
+    },
+  },
 }
 ```
 

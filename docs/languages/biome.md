@@ -26,7 +26,7 @@ By default, the `biome.json` file is required to be in the root of the workspace
 
 ```jsonc
 {
-  "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json"
+  "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
 }
 ```
 

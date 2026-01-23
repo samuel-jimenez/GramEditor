@@ -26,8 +26,8 @@ You can set the mode to `"light"` or `"dark"` to ignore the current system mode.
   "icon_theme": {
     "mode": "system",
     "light": "Light Icon Theme",
-    "dark": "Dark Icon Theme"
-  }
+    "dark": "Dark Icon Theme",
+  },
 }
 ```
 

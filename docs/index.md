@@ -45,7 +45,6 @@ the following list (incomplete) of changes:
   - [Glossary](./development/glossary.md)
 - [Debugging Crashes](./development/debugging-crashes.md)
 
-
 ## Configuration
 
 - [Configuring Gram](./configuring-gram.md)
@@ -80,7 +79,6 @@ the following list (incomplete) of changes:
 
 - [Windows](./windows.md)
 - [Linux](./linux.md)
-
 
 ## Legal note on accepting contributions
 
@@ -198,4 +196,3 @@ There is no official discord or reddit community.
 - [Yara](./languages/yara.md)
 - [Yarn](./languages/yarn.md)
 - [Zig](./languages/zig.md)
-

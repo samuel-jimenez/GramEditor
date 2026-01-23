@@ -28,10 +28,10 @@ If you would like to use a specific dart binary or use dart via FVM you can spec
     "dart": {
       "binary": {
         "path": "/opt/homebrew/bin/fvm",
-        "arguments": ["dart", "language-server", "--protocol=lsp"]
-      }
-    }
-  }
+        "arguments": ["dart", "language-server", "--protocol=lsp"],
+      },
+    },
+  },
 }
 ```
 
@@ -44,10 +44,10 @@ Dart by-default uses a very conservative maximum line length (80). If you would 
   "lsp": {
     "dart": {
       "settings": {
-        "lineLength": 140
-      }
-    }
-  }
+        "lineLength": 140,
+      },
+    },
+  },
 }
 ```
 

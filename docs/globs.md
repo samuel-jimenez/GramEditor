@@ -61,8 +61,8 @@ Alternatively, if in your Gram settings you wanted a [`file_types`](./configurin
 {
   "file_types": {
     "C++": ["[cC]"],
-    "Jinja2": ["**/templates/*.html"]
-  }
+    "Jinja2": ["**/templates/*.html"],
+  },
 }
 ```
 

@@ -14,7 +14,7 @@ To configure LuaLS you can create a `.luarc.json` file in the root of your works
   "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
   "runtime.version": "Lua 5.4",
   "format.enable": true,
-  "workspace.library": ["../somedir/library"]
+  "workspace.library": ["../somedir/library"],
 }
 ```
 
@@ -70,17 +70,17 @@ Then in your `.luarc.json`:
     ">>=",
     "&=",
     "|=",
-    "^="
+    "^=",
   ],
   "diagnostics.severity": { "duplicate-set-field": "Hint" },
   "diagnostics.globals": ["import"],
   "workspace.library": ["../playdate-luacats"],
   "format.defaultConfig": {
     "indent_style": "space",
-    "indent_size": "4"
+    "indent_size": "4",
   },
   "format.enable": true,
-  "runtime.builtin": { "io": "disable", "os": "disable", "package": "disable" }
+  "runtime.builtin": { "io": "disable", "os": "disable", "package": "disable" },
 }
 ```
 
@@ -114,7 +114,7 @@ To enable auto-formatting with your LuaLS (provided by [CppCXY/EmmyLuaCodeStyle]
 ```jsonc
 {
   "$schema": "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json",
-  "format.enable": true
+  "format.enable": true,
 }
 ```
 
@@ -125,9 +125,9 @@ Then add the following to your Gram `settings.jsonc`:
   "languages": {
     "Lua": {
       "format_on_save": "on",
-      "formatter": "language_server"
-    }
-  }
+      "formatter": "language_server",
+    },
+  },
 }
 ```
 
@@ -153,12 +153,12 @@ Alternatively to use [StyLua](https://github.com/JohnnyMorganz/StyLua) for auto-
             "--respect-ignores",
             "--stdin-filepath",
             "{buffer_path}",
-            "-"
-          ]
-        }
-      }
-    }
-  }
+            "-",
+          ],
+        },
+      },
+    },
+  },
 }
 ```
 

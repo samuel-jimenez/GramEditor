@@ -92,7 +92,7 @@ To use a variable in a task, prefix it with a dollar sign (`$`):
 ```jsonc
 {
   "label": "echo current file's path",
-  "command": "echo $GRAM_FILE"
+  "command": "echo $GRAM_FILE",
 }
 ```
 
@@ -109,7 +109,7 @@ For example, instead of this (which will fail if the path has a space):
 ```jsonc
 {
   "label": "stat current file",
-  "command": "stat $GRAM_FILE"
+  "command": "stat $GRAM_FILE",
 }
 ```
 
@@ -119,7 +119,7 @@ Provide the following:
 {
   "label": "stat current file",
   "command": "stat",
-  "args": ["$GRAM_FILE"]
+  "args": ["$GRAM_FILE"],
 }
 ```
 
@@ -128,7 +128,7 @@ Or explicitly include escaped quotes like so:
 ```jsonc
 {
   "label": "stat current file",
-  "command": "stat \"$GRAM_FILE\""
+  "command": "stat \"$GRAM_FILE\"",
 }
 ```
 
@@ -140,7 +140,7 @@ For example, the following task will appear in the spawn modal only if there is 
 ```jsonc
 {
   "label": "selected text",
-  "command": "echo \"$GRAM_SELECTED_TEXT\""
+  "command": "echo \"$GRAM_SELECTED_TEXT\"",
 }
 ```
 
@@ -149,7 +149,7 @@ Set default values to such variables to have such tasks always displayed:
 ```jsonc
 {
   "label": "selected text with default",
-  "command": "echo \"${GRAM_SELECTED_TEXT:no text selected}\""
+  "command": "echo \"${GRAM_SELECTED_TEXT:no text selected}\"",
 }
 ```
 
@@ -176,8 +176,8 @@ This can be controlled with the `"reevaluate_context"` argument to the task: set
 {
   "context": "Workspace",
   "bindings": {
-    "alt-t": ["task::Rerun", { "reevaluate_context": true }]
-  }
+    "alt-t": ["task::Rerun", { "reevaluate_context": true }],
+  },
 }
 ```
 
@@ -189,8 +189,8 @@ You can define your own keybindings for your tasks via an additional argument to
 {
   "context": "Workspace",
   "bindings": {
-    "alt-g": ["task::Spawn", { "task_name": "echo current file's path" }]
-  }
+    "alt-g": ["task::Spawn", { "task_name": "echo current file's path" }],
+  },
 }
 ```
 
@@ -212,9 +212,9 @@ This could be useful for launching a terminal application that you want to use i
   "bindings": {
     "alt-g": [
       "task::Spawn",
-      { "task_name": "start lazygit", "reveal_target": "center" }
-    ]
-  }
+      { "task_name": "start lazygit", "reveal_target": "center" },
+    ],
+  },
 }
 ```
 
@@ -232,7 +232,7 @@ To tag a task, add the runnable tag name to the `tags` field on the task templat
 {
   "label": "echo current file's path",
   "command": "echo $GRAM_FILE",
-  "tags": ["rust-test"]
+  "tags": ["rust-test"],
 }
 ```
 

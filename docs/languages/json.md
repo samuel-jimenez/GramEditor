@@ -23,10 +23,10 @@ To workaround this behavior you can add the following to your `.prettierrc` conf
       "files": ["*.jsonc"],
       "options": {
         "parser": "json",
-        "trailingComma": "none"
-      }
-    }
-  ]
+        "trailingComma": "none",
+      },
+    },
+  ],
 }
 ```
 
@@ -43,7 +43,7 @@ For example to for a `.luarc.json` for use with [lua-language-server](https://gi
 ```jsonc
 {
   "$schema": "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json",
-  "runtime.version": "Lua 5.4"
+  "runtime.version": "Lua 5.4",
 }
 ```
 

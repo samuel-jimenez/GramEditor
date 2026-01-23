@@ -44,10 +44,10 @@ You can customize the formatting behavior of Prettier. For example to use single
     {
       "files": ["*.yaml", "*.yml"],
       "options": {
-        "singleQuote": false
-      }
-    }
-  ]
+        "singleQuote": false,
+      },
+    },
+  ],
 }
 ```
 

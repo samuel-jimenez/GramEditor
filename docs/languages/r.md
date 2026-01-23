@@ -62,9 +62,9 @@ Enable Air in your `settings.json`:
 {
   "languages": {
     "R": {
-      "language_servers": ["air"]
-    }
-  }
+      "language_servers": ["air"],
+    },
+  },
 }
 ```
 
@@ -75,9 +75,9 @@ If you use the `"r_language_server"` from `REditorSupport/languageserver`, but w
   "languages": {
     "R": {
       "language_servers": ["air", "r_language_server"],
-      "use_on_type_format": false
-    }
-  }
+      "use_on_type_format": false,
+    },
+  },
 }
 ```
 

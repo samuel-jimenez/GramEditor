@@ -21,8 +21,8 @@ By default clang and gcc will recognize `*.C` and `*.H` (uppercase extensions) a
 ```jsonc
 {
   "file_types": {
-    "C": ["C", "H"]
-  }
+    "C": ["C", "H"],
+  },
 }
 ```
 

@@ -51,10 +51,10 @@ You can skip step 1 and force using the system executable by setting `use_bundle
   "lsp": {
     "<SERVER_NAME>": {
       "settings": {
-        "use_bundler": false
-      }
-    }
-  }
+        "use_bundler": false,
+      },
+    },
+  },
 }
 ```
 
@@ -70,21 +70,21 @@ To switch to `ruby-lsp`, add the following to your `settings.json`:
 {
   "languages": {
     "Ruby": {
-      "language_servers": ["ruby-lsp", "!solargraph", "!rubocop", "..."]
+      "language_servers": ["ruby-lsp", "!solargraph", "!rubocop", "..."],
     },
     // Enable herb and ruby-lsp for *.html.erb files
     "HTML+ERB": {
-      "language_servers": ["herb", "ruby-lsp", "..."]
+      "language_servers": ["herb", "ruby-lsp", "..."],
     },
     // Enable ruby-lsp for *.js.erb files
     "JS+ERB": {
-      "language_servers": ["ruby-lsp", "..."]
+      "language_servers": ["ruby-lsp", "..."],
     },
     // Enable ruby-lsp for *.yaml.erb files
     "YAML+ERB": {
-      "language_servers": ["ruby-lsp", "..."]
-    }
-  }
+      "language_servers": ["ruby-lsp", "..."],
+    },
+  },
 }
 ```
 
@@ -100,9 +100,9 @@ To enable it, add the following to your `settings.json`:
 {
   "languages": {
     "Ruby": {
-      "language_servers": ["ruby-lsp", "rubocop", "!solargraph", "..."]
-    }
-  }
+      "language_servers": ["ruby-lsp", "rubocop", "!solargraph", "..."],
+    },
+  },
 }
 ```
 
@@ -112,9 +112,9 @@ Or, conversely, you can disable `ruby-lsp` and enable `solargraph` and `rubocop`
 {
   "languages": {
     "Ruby": {
-      "language_servers": ["solargraph", "rubocop", "!ruby-lsp", "..."]
-    }
-  }
+      "language_servers": ["solargraph", "rubocop", "!ruby-lsp", "..."],
+    },
+  },
 }
 ```
 
@@ -128,10 +128,10 @@ Solargraph has formatting and diagnostics disabled by default. We can tell Gram 
     "solargraph": {
       "initialization_options": {
         "diagnostics": true,
-        "formatting": true
-      }
-    }
-  }
+        "formatting": true,
+      },
+    },
+  },
 }
 ```
 
@@ -147,18 +147,18 @@ You can pass Ruby LSP configuration to `initialization_options`, e.g.
 {
   "languages": {
     "Ruby": {
-      "language_servers": ["ruby-lsp", "!solargraph", "..."]
-    }
+      "language_servers": ["ruby-lsp", "!solargraph", "..."],
+    },
   },
   "lsp": {
     "ruby-lsp": {
       "initialization_options": {
         "enabledFeatures": {
           // "someFeature": false
-        }
-      }
-    }
-  }
+        },
+      },
+    },
+  },
 }
 ```
 
@@ -170,10 +170,10 @@ LSP `settings` and `initialization_options` can also be project-specific. For ex
     "ruby-lsp": {
       "initialization_options": {
         "formatter": "standard",
-        "linters": ["standard"]
-      }
-    }
-  }
+        "linters": ["standard"],
+      },
+    },
+  },
 }
 ```
 
@@ -186,23 +186,23 @@ Rubocop has unsafe autocorrection disabled by default. We can tell Gram to enabl
   "languages": {
     "Ruby": {
       // Use ruby-lsp as the primary language server and rubocop as the secondary.
-      "language_servers": ["ruby-lsp", "rubocop", "!solargraph", "..."]
-    }
+      "language_servers": ["ruby-lsp", "rubocop", "!solargraph", "..."],
+    },
   },
   "lsp": {
     "rubocop": {
       "initialization_options": {
-        "safeAutocorrect": false
-      }
+        "safeAutocorrect": false,
+      },
     },
     "ruby-lsp": {
       "initialization_options": {
         "enabledFeatures": {
-          "diagnostics": false
-        }
-      }
-    }
-  }
+          "diagnostics": false,
+        },
+      },
+    },
+  },
 }
 ```
 
@@ -221,10 +221,10 @@ To enable Sorbet, add `\"sorbet\"` to the `language_servers` list for Ruby in yo
         "sorbet",
         "!rubocop",
         "!solargraph",
-        "..."
-      ]
-    }
-  }
+        "...",
+      ],
+    },
+  },
 }
 ```
 
@@ -245,10 +245,10 @@ To enable Steep, add `\"steep\"` to the `language_servers` list for Ruby in your
         "steep",
         "!solargraph",
         "!rubocop",
-        "..."
-      ]
-    }
-  }
+        "...",
+      ],
+    },
+  },
 }
 ```
 
@@ -266,18 +266,18 @@ In order to do that, you need to configure the language server so that it knows 
 {
   "languages": {
     "Ruby": {
-      "language_servers": ["tailwindcss-language-server", "..."]
-    }
+      "language_servers": ["tailwindcss-language-server", "..."],
+    },
   },
   "lsp": {
     "tailwindcss-language-server": {
       "settings": {
         "experimental": {
-          "classRegex": ["\\bclass:\\s*['\"]([^'\"]*)['\"]"]
-        }
-      }
-    }
-  }
+          "classRegex": ["\\bclass:\\s*['\"]([^'\"]*)['\"]"],
+        },
+      },
+    },
+  },
 }
 ```
 
@@ -408,9 +408,9 @@ To format ERB templates, you can use the `erb-formatter` formatter. This formatt
     "formatter": {
       "external": {
         "command": "erb-formatter",
-        "arguments": ["--stdin-filename", "{buffer_path}"]
-      }
-    }
-  }
+        "arguments": ["--stdin-filename", "{buffer_path}"],
+      },
+    },
+  },
 }
 ```

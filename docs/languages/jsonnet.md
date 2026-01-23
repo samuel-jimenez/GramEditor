@@ -16,9 +16,9 @@ The following example enables support for resolving [tanka](https://tanka.dev) i
   "lsp": {
     "jsonnet-language-server": {
       "settings": {
-        "resolve_paths_with_tanka": true
-      }
-    }
-  }
+        "resolve_paths_with_tanka": true,
+      },
+    },
+  },
 }
 ```

@@ -19,11 +19,11 @@ The Terraform language server can be configured in your `settings.jsonc`, e.g.:
     "terraform-ls": {
       "initialization_options": {
         "experimentalFeatures": {
-          "prefillRequiredFields": true
-        }
-      }
-    }
-  }
+          "prefillRequiredFields": true,
+        },
+      },
+    },
+  },
 }
 ```
 

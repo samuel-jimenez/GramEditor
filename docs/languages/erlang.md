@@ -19,9 +19,9 @@ To switch to `erlang-language-platform`, add the following to your `settings.jso
 {
   "languages": {
     "Erlang": {
-      "language_servers": ["elp", "!erlang-ls", "..."]
-    }
-  }
+      "language_servers": ["elp", "!erlang-ls", "..."],
+    },
+  },
 }
 ```
 

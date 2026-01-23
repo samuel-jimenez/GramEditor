@@ -30,10 +30,10 @@ Elm language server can be configured in your `settings.jsonc`, e.g.:
       "initialization_options": {
         "disableElmLSDiagnostics": true,
         "onlyUpdateDiagnosticsOnSave": false,
-        "elmReviewDiagnostics": "warning"
-      }
-    }
-  }
+        "elmReviewDiagnostics": "warning",
+      },
+    },
+  },
 }
 ```
 

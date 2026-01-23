@@ -13,4 +13,3 @@ This directory contains two subdirectories:
 
 - `installed`, which contains the source code for each extension.
 - `work` which contains files created by the extension itself, such as downloaded language servers.
-

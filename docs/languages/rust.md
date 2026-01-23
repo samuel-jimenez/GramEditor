@@ -25,15 +25,15 @@ The following configuration can be used to change the inlay hint settings for `r
           "maxLength": null,
           "lifetimeElisionHints": {
             "enable": "skip_trivial",
-            "useParameterNames": true
+            "useParameterNames": true,
           },
           "closureReturnTypeHints": {
-            "enable": "always"
-          }
-        }
-      }
-    }
-  }
+            "enable": "always",
+          },
+        },
+      },
+    },
+  },
 }
 ```
 
@@ -49,11 +49,11 @@ The `rust-analyzer` target directory can be set in `initialization_options`:
     "rust-analyzer": {
       "initialization_options": {
         "rust": {
-          "analyzerTargetDir": true
-        }
-      }
-    }
-  }
+          "analyzerTargetDir": true,
+        },
+      },
+    },
+  },
 }
 ```
 
@@ -72,10 +72,10 @@ If you want to install pre-release `rust-analyzer` version instead you can instr
   "lsp": {
     "rust-analyzer": {
       "fetch": {
-        "pre_release": true
-      }
-    }
-  }
+        "pre_release": true,
+      },
+    },
+  },
 }
 ```
 
@@ -86,10 +86,10 @@ If you want to disable Gram looking for a `rust-analyzer` binary, you can set `i
   "lsp": {
     "rust-analyzer": {
       "binary": {
-        "ignore_system_version": true
-      }
-    }
-  }
+        "ignore_system_version": true,
+      },
+    },
+  },
 }
 ```
 
@@ -101,10 +101,10 @@ If you want to use a binary in a custom location, you can specify a `path` and o
     "rust-analyzer": {
       "binary": {
         "path": "/Users/example/bin/rust-analyzer",
-        "arguments": []
-      }
-    }
-  }
+        "arguments": [],
+      },
+    },
+  },
 }
 ```
 
@@ -120,11 +120,11 @@ If you want rust-analyzer to provide diagnostics for a target other than your cu
     "rust-analyzer": {
       "initialization_options": {
         "cargo": {
-          "target": "x86_64-pc-windows-msvc"
-        }
-      }
-    }
-  }
+          "target": "x86_64-pc-windows-msvc",
+        },
+      },
+    },
+  },
 }
 ```
 
@@ -200,23 +200,23 @@ Here's a snippet for Gram settings.json (the language server will restart automa
         // which might include false-positives (those can be turned off by their names)
         "diagnostics": {
           "experimental": {
-            "enable": true
-          }
+            "enable": true,
+          },
         },
         // To disable the checking entirely
         // (ignores all cargo and check settings below)
         "checkOnSave": false,
         // To check the `lib` target only.
         "cargo": {
-          "allTargets": false
+          "allTargets": false,
         },
         // Use `-p` instead of `--workspace` for cargo check
         "check": {
-          "workspace": false
-        }
-      }
-    }
-  }
+          "workspace": false,
+        },
+      },
+    },
+  },
 }
 ```
 
@@ -230,10 +230,10 @@ you can list them in `linkedProjects` in the local project settings:
   "lsp": {
     "rust-analyzer": {
       "initialization_options": {
-        "linkedProjects": ["./path/to/a/Cargo.toml", "./path/to/b/Cargo.toml"]
-      }
-    }
-  }
+        "linkedProjects": ["./path/to/a/Cargo.toml", "./path/to/b/Cargo.toml"],
+      },
+    },
+  },
 }
 ```
 
@@ -253,42 +253,42 @@ There's a way to get custom completion items from rust-analyzer, that will trans
                 "postfix": "arc",
                 "body": ["Arc::new(${receiver})"],
                 "requires": "std::sync::Arc",
-                "scope": "expr"
+                "scope": "expr",
               },
               "Some": {
                 "postfix": "some",
                 "body": ["Some(${receiver})"],
-                "scope": "expr"
+                "scope": "expr",
               },
               "Ok": {
                 "postfix": "ok",
                 "body": ["Ok(${receiver})"],
-                "scope": "expr"
+                "scope": "expr",
               },
               "Rc::new": {
                 "postfix": "rc",
                 "body": ["Rc::new(${receiver})"],
                 "requires": "std::rc::Rc",
-                "scope": "expr"
+                "scope": "expr",
               },
               "Box::pin": {
                 "postfix": "boxpin",
                 "body": ["Box::pin(${receiver})"],
                 "requires": "std::boxed::Box",
-                "scope": "expr"
+                "scope": "expr",
               },
               "vec!": {
                 "postfix": "vec",
                 "body": ["vec![${receiver}]"],
                 "description": "vec![]",
-                "scope": "expr"
-              }
-            }
-          }
-        }
-      }
-    }
-  }
+                "scope": "expr",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
 }
 ```
 
