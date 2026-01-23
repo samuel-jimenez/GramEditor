@@ -4415,6 +4415,7 @@ mod tests {
                 "feedback",
                 "file_finder",
                 "git",
+                "git_graph",
                 "git_onboarding",
                 "git_panel",
                 "go_to_line",
@@ -4584,6 +4585,7 @@ mod tests {
             outline_panel::init(cx);
             terminal_view::init(cx);
             image_viewer::init(cx);
+            git_graph::init(cx);
             repl::init(app_state.fs.clone(), cx);
             repl::notebook::init(cx);
             tasks_ui::init(cx);
