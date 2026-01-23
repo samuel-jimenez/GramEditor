@@ -4,7 +4,6 @@ use git::{
     parse_git_remote_url,
     repository::{CommitDiff, InitialGraphCommitData, LogOrder, LogSource},
 };
-use git_ui::commit_tooltip::CommitAvatar;
 use gpui::{
     AnyElement, App, Bounds, ClipboardItem, Context, Corner, DefiniteLength, ElementId, Entity,
     EventEmitter, FocusHandle, Focusable, FontWeight, Hsla, InteractiveElement, ParentElement,
@@ -20,7 +19,10 @@ use smallvec::{SmallVec, smallvec};
 use std::{ops::Range, rc::Rc, sync::Arc, sync::OnceLock};
 use theme::{AccentColors, ThemeSettings};
 use time::{OffsetDateTime, UtcOffset, format_description::BorrowedFormatItem};
-use ui::{ContextMenu, ScrollableHandle, Table, TableInteractionState, Tooltip, prelude::*};
+use ui::{
+    CommonAnimationExt as _, ContextMenu, ScrollableHandle, Table, TableInteractionState, Tooltip,
+    prelude::*,
+};
 use workspace::{
     Workspace,
     item::{Item, ItemEvent, SerializableItem},
@@ -947,7 +949,6 @@ impl GitGraph {
         let remote = repository.update(cx, |repo, cx| self.get_remote(repo, window, cx));
 
         let avatar = {
-            let avatar = CommitAvatar::new(&full_sha, remote.as_ref());
             v_flex()
                 .w(px(64.))
                 .h(px(64.))
@@ -957,15 +958,10 @@ impl GitGraph {
                 .justify_center()
                 .items_center()
                 .child(
-                    avatar
-                        .avatar(window, cx)
-                        .map(|a| a.size(px(64.)).into_any_element())
-                        .unwrap_or_else(|| {
-                            Icon::new(IconName::Person)
-                                .color(Color::Muted)
-                                .size(IconSize::XLarge)
-                                .into_any_element()
-                        }),
+                    Icon::new(IconName::Person)
+                        .color(Color::Muted)
+                        .size(IconSize::XLarge)
+                        .into_any_element(),
                 )
         };
 
@@ -1063,7 +1059,7 @@ impl GitGraph {
                                             })
                                     }),
                             )
-                            .when_some(remote.clone(), |this, remote| {
+                            .when_some(remote, |this, remote| {
                                 let provider_name = remote.host.name();
                                 let icon = match provider_name.as_str() {
                                     "GitHub" => IconName::Forge,
@@ -1458,14 +1454,32 @@ impl Render for GitGraph {
             }
         };
 
+        let (loading_icon, message) =
+            if let AllCommitCount::NotLoaded = self.graph_data.max_commit_count {
+                (
+                    Some(
+                        Icon::new(IconName::ArrowCircle)
+                            .size(IconSize::Medium)
+                            .with_rotate_animation(2)
+                            .into_any_element(),
+                    ),
+                    None,
+                )
+            } else {
+                (
+                    None,
+                    Some(Label::new("No commits to display").color(Color::Muted)),
+                )
+            };
+
         let content = if self.graph_data.commits.is_empty() {
-            let message = "No commits found";
             div()
                 .size_full()
                 .flex()
                 .items_center()
                 .justify_center()
-                .child(Label::new(message).color(Color::Muted))
+                .when_some(loading_icon, |el, icon| el.child(icon))
+                .when_some(message, |el, message| el.child(message))
         } else {
             div()
                 .size_full()
