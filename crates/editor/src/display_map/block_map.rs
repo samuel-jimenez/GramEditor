@@ -4216,6 +4216,7 @@ mod tests {
         let companion = cx.new(|_| {
             let mut c = Companion::new(
                 rhs_entity_id,
+                Default::default(),
                 convert_rhs_rows_to_lhs,
                 convert_lhs_rows_to_rhs,
             );
