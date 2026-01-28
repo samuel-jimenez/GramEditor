@@ -246,7 +246,7 @@ fn patch_for_excerpt(
     }
 }
 
-struct SplitDiffFeatureFlag;
+pub struct SplitDiffFeatureFlag;
 
 impl FeatureFlag for SplitDiffFeatureFlag {
     const NAME: &'static str = "split-diff";

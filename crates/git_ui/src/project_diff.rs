@@ -8,12 +8,13 @@ use anyhow::{Context as _, Result, anyhow};
 use buffer_diff::{BufferDiff, DiffHunkSecondaryStatus};
 use collections::{HashMap, HashSet};
 use editor::{
-    Addon, Editor, EditorEvent, SelectionEffects, SplittableEditor,
+    Addon, Editor, EditorEvent, SelectionEffects, SplitDiffFeatureFlag, SplittableEditor,
+    ToggleSplitDiff,
     actions::{GoToHunk, GoToPreviousHunk},
     multibuffer_context_lines,
     scroll::Autoscroll,
 };
-
+use feature_flags::FeatureFlagAppExt as _;
 use git::{
     Commit, StageAll, StageAndNext, ToggleStaged, UnstageAll, UnstageAndNext,
     repository::{Branch, RepoPath, Upstream, UpstreamTracking, UpstreamTrackingStatus},
