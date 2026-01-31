@@ -158,7 +158,7 @@ use project::{
 };
 use rand::seq::SliceRandom;
 use rpc::{ErrorCode, ErrorExt};
-use scroll::{Autoscroll, OngoingScroll, ScrollAnchor, ScrollManager};
+use scroll::{Autoscroll, OngoingScroll, ScrollAnchor, ScrollManager, SharedScrollAnchor};
 use selections_collection::{MutableSelectionsCollection, SelectionsCollection};
 use serde::{Deserialize, Serialize};
 use settings::{
@@ -1080,7 +1080,6 @@ pub struct Editor {
     folding_newlines: Task<()>,
     select_next_is_case_sensitive: Option<bool>,
     pub lookup_key: Option<Box<dyn Any + Send + Sync>>,
-    scroll_companion: Option<WeakEntity<Editor>>,
     on_local_selections_changed:
         Option<Box<dyn Fn(Point, &mut Window, &mut Context<Self>) + 'static>>,
     suppress_selection_callback: bool,
@@ -1136,7 +1135,7 @@ pub struct EditorSnapshot {
     pub display_snapshot: DisplaySnapshot,
     pub placeholder_display_snapshot: Option<DisplaySnapshot>,
     is_focused: bool,
-    scroll_anchor: ScrollAnchor,
+    scroll_anchor: SharedScrollAnchor,
     ongoing_scroll: OngoingScroll,
     current_line_highlight: CurrentLineHighlight,
     gutter_hovered: bool,
@@ -1675,15 +1674,19 @@ impl Editor {
             window,
             cx,
         );
-        self.display_map.update(cx, |display_map, cx| {
+        let my_snapshot = self.display_map.update(cx, |display_map, cx| {
             let snapshot = display_map.snapshot(cx);
             clone.display_map.update(cx, |display_map, cx| {
                 display_map.set_state(&snapshot, cx);
             });
+            snapshot
         });
+        let clone_snapshot = clone.display_map.update(cx, |map, cx| map.snapshot(cx));
         clone.folds_did_change(cx);
         clone.selections.clone_state(&self.selections);
-        clone.scroll_manager.clone_state(&self.scroll_manager);
+        clone
+            .scroll_manager
+            .clone_state(&self.scroll_manager, &my_snapshot, &clone_snapshot, cx);
         clone.searchable = self.searchable;
         clone.read_only = self.read_only;
         clone
@@ -1701,6 +1704,7 @@ impl Editor {
 
     pub fn sticky_headers(
         &self,
+        display_snapshot: &DisplaySnapshot,
         style: &EditorStyle,
         cx: &App,
     ) -> Option<Vec<OutlineItem<Anchor>>> {
@@ -1708,7 +1712,7 @@ impl Editor {
         let multi_buffer_snapshot = multi_buffer.snapshot(cx);
         let multi_buffer_visible_start = self
             .scroll_manager
-            .anchor()
+            .native_anchor(display_snapshot, cx)
             .anchor
             .to_point(&multi_buffer_snapshot);
         let max_row = multi_buffer_snapshot.max_point().row;
@@ -2257,7 +2261,6 @@ impl Editor {
             folding_newlines: Task::ready(()),
             lookup_key: None,
             select_next_is_case_sensitive: None,
-            scroll_companion: None,
             on_local_selections_changed: None,
             suppress_selection_callback: false,
             applicable_language_settings: HashMap::default(),
@@ -2291,8 +2294,10 @@ impl Editor {
                     if *local {
                         editor.hide_signature_help(cx, SignatureHelpHiddenBy::Escape);
                         editor.inline_blame_popover.take();
-                        let new_anchor = editor.scroll_manager.anchor();
                         let snapshot = editor.snapshot(window, cx);
+                        let new_anchor = editor
+                            .scroll_manager
+                            .native_anchor(&snapshot.display_snapshot, cx);
                         editor.update_restoration_data(cx, move |data| {
                             data.scroll_position = (
                                 new_anchor.top_row(snapshot.buffer_snapshot()),
@@ -2727,6 +2732,8 @@ impl Editor {
             })
             .flatten();
 
+        let display_snapshot = self.display_map.update(cx, |map, cx| map.snapshot(cx));
+
         EditorSnapshot {
             mode: self.mode.clone(),
             show_gutter: self.show_gutter,
@@ -2738,12 +2745,12 @@ impl Editor {
             show_runnables: self.show_runnables,
             show_breakpoints: self.show_breakpoints,
             git_blame_gutter_max_author_length,
-            display_snapshot: self.display_map.update(cx, |map, cx| map.snapshot(cx)),
+            scroll_anchor: self.scroll_manager.shared_scroll_anchor(cx),
+            display_snapshot,
             placeholder_display_snapshot: self
                 .placeholder_display_map
                 .as_ref()
                 .map(|display_map| display_map.update(cx, |map, cx| map.snapshot(cx))),
-            scroll_anchor: self.scroll_manager.anchor(),
             ongoing_scroll: self.scroll_manager.ongoing_scroll(),
             is_focused: self.focus_handle.is_focused(window),
             current_line_highlight: self
@@ -5139,11 +5146,12 @@ impl Editor {
         cx: &mut Context<Editor>,
     ) -> HashMap<ExcerptId, (Entity<Buffer>, clock::Global, Range<usize>)> {
         let project = self.project().cloned();
+        let display_snapshot = self.display_map.update(cx, |map, cx| map.snapshot(cx));
         let multi_buffer = self.buffer().read(cx);
         let multi_buffer_snapshot = multi_buffer.snapshot(cx);
         let multi_buffer_visible_start = self
             .scroll_manager
-            .anchor()
+            .native_anchor(&display_snapshot, cx)
             .anchor
             .to_point(&multi_buffer_snapshot);
         let multi_buffer_visible_end = multi_buffer_snapshot.clip_point(
@@ -5189,12 +5197,12 @@ impl Editor {
             .collect()
     }
 
-    pub fn text_layout_details(&self, window: &mut Window) -> TextLayoutDetails {
+    pub fn text_layout_details(&self, window: &mut Window, cx: &mut App) -> TextLayoutDetails {
         TextLayoutDetails {
             text_system: window.text_system().clone(),
             editor_style: self.style.clone().unwrap(),
             rem_size: window.rem_size(),
-            scroll_anchor: self.scroll_manager.anchor(),
+            scroll_anchor: self.scroll_manager.shared_scroll_anchor(cx),
             visible_rows: self.visible_line_count(),
             vertical_scroll_margin: self.scroll_manager.vertical_scroll_margin,
         }
@@ -7081,6 +7089,7 @@ impl Editor {
             self.debounced_selection_highlight_complete = false;
             return;
         };
+        let display_snapshot = self.display_map.update(cx, |map, cx| map.snapshot(cx));
         let multi_buffer_snapshot = self.buffer().read(cx).snapshot(cx);
         let query_changed = self
             .quick_selection_highlight_task
@@ -7092,7 +7101,7 @@ impl Editor {
         if on_buffer_edit || query_changed {
             let multi_buffer_visible_start = self
                 .scroll_manager
-                .anchor()
+                .native_anchor(&display_snapshot, cx)
                 .anchor
                 .to_point(&multi_buffer_snapshot);
             let multi_buffer_visible_end = multi_buffer_snapshot.clip_point(
@@ -8724,7 +8733,7 @@ impl Editor {
                 (buffer.len(), rows.start.previous_row())
             };
 
-            let text_layout_details = self.text_layout_details(window);
+            let text_layout_details = self.text_layout_details(window, cx);
             let x = display_map.x_for_display_point(
                 selection.head().to_display_point(&display_map),
                 &text_layout_details,
@@ -10473,7 +10482,7 @@ impl Editor {
 
     pub fn transpose(&mut self, _: &Transpose, window: &mut Window, cx: &mut Context<Self>) {
         self.hide_mouse_cursor(HideMouseCursorOrigin::TypingAction, cx);
-        let text_layout_details = &self.text_layout_details(window);
+        let text_layout_details = &self.text_layout_details(window, cx);
         self.transact(window, cx, |this, window, cx| {
             let edits = this.change_selections(Default::default(), window, cx, |s| {
                 let mut edits: Vec<(Range<MultiBufferOffset>, String)> = Default::default();
@@ -11463,7 +11472,7 @@ impl Editor {
 
         self.hide_mouse_cursor(HideMouseCursorOrigin::MovementAction, cx);
 
-        let text_layout_details = &self.text_layout_details(window);
+        let text_layout_details = &self.text_layout_details(window, cx);
         let selection_count = self.selections.count();
         let first_selection = self.selections.first_anchor();
 
@@ -11506,7 +11515,7 @@ impl Editor {
 
         self.hide_mouse_cursor(HideMouseCursorOrigin::MovementAction, cx);
 
-        let text_layout_details = &self.text_layout_details(window);
+        let text_layout_details = &self.text_layout_details(window, cx);
 
         self.change_selections(Default::default(), window, cx, |s| {
             s.move_with(|map, selection| {
@@ -11543,7 +11552,7 @@ impl Editor {
 
         self.hide_mouse_cursor(HideMouseCursorOrigin::MovementAction, cx);
 
-        let text_layout_details = &self.text_layout_details(window);
+        let text_layout_details = &self.text_layout_details(window, cx);
 
         self.change_selections(Default::default(), window, cx, |s| {
             s.move_with(|map, selection| {
@@ -11570,7 +11579,7 @@ impl Editor {
         cx: &mut Context<Self>,
     ) {
         self.hide_mouse_cursor(HideMouseCursorOrigin::MovementAction, cx);
-        let text_layout_details = &self.text_layout_details(window);
+        let text_layout_details = &self.text_layout_details(window, cx);
         self.change_selections(Default::default(), window, cx, |s| {
             s.move_heads_with(|map, head, goal| {
                 movement::down_by_rows(map, head, action.lines, goal, false, text_layout_details)
@@ -11585,7 +11594,7 @@ impl Editor {
         cx: &mut Context<Self>,
     ) {
         self.hide_mouse_cursor(HideMouseCursorOrigin::MovementAction, cx);
-        let text_layout_details = &self.text_layout_details(window);
+        let text_layout_details = &self.text_layout_details(window, cx);
         self.change_selections(Default::default(), window, cx, |s| {
             s.move_heads_with(|map, head, goal| {
                 movement::up_by_rows(map, head, action.lines, goal, false, text_layout_details)
@@ -11605,7 +11614,7 @@ impl Editor {
 
         self.hide_mouse_cursor(HideMouseCursorOrigin::MovementAction, cx);
 
-        let text_layout_details = &self.text_layout_details(window);
+        let text_layout_details = &self.text_layout_details(window, cx);
 
         self.change_selections(Default::default(), window, cx, |s| {
             s.move_heads_with(|map, head, goal| {
@@ -11651,7 +11660,7 @@ impl Editor {
             SelectionEffects::default()
         };
 
-        let text_layout_details = &self.text_layout_details(window);
+        let text_layout_details = &self.text_layout_details(window, cx);
 
         self.change_selections(effects, window, cx, |s| {
             s.move_with(|map, selection| {
@@ -11673,7 +11682,7 @@ impl Editor {
 
     pub fn select_up(&mut self, _: &SelectUp, window: &mut Window, cx: &mut Context<Self>) {
         self.hide_mouse_cursor(HideMouseCursorOrigin::MovementAction, cx);
-        let text_layout_details = &self.text_layout_details(window);
+        let text_layout_details = &self.text_layout_details(window, cx);
         self.change_selections(Default::default(), window, cx, |s| {
             s.move_heads_with(|map, head, goal| {
                 movement::up(map, head, goal, false, text_layout_details)
@@ -11691,7 +11700,7 @@ impl Editor {
 
         self.hide_mouse_cursor(HideMouseCursorOrigin::MovementAction, cx);
 
-        let text_layout_details = &self.text_layout_details(window);
+        let text_layout_details = &self.text_layout_details(window, cx);
         let selection_count = self.selections.count();
         let first_selection = self.selections.first_anchor();
 
@@ -11729,7 +11738,7 @@ impl Editor {
 
         self.hide_mouse_cursor(HideMouseCursorOrigin::MovementAction, cx);
 
-        let text_layout_details = &self.text_layout_details(window);
+        let text_layout_details = &self.text_layout_details(window, cx);
 
         self.change_selections(Default::default(), window, cx, |s| {
             s.move_heads_with(|map, head, goal| {
@@ -11775,7 +11784,7 @@ impl Editor {
             SelectionEffects::default()
         };
 
-        let text_layout_details = &self.text_layout_details(window);
+        let text_layout_details = &self.text_layout_details(window, cx);
         self.change_selections(effects, window, cx, |s| {
             s.move_with(|map, selection| {
                 if !selection.is_empty() {
@@ -11796,7 +11805,7 @@ impl Editor {
 
     pub fn select_down(&mut self, _: &SelectDown, window: &mut Window, cx: &mut Context<Self>) {
         self.hide_mouse_cursor(HideMouseCursorOrigin::MovementAction, cx);
-        let text_layout_details = &self.text_layout_details(window);
+        let text_layout_details = &self.text_layout_details(window, cx);
         self.change_selections(Default::default(), window, cx, |s| {
             s.move_heads_with(|map, head, goal| {
                 movement::down(map, head, goal, false, text_layout_details)
@@ -12607,10 +12616,11 @@ impl Editor {
         );
     }
 
-    fn navigation_data(&self, cursor_anchor: Anchor, cx: &App) -> NavigationData {
+    fn navigation_data(&self, cursor_anchor: Anchor, cx: &mut Context<Self>) -> NavigationData {
+        let display_snapshot = self.display_map.update(cx, |map, cx| map.snapshot(cx));
         let buffer = self.buffer.read(cx).read(cx);
         let cursor_position = cursor_anchor.to_point(&buffer);
-        let scroll_anchor = self.scroll_manager.anchor();
+        let scroll_anchor = self.scroll_manager.native_anchor(&display_snapshot, cx);
         let scroll_top_row = scroll_anchor.top_row(&buffer);
         drop(buffer);
 
@@ -12622,7 +12632,11 @@ impl Editor {
         }
     }
 
-    fn navigation_entry(&self, cursor_anchor: Anchor, cx: &App) -> Option<NavigationEntry> {
+    fn navigation_entry(
+        &self,
+        cursor_anchor: Anchor,
+        cx: &mut Context<Self>,
+    ) -> Option<NavigationEntry> {
         let Some(history) = self.nav_history.clone() else {
             return None;
         };
@@ -12778,7 +12792,7 @@ impl Editor {
 
         let display_map = self.display_map.update(cx, |map, cx| map.snapshot(cx));
         let all_selections = self.selections.all::<Point>(&display_map);
-        let text_layout_details = self.text_layout_details(window);
+        let text_layout_details = self.text_layout_details(window, cx);
 
         let (mut columnar_selections, new_selections_to_columnarize) = {
             if let Some(state) = self.add_selections_state.as_ref() {
@@ -13469,7 +13483,7 @@ impl Editor {
             return;
         }
         self.hide_mouse_cursor(HideMouseCursorOrigin::TypingAction, cx);
-        let text_layout_details = &self.text_layout_details(window);
+        let text_layout_details = &self.text_layout_details(window, cx);
         self.transact(window, cx, |this, window, cx| {
             let mut selections = this
                 .selections
@@ -18268,7 +18282,14 @@ impl Editor {
             window,
             cx,
         );
-        minimap.scroll_manager.clone_state(&self.scroll_manager);
+        let my_snapshot = self.display_map.update(cx, |map, cx| map.snapshot(cx));
+        let minimap_snapshot = minimap.display_map.update(cx, |map, cx| map.snapshot(cx));
+        minimap.scroll_manager.clone_state(
+            &self.scroll_manager,
+            &my_snapshot,
+            &minimap_snapshot,
+            cx,
+        );
         minimap.set_text_style_refinement(TextStyleRefinement {
             font_size: Some(MINIMAP_FONT_SIZE),
             font_weight: Some(MINIMAP_FONT_WEIGHT),
@@ -18595,14 +18616,6 @@ impl Editor {
 
     pub fn set_delegate_expand_excerpts(&mut self, delegate: bool) {
         self.delegate_expand_excerpts = delegate;
-    }
-
-    pub fn set_scroll_companion(&mut self, companion: Option<WeakEntity<Editor>>) {
-        self.scroll_companion = companion;
-    }
-
-    pub fn scroll_companion(&self) -> Option<&WeakEntity<Editor>> {
-        self.scroll_companion.as_ref()
     }
 
     pub fn set_on_local_selections_changed(
@@ -20946,10 +20959,10 @@ impl Editor {
 
     pub fn to_pixel_point(
         &mut self,
-        source: multi_buffer::Anchor,
+        source: Anchor,
         editor_snapshot: &EditorSnapshot,
         window: &mut Window,
-        cx: &App,
+        cx: &mut App,
     ) -> Option<gpui::Point<Pixels>> {
         let source_point = source.to_display_point(editor_snapshot);
         self.display_to_pixel_point(source_point, editor_snapshot, window, cx)
@@ -20960,10 +20973,10 @@ impl Editor {
         source: DisplayPoint,
         editor_snapshot: &EditorSnapshot,
         window: &mut Window,
-        cx: &App,
+        cx: &mut App,
     ) -> Option<gpui::Point<Pixels>> {
         let line_height = self.style(cx).text.line_height_in_pixels(window.rem_size());
-        let text_layout_details = self.text_layout_details(window);
+        let text_layout_details = self.text_layout_details(window, cx);
         let scroll_top = text_layout_details
             .scroll_anchor
             .scroll_position(editor_snapshot)
@@ -21010,8 +21023,8 @@ impl Editor {
             .and_then(|item| item.to_any_mut()?.downcast_mut::<T>())
     }
 
-    fn character_dimensions(&self, window: &mut Window) -> CharacterDimensions {
-        let text_layout_details = self.text_layout_details(window);
+    fn character_dimensions(&self, window: &mut Window, cx: &mut App) -> CharacterDimensions {
+        let text_layout_details = self.text_layout_details(window, cx);
         let style = &text_layout_details.editor_style;
         let font_id = window.text_system().resolve_font(&style.text.font());
         let font_size = style.text.font_size.to_pixels(window.rem_size());
@@ -23386,12 +23399,12 @@ impl EntityInputHandler for Editor {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) -> Option<gpui::Bounds<Pixels>> {
-        let text_layout_details = self.text_layout_details(window);
+        let text_layout_details = self.text_layout_details(window, cx);
         let CharacterDimensions {
             em_width,
             em_advance,
             line_height,
-        } = self.character_dimensions(window);
+        } = self.character_dimensions(window, cx);
 
         let snapshot = self.snapshot(window, cx);
         let scroll_position = snapshot.scroll_position();
