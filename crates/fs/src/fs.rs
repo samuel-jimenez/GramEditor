@@ -3436,6 +3436,7 @@ mod tests {
             executor,
             next_job_id: Arc::new(AtomicUsize::new(0)),
             job_event_subscribers: Arc::new(Mutex::new(Vec::new())),
+            is_case_sensitive: AtomicU8::new(0),
         };
         let temp_dir = TempDir::new().unwrap();
         let file_to_be_replaced = temp_dir.path().join("file.txt");
@@ -3456,6 +3457,7 @@ mod tests {
             executor,
             next_job_id: Arc::new(AtomicUsize::new(0)),
             job_event_subscribers: Arc::new(Mutex::new(Vec::new())),
+            is_case_sensitive: AtomicU8::new(0),
         };
         let temp_dir = TempDir::new().unwrap();
         let file_to_be_replaced = temp_dir.path().join("file.txt");
@@ -3553,6 +3555,7 @@ mod tests {
             executor,
             next_job_id: Arc::new(AtomicUsize::new(0)),
             job_event_subscribers: Arc::new(Mutex::new(Vec::new())),
+            is_case_sensitive: AtomicU8::new(0),
         };
         let symlink_path = path.join("symlink");
         smol::block_on(fs.create_symlink(&symlink_path, PathBuf::from("file_a.txt"))).unwrap();
@@ -3578,6 +3581,7 @@ mod tests {
             executor,
             next_job_id: Arc::new(AtomicUsize::new(0)),
             job_event_subscribers: Arc::new(Mutex::new(Vec::new())),
+            is_case_sensitive: AtomicU8::new(0),
         };
         let symlink_path = path.join("symlink");
         smol::block_on(fs.create_symlink(&symlink_path, PathBuf::from("symlink"))).unwrap();
