@@ -3,9 +3,7 @@ use std::ops::{Bound, Range};
 use buffer_diff::{BufferDiff, BufferDiffSnapshot};
 use collections::HashMap;
 use feature_flags::{FeatureFlag, FeatureFlagAppExt as _};
-use gpui::{
-    Action, AppContext as _, Entity, EventEmitter, Focusable, NoAction, Subscription, WeakEntity,
-};
+use gpui::{Action, AppContext as _, Entity, EventEmitter, Focusable, Subscription, WeakEntity};
 use language::{Buffer, Capability};
 use multi_buffer::{
     Anchor, BufferOffset, ExcerptId, ExcerptRange, ExpandExcerptDirection, MultiBuffer,
@@ -23,10 +21,7 @@ use crate::{
     display_map::MultiBufferRowMapping,
     split_editor_view::{SplitEditorState, SplitEditorView},
 };
-use workspace::{
-    ActivatePaneLeft, ActivatePaneRight, Item, ItemHandle, Pane, PaneGroup, SplitDirection,
-    Workspace,
-};
+use workspace::{ActivatePaneLeft, ActivatePaneRight, Item, Workspace};
 
 use crate::{
     Autoscroll, DisplayMap, Editor, EditorEvent, ToggleCodeActions, ToggleSoftWrap,
@@ -272,7 +267,6 @@ pub struct SplittableEditor {
     rhs_multibuffer: Entity<MultiBuffer>,
     rhs_editor: Entity<Editor>,
     lhs: Option<LhsEditor>,
-    panes: PaneGroup,
     workspace: WeakEntity<Workspace>,
     split_state: Entity<SplitEditorState>,
     locked_cursors: bool,
@@ -282,7 +276,6 @@ pub struct SplittableEditor {
 struct LhsEditor {
     multibuffer: Entity<MultiBuffer>,
     editor: Entity<Editor>,
-    pane: Entity<Pane>,
     has_latest_selection: bool,
     _subscriptions: Vec<Subscription>,
 }
@@ -323,22 +316,6 @@ impl SplittableEditor {
             editor.set_expand_all_diff_hunks(cx);
             editor
         });
-        let pane = cx.new(|cx| {
-            let mut pane = Pane::new(
-                workspace.downgrade(),
-                project,
-                Default::default(),
-                None,
-                NoAction.boxed_clone(),
-                true,
-                window,
-                cx,
-            );
-            pane.set_should_display_tab_bar(|_, _| false);
-            pane.add_item(rhs_editor.boxed_clone(), true, true, None, window, cx);
-            pane
-        });
-        let panes = PaneGroup::new(pane);
         // TODO(split-diff) we might want to tag editor events with whether they came from rhs/lhs
         let subscriptions =
             vec![cx.subscribe(
@@ -379,7 +356,6 @@ impl SplittableEditor {
             rhs_editor,
             rhs_multibuffer,
             lhs: None,
-            panes,
             workspace: workspace.downgrade(),
             split_state,
             locked_cursors: false,
@@ -410,28 +386,6 @@ impl SplittableEditor {
             editor.number_deleted_lines = true;
             editor.set_delegate_expand_excerpts(true);
             editor
-        });
-        let lhs_pane = cx.new(|cx| {
-            let mut pane = Pane::new(
-                workspace.downgrade(),
-                workspace.read(cx).project().clone(),
-                Default::default(),
-                None,
-                NoAction.boxed_clone(),
-                true,
-                window,
-                cx,
-            );
-            pane.set_should_display_tab_bar(|_, _| false);
-            pane.add_item(
-                ItemHandle::boxed_clone(&lhs_editor),
-                false,
-                false,
-                None,
-                window,
-                cx,
-            );
-            pane
         });
 
         let subscriptions =
@@ -466,7 +420,6 @@ impl SplittableEditor {
         let mut lhs = LhsEditor {
             editor: lhs_editor,
             multibuffer: lhs_multibuffer,
-            pane: lhs_pane.clone(),
             has_latest_selection: false,
             _subscriptions: subscriptions,
         };
@@ -580,10 +533,6 @@ impl SplittableEditor {
 
         self.lhs = Some(lhs);
 
-        let rhs_pane = self.panes.first_pane();
-        self.panes
-            .split(&rhs_pane, &lhs_pane, SplitDirection::Left)
-            .unwrap();
         cx.notify();
     }
 
@@ -832,7 +781,6 @@ impl SplittableEditor {
         let Some(lhs) = self.lhs.take() else {
             return;
         };
-        self.panes.remove(&lhs.pane).unwrap();
         self.rhs_editor.update(cx, |rhs, cx| {
             let rhs_snapshot = rhs.display_map.update(cx, |dm, cx| dm.snapshot(cx));
             let native_anchor = rhs.scroll_manager.native_anchor(&rhs_snapshot, cx);
