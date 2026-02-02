@@ -57,10 +57,14 @@ pub struct BlockMapWriter<'a> {
     companion: Option<BlockMapWriterCompanion<'a>>,
 }
 
-struct BlockMapWriterCompanion<'a> {
-    companion: &'a Companion,
-    snapshot: &'a WrapSnapshot,
-    entity: EntityId,
+struct BlockMapWriterCompanion<'a>(CompanionView<'a>);
+
+impl<'a> Deref for BlockMapWriterCompanion<'a> {
+    type Target = CompanionView<'a>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
 }
 
 #[derive(Clone)]
@@ -512,6 +516,30 @@ pub struct BlockRows<'a> {
     started: bool,
 }
 
+#[derive(Clone, Copy)]
+pub struct CompanionView<'a> {
+    entity_id: EntityId,
+    wrap_snapshot: &'a WrapSnapshot,
+    wrap_edits: &'a WrapPatch,
+    companion: &'a Companion,
+}
+
+impl<'a> CompanionView<'a> {
+    pub(crate) fn new(
+        entity_id: EntityId,
+        wrap_snapshot: &'a WrapSnapshot,
+        wrap_edits: &'a WrapPatch,
+        companion: &'a Companion,
+    ) -> Self {
+        Self {
+            entity_id,
+            wrap_snapshot,
+            wrap_edits,
+            companion,
+        }
+    }
+}
+
 impl BlockMap {
     pub fn new(
         wrap_snapshot: WrapSnapshot,
@@ -539,7 +567,6 @@ impl BlockMap {
                 new: WrapRow(0)..row_count,
             }]),
             None,
-            None,
         );
         map
     }
@@ -548,10 +575,9 @@ impl BlockMap {
         &self,
         wrap_snapshot: WrapSnapshot,
         edits: WrapPatch,
-        companion_wrap_edits: Option<(&WrapSnapshot, &WrapPatch)>,
-        companion: Option<(&Companion, EntityId)>,
+        companion_view: Option<CompanionView>,
     ) -> BlockMapReader<'_> {
-        self.sync(&wrap_snapshot, edits, companion_wrap_edits, companion);
+        self.sync(&wrap_snapshot, edits, companion_view);
         *self.wrap_snapshot.borrow_mut() = wrap_snapshot.clone();
         BlockMapReader {
             blocks: &self.custom_blocks,
@@ -569,23 +595,13 @@ impl BlockMap {
         &'a mut self,
         wrap_snapshot: WrapSnapshot,
         edits: WrapPatch,
-        companion_wrap_edits: Option<(&'a WrapSnapshot, &'a WrapPatch)>,
-        companion: Option<(&'a Companion, EntityId)>,
+        companion_view: Option<CompanionView<'a>>,
     ) -> BlockMapWriter<'a> {
-        self.sync(&wrap_snapshot, edits, companion_wrap_edits, companion);
+        self.sync(&wrap_snapshot, edits, companion_view);
         *self.wrap_snapshot.borrow_mut() = wrap_snapshot;
-        let companion = match (companion_wrap_edits, companion) {
-            (Some(_), None) | (None, Some(_)) => unreachable!(),
-            (None, None) => None,
-            (Some(companion_wrap_edits), Some(companion)) => Some(BlockMapWriterCompanion {
-                companion: companion.0,
-                snapshot: companion_wrap_edits.0,
-                entity: companion.1,
-            }),
-        };
         BlockMapWriter {
             block_map: self,
-            companion,
+            companion: companion_view.map(BlockMapWriterCompanion),
         }
     }
 
@@ -593,8 +609,7 @@ impl BlockMap {
         &self,
         wrap_snapshot: &WrapSnapshot,
         mut edits: WrapPatch,
-        companion_wrap_edits: Option<(&WrapSnapshot, &WrapPatch)>,
-        companion: Option<(&Companion, EntityId)>,
+        companion_view: Option<CompanionView>,
     ) {
         let buffer = wrap_snapshot.buffer_snapshot();
 
@@ -616,8 +631,13 @@ impl BlockMap {
         }
 
         // Pull in companion edits to ensure we recompute spacers in ranges that have changed in the companion.
-        if let Some((companion_new_snapshot, companion_edits)) = companion_wrap_edits
-            && let Some((companion, display_map_id)) = companion
+        if let Some(CompanionView {
+            wrap_snapshot: companion_new_snapshot,
+            wrap_edits: companion_edits,
+            companion,
+            entity_id: display_map_id,
+            ..
+        }) = companion_view
         {
             let mut companion_edits_in_my_space: Vec<WrapEdit> = companion_edits
                 .clone()
@@ -882,8 +902,12 @@ impl BlockMap {
                 },
             ));
 
-            if let Some((companion_snapshot, _)) = companion_wrap_edits
-                && let Some((companion, display_map_id)) = companion
+            if let Some(CompanionView {
+                wrap_snapshot: companion_snapshot,
+                companion,
+                entity_id: display_map_id,
+                ..
+            }) = companion_view
             {
                 blocks_in_edit.extend(self.spacer_blocks(
                     (start_bound, end_bound),
@@ -1474,18 +1498,20 @@ impl BlockMapWriter<'_> {
         }
 
         let default_patch = Patch::default();
-        let (companion_snapshot, companion) = self
-            .companion
-            .as_ref()
-            .map(|companion| {
-                (
-                    (companion.snapshot, &default_patch),
-                    (companion.companion, companion.entity),
-                )
-            })
-            .unzip();
-        self.block_map
-            .sync(wrap_snapshot, edits, companion_snapshot, companion);
+        self.block_map.sync(
+            wrap_snapshot,
+            edits,
+            self.companion.as_deref().map(
+                |&CompanionView {
+                     entity_id,
+                     wrap_snapshot,
+                     companion,
+                     ..
+                 }| {
+                    CompanionView::new(entity_id, wrap_snapshot, &default_patch, companion)
+                },
+            ),
+        );
         ids
     }
 
@@ -1541,18 +1567,20 @@ impl BlockMapWriter<'_> {
         }
 
         let default_patch = Patch::default();
-        let (companion_snapshot, companion) = self
-            .companion
-            .as_ref()
-            .map(|companion| {
-                (
-                    (companion.snapshot, &default_patch),
-                    (companion.companion, companion.entity),
-                )
-            })
-            .unzip();
-        self.block_map
-            .sync(wrap_snapshot, edits, companion_snapshot, companion);
+        self.block_map.sync(
+            wrap_snapshot,
+            edits,
+            self.companion.as_deref().map(
+                |&CompanionView {
+                     entity_id,
+                     wrap_snapshot,
+                     companion,
+                     ..
+                 }| {
+                    CompanionView::new(entity_id, wrap_snapshot, &default_patch, companion)
+                },
+            ),
+        );
     }
 
     pub fn remove(&mut self, block_ids: HashSet<CustomBlockId>) {
@@ -1598,19 +1626,20 @@ impl BlockMapWriter<'_> {
             .custom_blocks_by_id
             .retain(|id, _| !block_ids.contains(id));
         let default_patch = Patch::default();
-        let (companion_snapshot, companion) = self
-            .companion
-            .as_ref()
-            .map(|companion| {
-                (
-                    (companion.snapshot, &default_patch),
-                    (companion.companion, companion.entity),
-                )
-            })
-            .unzip();
-
-        self.block_map
-            .sync(wrap_snapshot, edits, companion_snapshot, companion);
+        self.block_map.sync(
+            wrap_snapshot,
+            edits,
+            self.companion.as_deref().map(
+                |&CompanionView {
+                     entity_id,
+                     wrap_snapshot,
+                     companion,
+                     ..
+                 }| {
+                    CompanionView::new(entity_id, wrap_snapshot, &default_patch, companion)
+                },
+            ),
+        );
     }
 
     pub fn remove_intersecting_replace_blocks(
@@ -1688,18 +1717,20 @@ impl BlockMapWriter<'_> {
         }
 
         let default_patch = Patch::default();
-        let (companion_snapshot, companion) = self
-            .companion
-            .as_ref()
-            .map(|companion| {
-                (
-                    (companion.snapshot, &default_patch),
-                    (companion.companion, companion.entity),
-                )
-            })
-            .unzip();
-        self.block_map
-            .sync(&wrap_snapshot, edits, companion_snapshot, companion);
+        self.block_map.sync(
+            &wrap_snapshot,
+            edits,
+            self.companion.as_deref().map(
+                |&CompanionView {
+                     entity_id,
+                     wrap_snapshot,
+                     companion,
+                     ..
+                 }| {
+                    CompanionView::new(entity_id, wrap_snapshot, &default_patch, companion)
+                },
+            ),
+        );
     }
 
     fn blocks_intersecting_buffer_range(
@@ -2481,7 +2512,7 @@ mod tests {
             cx.update(|cx| WrapMap::new(tab_snapshot, font("Helvetica"), px(14.0), None, cx));
         let mut block_map = BlockMap::new(wraps_snapshot.clone(), 1, 1);
 
-        let mut writer = block_map.write(wraps_snapshot.clone(), Default::default(), None, None);
+        let mut writer = block_map.write(wraps_snapshot.clone(), Default::default(), None);
         let block_ids = writer.insert(vec![
             BlockProperties {
                 style: BlockStyle::Fixed,
@@ -2506,7 +2537,7 @@ mod tests {
             },
         ]);
 
-        let snapshot = block_map.read(wraps_snapshot, Default::default(), None, None);
+        let snapshot = block_map.read(wraps_snapshot, Default::default(), None);
         assert_eq!(snapshot.text(), "aaa\n\n\n\nbbb\nccc\nddd\n\n\n");
 
         let blocks = snapshot
@@ -2631,7 +2662,7 @@ mod tests {
         let (wraps_snapshot, wrap_edits) = wrap_map.update(cx, |wrap_map, cx| {
             wrap_map.sync(tab_snapshot, tab_edits, cx)
         });
-        let snapshot = block_map.read(wraps_snapshot, wrap_edits, None, None);
+        let snapshot = block_map.read(wraps_snapshot, wrap_edits, None);
         assert_eq!(snapshot.text(), "aaa\n\nb!!!\n\n\nbb\nccc\nddd\n\n\n");
     }
 
@@ -2684,7 +2715,7 @@ mod tests {
         let (_, wraps_snapshot) = WrapMap::new(tab_snapshot, font, font_size, Some(wrap_width), cx);
 
         let block_map = BlockMap::new(wraps_snapshot.clone(), 1, 1);
-        let snapshot = block_map.read(wraps_snapshot, Default::default(), None, None);
+        let snapshot = block_map.read(wraps_snapshot, Default::default(), None);
 
         // Each excerpt has a header above and footer below. Excerpts are also *separated* by a newline.
         assert_eq!(snapshot.text(), "\nBuff\ner 1\n\nBuff\ner 2\n\nBuff\ner 3");
@@ -2719,7 +2750,7 @@ mod tests {
             cx.update(|cx| WrapMap::new(tab_snapshot, font("Helvetica"), px(14.0), None, cx));
         let mut block_map = BlockMap::new(wraps_snapshot.clone(), 1, 1);
 
-        let mut writer = block_map.write(wraps_snapshot.clone(), Default::default(), None, None);
+        let mut writer = block_map.write(wraps_snapshot.clone(), Default::default(), None);
         let block_ids = writer.insert(vec![
             BlockProperties {
                 style: BlockStyle::Fixed,
@@ -2745,64 +2776,64 @@ mod tests {
         ]);
 
         {
-            let snapshot = block_map.read(wraps_snapshot.clone(), Default::default(), None, None);
+            let snapshot = block_map.read(wraps_snapshot.clone(), Default::default(), None);
             assert_eq!(snapshot.text(), "aaa\n\n\n\nbbb\nccc\nddd\n\n\n");
 
             let mut block_map_writer =
-                block_map.write(wraps_snapshot.clone(), Default::default(), None, None);
+                block_map.write(wraps_snapshot.clone(), Default::default(), None);
 
             let mut new_heights = HashMap::default();
             new_heights.insert(block_ids[0], 2);
             block_map_writer.resize(new_heights);
-            let snapshot = block_map.read(wraps_snapshot.clone(), Default::default(), None, None);
+            let snapshot = block_map.read(wraps_snapshot.clone(), Default::default(), None);
             assert_eq!(snapshot.text(), "aaa\n\n\n\n\nbbb\nccc\nddd\n\n\n");
         }
 
         {
             let mut block_map_writer =
-                block_map.write(wraps_snapshot.clone(), Default::default(), None, None);
+                block_map.write(wraps_snapshot.clone(), Default::default(), None);
 
             let mut new_heights = HashMap::default();
             new_heights.insert(block_ids[0], 1);
             block_map_writer.resize(new_heights);
 
-            let snapshot = block_map.read(wraps_snapshot.clone(), Default::default(), None, None);
+            let snapshot = block_map.read(wraps_snapshot.clone(), Default::default(), None);
             assert_eq!(snapshot.text(), "aaa\n\n\n\nbbb\nccc\nddd\n\n\n");
         }
 
         {
             let mut block_map_writer =
-                block_map.write(wraps_snapshot.clone(), Default::default(), None, None);
+                block_map.write(wraps_snapshot.clone(), Default::default(), None);
 
             let mut new_heights = HashMap::default();
             new_heights.insert(block_ids[0], 0);
             block_map_writer.resize(new_heights);
 
-            let snapshot = block_map.read(wraps_snapshot.clone(), Default::default(), None, None);
+            let snapshot = block_map.read(wraps_snapshot.clone(), Default::default(), None);
             assert_eq!(snapshot.text(), "aaa\n\n\nbbb\nccc\nddd\n\n\n");
         }
 
         {
             let mut block_map_writer =
-                block_map.write(wraps_snapshot.clone(), Default::default(), None, None);
+                block_map.write(wraps_snapshot.clone(), Default::default(), None);
 
             let mut new_heights = HashMap::default();
             new_heights.insert(block_ids[0], 3);
             block_map_writer.resize(new_heights);
 
-            let snapshot = block_map.read(wraps_snapshot.clone(), Default::default(), None, None);
+            let snapshot = block_map.read(wraps_snapshot.clone(), Default::default(), None);
             assert_eq!(snapshot.text(), "aaa\n\n\n\n\n\nbbb\nccc\nddd\n\n\n");
         }
 
         {
             let mut block_map_writer =
-                block_map.write(wraps_snapshot.clone(), Default::default(), None, None);
+                block_map.write(wraps_snapshot.clone(), Default::default(), None);
 
             let mut new_heights = HashMap::default();
             new_heights.insert(block_ids[0], 3);
             block_map_writer.resize(new_heights);
 
-            let snapshot = block_map.read(wraps_snapshot, Default::default(), None, None);
+            let snapshot = block_map.read(wraps_snapshot, Default::default(), None);
             // Same height as before, should remain the same
             assert_eq!(snapshot.text(), "aaa\n\n\n\n\n\nbbb\nccc\nddd\n\n\n");
         }
@@ -2824,7 +2855,7 @@ mod tests {
         });
         let mut block_map = BlockMap::new(wraps_snapshot.clone(), 1, 1);
 
-        let mut writer = block_map.write(wraps_snapshot.clone(), Default::default(), None, None);
+        let mut writer = block_map.write(wraps_snapshot.clone(), Default::default(), None);
         writer.insert(vec![
             BlockProperties {
                 style: BlockStyle::Fixed,
@@ -2844,7 +2875,7 @@ mod tests {
 
         // Blocks with an 'above' disposition go above their corresponding buffer line.
         // Blocks with a 'below' disposition go below their corresponding buffer line.
-        let snapshot = block_map.read(wraps_snapshot, Default::default(), None, None);
+        let snapshot = block_map.read(wraps_snapshot, Default::default(), None);
         assert_eq!(
             snapshot.text(),
             "one two \nthree\n\nfour five \nsix\n\nseven \neight"
@@ -2868,7 +2899,7 @@ mod tests {
             cx.update(|cx| WrapMap::new(tab_snapshot, font("Helvetica"), px(14.0), None, cx));
         let mut block_map = BlockMap::new(wraps_snapshot.clone(), 1, 1);
 
-        let mut writer = block_map.write(wraps_snapshot.clone(), Default::default(), None, None);
+        let mut writer = block_map.write(wraps_snapshot.clone(), Default::default(), None);
         let replace_block_id = writer.insert(vec![BlockProperties {
             style: BlockStyle::Fixed,
             placement: BlockPlacement::Replace(
@@ -2880,7 +2911,7 @@ mod tests {
             priority: 0,
         }])[0];
 
-        let blocks_snapshot = block_map.read(wraps_snapshot, Default::default(), None, None);
+        let blocks_snapshot = block_map.read(wraps_snapshot, Default::default(), None);
         assert_eq!(blocks_snapshot.text(), "line1\n\n\n\n\nline5");
 
         let buffer_snapshot = buffer.update(cx, |buffer, cx| {
@@ -2894,7 +2925,7 @@ mod tests {
         let (wraps_snapshot, wrap_edits) = wrap_map.update(cx, |wrap_map, cx| {
             wrap_map.sync(tab_snapshot, tab_edits, cx)
         });
-        let blocks_snapshot = block_map.read(wraps_snapshot, wrap_edits, None, None);
+        let blocks_snapshot = block_map.read(wraps_snapshot, wrap_edits, None);
         assert_eq!(blocks_snapshot.text(), "line1\n\n\n\n\nline5");
 
         let buffer_snapshot = buffer.update(cx, |buffer, cx| {
@@ -2917,11 +2948,11 @@ mod tests {
         let (wraps_snapshot, wrap_edits) = wrap_map.update(cx, |wrap_map, cx| {
             wrap_map.sync(tab_snapshot, tab_edits, cx)
         });
-        let blocks_snapshot = block_map.read(wraps_snapshot.clone(), wrap_edits, None, None);
+        let blocks_snapshot = block_map.read(wraps_snapshot.clone(), wrap_edits, None);
         assert_eq!(blocks_snapshot.text(), "line1\n\n\n\n\nline5");
 
         // Blocks inserted right above the start or right below the end of the replaced region are hidden.
-        let mut writer = block_map.write(wraps_snapshot.clone(), Default::default(), None, None);
+        let mut writer = block_map.write(wraps_snapshot.clone(), Default::default(), None);
         writer.insert(vec![
             BlockProperties {
                 style: BlockStyle::Fixed,
@@ -2945,12 +2976,11 @@ mod tests {
                 priority: 0,
             },
         ]);
-        let blocks_snapshot =
-            block_map.read(wraps_snapshot.clone(), Default::default(), None, None);
+        let blocks_snapshot = block_map.read(wraps_snapshot.clone(), Default::default(), None);
         assert_eq!(blocks_snapshot.text(), "\nline1\n\n\n\n\nline5");
 
         // Ensure blocks inserted *inside* replaced region are hidden.
-        let mut writer = block_map.write(wraps_snapshot.clone(), Default::default(), None, None);
+        let mut writer = block_map.write(wraps_snapshot.clone(), Default::default(), None);
         writer.insert(vec![
             BlockProperties {
                 style: BlockStyle::Fixed,
@@ -2974,14 +3004,13 @@ mod tests {
                 priority: 0,
             },
         ]);
-        let blocks_snapshot =
-            block_map.read(wraps_snapshot.clone(), Default::default(), None, None);
+        let blocks_snapshot = block_map.read(wraps_snapshot.clone(), Default::default(), None);
         assert_eq!(blocks_snapshot.text(), "\nline1\n\n\n\n\nline5");
 
         // Removing the replace block shows all the hidden blocks again.
-        let mut writer = block_map.write(wraps_snapshot.clone(), Default::default(), None, None);
+        let mut writer = block_map.write(wraps_snapshot.clone(), Default::default(), None);
         writer.remove(HashSet::from_iter([replace_block_id]));
-        let blocks_snapshot = block_map.read(wraps_snapshot, Default::default(), None, None);
+        let blocks_snapshot = block_map.read(wraps_snapshot, Default::default(), None);
         assert_eq!(
             blocks_snapshot.text(),
             "\nline1\n\nline2\n\n\nline 2.1\nline2.2\nline 2.3\nline 2.4\n\nline4\n\nline5"
@@ -3034,7 +3063,7 @@ mod tests {
         let (_, wrap_snapshot) =
             cx.update(|cx| WrapMap::new(tab_snapshot, font("Helvetica"), px(14.0), None, cx));
         let mut block_map = BlockMap::new(wrap_snapshot.clone(), 2, 1);
-        let blocks_snapshot = block_map.read(wrap_snapshot.clone(), Patch::default(), None, None);
+        let blocks_snapshot = block_map.read(wrap_snapshot.clone(), Patch::default(), None);
 
         assert_eq!(
             blocks_snapshot.text(),
@@ -3064,7 +3093,7 @@ mod tests {
             ]
         );
 
-        let mut writer = block_map.write(wrap_snapshot.clone(), Patch::default(), None, None);
+        let mut writer = block_map.write(wrap_snapshot.clone(), Patch::default(), None);
         let excerpt_blocks_2 = writer.insert(vec![
             BlockProperties {
                 style: BlockStyle::Fixed,
@@ -3105,7 +3134,7 @@ mod tests {
             },
         ]);
 
-        let blocks_snapshot = block_map.read(wrap_snapshot.clone(), Patch::default(), None, None);
+        let blocks_snapshot = block_map.read(wrap_snapshot.clone(), Patch::default(), None);
         assert_eq!(
             blocks_snapshot.text(),
             "\n\n111\n\n\n\n222\n\n\n333\n\n444\n\n\n\n\n555\n\n666\n"
@@ -3139,7 +3168,7 @@ mod tests {
             ]
         );
 
-        let mut writer = block_map.write(wrap_snapshot.clone(), Patch::default(), None, None);
+        let mut writer = block_map.write(wrap_snapshot.clone(), Patch::default(), None);
         buffer.read_with(cx, |buffer, cx| {
             writer.fold_buffers([buffer_id_1], buffer, cx);
         });
@@ -3150,7 +3179,7 @@ mod tests {
             render: Arc::new(|_| div().into_any()),
             priority: 0,
         }]);
-        let blocks_snapshot = block_map.read(wrap_snapshot.clone(), Patch::default(), None, None);
+        let blocks_snapshot = block_map.read(wrap_snapshot.clone(), Patch::default(), None);
         let blocks = blocks_snapshot
             .blocks_in_range(BlockRow(0)..BlockRow(u32::MAX))
             .collect::<Vec<_>>();
@@ -3207,11 +3236,11 @@ mod tests {
             ]
         );
 
-        let mut writer = block_map.write(wrap_snapshot.clone(), Patch::default(), None, None);
+        let mut writer = block_map.write(wrap_snapshot.clone(), Patch::default(), None);
         buffer.read_with(cx, |buffer, cx| {
             writer.fold_buffers([buffer_id_2], buffer, cx);
         });
-        let blocks_snapshot = block_map.read(wrap_snapshot.clone(), Patch::default(), None, None);
+        let blocks_snapshot = block_map.read(wrap_snapshot.clone(), Patch::default(), None);
         let blocks = blocks_snapshot
             .blocks_in_range(BlockRow(0)..BlockRow(u32::MAX))
             .collect::<Vec<_>>();
@@ -3260,11 +3289,11 @@ mod tests {
             ]
         );
 
-        let mut writer = block_map.write(wrap_snapshot.clone(), Patch::default(), None, None);
+        let mut writer = block_map.write(wrap_snapshot.clone(), Patch::default(), None);
         buffer.read_with(cx, |buffer, cx| {
             writer.unfold_buffers([buffer_id_1], buffer, cx);
         });
-        let blocks_snapshot = block_map.read(wrap_snapshot.clone(), Patch::default(), None, None);
+        let blocks_snapshot = block_map.read(wrap_snapshot.clone(), Patch::default(), None);
         let blocks = blocks_snapshot
             .blocks_in_range(BlockRow(0)..BlockRow(u32::MAX))
             .collect::<Vec<_>>();
@@ -3316,11 +3345,11 @@ mod tests {
             ]
         );
 
-        let mut writer = block_map.write(wrap_snapshot.clone(), Patch::default(), None, None);
+        let mut writer = block_map.write(wrap_snapshot.clone(), Patch::default(), None);
         buffer.read_with(cx, |buffer, cx| {
             writer.fold_buffers([buffer_id_3], buffer, cx);
         });
-        let blocks_snapshot = block_map.read(wrap_snapshot, Patch::default(), None, None);
+        let blocks_snapshot = block_map.read(wrap_snapshot, Patch::default(), None);
         let blocks = blocks_snapshot
             .blocks_in_range(BlockRow(0)..BlockRow(u32::MAX))
             .collect::<Vec<_>>();
@@ -3379,15 +3408,15 @@ mod tests {
         let (_, wrap_snapshot) =
             cx.update(|cx| WrapMap::new(tab_snapshot, font("Helvetica"), px(14.0), None, cx));
         let mut block_map = BlockMap::new(wrap_snapshot.clone(), 2, 1);
-        let blocks_snapshot = block_map.read(wrap_snapshot.clone(), Patch::default(), None, None);
+        let blocks_snapshot = block_map.read(wrap_snapshot.clone(), Patch::default(), None);
 
         assert_eq!(blocks_snapshot.text(), "\n\n111");
 
-        let mut writer = block_map.write(wrap_snapshot.clone(), Patch::default(), None, None);
+        let mut writer = block_map.write(wrap_snapshot.clone(), Patch::default(), None);
         buffer.read_with(cx, |buffer, cx| {
             writer.fold_buffers([buffer_id], buffer, cx);
         });
-        let blocks_snapshot = block_map.read(wrap_snapshot, Patch::default(), None, None);
+        let blocks_snapshot = block_map.read(wrap_snapshot, Patch::default(), None);
         let blocks = blocks_snapshot
             .blocks_in_range(BlockRow(0)..BlockRow(u32::MAX))
             .collect::<Vec<_>>();
@@ -3515,7 +3544,7 @@ mod tests {
                     let (wraps_snapshot, wrap_edits) = wrap_map.update(cx, |wrap_map, cx| {
                         wrap_map.sync(tab_snapshot, tab_edits, cx)
                     });
-                    let mut block_map = block_map.write(wraps_snapshot, wrap_edits, None, None);
+                    let mut block_map = block_map.write(wraps_snapshot, wrap_edits, None);
                     let block_ids =
                         block_map.insert(block_properties.iter().map(|props| BlockProperties {
                             placement: props.placement.clone(),
@@ -3553,7 +3582,7 @@ mod tests {
                     let (wraps_snapshot, wrap_edits) = wrap_map.update(cx, |wrap_map, cx| {
                         wrap_map.sync(tab_snapshot, tab_edits, cx)
                     });
-                    let mut block_map = block_map.write(wraps_snapshot, wrap_edits, None, None);
+                    let mut block_map = block_map.write(wraps_snapshot, wrap_edits, None);
                     log::info!(
                         "removing {} blocks: {:?}",
                         block_ids_to_remove.len(),
@@ -3574,7 +3603,7 @@ mod tests {
                     let (wraps_snapshot, wrap_edits) = wrap_map.update(cx, |wrap_map, cx| {
                         wrap_map.sync(tab_snapshot, tab_edits, cx)
                     });
-                    let mut block_map = block_map.write(wraps_snapshot, wrap_edits, None, None);
+                    let mut block_map = block_map.write(wraps_snapshot, wrap_edits, None);
                     let (unfolded_buffers, folded_buffers) = buffer.read_with(cx, |buffer, _| {
                         let folded_buffers: Vec<_> =
                             block_map.block_map.folded_buffers.iter().cloned().collect();
@@ -3658,7 +3687,7 @@ mod tests {
             let (wraps_snapshot, wrap_edits) = wrap_map.update(cx, |wrap_map, cx| {
                 wrap_map.sync(tab_snapshot, tab_edits, cx)
             });
-            let blocks_snapshot = block_map.read(wraps_snapshot.clone(), wrap_edits, None, None);
+            let blocks_snapshot = block_map.read(wraps_snapshot.clone(), wrap_edits, None);
             assert_eq!(
                 blocks_snapshot.transforms.summary().input_rows,
                 wraps_snapshot.max_point().row() + RowDelta(1)
@@ -4047,7 +4076,7 @@ mod tests {
             cx.update(|cx| WrapMap::new(tab_snapshot, font("Helvetica"), px(14.0), None, cx));
         let mut block_map = BlockMap::new(wraps_snapshot.clone(), 1, 1);
 
-        let mut writer = block_map.write(wraps_snapshot.clone(), Default::default(), None, None);
+        let mut writer = block_map.write(wraps_snapshot.clone(), Default::default(), None);
         let _block_id = writer.insert(vec![BlockProperties {
             style: BlockStyle::Fixed,
             placement: BlockPlacement::Above(buffer_snapshot.anchor_after(Point::new(1, 0))),
@@ -4056,11 +4085,10 @@ mod tests {
             priority: 0,
         }])[0];
 
-        let blocks_snapshot =
-            block_map.read(wraps_snapshot.clone(), Default::default(), None, None);
+        let blocks_snapshot = block_map.read(wraps_snapshot.clone(), Default::default(), None);
         assert_eq!(blocks_snapshot.text(), "abc\n\ndef\nghi\njkl\nmno");
 
-        let mut writer = block_map.write(wraps_snapshot.clone(), Default::default(), None, None);
+        let mut writer = block_map.write(wraps_snapshot.clone(), Default::default(), None);
         writer.remove_intersecting_replace_blocks(
             [buffer_snapshot
                 .anchor_after(Point::new(1, 0))
@@ -4070,7 +4098,7 @@ mod tests {
                     .to_offset(&buffer_snapshot)],
             false,
         );
-        let blocks_snapshot = block_map.read(wraps_snapshot, Default::default(), None, None);
+        let blocks_snapshot = block_map.read(wraps_snapshot, Default::default(), None);
         assert_eq!(blocks_snapshot.text(), "abc\n\ndef\nghi\njkl\nmno");
     }
 
@@ -4098,7 +4126,7 @@ mod tests {
             cx.update(|cx| WrapMap::new(tab_snapshot, font("Helvetica"), px(14.0), None, cx));
         let mut block_map = BlockMap::new(wrap_snapshot.clone(), 1, 1);
 
-        let mut writer = block_map.write(wrap_snapshot.clone(), Patch::default(), None, None);
+        let mut writer = block_map.write(wrap_snapshot.clone(), Patch::default(), None);
         writer.insert(vec![BlockProperties {
             style: BlockStyle::Fixed,
             placement: BlockPlacement::Near(buffer_snapshot.anchor_after(Point::new(0, 0))),
@@ -4107,15 +4135,15 @@ mod tests {
             priority: 0,
         }]);
 
-        let blocks_snapshot = block_map.read(wrap_snapshot.clone(), Patch::default(), None, None);
+        let blocks_snapshot = block_map.read(wrap_snapshot.clone(), Patch::default(), None);
         assert_eq!(blocks_snapshot.text(), "\nline 1\n\nline 2\nline 3");
 
-        let mut writer = block_map.write(wrap_snapshot.clone(), Patch::default(), None, None);
+        let mut writer = block_map.write(wrap_snapshot.clone(), Patch::default(), None);
         buffer.read_with(cx, |buffer, cx| {
             writer.fold_buffers([buffer_id], buffer, cx);
         });
 
-        let blocks_snapshot = block_map.read(wrap_snapshot, Patch::default(), None, None);
+        let blocks_snapshot = block_map.read(wrap_snapshot, Patch::default(), None);
         assert_eq!(blocks_snapshot.text(), "");
     }
 
@@ -4143,7 +4171,7 @@ mod tests {
             cx.update(|cx| WrapMap::new(tab_snapshot, font("Helvetica"), px(14.0), None, cx));
         let mut block_map = BlockMap::new(wrap_snapshot.clone(), 1, 1);
 
-        let mut writer = block_map.write(wrap_snapshot.clone(), Patch::default(), None, None);
+        let mut writer = block_map.write(wrap_snapshot.clone(), Patch::default(), None);
         writer.insert(vec![BlockProperties {
             style: BlockStyle::Fixed,
             placement: BlockPlacement::Near(buffer_snapshot.anchor_after(Point::new(3, 6))),
@@ -4152,15 +4180,15 @@ mod tests {
             priority: 0,
         }]);
 
-        let blocks_snapshot = block_map.read(wrap_snapshot.clone(), Patch::default(), None, None);
+        let blocks_snapshot = block_map.read(wrap_snapshot.clone(), Patch::default(), None);
         assert_eq!(blocks_snapshot.text(), "\nline 1\nline 2\nline 3\nline 4\n");
 
-        let mut writer = block_map.write(wrap_snapshot.clone(), Patch::default(), None, None);
+        let mut writer = block_map.write(wrap_snapshot.clone(), Patch::default(), None);
         buffer.read_with(cx, |buffer, cx| {
             writer.fold_buffers([buffer_id], buffer, cx);
         });
 
-        let blocks_snapshot = block_map.read(wrap_snapshot, Patch::default(), None, None);
+        let blocks_snapshot = block_map.read(wrap_snapshot, Patch::default(), None);
         assert_eq!(blocks_snapshot.text(), "");
     }
 
@@ -4249,8 +4277,12 @@ mod tests {
             rhs_block_map.read(
                 rhs_wrap_snapshot.clone(),
                 rhs_edits.clone(),
-                Some((&lhs_wrap_snapshot, &lhs_edits)),
-                Some((companion, rhs_entity_id)),
+                Some(CompanionView::new(
+                    rhs_entity_id,
+                    &lhs_wrap_snapshot,
+                    &lhs_edits,
+                    companion,
+                )),
             )
         });
 
@@ -4259,8 +4291,12 @@ mod tests {
             lhs_block_map.read(
                 lhs_wrap_snapshot.clone(),
                 lhs_edits.clone(),
-                Some((&rhs_wrap_snapshot, &rhs_edits)),
-                Some((companion, lhs_entity_id)),
+                Some(CompanionView::new(
+                    lhs_entity_id,
+                    &rhs_wrap_snapshot,
+                    &rhs_edits,
+                    companion,
+                )),
             )
         });
 
@@ -4350,8 +4386,12 @@ mod tests {
             rhs_block_map.read(
                 rhs_wrap_snapshot.clone(),
                 rhs_wrap_edits.clone(),
-                Some((&lhs_wrap_snapshot, &Default::default())),
-                Some((companion, rhs_entity_id)),
+                Some(CompanionView::new(
+                    rhs_entity_id,
+                    &lhs_wrap_snapshot,
+                    &Default::default(),
+                    companion,
+                )),
             )
         });
 
@@ -4359,8 +4399,12 @@ mod tests {
             lhs_block_map.read(
                 lhs_wrap_snapshot.clone(),
                 Default::default(),
-                Some((&rhs_wrap_snapshot, &rhs_wrap_edits)),
-                Some((companion, lhs_entity_id)),
+                Some(CompanionView::new(
+                    lhs_entity_id,
+                    &rhs_wrap_snapshot,
+                    &rhs_wrap_edits,
+                    companion,
+                )),
             )
         });
 
