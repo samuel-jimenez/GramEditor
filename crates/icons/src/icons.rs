@@ -64,6 +64,8 @@ pub enum IconName {
     DebugStepOut,
     DebugStepOver,
     Diff,
+    DiffSplit,
+    DiffStacked,
     Disconnected,
     Download,
     EditorAtom,
