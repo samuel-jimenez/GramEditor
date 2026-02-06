@@ -93,8 +93,6 @@ struct State {
     ancestors: HashMap<ProjectEntryId, FoldedAncestors>,
     visible_entries: Vec<VisibleEntriesForWorktree>,
     max_width_item_index: Option<usize>,
-    // Currently selected leaf entry (see auto-folding for a definition of that) in a file tree
-    selection: Option<SelectedEntry>,
     edit_state: Option<EditState>,
     unfolded_dir_ids: HashSet<ProjectEntryId>,
     expanded_dir_ids: HashMap<WorktreeId, Vec<ProjectEntryId>>,
@@ -109,7 +107,6 @@ impl State {
             max_width_item_index: None,
             edit_state: old.edit_state.clone(),
             unfolded_dir_ids: old.unfolded_dir_ids.clone(),
-            selection: old.selection,
             expanded_dir_ids: old.expanded_dir_ids.clone(),
         }
     }
@@ -127,6 +124,7 @@ pub struct ProjectPanel {
     folded_directory_drag_target: Option<FoldedDirectoryDragTarget>,
     drag_target_entry: Option<DragTarget>,
     marked_entries: Vec<SelectedEntry>,
+    selection: Option<SelectedEntry>,
     context_menu: Option<(Entity<ContextMenu>, Point<Pixels>, Subscription)>,
     filename_editor: Entity<Editor>,
     clipboard: Option<ClipboardEntry>,
@@ -440,7 +438,7 @@ pub fn init(cx: &mut App) {
                     if let Some(first_marked) = panel.marked_entries.first() {
                         let first_marked = *first_marked;
                         panel.marked_entries.clear();
-                        panel.state.selection = Some(first_marked);
+                        panel.selection = Some(first_marked);
                     }
                     panel.rename(action, window, cx);
                 });
@@ -465,7 +463,7 @@ pub fn init(cx: &mut App) {
         workspace.register_action(|workspace, _: &git::FileHistory, window, cx| {
             // First try to get from project panel if it's focused
             if let Some(panel) = workspace.panel::<ProjectPanel>(cx) {
-                let maybe_project_path = panel.read(cx).state.selection.and_then(|selection| {
+                let maybe_project_path = panel.read(cx).selection.and_then(|selection| {
                     let project = workspace.project().read(cx);
                     let worktree = project.worktree_for_id(selection.worktree_id, cx)?;
                     let entry = worktree.read(cx).entry_for_id(selection.entry_id)?;
@@ -808,8 +806,8 @@ impl ProjectPanel {
                 rendered_entries_len: 0,
                 folded_directory_drag_target: None,
                 drag_target_entry: None,
-
                 marked_entries: Default::default(),
+                selection: None,
                 context_menu: None,
                 filename_editor,
                 clipboard: None,
@@ -827,7 +825,6 @@ impl ProjectPanel {
                 state: State {
                     max_width_item_index: None,
                     edit_state: None,
-                    selection: None,
                     last_worktree_root_id: Default::default(),
                     visible_entries: Default::default(),
                     ancestors: Default::default(),
@@ -892,7 +889,7 @@ impl ProjectPanel {
                                     let entry = SelectedEntry { worktree_id, entry_id };
                                     project_panel.marked_entries.clear();
                                     project_panel.marked_entries.push(entry);
-                                    project_panel.state.selection = Some(entry);
+                                    project_panel.selection = Some(entry);
                                 });
                                 if !focus_opened_item {
                                     let focus_handle = project_panel.read(cx).focus_handle.clone();
@@ -1071,7 +1068,7 @@ impl ProjectPanel {
             return;
         };
 
-        self.state.selection = Some(SelectedEntry {
+        self.selection = Some(SelectedEntry {
             worktree_id,
             entry_id,
         });
@@ -1529,7 +1526,7 @@ impl ProjectPanel {
             });
             return;
         }
-        if let Some(selection) = self.state.selection {
+        if let Some(selection) = self.selection {
             let (mut worktree_ix, mut entry_ix, _) =
                 self.index_for_selection(selection).unwrap_or_default();
             if entry_ix > 0 {
@@ -1550,7 +1547,7 @@ impl ProjectPanel {
                 worktree_id: *worktree_id,
                 entry_id: entries[entry_ix].id,
             };
-            self.state.selection = Some(selection);
+            self.selection = Some(selection);
             if window.modifiers().shift {
                 self.marked_entries.push(selection);
             }
@@ -1737,7 +1734,7 @@ impl ProjectPanel {
         let edit_task;
         let edited_entry_id;
         if is_new_entry {
-            self.state.selection = Some(SelectedEntry {
+            self.selection = Some(SelectedEntry {
                 worktree_id,
                 entry_id: NEW_ENTRY_ID,
             });
@@ -1793,7 +1790,7 @@ impl ProjectPanel {
                 }
                 Ok(CreatedEntry::Included(new_entry)) => {
                     project_panel.update_in(cx, |project_panel, window, cx| {
-                        if let Some(selection) = &mut project_panel.state.selection
+                        if let Some(selection) = &mut project_panel.selection
                             && selection.entry_id == edited_entry_id
                         {
                             selection.worktree_id = worktree_id;
@@ -1922,7 +1919,6 @@ impl ProjectPanel {
 
     fn add_entry(&mut self, is_dir: bool, window: &mut Window, cx: &mut Context<Self>) {
         let Some((worktree_id, entry_id)) = self
-            .state
             .selection
             .map(|entry| (entry.worktree_id, entry.entry_id))
             .or_else(|| {
@@ -1934,7 +1930,7 @@ impl ProjectPanel {
                     .read(cx)
                     .id();
 
-                self.state.selection = Some(SelectedEntry {
+                self.selection = Some(SelectedEntry {
                     worktree_id,
                     entry_id,
                 });
@@ -1986,7 +1982,7 @@ impl ProjectPanel {
             leaf_entry_id: None,
             is_dir,
             processing_filename: None,
-            previously_focused: self.state.selection,
+            previously_focused: self.selection,
             depth: 0,
             validation_state: ValidationState::None,
         });
@@ -2018,7 +2014,7 @@ impl ProjectPanel {
         if let Some(SelectedEntry {
             worktree_id,
             entry_id,
-        }) = self.state.selection
+        }) = self.selection
             && let Some(worktree) = self.project.read(cx).worktree_for_id(worktree_id, cx)
         {
             let sub_entry_id = self.unflatten_entry_id(entry_id);
@@ -2087,7 +2083,7 @@ impl ProjectPanel {
         cx: &mut Context<Self>,
     ) {
         maybe!({
-            let selection = self.state.selection?;
+            let selection = self.selection?;
             let project = self.project.read(cx);
 
             let (_worktree, entry) = self.selected_sub_entry(cx)?;
@@ -2454,11 +2450,7 @@ impl ProjectPanel {
         _: &mut Window,
         cx: &mut Context<Self>,
     ) {
-        if let Some((_, _, index)) = self
-            .state
-            .selection
-            .and_then(|s| self.index_for_selection(s))
-        {
+        if let Some((_, _, index)) = self.selection.and_then(|s| self.index_for_selection(s)) {
             self.scroll_handle
                 .scroll_to_item_strict(index, ScrollStrategy::Center);
             cx.notify();
@@ -2466,11 +2458,7 @@ impl ProjectPanel {
     }
 
     fn scroll_cursor_top(&mut self, _: &ScrollCursorTop, _: &mut Window, cx: &mut Context<Self>) {
-        if let Some((_, _, index)) = self
-            .state
-            .selection
-            .and_then(|s| self.index_for_selection(s))
-        {
+        if let Some((_, _, index)) = self.selection.and_then(|s| self.index_for_selection(s)) {
             self.scroll_handle
                 .scroll_to_item_strict(index, ScrollStrategy::Top);
             cx.notify();
@@ -2483,11 +2471,7 @@ impl ProjectPanel {
         _: &mut Window,
         cx: &mut Context<Self>,
     ) {
-        if let Some((_, _, index)) = self
-            .state
-            .selection
-            .and_then(|s| self.index_for_selection(s))
-        {
+        if let Some((_, _, index)) = self.selection.and_then(|s| self.index_for_selection(s)) {
             self.scroll_handle
                 .scroll_to_item_strict(index, ScrollStrategy::Bottom);
             cx.notify();
@@ -2509,7 +2493,7 @@ impl ProjectPanel {
             });
             return;
         }
-        if let Some(selection) = self.state.selection {
+        if let Some(selection) = self.selection {
             let (mut worktree_ix, mut entry_ix, _) =
                 self.index_for_selection(selection).unwrap_or_default();
             if let Some(worktree_entries) = self
@@ -2537,7 +2521,7 @@ impl ProjectPanel {
                     worktree_id: *worktree_id,
                     entry_id: entry.id,
                 };
-                self.state.selection = Some(selection);
+                self.selection = Some(selection);
                 if window.modifiers().shift {
                     self.marked_entries.push(selection);
                 }
@@ -2557,10 +2541,10 @@ impl ProjectPanel {
         cx: &mut Context<Self>,
     ) {
         let selection = self.find_entry(
-            self.state.selection.as_ref(),
+            self.selection.as_ref(),
             true,
             |entry, worktree_id| {
-                self.state.selection.is_none_or(|selection| {
+                self.selection.is_none_or(|selection| {
                     if selection.worktree_id == worktree_id {
                         selection.entry_id != entry.id
                     } else {
@@ -2576,7 +2560,7 @@ impl ProjectPanel {
         );
 
         if let Some(selection) = selection {
-            self.state.selection = Some(selection);
+            self.selection = Some(selection);
             self.expand_entry(selection.worktree_id, selection.entry_id, cx);
             self.update_visible_entries(
                 Some((selection.worktree_id, selection.entry_id)),
@@ -2596,10 +2580,10 @@ impl ProjectPanel {
         cx: &mut Context<Self>,
     ) {
         let selection = self.find_entry(
-            self.state.selection.as_ref(),
+            self.selection.as_ref(),
             false,
             |entry, worktree_id| {
-                self.state.selection.is_none_or(|selection| {
+                self.selection.is_none_or(|selection| {
                     if selection.worktree_id == worktree_id {
                         selection.entry_id != entry.id
                     } else {
@@ -2615,7 +2599,7 @@ impl ProjectPanel {
         );
 
         if let Some(selection) = selection {
-            self.state.selection = Some(selection);
+            self.selection = Some(selection);
             self.expand_entry(selection.worktree_id, selection.entry_id, cx);
             self.update_visible_entries(
                 Some((selection.worktree_id, selection.entry_id)),
@@ -2635,11 +2619,11 @@ impl ProjectPanel {
         cx: &mut Context<Self>,
     ) {
         let selection = self.find_entry(
-            self.state.selection.as_ref(),
+            self.selection.as_ref(),
             true,
             |entry, worktree_id| {
-                (self.state.selection.is_none()
-                    || self.state.selection.is_some_and(|selection| {
+                (self.selection.is_none()
+                    || self.selection.is_some_and(|selection| {
                         if selection.worktree_id == worktree_id {
                             selection.entry_id != entry.id
                         } else {
@@ -2653,7 +2637,7 @@ impl ProjectPanel {
         );
 
         if let Some(selection) = selection {
-            self.state.selection = Some(selection);
+            self.selection = Some(selection);
             self.expand_entry(selection.worktree_id, selection.entry_id, cx);
             self.update_visible_entries(
                 Some((selection.worktree_id, selection.entry_id)),
@@ -2673,10 +2657,10 @@ impl ProjectPanel {
         cx: &mut Context<Self>,
     ) {
         let selection = self.find_visible_entry(
-            self.state.selection.as_ref(),
+            self.selection.as_ref(),
             true,
             |entry, worktree_id| {
-                self.state.selection.is_none_or(|selection| {
+                self.selection.is_none_or(|selection| {
                     if selection.worktree_id == worktree_id {
                         selection.entry_id != entry.id
                     } else {
@@ -2688,7 +2672,7 @@ impl ProjectPanel {
         );
 
         if let Some(selection) = selection {
-            self.state.selection = Some(selection);
+            self.selection = Some(selection);
             self.autoscroll(cx);
             cx.notify();
         }
@@ -2701,10 +2685,10 @@ impl ProjectPanel {
         cx: &mut Context<Self>,
     ) {
         let selection = self.find_visible_entry(
-            self.state.selection.as_ref(),
+            self.selection.as_ref(),
             false,
             |entry, worktree_id| {
-                self.state.selection.is_none_or(|selection| {
+                self.selection.is_none_or(|selection| {
                     if selection.worktree_id == worktree_id {
                         selection.entry_id != entry.id
                     } else {
@@ -2716,7 +2700,7 @@ impl ProjectPanel {
         );
 
         if let Some(selection) = selection {
-            self.state.selection = Some(selection);
+            self.selection = Some(selection);
             self.autoscroll(cx);
             cx.notify();
         }
@@ -2729,10 +2713,10 @@ impl ProjectPanel {
         cx: &mut Context<Self>,
     ) {
         let selection = self.find_entry(
-            self.state.selection.as_ref(),
+            self.selection.as_ref(),
             false,
             |entry, worktree_id| {
-                self.state.selection.is_none_or(|selection| {
+                self.selection.is_none_or(|selection| {
                     if selection.worktree_id == worktree_id {
                         selection.entry_id != entry.id
                     } else {
@@ -2745,7 +2729,7 @@ impl ProjectPanel {
         );
 
         if let Some(selection) = selection {
-            self.state.selection = Some(selection);
+            self.selection = Some(selection);
             self.expand_entry(selection.worktree_id, selection.entry_id, cx);
             self.update_visible_entries(
                 Some((selection.worktree_id, selection.entry_id)),
@@ -2763,7 +2747,7 @@ impl ProjectPanel {
             if let Some(parent) = entry.path.parent() {
                 let worktree = worktree.read(cx);
                 if let Some(parent_entry) = worktree.entry_for_path(parent) {
-                    self.state.selection = Some(SelectedEntry {
+                    self.selection = Some(SelectedEntry {
                         worktree_id: worktree.id(),
                         entry_id: parent_entry.id,
                     });
@@ -2788,7 +2772,7 @@ impl ProjectPanel {
                 worktree_id: *worktree_id,
                 entry_id: entry.id,
             };
-            self.state.selection = Some(selection);
+            self.selection = Some(selection);
             if window.modifiers().shift {
                 self.marked_entries.push(selection);
             }
@@ -2812,7 +2796,7 @@ impl ProjectPanel {
                         worktree_id: *worktree_id,
                         entry_id: entry.id,
                     };
-                    self.state.selection = Some(selection);
+                    self.selection = Some(selection);
                     self.autoscroll(cx);
                     cx.notify();
                 }
@@ -2821,11 +2805,7 @@ impl ProjectPanel {
     }
 
     fn autoscroll(&mut self, cx: &mut Context<Self>) {
-        if let Some((_, _, index)) = self
-            .state
-            .selection
-            .and_then(|s| self.index_for_selection(s))
-        {
+        if let Some((_, _, index)) = self.selection.and_then(|s| self.index_for_selection(s)) {
             self.scroll_handle.scroll_to_item_with_offset(
                 index,
                 ScrollStrategy::Center,
@@ -2967,7 +2947,7 @@ impl ProjectPanel {
                 if let Some(entry) = last_succeed {
                     project_panel
                         .update_in(cx, |project_panel, window, cx| {
-                            project_panel.state.selection = Some(SelectedEntry {
+                            project_panel.selection = Some(SelectedEntry {
                                 worktree_id,
                                 entry_id: entry.id,
                             });
@@ -3373,7 +3353,7 @@ impl ProjectPanel {
     }
 
     fn effective_entries(&self) -> BTreeSet<SelectedEntry> {
-        if let Some(selection) = self.state.selection {
+        if let Some(selection) = self.selection {
             let selection = SelectedEntry {
                 entry_id: self.resolve_entry(selection.entry_id),
                 worktree_id: selection.worktree_id,
@@ -3437,7 +3417,7 @@ impl ProjectPanel {
         &self,
         cx: &'a App,
     ) -> Option<(Entity<Worktree>, &'a project::Entry)> {
-        let selection = self.state.selection?;
+        let selection = self.selection?;
         let project = self.project.read(cx);
         let worktree = project.worktree_for_id(selection.worktree_id, cx)?;
         let entry = worktree.read(cx).entry_for_id(selection.entry_id)?;
@@ -3750,15 +3730,12 @@ impl ProjectPanel {
                 })
                 .await;
             this.update_in(cx, |this, window, cx| {
-                let current_selection = this.state.selection;
                 this.state = new_state;
                 if let Some((worktree_id, entry_id)) = new_selected_entry {
-                    this.state.selection = Some(SelectedEntry {
+                    this.selection = Some(SelectedEntry {
                         worktree_id,
                         entry_id,
                     });
-                } else {
-                    this.state.selection = current_selection;
                 }
                 if this.update_visible_entries_task.focus_filename_editor {
                     this.update_visible_entries_task.focus_filename_editor = false;
@@ -3990,7 +3967,7 @@ impl ProjectPanel {
                     if let Some(entry_id) = last_succeed {
                         project_panel
                             .update_in(cx, |project_panel, window, cx| {
-                                project_panel.state.selection = Some(SelectedEntry {
+                                project_panel.selection = Some(SelectedEntry {
                                     worktree_id,
                                     entry_id,
                                 });
@@ -4714,7 +4691,6 @@ impl ProjectPanel {
 
         let is_marked = self.marked_entries.contains(&selection);
         let is_active = self
-            .state
             .selection
             .is_some_and(|selection| selection.entry_id == entry_id);
 
@@ -5058,7 +5034,7 @@ impl ProjectPanel {
                                 }
                             }
 
-                            project_panel.state.selection = Some(clicked_entry);
+                            project_panel.selection = Some(clicked_entry);
                             if !project_panel.marked_entries.contains(&clicked_entry) {
                                 project_panel.marked_entries.push(clicked_entry);
                             }
@@ -5067,7 +5043,7 @@ impl ProjectPanel {
                         if event.click_count() > 1 {
                             project_panel.split_entry(entry_id, false, None, cx);
                         } else {
-                            project_panel.state.selection = Some(selection);
+                            project_panel.selection = Some(selection);
                             if let Some(position) = project_panel.marked_entries.iter().position(|e| *e == selection) {
                                 project_panel.marked_entries.remove(position);
                             } else {
@@ -5461,7 +5437,7 @@ impl ProjectPanel {
             entry_id: entry.id,
         };
         let is_marked = self.marked_entries.contains(&selection);
-        let is_selected = self.state.selection == Some(selection);
+        let is_selected = self.selection == Some(selection);
 
         let diagnostic_severity = self
             .diagnostics
@@ -6231,7 +6207,7 @@ impl Render for ProjectPanel {
                                         return;
                                     }
                                     cx.stop_propagation();
-                                    this.state.selection = None;
+                                    this.selection = None;
                                     this.marked_entries.clear();
                                     this.focus_handle(cx).focus(window, cx);
                                 }))
@@ -6267,7 +6243,7 @@ impl Render for ProjectPanel {
                                                     return;
                                                 };
 
-                                                this.state.selection = Some(SelectedEntry {
+                                                this.selection = Some(SelectedEntry {
                                                     worktree_id,
                                                     entry_id,
                                                 });
