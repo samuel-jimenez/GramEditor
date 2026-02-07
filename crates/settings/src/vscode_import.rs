@@ -282,6 +282,7 @@ impl VsCodeSettings {
             use_smartcase_search: self.read_bool("search.smartCase"),
             vertical_scroll_margin: self.read_f32("editor.cursorSurroundingLines"),
             completion_menu_scrollbar: None,
+            diff_view_style: None,
         }
     }
 
