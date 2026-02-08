@@ -241,7 +241,7 @@ pub fn keymap_backup_file() -> &'static PathBuf {
     KEYMAP_FILE.get_or_init(|| config_dir().join("keymap_backup.jsonc"))
 }
 
-/// Returns the path to the `tasks.json` file.
+/// Returns the path to the `tasks.jsonc` file.
 pub fn tasks_file() -> &'static PathBuf {
     static TASKS_FILE: OnceLock<PathBuf> = OnceLock::new();
     TASKS_FILE.get_or_init(|| config_dir().join("tasks.jsonc"))
@@ -405,10 +405,10 @@ pub fn local_settings_file_relative_path() -> &'static RelPath {
     *CACHED
 }
 
-/// Returns the relative path to a `tasks.json` file within a project.
+/// Returns the relative path to a `tasks.jsonc` file within a project.
 pub fn local_tasks_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::unix(".gram/tasks.json").unwrap());
+        LazyLock::new(|| RelPath::unix(".gram/tasks.jsonc").unwrap());
     *CACHED
 }
 
