@@ -407,7 +407,7 @@ async fn read_kernelspec_at(
         anyhow::bail!("Not a directory: {path:?}");
     }
 
-    let expected_kernel_json = path.join("kernel.json");
+    let expected_kernel_json = path.join("kernel.jsonc");
     let spec = fs.load(expected_kernel_json.as_path()).await?;
     let spec = serde_json::from_str::<JupyterKernelspec>(&spec)?;
 
