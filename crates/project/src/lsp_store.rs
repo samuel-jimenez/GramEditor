@@ -377,12 +377,15 @@ impl LocalLspStore {
             adapter.name.0
         );
 
+        // TODO: Expose this in LSP UI so user can toggle this themselves
+        let allow_binary_download = true;
+
         let binary = self.get_language_server_binary(
             adapter.clone(),
             settings,
             toolchain.clone(),
             delegate.clone(),
-            false, // TODO: Expose this in LSP UI so user can toggle this themselves
+            allow_binary_download,
             cx,
         );
         let pending_workspace_folders: Arc<Mutex<BTreeSet<Uri>>> = Default::default();
