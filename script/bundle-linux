@@ -44,6 +44,14 @@ done
 
 export GRAM_BUNDLE=true
 
+# work around incompatibility with newer GCC:
+# https://github.com/zed-industries/zed/issues/24880
+if gcc --version | grep -q '14.'; then
+  echo "Handle GCC version 14+ when compiling remote server..."
+  export AWS_LC_SYS_CC=clang
+  export REMOTE_SERVER_TARGET=x86_64-unknown-linux-gnu
+fi
+
 channel=$(<crates/gram/RELEASE_CHANNEL)
 target_dir="${CARGO_TARGET_DIR:-target}"
 
