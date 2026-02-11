@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use std::{borrow::Cow, sync::Arc, time::Duration};
 
 use anyhow::Result;
-use app_actions::{ChangeKeybinding, OpenDocs, OpenDocsAt, OpenGramUrl};
+use app_actions::{ChangeKeybinding, OpenDocs, OpenDocsAt, OpenGramUrl, docs_search};
 use assets::Docs;
 use editor::EditorEvent;
 use gpui::{
@@ -78,6 +78,13 @@ impl Render for DocumentationView {
                                 .tooltip(Tooltip::text("Table of Contents"))
                                 .on_click(move |_, window, cx| {
                                     open_doc_url("gram://docs/index.md".into(), window, cx);
+                                }),
+                        )
+                        .child(
+                            IconButton::new("doc-view-search", IconName::MagnifyingGlass)
+                                .tooltip(Tooltip::text("Search Documentation"))
+                                .on_click(move |_, window, cx| {
+                                    open_search(window, cx);
                                 }),
                         )
                         .child(
@@ -173,6 +180,10 @@ impl Render for DocumentationView {
             }))
             .vertical_scrollbar_for(&self.list_state, window, cx)
     }
+}
+
+pub fn open_search(window: &mut Window, cx: &mut App) {
+    window.dispatch_action(Box::new(docs_search::Toggle), cx);
 }
 
 pub fn open_doc_url(url: SharedString, window: &mut Window, cx: &mut App) {

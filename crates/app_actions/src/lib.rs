@@ -258,6 +258,18 @@ pub mod command_palette {
     );
 }
 
+pub mod docs_search {
+    use gpui::actions;
+
+    actions!(
+        docs_search,
+        [
+            /// Opens the Documentation Search popup.
+            Toggle,
+        ]
+    );
+}
+
 pub mod quick_search {
     use gpui::actions;
 

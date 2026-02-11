@@ -104,6 +104,7 @@ enum FindSearchCandidates {
     },
     Remote,
     OpenBuffersOnly,
+    AssetsOnly,
 }
 
 impl Search {
@@ -620,7 +621,9 @@ impl Worker {
                 confirm_contents_will_match_tx,
                 Some(fs),
             ),
-            FindSearchCandidates::Remote | FindSearchCandidates::OpenBuffersOnly => {
+            FindSearchCandidates::Remote
+            | FindSearchCandidates::OpenBuffersOnly
+            | FindSearchCandidates::AssetsOnly => {
                 (unbounded().1, unbounded().1, unbounded().0, None)
             }
         };
