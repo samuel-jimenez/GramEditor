@@ -5,7 +5,7 @@ use collections::BTreeMap;
 use futures::{FutureExt, StreamExt, channel::mpsc};
 use gpui::{App, AppContext, AsyncApp, Context, Entity, Subscription, Task, WeakEntity};
 use language::{Anchor, Buffer, BufferEvent, Point, ToPoint};
-use project::{Project, lsp_store::OpenLspBufferHandle};
+use project::{Project, ProjectItem, lsp_store::OpenLspBufferHandle};
 use std::{cmp, ops::Range, sync::Arc};
 use text::{Edit, Patch, Rope};
 use util::{RangeExt, ResultExt as _};
@@ -589,7 +589,29 @@ impl ActionLog {
                     self.project
                         .update(cx, |project, cx| project.save_buffer(buffer.clone(), cx))
                 } else {
-                    Task::ready(Ok(()))
+                    let buffer_version = buffer.read(cx).version();
+                    let tracked_version = &tracked_buffer.version;
+
+                    if buffer_version != *tracked_version {
+                        // Buffer has changed
+                        Task::ready(Ok(()))
+                    } else if tracked_buffer.diff_base.len() == 0 {
+                        buffer
+                            .read(cx)
+                            .entry_id(cx)
+                            .and_then(|entry_id| {
+                                self.project.update(cx, |project, cx| {
+                                    project.delete_entry(entry_id, false, cx)
+                                })
+                            })
+                            .unwrap_or(Task::ready(Ok(())))
+                    } else {
+                        buffer.update(cx, |buffer, cx| {
+                            buffer.set_text(tracked_buffer.diff_base.to_string(), cx)
+                        });
+                        self.project
+                            .update(cx, |project, cx| project.save_buffer(buffer.clone(), cx))
+                    }
                 };
 
                 metrics.add_edits(tracked_buffer.unreviewed_edits.edits());
