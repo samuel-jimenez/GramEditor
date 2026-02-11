@@ -377,15 +377,11 @@ impl LocalLspStore {
             adapter.name.0
         );
 
-        // TODO: Expose this in LSP UI so user can toggle this themselves
-        let allow_binary_download = true;
-
         let binary = self.get_language_server_binary(
             adapter.clone(),
             settings,
             toolchain.clone(),
             delegate.clone(),
-            allow_binary_download,
             cx,
         );
         let pending_workspace_folders: Arc<Mutex<BTreeSet<Uri>>> = Default::default();
@@ -579,7 +575,6 @@ impl LocalLspStore {
         settings: Arc<LspSettings>,
         toolchain: Option<Toolchain>,
         delegate: Arc<dyn LspAdapterDelegate>,
-        allow_binary_download: bool,
         cx: &mut App,
     ) -> Task<Result<LanguageServerBinary>> {
         if let Some(settings) = &settings.binary
@@ -609,7 +604,11 @@ impl LocalLspStore {
                 .as_ref()
                 .and_then(|b| b.ignore_system_version)
                 .unwrap_or_default(),
-            allow_binary_download,
+            allow_binary_download: settings
+                .binary
+                .as_ref()
+                .and_then(|b| b.allow_binary_download)
+                .unwrap_or_default(),
             pre_release: settings
                 .fetch
                 .as_ref()

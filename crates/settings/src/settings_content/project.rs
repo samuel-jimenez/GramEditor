@@ -148,6 +148,7 @@ pub struct BinarySettings {
     pub arguments: Option<Vec<String>>,
     pub env: Option<BTreeMap<String, String>>,
     pub ignore_system_version: Option<bool>,
+    pub allow_binary_download: Option<bool>,
 }
 
 #[with_fallible_options]
