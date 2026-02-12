@@ -1046,9 +1046,7 @@ mod tests {
         let request = cx.update(|cx| {
             OpenRequest::parse(
                 RawOpenRequest {
-                    urls: vec![
-                        "zed://git/clone/?repo=https://github.com/zed-industries/zed.git".into(),
-                    ],
+                    urls: vec!["gram://git/clone/?repo=https://github.com/krig/gram.git".into()],
                     ..Default::default()
                 },
                 cx,
@@ -1058,7 +1056,7 @@ mod tests {
 
         match request.kind {
             Some(OpenRequestKind::GitClone { repo_url }) => {
-                assert_eq!(repo_url, "https://github.com/zed-industries/zed.git");
+                assert_eq!(repo_url, "https://github.com/krig/gram.git");
             }
             _ => panic!("Expected GitClone kind"),
         }
@@ -1071,9 +1069,7 @@ mod tests {
         let request = cx.update(|cx| {
             OpenRequest::parse(
                 RawOpenRequest {
-                    urls: vec![
-                        "zed://git/clone?repo=https://github.com/zed-industries/zed.git".into(),
-                    ],
+                    urls: vec!["gram://git/clone?repo=https://github.com/krig/gram.git".into()],
                     ..Default::default()
                 },
                 cx,
@@ -1083,7 +1079,7 @@ mod tests {
 
         match request.kind {
             Some(OpenRequestKind::GitClone { repo_url }) => {
-                assert_eq!(repo_url, "https://github.com/zed-industries/zed.git");
+                assert_eq!(repo_url, "https://github.com/krig/gram.git");
             }
             _ => panic!("Expected GitClone kind"),
         }
@@ -1097,8 +1093,7 @@ mod tests {
             OpenRequest::parse(
                 RawOpenRequest {
                     urls: vec![
-                        "zed://git/clone/?repo=https%3A%2F%2Fgithub.com%2Fzed-industries%2Fzed.git"
-                            .into(),
+                        "gram://git/clone/?repo=https%3A%2F%2Fgithub.com%2Fkrig%2Fgram.git".into(),
                     ],
                     ..Default::default()
                 },
@@ -1109,7 +1104,7 @@ mod tests {
 
         match request.kind {
             Some(OpenRequestKind::GitClone { repo_url }) => {
-                assert_eq!(repo_url, "https://github.com/zed-industries/zed.git");
+                assert_eq!(repo_url, "https://github.com/krig/gram.git");
             }
             _ => panic!("Expected GitClone kind"),
         }
