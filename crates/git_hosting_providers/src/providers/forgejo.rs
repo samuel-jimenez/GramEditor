@@ -273,7 +273,7 @@ mod tests {
     #[test]
     fn test_parse_remote_url_given_ssh_url() {
         let parsed_remote = Forgejo::public_instance()
-            .parse_remote_url("git@codeberg.org:zed-industries/zed.git")
+            .parse_remote_url("git@codeberg.org:krig/gram.git")
             .unwrap();
 
         assert_eq!(
@@ -288,7 +288,7 @@ mod tests {
     #[test]
     fn test_parse_remote_url_given_https_url() {
         let parsed_remote = Forgejo::public_instance()
-            .parse_remote_url("https://codeberg.org/zed-industries/zed.git")
+            .parse_remote_url("https://codeberg.org/krig/gram.git")
             .unwrap();
 
         assert_eq!(
@@ -302,7 +302,7 @@ mod tests {
 
     #[test]
     fn test_parse_remote_url_given_self_hosted_ssh_url() {
-        let remote_url = "git@forgejo.my-enterprise.com:zed-industries/zed.git";
+        let remote_url = "git@forgejo.my-enterprise.com:krig/gram.git";
 
         let parsed_remote = Forgejo::from_remote_url(remote_url)
             .unwrap()
@@ -320,7 +320,7 @@ mod tests {
 
     #[test]
     fn test_parse_remote_url_given_self_hosted_https_url() {
-        let remote_url = "https://forgejo.my-enterprise.com/zed-industries/zed.git";
+        let remote_url = "https://forgejo.my-enterprise.com/krig/gram.git";
         let parsed_remote = Forgejo::from_remote_url(remote_url)
             .unwrap()
             .parse_remote_url(remote_url)
@@ -349,7 +349,7 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://codeberg.org/zed-industries/zed/src/commit/faa6f979be417239b2e070dbbf6392b909224e0b/crates/editor/src/git/permalink.rs";
+        let expected_url = "https://codeberg.org/krig/gram/src/commit/faa6f979be417239b2e070dbbf6392b909224e0b/crates/editor/src/git/permalink.rs";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
@@ -367,7 +367,7 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://codeberg.org/zed-industries/zed/src/commit/faa6f979be417239b2e070dbbf6392b909224e0b/crates/editor/src/git/permalink.rs#L7";
+        let expected_url = "https://codeberg.org/krig/gram/src/commit/faa6f979be417239b2e070dbbf6392b909224e0b/crates/editor/src/git/permalink.rs#L7";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
@@ -385,15 +385,14 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://codeberg.org/zed-industries/zed/src/commit/faa6f979be417239b2e070dbbf6392b909224e0b/crates/editor/src/git/permalink.rs#L24-L48";
+        let expected_url = "https://codeberg.org/krig/gram/src/commit/faa6f979be417239b2e070dbbf6392b909224e0b/crates/editor/src/git/permalink.rs#L24-L48";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
     #[test]
     fn test_build_forgejo_self_hosted_permalink_from_ssh_url() {
         let forgejo =
-            Forgejo::from_remote_url("git@forgejo.some-enterprise.com:zed-industries/zed.git")
-                .unwrap();
+            Forgejo::from_remote_url("git@forgejo.some-enterprise.com:krig/gram.git").unwrap();
         let permalink = forgejo.build_permalink(
             ParsedGitRemote {
                 owner: "krig".into(),
@@ -406,15 +405,14 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://forgejo.some-enterprise.com/zed-industries/zed/src/commit/e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7/crates/editor/src/git/permalink.rs";
+        let expected_url = "https://forgejo.some-enterprise.com/krig/gram/src/commit/e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7/crates/editor/src/git/permalink.rs";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
     #[test]
     fn test_build_forgejo_self_hosted_permalink_from_https_url() {
         let forgejo =
-            Forgejo::from_remote_url("https://forgejo-instance.big-co.com/zed-industries/zed.git")
-                .unwrap();
+            Forgejo::from_remote_url("https://forgejo-instance.big-co.com/krig/gram.git").unwrap();
         let permalink = forgejo.build_permalink(
             ParsedGitRemote {
                 owner: "krig".into(),
@@ -422,12 +420,12 @@ mod tests {
             },
             BuildPermalinkParams::new(
                 "b2efec9824c45fcc90c9a7eb107a50d1772a60aa",
-                &repo_path("crates/zed/src/main.rs"),
+                &repo_path("crates/gram/src/main.rs"),
                 None,
             ),
         );
 
-        let expected_url = "https://forgejo-instance.big-co.com/zed-industries/zed/src/commit/b2efec9824c45fcc90c9a7eb107a50d1772a60aa/crates/zed/src/main.rs";
+        let expected_url = "https://forgejo-instance.big-co.com/krig/gram/src/commit/b2efec9824c45fcc90c9a7eb107a50d1772a60aa/crates/gram/src/main.rs";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 }

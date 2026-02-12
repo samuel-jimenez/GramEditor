@@ -272,7 +272,7 @@ mod tests {
 
     #[test]
     fn test_invalid_self_hosted_remote_url() {
-        let remote_url = "https://gitlab.com/zed-industries/zed.git";
+        let remote_url = "https://gitlab.com/krig/gram.git";
         let gitlab = Gitlab::from_remote_url(remote_url);
         assert!(gitlab.is_err());
     }
@@ -280,7 +280,7 @@ mod tests {
     #[test]
     fn test_parse_remote_url_given_ssh_url() {
         let parsed_remote = Gitlab::public_instance()
-            .parse_remote_url("git@gitlab.com:zed-industries/zed.git")
+            .parse_remote_url("git@gitlab.com:krig/gram.git")
             .unwrap();
 
         assert_eq!(
@@ -295,7 +295,7 @@ mod tests {
     #[test]
     fn test_parse_remote_url_given_https_url() {
         let parsed_remote = Gitlab::public_instance()
-            .parse_remote_url("https://gitlab.com/zed-industries/zed.git")
+            .parse_remote_url("https://gitlab.com/krig/gram.git")
             .unwrap();
 
         assert_eq!(
@@ -309,7 +309,7 @@ mod tests {
 
     #[test]
     fn test_parse_remote_url_given_self_hosted_ssh_url() {
-        let remote_url = "git@gitlab.my-enterprise.com:zed-industries/zed.git";
+        let remote_url = "git@gitlab.my-enterprise.com:krig/gram.git";
 
         let parsed_remote = Gitlab::from_remote_url(remote_url)
             .unwrap()
@@ -327,7 +327,7 @@ mod tests {
 
     #[test]
     fn test_parse_remote_url_given_self_hosted_https_url_with_subgroup() {
-        let remote_url = "https://gitlab.my-enterprise.com/group/subgroup/zed.git";
+        let remote_url = "https://gitlab.my-enterprise.com/group/subgroup/gram.git";
         let parsed_remote = Gitlab::from_remote_url(remote_url)
             .unwrap()
             .parse_remote_url(remote_url)
@@ -356,7 +356,7 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://gitlab.com/zed-industries/zed/-/blob/e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7/crates/editor/src/git/permalink.rs";
+        let expected_url = "https://gitlab.com/krig/gram/-/blob/e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7/crates/editor/src/git/permalink.rs";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
@@ -374,7 +374,7 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://gitlab.com/zed-industries/zed/-/blob/e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7/crates/editor/src/git/permalink.rs#L7";
+        let expected_url = "https://gitlab.com/krig/gram/-/blob/e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7/crates/editor/src/git/permalink.rs#L7";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
@@ -392,15 +392,15 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://gitlab.com/zed-industries/zed/-/blob/e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7/crates/editor/src/git/permalink.rs#L24-48";
+        let expected_url = "https://gitlab.com/krig/gram/-/blob/e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7/crates/editor/src/git/permalink.rs#L24-48";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
     #[test]
     fn test_build_gitlab_create_pr_url() {
         let remote = ParsedGitRemote {
-            owner: "zed-industries".into(),
-            repo: "zed".into(),
+            owner: "krig".into(),
+            repo: "gram".into(),
         };
 
         let provider = Gitlab::public_instance();
@@ -411,15 +411,14 @@ mod tests {
 
         assert_eq!(
             url.as_str(),
-            "https://gitlab.com/zed-industries/zed/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2Fcool%20stuff"
+            "https://gitlab.com/krig/gram/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2Fcool%20stuff"
         );
     }
 
     #[test]
     fn test_build_gitlab_self_hosted_permalink_from_ssh_url() {
         let gitlab =
-            Gitlab::from_remote_url("git@gitlab.some-enterprise.com:zed-industries/zed.git")
-                .unwrap();
+            Gitlab::from_remote_url("git@gitlab.some-enterprise.com:krig/gram.git").unwrap();
         let permalink = gitlab.build_permalink(
             ParsedGitRemote {
                 owner: "krig".into(),
@@ -432,15 +431,14 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://gitlab.some-enterprise.com/zed-industries/zed/-/blob/e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7/crates/editor/src/git/permalink.rs";
+        let expected_url = "https://gitlab.some-enterprise.com/krig/gram/-/blob/e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7/crates/editor/src/git/permalink.rs";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
     #[test]
     fn test_build_gitlab_self_hosted_permalink_from_https_url() {
         let gitlab =
-            Gitlab::from_remote_url("https://gitlab-instance.big-co.com/zed-industries/zed.git")
-                .unwrap();
+            Gitlab::from_remote_url("https://gitlab-instance.big-co.com/krig/gram.git").unwrap();
         let permalink = gitlab.build_permalink(
             ParsedGitRemote {
                 owner: "krig".into(),
@@ -448,20 +446,20 @@ mod tests {
             },
             BuildPermalinkParams::new(
                 "b2efec9824c45fcc90c9a7eb107a50d1772a60aa",
-                &repo_path("crates/zed/src/main.rs"),
+                &repo_path("crates/gram/src/main.rs"),
                 None,
             ),
         );
 
-        let expected_url = "https://gitlab-instance.big-co.com/zed-industries/zed/-/blob/b2efec9824c45fcc90c9a7eb107a50d1772a60aa/crates/zed/src/main.rs";
+        let expected_url = "https://gitlab-instance.big-co.com/krig/gram/-/blob/b2efec9824c45fcc90c9a7eb107a50d1772a60aa/crates/gram/src/main.rs";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
     #[test]
     fn test_build_create_pull_request_url() {
         let remote = ParsedGitRemote {
-            owner: "zed-industries".into(),
-            repo: "zed".into(),
+            owner: "krig".into(),
+            repo: "gram".into(),
         };
 
         let github = Gitlab::public_instance();
@@ -471,10 +469,10 @@ mod tests {
 
         assert_eq!(
             url.as_str(),
-            "https://gitlab.com/zed-industries/zed/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2Fnew-feature"
+            "https://gitlab.com/krig/gram/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2Fnew-feature"
         );
 
-        let base_url = Url::parse("https://gitlab.zed.com").unwrap();
+        let base_url = Url::parse("https://gitlab.destroy-all-ai.com").unwrap();
         let github = Gitlab::new("GitLab Self-Hosted", base_url);
         let url = github
             .build_create_pull_request_url(&remote, "feature/new-feature")
@@ -482,7 +480,7 @@ mod tests {
 
         assert_eq!(
             url.as_str(),
-            "https://gitlab.zed.com/zed-industries/zed/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2Fnew-feature"
+            "https://gitlab.destroy-all-ai.com/krig/gram/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2Fnew-feature"
         );
     }
 }

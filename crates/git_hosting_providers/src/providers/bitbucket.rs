@@ -188,7 +188,7 @@ mod tests {
     #[test]
     fn test_parse_remote_url_given_ssh_url() {
         let parsed_remote = Bitbucket::public_instance()
-            .parse_remote_url("git@bitbucket.org:zed-industries/zed.git")
+            .parse_remote_url("git@bitbucket.org:krig/gram.git")
             .unwrap();
 
         assert_eq!(
@@ -203,7 +203,7 @@ mod tests {
     #[test]
     fn test_parse_remote_url_given_https_url() {
         let parsed_remote = Bitbucket::public_instance()
-            .parse_remote_url("https://bitbucket.org/zed-industries/zed.git")
+            .parse_remote_url("https://bitbucket.org/krig/gram.git")
             .unwrap();
 
         assert_eq!(
@@ -218,7 +218,7 @@ mod tests {
     #[test]
     fn test_parse_remote_url_given_https_url_with_username() {
         let parsed_remote = Bitbucket::public_instance()
-            .parse_remote_url("https://thorstenballzed@bitbucket.org/zed-industries/zed.git")
+            .parse_remote_url("https://krig@bitbucket.org/krig/gram.git")
             .unwrap();
 
         assert_eq!(
@@ -232,7 +232,7 @@ mod tests {
 
     #[test]
     fn test_parse_remote_url_given_self_hosted_ssh_url() {
-        let remote_url = "git@bitbucket.company.com:zed-industries/zed.git";
+        let remote_url = "git@bitbucket.company.com:krig/gram.git";
 
         let parsed_remote = Bitbucket::from_remote_url(remote_url)
             .unwrap()
@@ -250,7 +250,7 @@ mod tests {
 
     #[test]
     fn test_parse_remote_url_given_self_hosted_https_url() {
-        let remote_url = "https://bitbucket.company.com/zed-industries/zed.git";
+        let remote_url = "https://bitbucket.company.com/krig/gram.git";
 
         let parsed_remote = Bitbucket::from_remote_url(remote_url)
             .unwrap()
@@ -268,7 +268,7 @@ mod tests {
 
     #[test]
     fn test_parse_remote_url_given_self_hosted_https_url_with_username() {
-        let remote_url = "https://thorstenballzed@bitbucket.company.com/zed-industries/zed.git";
+        let remote_url = "https://krig@bitbucket.company.com/krig/gram.git";
 
         let parsed_remote = Bitbucket::from_remote_url(remote_url)
             .unwrap()
@@ -294,24 +294,24 @@ mod tests {
             BuildPermalinkParams::new("f00b4r", &repo_path("main.rs"), None),
         );
 
-        let expected_url = "https://bitbucket.org/zed-industries/zed/src/f00b4r/main.rs";
+        let expected_url = "https://bitbucket.org/krig/gram/src/f00b4r/main.rs";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
     #[test]
     fn test_build_bitbucket_self_hosted_permalink() {
-        let permalink =
-            Bitbucket::from_remote_url("git@bitbucket.company.com:zed-industries/zed.git")
-                .unwrap()
-                .build_permalink(
-                    ParsedGitRemote {
-                        owner: "krig".into(),
-                        repo: "gram".into(),
-                    },
-                    BuildPermalinkParams::new("f00b4r", &repo_path("main.rs"), None),
-                );
+        let permalink = Bitbucket::from_remote_url("git@bitbucket.company.com:krig/gram.git")
+            .unwrap()
+            .build_permalink(
+                ParsedGitRemote {
+                    owner: "krig".into(),
+                    repo: "gram".into(),
+                },
+                BuildPermalinkParams::new("f00b4r", &repo_path("main.rs"), None),
+            );
 
-        let expected_url = "https://bitbucket.company.com/projects/zed-industries/repos/zed/browse/main.rs?at=f00b4r";
+        let expected_url =
+            "https://bitbucket.company.com/projects/krig/repos/gram/browse/main.rs?at=f00b4r";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
@@ -325,24 +325,24 @@ mod tests {
             BuildPermalinkParams::new("f00b4r", &repo_path("main.rs"), Some(6..6)),
         );
 
-        let expected_url = "https://bitbucket.org/zed-industries/zed/src/f00b4r/main.rs#lines-7";
+        let expected_url = "https://bitbucket.org/krig/gram/src/f00b4r/main.rs#lines-7";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
     #[test]
     fn test_build_bitbucket_self_hosted_permalink_with_single_line_selection() {
-        let permalink =
-            Bitbucket::from_remote_url("https://bitbucket.company.com/zed-industries/zed.git")
-                .unwrap()
-                .build_permalink(
-                    ParsedGitRemote {
-                        owner: "krig".into(),
-                        repo: "gram".into(),
-                    },
-                    BuildPermalinkParams::new("f00b4r", &repo_path("main.rs"), Some(6..6)),
-                );
+        let permalink = Bitbucket::from_remote_url("https://bitbucket.company.com/krig/gram.git")
+            .unwrap()
+            .build_permalink(
+                ParsedGitRemote {
+                    owner: "krig".into(),
+                    repo: "gram".into(),
+                },
+                BuildPermalinkParams::new("f00b4r", &repo_path("main.rs"), Some(6..6)),
+            );
 
-        let expected_url = "https://bitbucket.company.com/projects/zed-industries/repos/zed/browse/main.rs?at=f00b4r#7";
+        let expected_url =
+            "https://bitbucket.company.com/projects/krig/repos/gram/browse/main.rs?at=f00b4r#7";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
@@ -356,25 +356,24 @@ mod tests {
             BuildPermalinkParams::new("f00b4r", &repo_path("main.rs"), Some(23..47)),
         );
 
-        let expected_url =
-            "https://bitbucket.org/zed-industries/zed/src/f00b4r/main.rs#lines-24:48";
+        let expected_url = "https://bitbucket.org/krig/gram/src/f00b4r/main.rs#lines-24:48";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
     #[test]
     fn test_build_bitbucket_self_hosted_permalink_with_multi_line_selection() {
-        let permalink =
-            Bitbucket::from_remote_url("git@bitbucket.company.com:zed-industries/zed.git")
-                .unwrap()
-                .build_permalink(
-                    ParsedGitRemote {
-                        owner: "krig".into(),
-                        repo: "gram".into(),
-                    },
-                    BuildPermalinkParams::new("f00b4r", &repo_path("main.rs"), Some(23..47)),
-                );
+        let permalink = Bitbucket::from_remote_url("git@bitbucket.company.com:krig/gram.git")
+            .unwrap()
+            .build_permalink(
+                ParsedGitRemote {
+                    owner: "krig".into(),
+                    repo: "gram".into(),
+                },
+                BuildPermalinkParams::new("f00b4r", &repo_path("main.rs"), Some(23..47)),
+            );
 
-        let expected_url = "https://bitbucket.company.com/projects/zed-industries/repos/zed/browse/main.rs?at=f00b4r#24-48";
+        let expected_url =
+            "https://bitbucket.company.com/projects/krig/repos/gram/browse/main.rs?at=f00b4r#24-48";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
@@ -404,7 +403,7 @@ mod tests {
         assert_eq!(pr.number, 123);
         assert_eq!(
             pr.url.as_str(),
-            "https://bitbucket.org/zed-industries/zed/pull-requests/123"
+            "https://bitbucket.org/krig/gram/pull-requests/123"
         );
     }
 
@@ -418,8 +417,7 @@ mod tests {
         };
 
         let bitbucket =
-            Bitbucket::from_remote_url("https://bitbucket.company.com/zed-industries/zed.git")
-                .unwrap();
+            Bitbucket::from_remote_url("https://bitbucket.company.com/krig/gram.git").unwrap();
 
         // Test message without PR reference
         let message = "This does not contain a pull request";
@@ -436,7 +434,7 @@ mod tests {
         assert_eq!(pr.number, 123);
         assert_eq!(
             pr.url.as_str(),
-            "https://bitbucket.company.com/projects/zed-industries/repos/zed/pull-requests/123"
+            "https://bitbucket.company.com/projects/krig/repos/gram/pull-requests/123"
         );
     }
 }

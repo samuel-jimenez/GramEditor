@@ -297,14 +297,14 @@ mod tests {
 
     #[test]
     fn test_invalid_self_hosted_remote_url() {
-        let remote_url = "git@github.com:zed-industries/zed.git";
+        let remote_url = "git@github.com:krig/gram.git";
         let github = Github::from_remote_url(remote_url);
         assert!(github.is_err());
     }
 
     #[test]
     fn test_from_remote_url_ssh() {
-        let remote_url = "git@github.my-enterprise.com:zed-industries/zed.git";
+        let remote_url = "git@github.my-enterprise.com:krig/gram.git";
         let github = Github::from_remote_url(remote_url).unwrap();
 
         assert!(!github.supports_avatars());
@@ -317,7 +317,7 @@ mod tests {
 
     #[test]
     fn test_from_remote_url_https() {
-        let remote_url = "https://github.my-enterprise.com/zed-industries/zed.git";
+        let remote_url = "https://github.my-enterprise.com/krig/gram.git";
         let github = Github::from_remote_url(remote_url).unwrap();
 
         assert!(!github.supports_avatars());
@@ -330,7 +330,7 @@ mod tests {
 
     #[test]
     fn test_parse_remote_url_given_self_hosted_ssh_url() {
-        let remote_url = "git@github.my-enterprise.com:zed-industries/zed.git";
+        let remote_url = "git@github.my-enterprise.com:krig/gram.git";
         let parsed_remote = Github::from_remote_url(remote_url)
             .unwrap()
             .parse_remote_url(remote_url)
@@ -347,7 +347,7 @@ mod tests {
 
     #[test]
     fn test_parse_remote_url_given_self_hosted_https_url_with_subgroup() {
-        let remote_url = "https://github.my-enterprise.com/zed-industries/zed.git";
+        let remote_url = "https://github.my-enterprise.com/krig/gram.git";
         let parsed_remote = Github::from_remote_url(remote_url)
             .unwrap()
             .parse_remote_url(remote_url)
@@ -365,7 +365,7 @@ mod tests {
     #[test]
     fn test_parse_remote_url_given_ssh_url() {
         let parsed_remote = Github::public_instance()
-            .parse_remote_url("git@github.com:zed-industries/zed.git")
+            .parse_remote_url("git@github.com:krig/gram.git")
             .unwrap();
 
         assert_eq!(
@@ -380,7 +380,7 @@ mod tests {
     #[test]
     fn test_parse_remote_url_given_https_url() {
         let parsed_remote = Github::public_instance()
-            .parse_remote_url("https://github.com/zed-industries/zed.git")
+            .parse_remote_url("https://github.com/krig/gram.git")
             .unwrap();
 
         assert_eq!(
@@ -422,7 +422,7 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://github.com/zed-industries/zed/blob/e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7/crates/editor/src/git/permalink.rs";
+        let expected_url = "https://github.com/krig/gram/blob/e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7/crates/editor/src/git/permalink.rs";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
@@ -440,7 +440,7 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://github.com/zed-industries/zed/blob/b2efec9824c45fcc90c9a7eb107a50d1772a60aa/crates/zed/src/main.rs";
+        let expected_url = "https://github.com/krig/gram/blob/b2efec9824c45fcc90c9a7eb107a50d1772a60aa/crates/zed/src/main.rs";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
@@ -458,7 +458,7 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://github.com/zed-industries/zed/blob/e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7/crates/editor/src/git/permalink.rs#L7";
+        let expected_url = "https://github.com/krig/gram/blob/e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7/crates/editor/src/git/permalink.rs#L7";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
@@ -476,15 +476,15 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://github.com/zed-industries/zed/blob/e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7/crates/editor/src/git/permalink.rs#L24-L48";
+        let expected_url = "https://github.com/krig/gram/blob/e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7/crates/editor/src/git/permalink.rs#L24-L48";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
     #[test]
     fn test_build_github_create_pr_url() {
         let remote = ParsedGitRemote {
-            owner: "zed-industries".into(),
-            repo: "zed".into(),
+            owner: "krig".into(),
+            repo: "gram".into(),
         };
 
         let provider = Github::public_instance();
@@ -495,7 +495,7 @@ mod tests {
 
         assert_eq!(
             url.as_str(),
-            "https://github.com/zed-industries/zed/pull/new/feature%2Fsomething%20cool"
+            "https://github.com/krig/gram/pull/new/feature%2Fsomething%20cool"
         );
     }
 
@@ -528,7 +528,7 @@ mod tests {
                 .unwrap()
                 .url
                 .as_str(),
-            "https://github.com/zed-industries/zed/pull/10687"
+            "https://github.com/krig/gram/pull/10687"
         );
 
         // Pull request number in middle of line, which we want to ignore
@@ -556,15 +556,15 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://github.com/zed-industries/nonexistent/blob/3ef1539900037dd3601be7149b2b39ed6d0ce3db/app/blog/%5Bslug%5D/page.tsx#L8";
+        let expected_url = "https://github.com/krig/nonexistent/blob/3ef1539900037dd3601be7149b2b39ed6d0ce3db/app/blog/%5Bslug%5D/page.tsx#L8";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
     #[test]
     fn test_build_create_pull_request_url() {
         let remote = ParsedGitRemote {
-            owner: "zed-industries".into(),
-            repo: "zed".into(),
+            owner: "krig".into(),
+            repo: "gram".into(),
         };
 
         let github = Github::public_instance();
@@ -574,10 +574,10 @@ mod tests {
 
         assert_eq!(
             url.as_str(),
-            "https://github.com/zed-industries/zed/pull/new/feature%2Fnew-feature"
+            "https://github.com/krig/gram/pull/new/feature%2Fnew-feature"
         );
 
-        let base_url = Url::parse("https://github.zed.com").unwrap();
+        let base_url = Url::parse("https://github.eat-the-rich.com").unwrap();
         let github = Github::new("GitHub Self-Hosted", base_url);
         let url = github
             .build_create_pull_request_url(&remote, "feature/new-feature")
@@ -585,7 +585,7 @@ mod tests {
 
         assert_eq!(
             url.as_str(),
-            "https://github.zed.com/zed-industries/zed/pull/new/feature%2Fnew-feature"
+            "https://github.eat-the-rich.com/krig/gram/pull/new/feature%2Fnew-feature"
         );
     }
 }

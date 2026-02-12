@@ -221,7 +221,7 @@ mod tests {
     #[test]
     fn test_parse_remote_url_given_ssh_url() {
         let parsed_remote = Gitea::public_instance()
-            .parse_remote_url("git@gitea.com:zed-industries/zed.git")
+            .parse_remote_url("git@gitea.com:krig/gram.git")
             .unwrap();
 
         assert_eq!(
@@ -236,7 +236,7 @@ mod tests {
     #[test]
     fn test_parse_remote_url_given_https_url() {
         let parsed_remote = Gitea::public_instance()
-            .parse_remote_url("https://gitea.com/zed-industries/zed.git")
+            .parse_remote_url("https://gitea.com/krig/gram.git")
             .unwrap();
 
         assert_eq!(
@@ -250,7 +250,7 @@ mod tests {
 
     #[test]
     fn test_parse_remote_url_given_self_hosted_ssh_url() {
-        let remote_url = "git@gitea.my-enterprise.com:zed-industries/zed.git";
+        let remote_url = "git@gitea.my-enterprise.com:krig/gram.git";
 
         let parsed_remote = Gitea::from_remote_url(remote_url)
             .unwrap()
@@ -268,7 +268,7 @@ mod tests {
 
     #[test]
     fn test_parse_remote_url_given_self_hosted_https_url() {
-        let remote_url = "https://gitea.my-enterprise.com/zed-industries/zed.git";
+        let remote_url = "https://gitea.my-enterprise.com/krig/gram.git";
         let parsed_remote = Gitea::from_remote_url(remote_url)
             .unwrap()
             .parse_remote_url(remote_url)
@@ -297,7 +297,7 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://gitea.com/zed-industries/zed/src/commit/faa6f979be417239b2e070dbbf6392b909224e0b/crates/editor/src/git/permalink.rs";
+        let expected_url = "https://gitea.com/krig/gram/src/commit/faa6f979be417239b2e070dbbf6392b909224e0b/crates/editor/src/git/permalink.rs";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
@@ -315,7 +315,7 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://gitea.com/zed-industries/zed/src/commit/faa6f979be417239b2e070dbbf6392b909224e0b/crates/editor/src/git/permalink.rs#L7";
+        let expected_url = "https://gitea.com/krig/gram/src/commit/faa6f979be417239b2e070dbbf6392b909224e0b/crates/editor/src/git/permalink.rs#L7";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
@@ -333,14 +333,13 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://gitea.com/zed-industries/zed/src/commit/faa6f979be417239b2e070dbbf6392b909224e0b/crates/editor/src/git/permalink.rs#L24-L48";
+        let expected_url = "https://gitea.com/krig/gram/src/commit/faa6f979be417239b2e070dbbf6392b909224e0b/crates/editor/src/git/permalink.rs#L24-L48";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
     #[test]
     fn test_build_gitea_self_hosted_permalink_from_ssh_url() {
-        let gitea =
-            Gitea::from_remote_url("git@gitea.some-enterprise.com:zed-industries/zed.git").unwrap();
+        let gitea = Gitea::from_remote_url("git@gitea.some-enterprise.com:krig/gram.git").unwrap();
         let permalink = gitea.build_permalink(
             ParsedGitRemote {
                 owner: "krig".into(),
@@ -353,15 +352,14 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://gitea.some-enterprise.com/zed-industries/zed/src/commit/e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7/crates/editor/src/git/permalink.rs";
+        let expected_url = "https://gitea.some-enterprise.com/krig/gram/src/commit/e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7/crates/editor/src/git/permalink.rs";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
     #[test]
     fn test_build_gitea_self_hosted_permalink_from_https_url() {
         let gitea =
-            Gitea::from_remote_url("https://gitea-instance.big-co.com/zed-industries/zed.git")
-                .unwrap();
+            Gitea::from_remote_url("https://gitea-instance.big-co.com/krig/gram.git").unwrap();
         let permalink = gitea.build_permalink(
             ParsedGitRemote {
                 owner: "krig".into(),
@@ -369,12 +367,12 @@ mod tests {
             },
             BuildPermalinkParams::new(
                 "b2efec9824c45fcc90c9a7eb107a50d1772a60aa",
-                &repo_path("crates/zed/src/main.rs"),
+                &repo_path("crates/gram/src/main.rs"),
                 None,
             ),
         );
 
-        let expected_url = "https://gitea-instance.big-co.com/zed-industries/zed/src/commit/b2efec9824c45fcc90c9a7eb107a50d1772a60aa/crates/zed/src/main.rs";
+        let expected_url = "https://gitea-instance.big-co.com/krig/gram/src/commit/b2efec9824c45fcc90c9a7eb107a50d1772a60aa/crates/gram/src/main.rs";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 }
