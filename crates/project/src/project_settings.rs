@@ -458,7 +458,7 @@ impl Settings for ProjectSettings {
             node: content.node.clone().unwrap().into(),
             load_direnv: project.load_direnv.clone().unwrap(),
             session: SessionSettings {
-                restore_unsaved_buffers: content.session.unwrap().restore_unsaved_buffers.unwrap(),
+                restore_unsaved_buffers: content.session.unwrap().restore_unsaved_buffers.unwrap_or(true),
             },
         }
     }
