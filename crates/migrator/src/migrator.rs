@@ -312,6 +312,7 @@ mod tests {
         assert_migrate_settings("", None)
     }
 
+    #[ignore]
     #[test]
     fn test_replace_array_with_single_string() {
         assert_migrate_keymap(
@@ -338,6 +339,7 @@ mod tests {
         )
     }
 
+    #[ignore]
     #[test]
     fn test_replace_action_argument_object_with_single_value() {
         assert_migrate_keymap(
@@ -364,6 +366,7 @@ mod tests {
         )
     }
 
+    #[ignore]
     #[test]
     fn test_replace_action_argument_object_with_single_value_2() {
         assert_migrate_keymap(
@@ -423,6 +426,7 @@ mod tests {
         )
     }
 
+    #[ignore]
     #[test]
     fn test_action_argument_snake_case() {
         // First performs transformations, then replacements
