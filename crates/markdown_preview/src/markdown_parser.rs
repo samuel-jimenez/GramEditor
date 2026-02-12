@@ -1506,7 +1506,7 @@ mod tests {
 
         assert_eq!(
             parsed.children,
-            vec![h1(text("Gram", 2..5), 0..6), p("The editor", 6..16),]
+            vec![h1(text("Gram", 2..6), 0..7), p("The editor", 7..17),]
         );
     }
 
@@ -1729,7 +1729,7 @@ mod tests {
 
         assert_eq!(
             parsed.children,
-            vec![p("Checkout this https://liten.app link", 0..34)]
+            vec![p("Checkout this https://liten.app link", 0..36)]
         );
     }
 
