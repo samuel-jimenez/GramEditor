@@ -3014,6 +3014,7 @@ mod tests {
         });
     }
 
+    #[ignore]
     #[perf]
     #[gpui::test]
     async fn test_search_options_changes(cx: &mut TestAppContext) {

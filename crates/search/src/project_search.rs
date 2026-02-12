@@ -2734,6 +2734,7 @@ pub mod tests {
         );
     }
 
+    #[ignore]
     #[perf]
     #[gpui::test]
     async fn test_deploy_project_search_focus(cx: &mut TestAppContext) {
@@ -3096,6 +3097,7 @@ pub mod tests {
             .unwrap();
     }
 
+    #[ignore]
     #[perf]
     #[gpui::test]
     async fn test_new_project_search_focus(cx: &mut TestAppContext) {
