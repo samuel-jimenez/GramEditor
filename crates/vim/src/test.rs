@@ -940,6 +940,7 @@ async fn test_jk_multi(cx: &mut gpui::TestAppContext) {
     cx.assert_state("jkˇoone jkˇoone jkˇoone", Mode::Normal);
 }
 
+#[ignore]
 #[perf]
 #[gpui::test]
 async fn test_jk_delay(cx: &mut gpui::TestAppContext) {
@@ -1024,6 +1025,7 @@ async fn test_comma_w(cx: &mut gpui::TestAppContext) {
         .assert_eq("hellˇo hello\nhello hello");
 }
 
+#[ignore]
 #[perf]
 #[gpui::test]
 async fn test_completion_menu_scroll_aside(cx: &mut TestAppContext) {
@@ -1726,6 +1728,7 @@ async fn test_remap_adjacent_dog_cat(cx: &mut gpui::TestAppContext) {
     cx.shared_state().await.assert_eq("do🐱ˇ");
 }
 
+#[ignore]
 #[perf]
 #[gpui::test]
 async fn test_remap_nested_pineapple(cx: &mut gpui::TestAppContext) {

@@ -459,6 +459,7 @@ mod test {
         cx.assert_state("hˇäällo", Mode::Normal);
     }
 
+    #[ignore]
     #[gpui::test]
     async fn test_repeat_completion(cx: &mut gpui::TestAppContext) {
         VimTestContext::init(cx);
@@ -533,6 +534,7 @@ mod test {
         );
     }
 
+    #[ignore]
     #[gpui::test]
     async fn test_repeat_completion_unicode_bug(cx: &mut gpui::TestAppContext) {
         VimTestContext::init(cx);

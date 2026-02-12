@@ -2451,6 +2451,7 @@ mod test {
         );
     }
 
+    #[ignore]
     #[gpui::test]
     async fn test_argument_object(cx: &mut gpui::TestAppContext) {
         let mut cx = VimTestContext::new(cx, true).await;

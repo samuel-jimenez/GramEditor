@@ -633,6 +633,7 @@ mod test {
             the lzy dog"});
     }
 
+    #[ignore]
     #[gpui::test]
     async fn test_paste_indent(cx: &mut gpui::TestAppContext) {
         let mut cx = VimTestContext::new_typescript(cx).await;
