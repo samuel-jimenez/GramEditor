@@ -43,7 +43,7 @@ impl SharedState {
                     {}
                     # neovim ({}):
                     {}
-                    # zed ({}):
+                    # gram ({}):
                     {}"},
                 self.initial,
                 self.recent_keystrokes,
@@ -80,7 +80,7 @@ impl SharedState {
                 {}
                 # neovim ({}):
                 {}
-                # zed ({}):
+                # gram ({}):
                 {}"},
             message,
             self.initial,
@@ -122,7 +122,7 @@ impl SharedClipboard {
                 {}
                 # currently expected: {:?}
                 # neovim register \"{}: {:?}
-                # zed register \"{}: {:?}"},
+                # gram register \"{}: {:?}"},
             message,
             self.state.initial,
             self.state.recent_keystrokes,
