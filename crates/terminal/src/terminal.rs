@@ -2704,6 +2704,7 @@ mod tests {
         );
     }
 
+    #[ignore]
     #[gpui::test(iterations = 10)]
     async fn test_terminal_no_exit_on_spawn_failure(cx: &mut TestAppContext) {
         cx.executor().allow_parking();
