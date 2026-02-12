@@ -1226,8 +1226,8 @@ async fn human_readable_package_name(
 // For providing local `cargo check -p $pkgid` task, we do not need most of the information we have returned.
 // Output example in the root of Gram project:
 // ```sh
-// ❯ cargo pkgid zed
-// path+file:///absolute/path/to/project/zed/crates/zed#0.131.0
+// ❯ cargo pkgid gram
+// path+file:///absolute/path/to/project/gram/crates/gram#0.131.0
 // ```
 // Another variant, if a project has a custom package name or hyphen in the name:
 // ```
@@ -1839,11 +1839,11 @@ mod tests {
 
         assert_eq!(
             adapter
-                .label_for_symbol("zed", lsp::SymbolKind::PACKAGE, &language)
+                .label_for_symbol("gram", lsp::SymbolKind::PACKAGE, &language)
                 .await,
             Some(CodeLabel::new(
-                "extern crate zed".to_string(),
-                13..16,
+                "extern crate gram".to_string(),
+                13..17,
                 vec![(0..6, highlight_keyword), (7..12, highlight_keyword),],
             ))
         );
@@ -1936,7 +1936,7 @@ mod tests {
     fn test_package_name_from_pkgid() {
         for (input, expected) in [
             (
-                "path+file:///absolute/path/to/project/zed/crates/zed#0.131.0",
+                "path+file:///absolute/path/to/project/gram/crates/gram#0.131.0",
                 "gram",
             ),
             (
@@ -1952,8 +1952,8 @@ mod tests {
     fn test_target_info_from_metadata() {
         for (input, absolute_path, expected) in [
             (
-                r#"{"packages":[{"id":"path+file:///absolute/path/to/project/zed/crates/zed#0.131.0","manifest_path":"/path/to/zed/Cargo.toml","targets":[{"name":"gram","kind":["bin"],"src_path":"/path/to/zed/src/main.rs"}]}]}"#,
-                "/path/to/zed/src/main.rs",
+                r#"{"packages":[{"id":"path+file:///absolute/path/to/project/gram/crates/gram#0.131.0","manifest_path":"/path/to/gram/Cargo.toml","targets":[{"name":"gram","kind":["bin"],"src_path":"/path/to/gram/src/main.rs"}]}]}"#,
+                "/path/to/gram/src/main.rs",
                 Some((
                     Some(TargetInfo {
                         package_name: "gram".into(),
@@ -1961,7 +1961,7 @@ mod tests {
                         required_features: Vec::new(),
                         target_kind: TargetKind::Bin,
                     }),
-                    Arc::from("/path/to/zed".as_ref()),
+                    Arc::from("/path/to/gram".as_ref()),
                 )),
             ),
             (
