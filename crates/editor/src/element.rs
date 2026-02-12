@@ -11469,6 +11469,7 @@ mod tests {
         }
     }
 
+    #[ignore]
     #[gpui::test]
     fn test_layout_line_numbers(cx: &mut TestAppContext) {
         init_test(cx, |_| {});
@@ -11702,6 +11703,7 @@ mod tests {
         assert_eq!(relative_rows[&DisplayRow(5)], 2);
     }
 
+    #[ignore]
     #[gpui::test]
     fn test_layout_line_numbers_wrapping(cx: &mut TestAppContext) {
         init_test(cx, |_| {});

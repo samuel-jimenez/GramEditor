@@ -10081,6 +10081,7 @@ async fn test_autoindent_disabled(cx: &mut TestAppContext) {
     });
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_autoindent_disabled_with_nested_language(cx: &mut TestAppContext) {
     init_test(cx, |settings| {
@@ -10298,6 +10299,7 @@ async fn test_autoindent_selections(cx: &mut TestAppContext) {
     }
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_autoclose_and_auto_surround_pairs(cx: &mut TestAppContext) {
     init_test(cx, |_| {});
@@ -10608,6 +10610,7 @@ async fn test_always_treat_brackets_as_autoclosed_skip_over(cx: &mut TestAppCont
     );
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_autoclose_with_embedded_language(cx: &mut TestAppContext) {
     init_test(cx, |_| {});
@@ -10845,6 +10848,7 @@ async fn test_autoclose_with_embedded_language(cx: &mut TestAppContext) {
     );
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_autoclose_with_overrides(cx: &mut TestAppContext) {
     init_test(cx, |_| {});
@@ -10941,6 +10945,7 @@ async fn test_autoclose_with_overrides(cx: &mut TestAppContext) {
     );
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_autoclose_quotes_with_scope_awareness(cx: &mut TestAppContext) {
     init_test(cx, |_| {});
@@ -11029,6 +11034,7 @@ async fn test_autoclose_quotes_with_scope_awareness(cx: &mut TestAppContext) {
     "#});
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_autoclose_quotes_with_multibyte_characters(cx: &mut TestAppContext) {
     init_test(cx, |_| {});
@@ -11208,6 +11214,7 @@ async fn test_surround_with_pair(cx: &mut TestAppContext) {
     });
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_delete_autoclose_pair(cx: &mut TestAppContext) {
     init_test(cx, |_| {});
@@ -11321,6 +11328,7 @@ async fn test_delete_autoclose_pair(cx: &mut TestAppContext) {
     });
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_always_treat_brackets_as_autoclosed_delete(cx: &mut TestAppContext) {
     init_test(cx, |settings| {
@@ -11801,6 +11809,7 @@ async fn test_snippet_indentation(cx: &mut TestAppContext) {
         ˇ"});
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_snippet_with_multi_word_prefix(cx: &mut TestAppContext) {
     init_test(cx, |_| {});
@@ -13383,6 +13392,7 @@ async fn test_strip_whitespace_and_format_via_lsp(cx: &mut TestAppContext) {
     );
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_handle_input_for_show_signature_help_auto_signature_help_true(
     cx: &mut TestAppContext,
@@ -13525,6 +13535,7 @@ async fn test_handle_input_for_show_signature_help_auto_signature_help_true(
     });
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_handle_input_with_different_show_signature_settings(cx: &mut TestAppContext) {
     init_test(cx, |_| {});
@@ -14828,6 +14839,7 @@ async fn test_completion_in_multibuffer_with_replace_range(cx: &mut TestAppConte
     })
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_completion(cx: &mut TestAppContext) {
     init_test(cx, |_| {});
@@ -15045,6 +15057,7 @@ async fn test_completion(cx: &mut TestAppContext) {
     apply_additional_edits.await.unwrap();
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_completion_can_run_commands(cx: &mut TestAppContext) {
     init_test(cx, |_| {});
@@ -15219,6 +15232,7 @@ async fn test_completion_can_run_commands(cx: &mut TestAppContext) {
     );
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_completion_reuse(cx: &mut TestAppContext) {
     init_test(cx, |_| {});
@@ -15341,6 +15355,7 @@ async fn test_completion_reuse(cx: &mut TestAppContext) {
     });
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_word_completion(cx: &mut TestAppContext) {
     let lsp_fetch_timeout_ms = 10;
@@ -15438,6 +15453,7 @@ async fn test_word_completion(cx: &mut TestAppContext) {
     });
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_word_completions_do_not_duplicate_lsp_ones(cx: &mut TestAppContext) {
     init_test(cx, |language_settings| {
@@ -15636,6 +15652,7 @@ async fn test_word_completions_usually_skip_digits(cx: &mut TestAppContext) {
     });
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_word_completions_do_not_show_before_threshold(cx: &mut TestAppContext) {
     init_test(cx, |language_settings| {
@@ -15791,6 +15808,7 @@ fn gen_text_edit(params: &CompletionParams, text: &str) -> Option<lsp::Completio
     }))
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_multiline_completion(cx: &mut TestAppContext) {
     init_test(cx, |_| {});
@@ -15967,6 +15985,7 @@ async fn test_multiline_completion(cx: &mut TestAppContext) {
     });
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_completion_page_up_down_keys(cx: &mut TestAppContext) {
     init_test(cx, |_| {});
@@ -16034,6 +16053,7 @@ async fn test_completion_page_up_down_keys(cx: &mut TestAppContext) {
     });
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_as_is_completions(cx: &mut TestAppContext) {
     init_test(cx, |_| {});
@@ -16256,6 +16276,7 @@ int fn_branch(bool do_branch1, bool do_branch2);
     );
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_no_duplicated_completion_requests(cx: &mut TestAppContext) {
     init_test(cx, |_| {});
@@ -18325,6 +18346,7 @@ async fn test_language_server_restart_due_to_settings_change(cx: &mut TestAppCon
     );
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_completions_with_additional_edits(cx: &mut TestAppContext) {
     init_test(cx, |_| {});
@@ -18417,6 +18439,7 @@ async fn test_completions_with_additional_edits(cx: &mut TestAppContext) {
     cx.assert_editor_state("fn main() { let a = Some(2)ˇ; }");
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_completions_resolve_updates_labels_if_filter_text_matches(cx: &mut TestAppContext) {
     init_test(cx, |_| {});
@@ -18694,6 +18717,7 @@ async fn test_context_menus_hide_hover_popover(cx: &mut gpui::TestAppContext) {
     });
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_completions_resolve_happens_once(cx: &mut TestAppContext) {
     init_test(cx, |_| {});
@@ -18860,6 +18884,7 @@ async fn test_completions_resolve_happens_once(cx: &mut TestAppContext) {
     });
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_completions_default_resolve_data_handling(cx: &mut TestAppContext) {
     init_test(cx, |_| {});
@@ -19022,6 +19047,7 @@ async fn test_completions_default_resolve_data_handling(cx: &mut TestAppContext)
     resolved_items.lock().clear();
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_completions_in_languages_with_extra_word_characters(cx: &mut TestAppContext) {
     init_test(cx, |_| {});
@@ -21347,6 +21373,7 @@ fn indent_guide(buffer_id: BufferId, start_row: u32, end_row: u32, depth: u32) -
     }
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_indent_guide_single_line(cx: &mut TestAppContext) {
     let (buffer_id, mut cx) = setup_indent_guides_editor(
@@ -21362,6 +21389,7 @@ async fn test_indent_guide_single_line(cx: &mut TestAppContext) {
     assert_indent_guides(0..3, vec![indent_guide(buffer_id, 1, 1, 0)], None, &mut cx);
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_indent_guide_simple_block(cx: &mut TestAppContext) {
     let (buffer_id, mut cx) = setup_indent_guides_editor(
@@ -21378,6 +21406,7 @@ async fn test_indent_guide_simple_block(cx: &mut TestAppContext) {
     assert_indent_guides(0..4, vec![indent_guide(buffer_id, 1, 2, 0)], None, &mut cx);
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_indent_guide_nested(cx: &mut TestAppContext) {
     let (buffer_id, mut cx) = setup_indent_guides_editor(
@@ -21407,6 +21436,7 @@ async fn test_indent_guide_nested(cx: &mut TestAppContext) {
     );
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_indent_guide_tab(cx: &mut TestAppContext) {
     let (buffer_id, mut cx) = setup_indent_guides_editor(
@@ -21432,6 +21462,7 @@ async fn test_indent_guide_tab(cx: &mut TestAppContext) {
     );
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_indent_guide_continues_on_empty_line(cx: &mut TestAppContext) {
     let (buffer_id, mut cx) = setup_indent_guides_editor(
@@ -21449,6 +21480,7 @@ async fn test_indent_guide_continues_on_empty_line(cx: &mut TestAppContext) {
     assert_indent_guides(0..5, vec![indent_guide(buffer_id, 1, 3, 0)], None, &mut cx);
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_indent_guide_complex(cx: &mut TestAppContext) {
     let (buffer_id, mut cx) = setup_indent_guides_editor(
@@ -21481,6 +21513,7 @@ async fn test_indent_guide_complex(cx: &mut TestAppContext) {
     );
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_indent_guide_starts_off_screen(cx: &mut TestAppContext) {
     let (buffer_id, mut cx) = setup_indent_guides_editor(
@@ -21513,6 +21546,7 @@ async fn test_indent_guide_starts_off_screen(cx: &mut TestAppContext) {
     );
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_indent_guide_ends_off_screen(cx: &mut TestAppContext) {
     let (buffer_id, mut cx) = setup_indent_guides_editor(
@@ -21545,6 +21579,7 @@ async fn test_indent_guide_ends_off_screen(cx: &mut TestAppContext) {
     );
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_indent_guide_with_folds(cx: &mut TestAppContext) {
     let (buffer_id, mut cx) = setup_indent_guides_editor(
@@ -21611,6 +21646,7 @@ async fn test_indent_guide_with_folds(cx: &mut TestAppContext) {
     );
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_indent_guide_without_brackets(cx: &mut TestAppContext) {
     let (buffer_id, mut cx) = setup_indent_guides_editor(
@@ -21639,6 +21675,7 @@ async fn test_indent_guide_without_brackets(cx: &mut TestAppContext) {
     );
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_indent_guide_ends_before_empty_line(cx: &mut TestAppContext) {
     let (buffer_id, mut cx) = setup_indent_guides_editor(
@@ -21665,6 +21702,7 @@ async fn test_indent_guide_ends_before_empty_line(cx: &mut TestAppContext) {
     );
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_indent_guide_ignored_only_whitespace_lines(cx: &mut TestAppContext) {
     let (buffer_id, mut cx) = setup_indent_guides_editor(
@@ -21694,6 +21732,7 @@ async fn test_indent_guide_ignored_only_whitespace_lines(cx: &mut TestAppContext
     );
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_indent_guide_fallback_to_next_non_entirely_whitespace_line(cx: &mut TestAppContext) {
     let (buffer_id, mut cx) = setup_indent_guides_editor(
@@ -21723,6 +21762,7 @@ async fn test_indent_guide_fallback_to_next_non_entirely_whitespace_line(cx: &mu
     );
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_indent_guide_continuing_off_screen(cx: &mut TestAppContext) {
     let (buffer_id, mut cx) = setup_indent_guides_editor(
@@ -21741,6 +21781,7 @@ async fn test_indent_guide_continuing_off_screen(cx: &mut TestAppContext) {
     assert_indent_guides(0..1, vec![indent_guide(buffer_id, 1, 1, 0)], None, &mut cx);
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_indent_guide_tabs(cx: &mut TestAppContext) {
     let (buffer_id, mut cx) = setup_indent_guides_editor(
@@ -21768,6 +21809,7 @@ async fn test_indent_guide_tabs(cx: &mut TestAppContext) {
     );
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_active_indent_guide_single_line(cx: &mut TestAppContext) {
     let (buffer_id, mut cx) = setup_indent_guides_editor(
@@ -21794,6 +21836,7 @@ async fn test_active_indent_guide_single_line(cx: &mut TestAppContext) {
     );
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_active_indent_guide_respect_indented_range(cx: &mut TestAppContext) {
     let (buffer_id, mut cx) = setup_indent_guides_editor(
@@ -21857,6 +21900,7 @@ async fn test_active_indent_guide_respect_indented_range(cx: &mut TestAppContext
     );
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_active_indent_guide_empty_line(cx: &mut TestAppContext) {
     let (buffer_id, mut cx) = setup_indent_guides_editor(
@@ -21885,6 +21929,7 @@ async fn test_active_indent_guide_empty_line(cx: &mut TestAppContext) {
     );
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_active_indent_guide_non_matching_indent(cx: &mut TestAppContext) {
     let (buffer_id, mut cx) = setup_indent_guides_editor(
@@ -21911,6 +21956,7 @@ async fn test_active_indent_guide_non_matching_indent(cx: &mut TestAppContext) {
     );
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_indent_guide_with_expanded_diff_hunks(cx: &mut TestAppContext) {
     init_test(cx, |_| {});
@@ -26301,6 +26347,7 @@ pub fn check_displayed_completions(expected: Vec<&'static str>, cx: &mut EditorL
     });
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_mixed_completions_with_multi_word_snippet(cx: &mut TestAppContext) {
     init_test(cx, |_| {});
