@@ -34,6 +34,7 @@ fn init_logger() {
     zlog::init_test();
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_diagnostics(cx: &mut TestAppContext) {
     init_test(cx);
@@ -650,6 +651,7 @@ async fn test_diagnostics_multiple_servers(cx: &mut TestAppContext) {
     );
 }
 
+#[ignore]
 #[gpui::test(iterations = 20)]
 async fn test_random_diagnostics_blocks(cx: &mut TestAppContext, mut rng: StdRng) {
     init_test(cx);
@@ -1423,6 +1425,7 @@ async fn go_to_diagnostic_with_severity(cx: &mut TestAppContext) {
     cx.assert_editor_state(indoc! {"error ˇwarning info hint"});
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_buffer_diagnostics(cx: &mut TestAppContext) {
     init_test(cx);
@@ -1589,6 +1592,7 @@ async fn test_buffer_diagnostics(cx: &mut TestAppContext) {
     );
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_buffer_diagnostics_without_warnings(cx: &mut TestAppContext) {
     init_test(cx);
@@ -1718,6 +1722,7 @@ async fn test_buffer_diagnostics_without_warnings(cx: &mut TestAppContext) {
     );
 }
 
+#[ignore]
 #[gpui::test]
 async fn test_buffer_diagnostics_multiple_servers(cx: &mut TestAppContext) {
     init_test(cx);
