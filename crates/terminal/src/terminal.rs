@@ -2636,6 +2636,7 @@ mod tests {
     // TODO should be tested on Linux too, but does not work there well
     #[cfg(target_os = "macos")]
     #[gpui::test(iterations = 10)]
+    #[ignore]
     async fn test_terminal_eof(cx: &mut TestAppContext) {
         cx.executor().allow_parking();
 

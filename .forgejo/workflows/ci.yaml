@@ -28,4 +28,10 @@ jobs:
         uses: https://code.forgejo.org/msrd0/rust-toolchain@1.93
         with:
           components: clippy, rustfmt
+      - name: install linux dependencies
+        run: ./script/linux
+      - name: install mold
+        run: ./script/install-mold
+      - name: download wasi-sdk
+        run: ./script/download-wasi-sdk
       - run: cargo test --workspace
