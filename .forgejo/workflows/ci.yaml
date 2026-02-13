@@ -10,7 +10,7 @@ env:
 
 jobs:
   test-amd64:
-    runs-on: ubuntu-latest-amd64
+    runs-on: rust-amd64
     steps:
       - uses: actions/checkout@v4
       - name: Cache build
@@ -24,14 +24,12 @@ jobs:
             ~/.cargo/git/db/
             target/
           key: ${{ runner.os }}-gram-cargo-${{ hashFiles('**/Cargo.lock') }}
-      - name: Set up Rust
-        uses: https://code.forgejo.org/msrd0/rust-toolchain@1.93
-        with:
-          components: clippy, rustfmt
+      - name: install nextest
+        run: cargo binstall nextest --secure
       - name: install linux dependencies
         run: ./script/linux
       - name: install mold
         run: ./script/install-mold
       - name: download wasi-sdk
         run: ./script/download-wasi-sdk
-      - run: cargo test --workspace
+      - run: cargo nextest run --workspace --success-output never --show-progress none
