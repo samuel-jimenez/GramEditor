@@ -25,7 +25,7 @@ jobs:
             target/
           key: ${{ runner.os }}-gram-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: install nextest
-        run: cargo binstall nextest --secure
+        run: curl -LsSf https://get.nexte.st/latest/linux | tar zxf - -C ~/.cargo}/bin
       - name: install linux dependencies
         run: ./script/linux
       - name: install mold
