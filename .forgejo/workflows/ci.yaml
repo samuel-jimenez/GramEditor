@@ -32,5 +32,4 @@ jobs:
         run: ./script/install-mold
       - name: download wasi-sdk
         run: ./script/download-wasi-sdk
-      - run: cargo build --workspace
       - run: cargo nextest run --workspace --success-output never --show-progress none
