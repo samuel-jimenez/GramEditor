@@ -54,13 +54,50 @@ For more thoughts on this topic, see [MISSION.md](./MISSION.md).
 
 ## Installation
 
-At the moment, you will need to build the editor from source. Eventually there
-will be a website to download from.
+You will need to build the editor from source, for now.
 
 Make sure you have Rust installed (via rustup, preferrably).
 
+There are scripts to bundle for each platform, and the details as to what needs
+to be in place are different for all of the platforms.
+
+### Linux
+
 ```sh
-cargo run --release
+# Install dependencies
+./script/linux
+# Build an installable tarball
+./script/bundle-linux
+```
+
+### MacOS
+
+To build on MacOS requires a developer account. You will need to set up signing
+certificates and provide credentials in the environment variables used in the
+script.
+
+```sh
+# Your apple ID (email)
+export APPLE_ID=""
+# App-specific password (create in account.apple.com)
+export APPLE_PASSWORD_GRAM=""
+# Apple Team ID (find it in XCode)
+export APPLE_TEAM_ID=""
+# Apple signing key: security find-identity -p codesigning
+export APPLE_SIGNING_KEY=""
+# Build, sign and notarise the app bundle
+./script/bundle-mac
+```
+
+### Windows
+
+No idea if the Windows build still works, or what is required to get it working.
+Windows builds are also signed, so you will need a certificate.
+
+Maybe something like this?
+
+```sh
+.\script\bundle-windows.ps1
 ```
 
 ## Developing
