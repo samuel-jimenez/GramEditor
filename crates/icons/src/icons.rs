@@ -61,7 +61,6 @@ pub enum IconName {
     Diff,
     Disconnected,
     Download,
-    Dragon,
     EditorAtom,
     EditorEmacs,
     EditorJetBrains,

@@ -101,7 +101,3 @@ automatically comply with open source licenses.
 - Is `cargo-about` unable to find the license for a dependency? If so, add a
   clarification field at the end of `script/licenses/licenses.toml`, as
   specified in the [cargo-about book](https://embarkstudios.github.io/cargo-about/cli/generate/config.html#crate-configuration).
-
-### Credits
-
-- SVG icon by Selina Bauder: https://openmoji.org/library/emoji-1F409/#variant=black
