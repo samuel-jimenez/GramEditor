@@ -268,7 +268,7 @@ impl LspConfigView {
                 .gap_1p5()
                 .items_center()
                 .child(
-                    IconButton::new(format!("status-icon-{}", server_name), IconName::Circle)
+                    IconButton::new(format!("status-icon-{}", server_name), IconName::Bot)
                         .icon_color(status_color)
                         .tooltip(Tooltip::text(status_text)),
                 )
@@ -363,6 +363,12 @@ impl LspConfigView {
             .justify_between()
             .pb_2()
             .child(Headline::new("Language Server Configuration").size(HeadlineSize::Small))
+            .child(
+                IconButton::new("lsp-config-info", IconName::Info)
+                    .icon_size(IconSize::Custom(rems_from_px(24.0)))
+                    .tooltip(Tooltip::text("Language Servers Documentation"))
+                    .on_click(move |_, _, cx| cx.open_url("gram://docs/language-servers")),
+            )
     }
 }
 

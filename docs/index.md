@@ -33,6 +33,7 @@ the following list (incomplete) of changes:
   SSH and edit as if working on a local project.
 - [Extensions](./extensions.md): Add support for additional languages, themes
   and icons using the extension system.
+- [Language Servers](./language-servers.md): Gram relies on language servers for providing advanced semantic functionality for various programming languages.
 
 ## Development
 

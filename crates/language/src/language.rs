@@ -723,7 +723,9 @@ where
 
             if !binary_options.allow_binary_download {
                 return (
-                    Err(anyhow::anyhow!("downloading language servers disabled")),
+                    Err(anyhow::anyhow!(
+                        "Download disabled for this language server, check the configuration"
+                    )),
                     None,
                 );
             }
@@ -731,7 +733,9 @@ where
             let Some(container_dir) = delegate.language_server_download_dir(&self.name()).await
             else {
                 return (
-                    Err(anyhow::anyhow!("no language server download dir defined")),
+                    Err(anyhow::anyhow!(
+                        "No language server download directory defined"
+                    )),
                     None,
                 );
             };
@@ -740,7 +744,7 @@ where
                 .cached_server_binary(container_dir.to_path_buf(), delegate.as_ref())
                 .await
                 .context(
-                    "did not find existing language server binary, falling back to downloading",
+                    "Did not find existing language server binary, falling back to downloading",
                 );
             let download_binary = async move {
                 let mut binary = self

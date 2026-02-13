@@ -1186,23 +1186,26 @@ impl Render for LspButton {
             }
         }
 
-        let (indicator, description) = if has_errors {
+        let (icon_name, indicator, description) = if has_errors {
             (
+                IconName::BotOff,
                 Some(Indicator::dot().color(Color::Error)),
-                "Server with errors",
+                "One or more servers cannot run. Check Configure Servers.",
             )
         } else if has_warnings {
             (
+                IconName::BotMessage,
                 Some(Indicator::dot().color(Color::Warning)),
-                "Server with warnings",
+                "One or more servers have warnings.",
             )
         } else if has_other_notifications {
             (
+                IconName::BotMessage,
                 Some(Indicator::dot().color(Color::Modified)),
-                "Server with notifications",
+                "One or more servers have notifications.",
             )
         } else {
-            (None, "All Servers Operational")
+            (IconName::Bot, None, "All servers are running.")
         };
 
         let lsp_button = cx.weak_entity();
@@ -1218,7 +1221,7 @@ impl Render for LspButton {
                 .anchor(Corner::BottomLeft)
                 .with_handle(self.popover_menu_handle.clone())
                 .trigger_with_tooltip(
-                    IconButton::new("gram-lsp-tool-button", IconName::BoltOutlined)
+                    IconButton::new("gram-lsp-tool-button", icon_name)
                         .when_some(indicator, IconButton::indicator)
                         .icon_size(IconSize::Small)
                         .indicator_border_color(Some(cx.theme().colors().status_bar_background)),

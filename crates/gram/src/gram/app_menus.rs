@@ -1,5 +1,6 @@
 use app_actions::{ToggleFocus as ToggleDebugPanel, dev};
 use gpui::{App, Menu, MenuItem, OsAction};
+use language_tools::lsp_config_view::OpenLanguageServerConfig;
 use release_channel::ReleaseChannel;
 use terminal_view::terminal_panel;
 
@@ -72,6 +73,7 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
                             super::OpenProjectSettingsFile,
                         ),
                         MenuItem::action("Open Default Settings", super::OpenDefaultSettings),
+                        MenuItem::action("Language Servers", OpenLanguageServerConfig),
                         MenuItem::separator(),
                         MenuItem::action("Open Keymap", app_actions::OpenKeymap),
                         MenuItem::action("Open Keymap File", app_actions::OpenKeymapFile),
