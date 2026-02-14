@@ -4,13 +4,17 @@ use editor::EditorEvent;
 use gpui::{EventEmitter, FocusHandle, Focusable, Global, ScrollHandle, actions};
 use language::{BinaryStatus, LanguageRegistry};
 use lsp::LanguageServerName;
-use project::{Fs, LspStoreEvent, project_settings::ProjectSettings};
+use project::{
+    Fs, LspStoreEvent,
+    project_settings::{NodeBinarySettings, ProjectSettings},
+};
 use proto::{
     self, ServerBinaryStatus,
     status_update::Status,
     update_language_server::Variant::{RegisteredForBuffer, StatusUpdate},
 };
 use settings::{Settings, SettingsStore};
+use theme::Theme;
 use ui::{
     ActiveTheme as _, App, Context, IntoElement, Label, LabelSize, Render, Switch, ToggleState,
     Tooltip, Window, WithScrollbar as _, prelude::*,
@@ -216,6 +220,18 @@ impl LspConfigView {
         cx.notify();
     }
 
+    fn toggle_allow_download_node(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        cx.update_global(|store: &mut SettingsStore, cx| {
+            store.update_settings_file(<dyn Fs>::global(cx), move |settings, _cx| {
+                let node = settings.node.get_or_insert_with(Default::default);
+                node.allow_binary_download = Some(!node.allow_binary_download.unwrap_or_default());
+            });
+        });
+
+        window.refresh();
+        cx.notify();
+    }
+
     fn toggle_ignore_system_version(
         &mut self,
         server_name: LanguageServerName,
@@ -370,6 +386,69 @@ impl LspConfigView {
                     .on_click(move |_, _, cx| cx.open_url("gram://docs/language-servers")),
             )
     }
+
+    fn render_node(
+        &self,
+        settings: &NodeBinarySettings,
+        theme: &Arc<Theme>,
+        cx: &Context<Self>,
+    ) -> impl IntoElement {
+        v_flex()
+            .p_3()
+            .gap_2()
+            .border_1()
+            .border_color(theme.colors().border)
+            .rounded_md()
+            .bg(theme.colors().element_background)
+            .child(
+                self.render_server_header(
+                    "Node.js".into(),
+                    settings
+                        .path
+                        .clone()
+                        .unwrap_or("Node.js".to_string())
+                        .into(),
+                    Color::Default,
+                ),
+            )
+            .child(
+                v_flex()
+                    .gap_2()
+                    .child(self.render_node_settings(settings, cx)),
+            )
+    }
+
+    fn render_node_settings(
+        &self,
+        settings: &NodeBinarySettings,
+        cx: &Context<Self>,
+    ) -> impl IntoElement {
+        let allow = settings.allow_binary_download;
+        v_flex().p_2().gap_4().child(
+            h_flex()
+                .gap_2()
+                .items_center()
+                .child(
+                    Switch::new("allow-binary-download-node", ToggleState::from(allow)).on_click(
+                        cx.listener(move |this, _, window, cx| {
+                            this.toggle_allow_download_node(window, cx);
+                        }),
+                    ),
+                )
+                .child(
+                    v_flex()
+                        .gap_1p5()
+                        .child(Label::new("Allow download"))
+                        .child(
+                        Label::new(
+                            "Allow the editor to download a Node.js binary if it can't find one",
+                        )
+                        .size(LabelSize::Small)
+                        .color(Color::Muted),
+                    ),
+                ),
+        )
+    }
 }
 
 impl Render for LspConfigView {
@@ -380,7 +459,6 @@ impl Render for LspConfigView {
         let editor_background = theme.colors().editor_background;
         let global_state = cx.global::<LspConfigState>();
         let binary_statuses = &global_state.binary_statuses;
-        let empty = binary_statuses.is_empty();
         let project_settings = ProjectSettings::get_global(cx);
 
         v_flex()
@@ -393,6 +471,7 @@ impl Render for LspConfigView {
             .bg(editor_background)
             .overflow_hidden()
             .child(self.render_header())
+            .child(self.render_node(&project_settings.node, theme, cx))
             .child(
                 v_flex()
                     .id("lsp-config-view-servers")
@@ -441,13 +520,6 @@ impl Render for LspConfigView {
                             }),
                     ),
             )
-            .when(empty, |this| {
-                this.child(
-                    div()
-                        .p_4()
-                        .child(Label::new("No active language servers").color(Color::Muted)),
-                )
-            })
             .vertical_scrollbar_for(&self.scroll_handle, window, cx)
     }
 }
