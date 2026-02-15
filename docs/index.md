@@ -16,7 +16,6 @@ the following list (incomplete) of changes:
 ## Getting Started
 
 - [The Mission](./mission.md)
-- [Getting Started](./getting-started.md)
 - [Uninstall](./uninstall.md)
 - [Troubleshooting](./troubleshooting.md)
 

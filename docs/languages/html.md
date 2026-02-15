@@ -19,7 +19,7 @@ You can disable `format_on_save` by adding the following to your Gram `settings.
   }
 ```
 
-You can still trigger formatting manually with {#kb editor::Format} or by opening [the Command Palette](..//getting-started.md#command-palette) ({#kb command_palette::Toggle}) and selecting "Format Document".
+You can still trigger formatting manually with {#kb editor::Format} or by opening the Command Palette ({#kb command_palette::Toggle}) and selecting "Format Document".
 
 ### LSP Formatting
 

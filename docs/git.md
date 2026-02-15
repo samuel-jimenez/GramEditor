@@ -154,7 +154,7 @@ For self-hosted GitHub, GitLab, or Bitbucket instances, add them to the `git_hos
 Create a permanent link to a code snippet on your Git hosting service.
 
 These links are useful for sharing a specific line or range of lines in a file at a specific commit.
-Trigger this action via the [Command Palette](./getting-started.md#command-palette) (search for `permalink`),
+Trigger this action via the Command Palette (search for `permalink`),
 by creating a [custom key bindings](key-bindings.md#custom-key-bindings) to the
 `editor::CopyPermalinkToLine` or `editor::OpenPermalinkToLine` actions
 or by simply right clicking and selecting `Copy Permalink` with line(s) selected in your editor.

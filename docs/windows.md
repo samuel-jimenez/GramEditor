@@ -21,7 +21,7 @@ For detailed instructions on setting up and using remote development features, i
 
 ### Gram fails to start or shows a blank window
 
-- Check that your hardware and operating system version are compatible with Gram. See our [installation guide](./installation.md) for more information.
+- Check that your hardware and operating system version are compatible with Gram.
 - Update your GPU drivers from your GPU vendor (Intel/AMD/NVIDIA/Qualcomm).
 - Ensure hardware acceleration is enabled in Windows and not blocked by third‑party software.
 - Try launching Gram with no extensions or custom settings to isolate conflicts.
