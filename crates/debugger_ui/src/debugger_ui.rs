@@ -1,10 +1,10 @@
 use std::any::TypeId;
 
+use app_actions::ToggleFocus;
 use debugger_panel::DebugPanel;
 use editor::{Editor, MultiBufferOffsetUtf16};
 use gpui::{Action, App, DispatchPhase, EntityInputHandler, actions};
 use new_process_modal::{NewProcessModal, NewProcessMode};
-use onboarding_modal::DebuggerOnboardingModal;
 use project::debugger::{self, breakpoint_store::SourceBreakpoint, session::ThreadStatus};
 use schemars::JsonSchema;
 use serde::Deserialize;
@@ -13,14 +13,11 @@ use tasks_ui::{Spawn, TaskOverrides};
 use ui::{FluentBuilder, InteractiveElement};
 use util::maybe;
 use workspace::{ItemHandle, ShutdownDebugAdapters, Workspace};
-use app_actions::ToggleFocus;
-use app_actions::debugger::OpenOnboardingModal;
 
 pub mod attach_modal;
 pub mod debugger_panel;
 mod dropdown_menus;
 mod new_process_modal;
-mod onboarding_modal;
 mod persistence;
 pub(crate) mod session;
 mod stack_trace_view;
@@ -139,9 +136,6 @@ pub fn init(cx: &mut App) {
                     })
                 },
             )
-            .register_action(|workspace, _: &OpenOnboardingModal, window, cx| {
-                DebuggerOnboardingModal::toggle(workspace, window, cx)
-            })
             .register_action_renderer(|div, workspace, _, cx| {
                 let Some(debug_panel) = workspace.panel::<DebugPanel>(cx) else {
                     return div;

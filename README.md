@@ -26,9 +26,8 @@ at the student.
 This is bad.
 
 My hope is that Gram will be an editor that a student can download and install
-and use out of the box with a friendly onboarding experience and configuration,
-integrated help and documentation, debugging and language server features but
-without pushing anything malicious, distracting or confusing.
+and use out of the box, no configuration or extensions needed, which doesn't
+try to push anything malicious, distracting or confusing.
 
 ## Manifesto
 
