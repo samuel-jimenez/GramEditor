@@ -61,7 +61,6 @@ members = [
     "crates/keymap_editor",
     "crates/language",
     "crates/language_extension",
-    "crates/language_onboarding",
     "crates/language_selector",
     "crates/language_tools",
     "crates/languages",
@@ -236,7 +235,6 @@ json_schema_store = { path = "crates/json_schema_store" }
 keymap_editor = { path = "crates/keymap_editor" }
 language = { path = "crates/language" }
 language_extension = { path = "crates/language_extension" }
-language_onboarding = { path = "crates/language_onboarding" }
 language_selector = { path = "crates/language_selector" }
 language_tools = { path = "crates/language_tools" }
 languages = { path = "crates/languages" }

@@ -74,7 +74,6 @@ json_schema_store.workspace = true
 keymap_editor.workspace = true
 language.workspace = true
 language_extension.workspace = true
-language_onboarding.workspace = true
 language_selector.workspace = true
 language_tools.workspace = true
 languages = { workspace = true, features = ["load-grammars"] }
