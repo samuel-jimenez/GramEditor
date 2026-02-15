@@ -1725,11 +1725,11 @@ mod tests {
 
     #[gpui::test]
     async fn test_raw_links_detection() {
-        let parsed = parse("Checkout this https://liten.app link").await;
+        let parsed = parse("Checkout this https://codeberg.org link").await;
 
         assert_eq!(
             parsed.children,
-            vec![p("Checkout this https://liten.app link", 0..36)]
+            vec![p("Checkout this https://codeberg.org link", 0..36)]
         );
     }
 

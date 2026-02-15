@@ -62,8 +62,6 @@ pub use self::path_key::PathKey;
 pub struct ExcerptId(u32);
 
 /// One or more [`Buffers`](Buffer) being edited in a single view.
-///
-/// See <https://liten.app/features#multi-buffers>
 pub struct MultiBuffer {
     /// A snapshot of the [`Excerpt`]s in the MultiBuffer.
     /// Use [`MultiBuffer::snapshot`] to get a up-to-date snapshot.

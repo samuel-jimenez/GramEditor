@@ -1,4 +1,4 @@
-//! The Gram Rust Extension API allows you write extensions for [Gram](https://liten.app/) in Rust.
+//! The Gram Rust Extension API allows you write extensions in Rust.
 
 pub mod http_client;
 pub mod process;
@@ -287,8 +287,7 @@ static mut EXTENSION: Option<Box<dyn Extension>> = None;
 #[cfg(target_arch = "wasm32")]
 #[unsafe(link_section = "gram:api-version")]
 #[doc(hidden)]
-pub static GRAM_API_VERSION: [u8; 6] =
-    *include_bytes!(concat!(env!("OUT_DIR"), "/version_bytes"));
+pub static GRAM_API_VERSION: [u8; 6] = *include_bytes!(concat!(env!("OUT_DIR"), "/version_bytes"));
 
 mod wit {
 
