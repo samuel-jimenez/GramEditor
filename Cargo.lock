@@ -5893,6 +5893,7 @@ dependencies = [
  "tree-sitter-jsdoc",
  "tree-sitter-json",
  "tree-sitter-md",
+ "tree-sitter-odin",
  "tree-sitter-python",
  "tree-sitter-regex",
  "tree-sitter-rust",
@@ -12021,6 +12022,15 @@ checksum = "009994f150cc0cd50ff54917d5bc8bffe8cad10ca10d81c34da2ec421ae61782"
 name = "tree-sitter-md"
 version = "0.3.2"
 source = "git+https://github.com/tree-sitter-grammars/tree-sitter-markdown?rev=9a23c1a96c0513d8fc6520972beedd419a973539#9a23c1a96c0513d8fc6520972beedd419a973539"
+dependencies = [
+ "cc",
+ "tree-sitter-language",
+]
+
+[[package]]
+name = "tree-sitter-odin"
+version = "1.3.0"
+source = "git+https://github.com/tree-sitter-grammars/tree-sitter-odin?rev=e8adc739b78409a99f8c31313f0bb54cc538cf73#e8adc739b78409a99f8c31313f0bb54cc538cf73"
 dependencies = [
  "cc",
  "tree-sitter-language",
