@@ -35,6 +35,7 @@ mod python;
 mod rust;
 mod tailwind;
 mod tailwindcss;
+mod toml;
 mod typescript;
 mod vtsls;
 mod yaml;
@@ -127,6 +128,7 @@ pub fn init(languages: Arc<LanguageRegistry>, fs: Arc<dyn Fs>, node: NodeRuntime
     let rust_lsp_adapter = Arc::new(rust::RustLspAdapter);
     let tailwind_adapter = Arc::new(tailwind::TailwindLspAdapter::new(node.clone()));
     let tailwindcss_adapter = Arc::new(tailwindcss::TailwindCssLspAdapter::new(node.clone()));
+    let toml_lsp_adapter = Arc::new(toml::TomlLspAdapter);
     let typescript_context = Arc::new(typescript::TypeScriptContextProvider::new(fs.clone()));
     let typescript_lsp_adapter = Arc::new(typescript::TypeScriptLspAdapter::new(
         node.clone(),
@@ -252,7 +254,7 @@ pub fn init(languages: Arc<LanguageRegistry>, fs: Arc<dyn Fs>, node: NodeRuntime
         },
         LanguageInfo {
             name: "toml",
-            adapters: vec![],
+            adapters: vec![toml_lsp_adapter],
             ..Default::default()
         },
         LanguageInfo {
