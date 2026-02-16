@@ -1,4 +1,0 @@
-*.wasm
-grammars/
-target/
-.DS_Store

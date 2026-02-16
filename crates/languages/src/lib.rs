@@ -90,6 +90,7 @@ pub fn init(languages: Arc<LanguageRegistry>, fs: Arc<dyn Fs>, node: NodeRuntime
         ("python", tree_sitter_python::LANGUAGE),
         ("regex", tree_sitter_regex::LANGUAGE),
         ("rust", tree_sitter_rust::LANGUAGE),
+        ("sql", tree_sitter_sql::LANGUAGE),
         ("tsx", tree_sitter_typescript::LANGUAGE_TSX),
         ("typescript", tree_sitter_typescript::LANGUAGE_TYPESCRIPT),
         ("yaml", tree_sitter_yaml::LANGUAGE),
@@ -241,6 +242,11 @@ pub fn init(languages: Arc<LanguageRegistry>, fs: Arc<dyn Fs>, node: NodeRuntime
             adapters: vec![rust_lsp_adapter],
             context: Some(rust_context_provider),
             manifest_name: Some(SharedString::new_static("Cargo.toml").into()),
+            ..Default::default()
+        },
+        LanguageInfo {
+            name: "sql",
+            adapters: vec![],
             ..Default::default()
         },
         LanguageInfo {
