@@ -558,6 +558,7 @@ tree-sitter-css = "0.23"
 tree-sitter-diff = "0.1.0"
 tree-sitter-elixir = "0.3"
 tree-sitter-embedded-template = "0.23.0"
+tree-sitter-erlang = { git = "https://github.com/WhatsApp/tree-sitter-erlang", rev = "f21023bbd6cd30cadbc793d80ae4d990d9be86fc" }
 tree-sitter-gitcommit = { git = "https://github.com/zed-industries/tree-sitter-git-commit", rev = "88309716a69dd13ab83443721ba6e0b491d37ee9" }
 tree-sitter-gleam = { git = "https://github.com/gleam-lang/tree-sitter-gleam", rev = "6ea757f7eb8d391dbf24dbb9461990757946dd5e" }
 tree-sitter-go = "0.23"

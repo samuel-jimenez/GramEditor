@@ -21,6 +21,7 @@ mod bash;
 mod c;
 mod cpp;
 mod css;
+mod erlang;
 mod eslint;
 mod gleam;
 mod go;
@@ -72,6 +73,7 @@ pub fn init(languages: Arc<LanguageRegistry>, fs: Arc<dyn Fs>, node: NodeRuntime
         ("cpp", tree_sitter_cpp::LANGUAGE),
         ("css", tree_sitter_css::LANGUAGE),
         ("diff", tree_sitter_diff::LANGUAGE),
+        ("erlang", tree_sitter_erlang::LANGUAGE),
         ("gleam", tree_sitter_gleam::LANGUAGE),
         ("go", tree_sitter_go::LANGUAGE),
         ("gomod", tree_sitter_go_mod::LANGUAGE),
@@ -101,6 +103,8 @@ pub fn init(languages: Arc<LanguageRegistry>, fs: Arc<dyn Fs>, node: NodeRuntime
     let go_context_provider = Arc::new(go::GoContextProvider);
     let go_lsp_adapter = Arc::new(go::GoLspAdapter);
     let json_context_provider = Arc::new(JsonTaskProvider);
+    let erlang_ls_adapter = Arc::new(erlang::ErlangLsAdapter);
+    let elp_adapter = Arc::new(erlang::ElpAdapter);
     let json_lsp_adapter = Arc::new(json::JsonLspAdapter::new(languages.clone(), node.clone()));
     let node_version_lsp_adapter = Arc::new(json::NodeVersionAdapter);
     let lua_lsp_adapter = Arc::new(lua::LuaLspAdapter);
@@ -151,6 +155,11 @@ pub fn init(languages: Arc<LanguageRegistry>, fs: Arc<dyn Fs>, node: NodeRuntime
         LanguageInfo {
             name: "diff",
             adapters: vec![],
+            ..Default::default()
+        },
+        LanguageInfo {
+            name: "erlang",
+            adapters: vec![erlang_ls_adapter, elp_adapter],
             ..Default::default()
         },
         LanguageInfo {

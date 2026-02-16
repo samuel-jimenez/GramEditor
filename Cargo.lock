@@ -5886,6 +5886,7 @@ dependencies = [
  "tree-sitter-css",
  "tree-sitter-diff",
  "tree-sitter-emmyluadoc",
+ "tree-sitter-erlang",
  "tree-sitter-gitcommit",
  "tree-sitter-gleam",
  "tree-sitter-go",
@@ -11948,6 +11949,15 @@ source = "git+https://github.com/EmmyLuaLs/tree-sitter-emmyluadoc?rev=ea755c0fd3
 dependencies = [
  "cc",
  "tree-sitter 0.20.10",
+]
+
+[[package]]
+name = "tree-sitter-erlang"
+version = "0.15.0"
+source = "git+https://github.com/WhatsApp/tree-sitter-erlang?rev=f21023bbd6cd30cadbc793d80ae4d990d9be86fc#f21023bbd6cd30cadbc793d80ae4d990d9be86fc"
+dependencies = [
+ "cc",
+ "tree-sitter-language",
 ]
 
 [[package]]
