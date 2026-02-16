@@ -22,6 +22,7 @@ mod c;
 mod cpp;
 mod css;
 mod eslint;
+mod gleam;
 mod go;
 mod json;
 mod package_json;
@@ -67,6 +68,7 @@ pub fn init(languages: Arc<LanguageRegistry>, fs: Arc<dyn Fs>, node: NodeRuntime
         ("cpp", tree_sitter_cpp::LANGUAGE),
         ("css", tree_sitter_css::LANGUAGE),
         ("diff", tree_sitter_diff::LANGUAGE),
+        ("gleam", tree_sitter_gleam::LANGUAGE),
         ("go", tree_sitter_go::LANGUAGE),
         ("gomod", tree_sitter_go_mod::LANGUAGE),
         ("gowork", tree_sitter_gowork::LANGUAGE),
@@ -87,6 +89,8 @@ pub fn init(languages: Arc<LanguageRegistry>, fs: Arc<dyn Fs>, node: NodeRuntime
     let c_lsp_adapter = Arc::new(c::CLspAdapter);
     let css_lsp_adapter = Arc::new(css::CssLspAdapter::new(node.clone()));
     let eslint_adapter = Arc::new(eslint::EsLintLspAdapter::new(node.clone()));
+    let gleam_lsp_adapter = Arc::new(gleam::GleamLspAdapter);
+    let gleam_context_provider = Arc::new(gleam::gleam_task_context());
     let go_context_provider = Arc::new(go::GoContextProvider);
     let go_lsp_adapter = Arc::new(go::GoLspAdapter);
     let json_context_provider = Arc::new(JsonTaskProvider);
@@ -135,6 +139,12 @@ pub fn init(languages: Arc<LanguageRegistry>, fs: Arc<dyn Fs>, node: NodeRuntime
         LanguageInfo {
             name: "diff",
             adapters: vec![],
+            ..Default::default()
+        },
+        LanguageInfo {
+            name: "gleam",
+            adapters: vec![gleam_lsp_adapter],
+            context: Some(gleam_context_provider),
             ..Default::default()
         },
         LanguageInfo {
