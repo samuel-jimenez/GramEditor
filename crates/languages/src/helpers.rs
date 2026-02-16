@@ -4,6 +4,11 @@ use language::LspAdapterDelegate;
 use lsp::LanguageServerBinary;
 use std::path::PathBuf;
 
+pub fn with_exe(name: &str) -> String {
+    let suffix = if cfg!(windows) { ".exe" } else { "" };
+    format!("{}{}", name, suffix)
+}
+
 pub async fn write_metadata(
     destination_path: &PathBuf,
     expected_digest: Option<String>,

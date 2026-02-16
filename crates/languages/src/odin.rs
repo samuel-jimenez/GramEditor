@@ -19,7 +19,7 @@ use task::{TaskTemplate, TaskTemplates};
 use util::fs::{make_file_executable, remove_matching};
 use util::maybe;
 
-use crate::helpers::{verify_metadata, write_metadata};
+use crate::helpers::{verify_metadata, with_exe, write_metadata};
 
 pub struct OdinLspAdapter;
 
@@ -56,14 +56,10 @@ impl OdinLspAdapter {
         Some(binary_name)
     }
 
-    fn exe_suffix() -> &'static str {
-        if cfg!(windows) { ".exe" } else { "" }
-    }
-
     async fn ols_path(path: &PathBuf) -> Option<PathBuf> {
         let binary_name = Self::ols_binary_name()?;
-        let executable_name = format!("{}{}", binary_name, Self::exe_suffix());
-        Some(path.join(executable_name))
+        let executable = with_exe(&binary_name);
+        Some(path.join(executable))
     }
 }
 
