@@ -33,6 +33,7 @@ load-grammars = [
     "tree-sitter-rust",
     "tree-sitter-typescript",
     "tree-sitter-yaml",
+    "tree-sitter-zig",
 ]
 
 [dependencies]
@@ -96,6 +97,7 @@ tree-sitter-regex = { workspace = true, optional = true }
 tree-sitter-rust = { workspace = true, optional = true }
 tree-sitter-typescript = { workspace = true, optional = true }
 tree-sitter-yaml = { workspace = true, optional = true }
+tree-sitter-zig = { workspace = true, optional = true }
 url.workspace = true
 util.workspace = true
 
@@ -112,6 +114,7 @@ tree-sitter-go.workspace = true
 tree-sitter-odin.workspace = true
 tree-sitter-python.workspace = true
 tree-sitter-typescript.workspace = true
+tree-sitter-zig.workspace = true
 tree-sitter.workspace = true
 unindent.workspace = true
 workspace = { workspace = true, features = ["test-support"] }

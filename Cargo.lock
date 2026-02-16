@@ -5899,6 +5899,7 @@ dependencies = [
  "tree-sitter-rust",
  "tree-sitter-typescript",
  "tree-sitter-yaml",
+ "tree-sitter-zig",
  "unindent",
  "url",
  "util",
@@ -8528,6 +8529,7 @@ dependencies = [
  "unindent",
  "url",
  "util",
+ "uuid",
  "watch",
  "wax",
  "which 6.0.3",
@@ -12089,6 +12091,15 @@ dependencies = [
 name = "tree-sitter-yaml"
 version = "0.6.1"
 source = "git+https://github.com/zed-industries/tree-sitter-yaml?rev=baff0b51c64ef6a1fb1f8390f3ad6015b83ec13a#baff0b51c64ef6a1fb1f8390f3ad6015b83ec13a"
+dependencies = [
+ "cc",
+ "tree-sitter-language",
+]
+
+[[package]]
+name = "tree-sitter-zig"
+version = "1.1.2"
+source = "git+https://github.com/tree-sitter-grammars/tree-sitter-zig?rev=6479aa13f32f701c383083d8b28360ebd682fb7d#6479aa13f32f701c383083d8b28360ebd682fb7d"
 dependencies = [
  "cc",
  "tree-sitter-language",

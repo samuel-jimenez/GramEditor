@@ -35,6 +35,7 @@ mod tailwindcss;
 mod typescript;
 mod vtsls;
 mod yaml;
+mod zig;
 
 pub(crate) use package_json::{PackageJson, PackageJsonData};
 
@@ -86,6 +87,7 @@ pub fn init(languages: Arc<LanguageRegistry>, fs: Arc<dyn Fs>, node: NodeRuntime
         ("tsx", tree_sitter_typescript::LANGUAGE_TSX),
         ("typescript", tree_sitter_typescript::LANGUAGE_TYPESCRIPT),
         ("yaml", tree_sitter_yaml::LANGUAGE),
+        ("zig", tree_sitter_zig::LANGUAGE),
         ("gitcommit", tree_sitter_gitcommit::LANGUAGE),
     ]);
 
@@ -119,6 +121,8 @@ pub fn init(languages: Arc<LanguageRegistry>, fs: Arc<dyn Fs>, node: NodeRuntime
     ));
     let vtsls_adapter = Arc::new(vtsls::VtslsLspAdapter::new(node.clone(), fs.clone()));
     let yaml_lsp_adapter = Arc::new(yaml::YamlLspAdapter::new(node));
+    let zig_lsp_adapter = Arc::new(zig::ZigLspAdapter);
+    let zig_context_provider = Arc::new(zig::zig_task_context());
 
     let built_in_languages = [
         LanguageInfo {
@@ -243,6 +247,12 @@ pub fn init(languages: Arc<LanguageRegistry>, fs: Arc<dyn Fs>, node: NodeRuntime
         LanguageInfo {
             name: "yaml",
             adapters: vec![yaml_lsp_adapter],
+            ..Default::default()
+        },
+        LanguageInfo {
+            name: "zig",
+            adapters: vec![zig_lsp_adapter],
+            context: Some(zig_context_provider),
             ..Default::default()
         },
         LanguageInfo {
