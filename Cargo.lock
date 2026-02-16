@@ -2424,7 +2424,7 @@ dependencies = [
  "smallvec",
  "smol",
  "task",
- "tree-sitter",
+ "tree-sitter 0.26.5",
  "tree-sitter-go",
  "util",
  "zlog",
@@ -2607,7 +2607,7 @@ dependencies = [
  "terminal_view",
  "text",
  "theme",
- "tree-sitter",
+ "tree-sitter 0.26.5",
  "tree-sitter-go",
  "tree-sitter-json",
  "ui",
@@ -3379,7 +3379,7 @@ dependencies = [
  "theme",
  "tokio",
  "toml 0.8.23",
- "tree-sitter",
+ "tree-sitter 0.26.5",
  "wasmtime",
 ]
 
@@ -5749,7 +5749,7 @@ dependencies = [
  "text",
  "theme",
  "toml 0.8.23",
- "tree-sitter",
+ "tree-sitter 0.26.5",
  "tree-sitter-elixir",
  "tree-sitter-embedded-template",
  "tree-sitter-heex",
@@ -5826,7 +5826,7 @@ dependencies = [
  "serde_json",
  "settings",
  "theme",
- "tree-sitter",
+ "tree-sitter 0.26.5",
  "ui",
  "util",
  "workspace",
@@ -5879,12 +5879,13 @@ dependencies = [
  "text",
  "theme",
  "toml 0.8.23",
- "tree-sitter",
+ "tree-sitter 0.26.5",
  "tree-sitter-bash",
  "tree-sitter-c",
  "tree-sitter-cpp",
  "tree-sitter-css",
  "tree-sitter-diff",
+ "tree-sitter-emmyluadoc",
  "tree-sitter-gitcommit",
  "tree-sitter-gleam",
  "tree-sitter-go",
@@ -5892,6 +5893,7 @@ dependencies = [
  "tree-sitter-gowork",
  "tree-sitter-jsdoc",
  "tree-sitter-json",
+ "tree-sitter-lua",
  "tree-sitter-md",
  "tree-sitter-odin",
  "tree-sitter-python",
@@ -6440,7 +6442,7 @@ dependencies = [
  "serde_json_lenient",
  "settings_json",
  "streaming-iterator",
- "tree-sitter",
+ "tree-sitter 0.26.5",
  "tree-sitter-json",
  "unindent",
 ]
@@ -6644,7 +6646,7 @@ dependencies = [
  "sum_tree",
  "text",
  "theme",
- "tree-sitter",
+ "tree-sitter 0.26.5",
  "util",
  "zlog",
 ]
@@ -10159,7 +10161,7 @@ dependencies = [
  "serde_json",
  "serde_json_lenient",
  "serde_path_to_error",
- "tree-sitter",
+ "tree-sitter 0.26.5",
  "tree-sitter-json",
  "unindent",
  "util",
@@ -11847,6 +11849,16 @@ dependencies = [
 
 [[package]]
 name = "tree-sitter"
+version = "0.20.10"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e747b1f9b7b931ed39a548c1fae149101497de3c1fc8d9e18c62c1a66c683d3d"
+dependencies = [
+ "cc",
+ "regex",
+]
+
+[[package]]
+name = "tree-sitter"
 version = "0.26.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "12987371f54efc9b9306a20dc87ed5aaee9f320c8a8b115e28515c412b2efe39"
@@ -11927,6 +11939,15 @@ checksum = "790063ef14e5b67556abc0b3be0ed863fb41d65ee791cf8c0b20eb42a1fa46af"
 dependencies = [
  "cc",
  "tree-sitter-language",
+]
+
+[[package]]
+name = "tree-sitter-emmyluadoc"
+version = "0.1.0"
+source = "git+https://github.com/EmmyLuaLs/tree-sitter-emmyluadoc?rev=ea755c0fd34c07e16597bd62a404d6eba2a3891e#ea755c0fd34c07e16597bd62a404d6eba2a3891e"
+dependencies = [
+ "cc",
+ "tree-sitter 0.20.10",
 ]
 
 [[package]]
@@ -12019,6 +12040,15 @@ name = "tree-sitter-language"
 version = "0.1.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "009994f150cc0cd50ff54917d5bc8bffe8cad10ca10d81c34da2ec421ae61782"
+
+[[package]]
+name = "tree-sitter-lua"
+version = "0.4.1"
+source = "git+https://github.com/tree-sitter-grammars/tree-sitter-lua?rev=e40f5b6e6df9c2d1d6d664ff5d346a75d71ee6b2#e40f5b6e6df9c2d1d6d664ff5d346a75d71ee6b2"
+dependencies = [
+ "cc",
+ "tree-sitter-language",
+]
 
 [[package]]
 name = "tree-sitter-md"

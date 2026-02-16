@@ -2,7 +2,7 @@
 /// based on https://github.com/zed-extensions/odin
 /// License: MIT
 /// Author: Mo Nematzadeh
-use anyhow::{Context, Result, anyhow};
+use anyhow::{Result, anyhow};
 use async_trait::async_trait;
 use gpui::AsyncApp;
 use http_client::github::AssetKind;
@@ -11,15 +11,12 @@ use http_client::github_download::download_server_binary;
 pub use language::*;
 use lsp::{CompletionItemKind, LanguageServerBinary, SymbolKind};
 use project::ContextProviderWithTasks;
-use smol::fs;
-use smol::stream::StreamExt;
 use std::path::PathBuf;
 use std::sync::Arc;
 use task::{TaskTemplate, TaskTemplates};
 use util::fs::{make_file_executable, remove_matching};
-use util::maybe;
 
-use crate::helpers::{verify_metadata, with_exe, write_metadata};
+use crate::helpers::{find_cached_server_binary, verify_metadata, with_exe, write_metadata};
 
 pub struct OdinLspAdapter;
 
@@ -178,54 +175,13 @@ impl LspInstaller for OdinLspAdapter {
         container_dir: PathBuf,
         _: &dyn LspAdapterDelegate,
     ) -> Option<LanguageServerBinary> {
-        let binary_result = maybe!(async {
-            let mut last = None;
-            let mut entries = fs::read_dir(&container_dir)
-                .await
-                .with_context(|| format!("listing {container_dir:?}"))?;
-
-            while let Some(entry) = entries.next().await {
-                let Ok(entry) = entry else { continue };
-                let path = entry.path();
-
-                if path.extension().is_some_and(|ext| ext == "metadata") {
-                    continue;
-                }
-                let file_name = entry.file_name();
-                let Some(file_name_str) = file_name.to_str() else {
-                    continue;
-                };
-                if !file_name_str.starts_with("ols-") {
-                    continue;
-                }
-                log::info!("Looking at {container_dir:?} [{file_name:?}]");
-                let Some(server_path) = Self::ols_path(&path).await else {
-                    continue;
-                };
-
-                if server_path.exists() {
-                    log::info!("Cached ols binary: {:?}", server_path);
-                    last = Some(LanguageServerBinary {
-                        path: server_path,
-                        arguments: vec![],
-                        env: None,
-                    });
-                }
-            }
-            anyhow::Ok(last)
-        })
-        .await;
-
-        match binary_result {
-            Ok(Some(binary)) => Some(binary),
-            Ok(None) => {
-                log::info!("No cached ols binary found");
-                None
-            }
-            Err(e) => {
-                log::error!("Failed to look up cached ols binary: {e:#}");
-                None
-            }
+        match find_cached_server_binary(&container_dir, Some("ols-"), Self::ols_path).await {
+            Some(path) => Some(LanguageServerBinary {
+                path,
+                env: None,
+                arguments: vec![],
+            }),
+            None => None,
         }
     }
 }

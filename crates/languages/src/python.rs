@@ -45,7 +45,7 @@ use std::{
 use task::{ShellKind, TaskTemplate, TaskTemplates, VariableName};
 use util::{ResultExt, maybe};
 
-use crate::helpers::{verify_metadata, write_metadata};
+use crate::helpers::{find_cached_server_binary, verify_metadata, write_metadata};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub(crate) struct PythonToolchainData {
@@ -143,9 +143,7 @@ fn process_pyright_completions(items: &mut [lsp::CompletionItem]) {
     }
 }
 
-pub struct TyLspAdapter {
-    fs: Arc<dyn Fs>,
-}
+pub struct TyLspAdapter;
 
 #[cfg(target_os = "macos")]
 impl TyLspAdapter {
@@ -173,10 +171,6 @@ impl TyLspAdapter {
 
 impl TyLspAdapter {
     const SERVER_NAME: LanguageServerName = LanguageServerName::new_static("ty");
-
-    pub fn new(fs: Arc<dyn Fs>) -> TyLspAdapter {
-        TyLspAdapter { fs }
-    }
 
     fn build_asset_name() -> Result<(String, String)> {
         let arch = match consts::ARCH {
@@ -384,33 +378,24 @@ impl LspInstaller for TyLspAdapter {
         container_dir: PathBuf,
         _: &dyn LspAdapterDelegate,
     ) -> Option<LanguageServerBinary> {
-        maybe!(async {
-            let mut last = None;
-            let mut entries = self.fs.read_dir(&container_dir).await?;
-            while let Some(entry) = entries.next().await {
-                let path = entry?;
-                if path.extension().is_some_and(|ext| ext == "metadata") {
-                    continue;
-                }
-                last = Some(path);
+        match find_cached_server_binary(&container_dir, None, async |path| {
+            match Self::build_asset_name() {
+                Ok(name) => Some(match TyLspAdapter::GITHUB_ASSET_KIND {
+                    AssetKind::TarGz | AssetKind::Gz => path.join(name.0).join("ty"),
+                    AssetKind::Zip => path.join("ty.exe"),
+                }),
+                Err(_) => None,
             }
-
-            let path = last.context("no cached binary")?;
-            let path = match TyLspAdapter::GITHUB_ASSET_KIND {
-                AssetKind::TarGz | AssetKind::Gz => {
-                    path.join(Self::build_asset_name()?.0).join("ty")
-                }
-                AssetKind::Zip => path.join("ty.exe"),
-            };
-
-            anyhow::Ok(LanguageServerBinary {
+        })
+        .await
+        {
+            Some(path) => Some(LanguageServerBinary {
                 path,
                 env: None,
                 arguments: vec!["server".into()],
-            })
-        })
-        .await
-        .log_err()
+            }),
+            None => None,
+        }
     }
 }
 

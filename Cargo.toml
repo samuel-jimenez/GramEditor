@@ -567,6 +567,8 @@ tree-sitter-heex = { git = "https://github.com/zed-industries/tree-sitter-heex",
 tree-sitter-html = "0.23"
 tree-sitter-jsdoc = "0.23"
 tree-sitter-json = "0.24"
+tree-sitter-lua = { git = "https://github.com/tree-sitter-grammars/tree-sitter-lua", rev = "e40f5b6e6df9c2d1d6d664ff5d346a75d71ee6b2" }
+tree-sitter-emmyluadoc = { git = "https://github.com/EmmyLuaLs/tree-sitter-emmyluadoc", rev = "ea755c0fd34c07e16597bd62a404d6eba2a3891e" }
 tree-sitter-md = { git = "https://github.com/tree-sitter-grammars/tree-sitter-markdown", rev = "9a23c1a96c0513d8fc6520972beedd419a973539" }
 tree-sitter-odin = { git = "https://github.com/tree-sitter-grammars/tree-sitter-odin", rev = "e8adc739b78409a99f8c31313f0bb54cc538cf73" }
 tree-sitter-python = "0.25"

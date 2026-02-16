@@ -1,8 +1,10 @@
-use anyhow::Result;
+use anyhow::{Context, Result};
 use http_client::github_download::GithubBinaryMetadata;
 use language::LspAdapterDelegate;
 use lsp::LanguageServerBinary;
+use smol::{fs, stream::StreamExt};
 use std::path::PathBuf;
+use util::maybe;
 
 pub fn with_exe(name: &str) -> String {
     let suffix = if cfg!(windows) { ".exe" } else { "" };
@@ -64,4 +66,57 @@ pub async fn verify_metadata(
         return true;
     }
     return false;
+}
+
+pub async fn find_cached_server_binary(
+    container_dir: &PathBuf,
+    prefix: Option<&str>,
+    build_server_path: impl AsyncFn(&PathBuf) -> Option<PathBuf>,
+) -> Option<PathBuf> {
+    let binary_result = maybe!(async {
+        let mut last = None;
+        let mut entries = fs::read_dir(&container_dir)
+            .await
+            .with_context(|| format!("listing {container_dir:?}"))?;
+
+        while let Some(entry) = entries.next().await {
+            let Ok(entry) = entry else { continue };
+            let path = entry.path();
+
+            if path.extension().is_some_and(|ext| ext == "metadata") {
+                continue;
+            }
+
+            let file_name = entry.file_name();
+            let Some(file_name_str) = file_name.to_str() else {
+                continue;
+            };
+
+            if let Some(prefix) = prefix {
+                if !file_name_str.starts_with(prefix) {
+                    continue;
+                }
+            }
+            if let Some(server_path) = build_server_path(&path).await {
+                if server_path.exists() {
+                    log::info!("Cached LSP binary: {:?}", server_path);
+                    last = Some(server_path);
+                }
+            }
+        }
+        anyhow::Ok(last)
+    })
+    .await;
+
+    match binary_result {
+        Ok(Some(binary)) => Some(binary),
+        Ok(None) => {
+            log::info!("No cached LSP binary found");
+            None
+        }
+        Err(e) => {
+            log::error!("Failed to look up cached LSP binary: {e:#}");
+            None
+        }
+    }
 }

@@ -2,23 +2,23 @@
 /// based on https://github.com/zed-extensions/zig
 /// License: ./LICENSE-APACHE
 /// Author: Allan Calix
-use anyhow::{Context, Result, anyhow};
+use anyhow::{Result, anyhow};
 use async_trait::async_trait;
 use gpui::AsyncApp;
 use http_client::github::AssetKind;
 use http_client::github::latest_github_release;
-use http_client::github_download::{GithubBinaryMetadata, download_server_binary};
+use http_client::github_download::download_server_binary;
 pub use language::*;
 use lsp::LanguageServerBinary;
 use project::ContextProviderWithTasks;
-use smol::fs;
-use smol::stream::StreamExt;
 use std::path::PathBuf;
 use task::{TaskTemplate, TaskTemplates};
 use util::fs::{make_file_executable, remove_matching};
-use util::maybe;
 
+use crate::helpers::find_cached_server_binary;
+use crate::helpers::verify_metadata;
 use crate::helpers::with_exe;
+use crate::helpers::write_metadata;
 
 #[derive(Clone, Debug)]
 pub struct ZlsBinaryVersion {
@@ -140,26 +140,8 @@ impl LspInstaller for ZigLspAdapter {
             arguments: vec![],
         };
 
-        let metadata_path = destination_path.with_extension("metadata");
-        let metadata = GithubBinaryMetadata::read_from_file(&metadata_path)
-            .await
-            .ok();
-        if let Some(_metadata) = metadata {
-            let validity_check = async || {
-                delegate
-                    .try_exec(LanguageServerBinary {
-                        path: server_path.clone(),
-                        arguments: vec!["--version".into()],
-                        env: None,
-                    })
-                    .await
-                    .inspect_err(|err| {
-                        log::warn!("Unable to run {server_path:?}, redownloading: {err:#}")
-                    })
-            };
-            if validity_check().await.is_ok() {
-                return Ok(binary);
-            }
+        if verify_metadata(&destination_path, &server_path, &None, delegate).await {
+            return Ok(binary);
         }
         download_server_binary(
             &*delegate.http_client(),
@@ -171,14 +153,7 @@ impl LspInstaller for ZigLspAdapter {
         .await?;
         make_file_executable(&server_path).await?;
         remove_matching(&container_dir, |path| path != destination_path).await;
-        GithubBinaryMetadata::write_to_file(
-            &GithubBinaryMetadata {
-                metadata_version: 1,
-                digest: None,
-            },
-            &metadata_path,
-        )
-        .await?;
+        write_metadata(&destination_path, None).await?;
         Ok(binary)
     }
 
@@ -187,52 +162,17 @@ impl LspInstaller for ZigLspAdapter {
         container_dir: PathBuf,
         _: &dyn LspAdapterDelegate,
     ) -> Option<LanguageServerBinary> {
-        let binary_result = maybe!(async {
-            let mut last = None;
-            let mut entries = fs::read_dir(&container_dir)
-                .await
-                .with_context(|| format!("listing {container_dir:?}"))?;
-
-            while let Some(entry) = entries.next().await {
-                let Ok(entry) = entry else { continue };
-                let path = entry.path();
-
-                if path.extension().is_some_and(|ext| ext == "metadata") {
-                    continue;
-                }
-
-                let file_name = entry.file_name();
-                let Some(file_name_str) = file_name.to_str() else {
-                    continue;
-                };
-
-                if file_name_str.starts_with("zls-") {
-                    let server_path = path.join(with_exe("zls"));
-
-                    if server_path.exists() {
-                        log::info!("Cached zls binary: {:?}", server_path);
-                        last = Some(LanguageServerBinary {
-                            path: server_path,
-                            arguments: vec![],
-                            env: None,
-                        });
-                    }
-                }
-            }
-            anyhow::Ok(last)
+        match find_cached_server_binary(&container_dir, Some("zls-"), async |path| {
+            Some(path.join(with_exe("zls")))
         })
-        .await;
-
-        match binary_result {
-            Ok(Some(binary)) => Some(binary),
-            Ok(None) => {
-                log::info!("No cached zls binary found");
-                None
-            }
-            Err(e) => {
-                log::error!("Failed to look up cached zls binary: {e:#}");
-                None
-            }
+        .await
+        {
+            Some(path) => Some(LanguageServerBinary {
+                path,
+                env: None,
+                arguments: vec![],
+            }),
+            None => None,
         }
     }
 }
