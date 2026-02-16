@@ -3,7 +3,7 @@ use async_trait::async_trait;
 use futures::StreamExt;
 use gpui::{App, AsyncApp};
 use http_client::github::{AssetKind, GitHubLspBinaryVersion, latest_github_release};
-use http_client::github_download::{GithubBinaryMetadata, download_server_binary};
+use http_client::github_download::download_server_binary;
 pub use language::*;
 use lsp::{InitializeParams, LanguageServerBinary, LanguageServerName};
 use project::lsp_store::clangd_ext;
@@ -11,6 +11,8 @@ use serde_json::json;
 use smol::fs;
 use std::{env::consts, path::PathBuf, sync::Arc};
 use util::{ResultExt, fs::remove_matching, maybe, merge_json_value_into};
+
+use crate::helpers::{verify_metadata, write_metadata};
 
 pub struct CLspAdapter;
 
@@ -88,38 +90,8 @@ impl LspInstaller for CLspAdapter {
             arguments: Default::default(),
         };
 
-        let metadata_path = version_dir.join("metadata");
-        let metadata = GithubBinaryMetadata::read_from_file(&metadata_path)
-            .await
-            .ok();
-        if let Some(metadata) = metadata {
-            let validity_check = async || {
-                delegate
-                    .try_exec(LanguageServerBinary {
-                        path: binary_path.clone(),
-                        arguments: vec!["--version".into()],
-                        env: None,
-                    })
-                    .await
-                    .inspect_err(|err| {
-                        log::warn!("Unable to run {binary_path:?} asset, redownloading: {err:#}",)
-                    })
-            };
-            if let (Some(actual_digest), Some(expected_digest)) =
-                (&metadata.digest, &expected_digest)
-            {
-                if actual_digest == expected_digest {
-                    if validity_check().await.is_ok() {
-                        return Ok(binary);
-                    }
-                } else {
-                    log::info!(
-                        "SHA-256 mismatch for {binary_path:?} asset, downloading new asset. Expected: {expected_digest}, Got: {actual_digest}"
-                    );
-                }
-            } else if validity_check().await.is_ok() {
-                return Ok(binary);
-            }
+        if verify_metadata(&version_dir, &binary_path, &expected_digest, delegate).await {
+            return Ok(binary);
         }
         download_server_binary(
             &*delegate.http_client(),
@@ -130,14 +102,7 @@ impl LspInstaller for CLspAdapter {
         )
         .await?;
         remove_matching(&container_dir, |entry| entry != version_dir).await;
-        GithubBinaryMetadata::write_to_file(
-            &GithubBinaryMetadata {
-                metadata_version: 1,
-                digest: expected_digest,
-            },
-            &metadata_path,
-        )
-        .await?;
+        write_metadata(&version_dir, expected_digest).await?;
 
         Ok(binary)
     }

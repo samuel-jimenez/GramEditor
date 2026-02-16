@@ -6,7 +6,7 @@ use futures::lock::OwnedMutexGuard;
 use gpui::{App, AppContext, AsyncApp, SharedString, Task};
 use http_client::github::AssetKind;
 use http_client::github::{GitHubLspBinaryVersion, latest_github_release};
-use http_client::github_download::{GithubBinaryMetadata, download_server_binary};
+use http_client::github_download::download_server_binary;
 pub use language::*;
 use lsp::{InitializeParams, LanguageServerBinary, LanguageServerBinaryOptions};
 use project::lsp_store::rust_analyzer_ext::CARGO_DIAGNOSTICS_SOURCE_NAME;
@@ -31,6 +31,7 @@ use util::merge_json_value_into;
 use util::rel_path::RelPath;
 use util::{ResultExt, maybe};
 
+use crate::helpers::{verify_metadata, write_metadata};
 use crate::language_settings::language_settings;
 
 pub struct RustLspAdapter;
@@ -711,40 +712,9 @@ impl LspInstaller for RustLspAdapter {
             arguments: Default::default(),
         };
 
-        let metadata_path = destination_path.with_extension("metadata");
-        let metadata = GithubBinaryMetadata::read_from_file(&metadata_path)
-            .await
-            .ok();
-        if let Some(metadata) = metadata {
-            let validity_check = async || {
-                delegate
-                    .try_exec(LanguageServerBinary {
-                        path: server_path.clone(),
-                        arguments: vec!["--version".into()],
-                        env: None,
-                    })
-                    .await
-                    .inspect_err(|err| {
-                        log::warn!("Unable to run {server_path:?} asset, redownloading: {err:#}",)
-                    })
-            };
-            if let (Some(actual_digest), Some(expected_digest)) =
-                (&metadata.digest, &expected_digest)
-            {
-                if actual_digest == expected_digest {
-                    if validity_check().await.is_ok() {
-                        return Ok(binary);
-                    }
-                } else {
-                    log::info!(
-                        "SHA-256 mismatch for {destination_path:?} asset, downloading new asset. Expected: {expected_digest}, Got: {actual_digest}"
-                    );
-                }
-            } else if validity_check().await.is_ok() {
-                return Ok(binary);
-            }
+        if verify_metadata(&destination_path, &server_path, &expected_digest, delegate).await {
+            return Ok(binary);
         }
-
         download_server_binary(
             &*delegate.http_client(),
             &url,
@@ -755,14 +725,7 @@ impl LspInstaller for RustLspAdapter {
         .await?;
         make_file_executable(&server_path).await?;
         remove_matching(&container_dir, |path| path != destination_path).await;
-        GithubBinaryMetadata::write_to_file(
-            &GithubBinaryMetadata {
-                metadata_version: 1,
-                digest: expected_digest,
-            },
-            &metadata_path,
-        )
-        .await?;
+        write_metadata(&destination_path, expected_digest).await?;
 
         Ok(LanguageServerBinary {
             path: server_path,

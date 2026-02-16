@@ -45,6 +45,8 @@ use std::{
 use task::{ShellKind, TaskTemplate, TaskTemplates, VariableName};
 use util::{ResultExt, maybe};
 
+use crate::helpers::{verify_metadata, write_metadata};
+
 #[derive(Debug, Serialize, Deserialize)]
 pub(crate) struct PythonToolchainData {
     #[serde(flatten)]
@@ -354,38 +356,8 @@ impl LspInstaller for TyLspAdapter {
             arguments: vec!["server".into()],
         };
 
-        let metadata_path = destination_path.with_extension("metadata");
-        let metadata = GithubBinaryMetadata::read_from_file(&metadata_path)
-            .await
-            .ok();
-        if let Some(metadata) = metadata {
-            let validity_check = async || {
-                delegate
-                    .try_exec(LanguageServerBinary {
-                        path: server_path.clone(),
-                        arguments: vec!["--version".into()],
-                        env: None,
-                    })
-                    .await
-                    .inspect_err(|err| {
-                        log::warn!("Unable to run {server_path:?} asset, redownloading: {err:#}",)
-                    })
-            };
-            if let (Some(actual_digest), Some(expected_digest)) =
-                (&metadata.digest, &expected_digest)
-            {
-                if actual_digest == expected_digest {
-                    if validity_check().await.is_ok() {
-                        return Ok(binary);
-                    }
-                } else {
-                    log::info!(
-                        "SHA-256 mismatch for {destination_path:?} asset, downloading new asset. Expected: {expected_digest}, Got: {actual_digest}"
-                    );
-                }
-            } else if validity_check().await.is_ok() {
-                return Ok(binary);
-            }
+        if verify_metadata(&destination_path, &server_path, &expected_digest, delegate).await {
+            return Ok(binary);
         }
 
         download_server_binary(
@@ -398,14 +370,7 @@ impl LspInstaller for TyLspAdapter {
         .await?;
         make_file_executable(&server_path).await?;
         remove_matching(&container_dir, |path| path != destination_path).await;
-        GithubBinaryMetadata::write_to_file(
-            &GithubBinaryMetadata {
-                metadata_version: 1,
-                digest: expected_digest,
-            },
-            &metadata_path,
-        )
-        .await?;
+        write_metadata(&destination_path, expected_digest).await?;
 
         Ok(LanguageServerBinary {
             path: server_path,

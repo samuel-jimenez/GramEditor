@@ -24,6 +24,7 @@ mod css;
 mod eslint;
 mod gleam;
 mod go;
+mod helpers;
 mod json;
 mod package_json;
 mod python;
