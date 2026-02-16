@@ -5902,6 +5902,7 @@ dependencies = [
  "tree-sitter-regex",
  "tree-sitter-rust",
  "tree-sitter-sequel",
+ "tree-sitter-toml-ng",
  "tree-sitter-typescript",
  "tree-sitter-yaml",
  "tree-sitter-zig",
@@ -12124,6 +12125,16 @@ dependencies = [
 name = "tree-sitter-sequel"
 version = "0.3.8"
 source = "git+https://github.com/DerekStride/tree-sitter-sql?rev=4a99c73f5384f2be10adc55208c84d95a7eb1137#4a99c73f5384f2be10adc55208c84d95a7eb1137"
+dependencies = [
+ "cc",
+ "tree-sitter-language",
+]
+
+[[package]]
+name = "tree-sitter-toml-ng"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e9adc2c898ae49730e857d75be403da3f92bb81d8e37a2f918a08dd10de5ebb1"
 dependencies = [
  "cc",
  "tree-sitter-language",

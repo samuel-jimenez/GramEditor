@@ -91,6 +91,7 @@ pub fn init(languages: Arc<LanguageRegistry>, fs: Arc<dyn Fs>, node: NodeRuntime
         ("regex", tree_sitter_regex::LANGUAGE),
         ("rust", tree_sitter_rust::LANGUAGE),
         ("sql", tree_sitter_sql::LANGUAGE),
+        ("toml", tree_sitter_toml::LANGUAGE),
         ("tsx", tree_sitter_typescript::LANGUAGE_TSX),
         ("typescript", tree_sitter_typescript::LANGUAGE_TYPESCRIPT),
         ("yaml", tree_sitter_yaml::LANGUAGE),
@@ -246,6 +247,11 @@ pub fn init(languages: Arc<LanguageRegistry>, fs: Arc<dyn Fs>, node: NodeRuntime
         },
         LanguageInfo {
             name: "sql",
+            adapters: vec![],
+            ..Default::default()
+        },
+        LanguageInfo {
+            name: "toml",
             adapters: vec![],
             ..Default::default()
         },
