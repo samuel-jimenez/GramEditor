@@ -1729,7 +1729,7 @@ mod tests {
 
         assert_eq!(
             parsed.children,
-            vec![p("Checkout this https://codeberg.org link", 0..36)]
+            vec![p("Checkout this https://codeberg.org link", 0..39)]
         );
     }
 
