@@ -25,6 +25,7 @@ load-grammars = [
     "tree-sitter-go",
     "tree-sitter-go-mod",
     "tree-sitter-gowork",
+    "tree-sitter-html",
     "tree-sitter-jsdoc",
     "tree-sitter-json",
     "tree-sitter-lua",
@@ -92,6 +93,7 @@ tree-sitter-gleam = { workspace = true, optional = true }
 tree-sitter-go = { workspace = true, optional = true }
 tree-sitter-go-mod = { workspace = true, optional = true }
 tree-sitter-gowork = { workspace = true, optional = true }
+tree-sitter-html = { workspace = true, optional = true }
 tree-sitter-jsdoc = { workspace = true, optional = true }
 tree-sitter-json = { workspace = true, optional = true }
 tree-sitter-lua = { workspace = true, optional = true }
@@ -118,6 +120,7 @@ tree-sitter-css.workspace = true
 tree-sitter-erlang.workspace = true
 tree-sitter-gleam.workspace = true
 tree-sitter-go.workspace = true
+tree-sitter-html.workspace = true
 tree-sitter-lua.workspace = true
 tree-sitter-odin.workspace = true
 tree-sitter-python.workspace = true

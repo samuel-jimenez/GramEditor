@@ -26,6 +26,7 @@ mod eslint;
 mod gleam;
 mod go;
 mod helpers;
+mod html;
 mod json;
 mod lua;
 mod odin;
@@ -78,6 +79,7 @@ pub fn init(languages: Arc<LanguageRegistry>, fs: Arc<dyn Fs>, node: NodeRuntime
         ("go", tree_sitter_go::LANGUAGE),
         ("gomod", tree_sitter_go_mod::LANGUAGE),
         ("gowork", tree_sitter_gowork::LANGUAGE),
+        ("html", tree_sitter_html::LANGUAGE),
         ("jsdoc", tree_sitter_jsdoc::LANGUAGE),
         ("json", tree_sitter_json::LANGUAGE),
         ("jsonc", tree_sitter_json::LANGUAGE),
@@ -102,6 +104,8 @@ pub fn init(languages: Arc<LanguageRegistry>, fs: Arc<dyn Fs>, node: NodeRuntime
     let gleam_context_provider = Arc::new(gleam::gleam_task_context());
     let go_context_provider = Arc::new(go::GoContextProvider);
     let go_lsp_adapter = Arc::new(go::GoLspAdapter);
+    let html_lsp_adapter = Arc::new(html::HtmlLspAdapter::new(node.clone()));
+    let superhtml_lsp_adapter = Arc::new(html::SuperhtmlLspAdapter);
     let json_context_provider = Arc::new(JsonTaskProvider);
     let erlang_ls_adapter = Arc::new(erlang::ErlangLsAdapter);
     let elp_adapter = Arc::new(erlang::ElpAdapter);
@@ -185,6 +189,11 @@ pub fn init(languages: Arc<LanguageRegistry>, fs: Arc<dyn Fs>, node: NodeRuntime
             name: "gowork",
             adapters: vec![go_lsp_adapter],
             context: Some(go_context_provider),
+            ..Default::default()
+        },
+        LanguageInfo {
+            name: "html",
+            adapters: vec![superhtml_lsp_adapter, html_lsp_adapter],
             ..Default::default()
         },
         LanguageInfo {

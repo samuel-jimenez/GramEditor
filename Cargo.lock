@@ -5892,6 +5892,7 @@ dependencies = [
  "tree-sitter-go",
  "tree-sitter-gomod",
  "tree-sitter-gowork",
+ "tree-sitter-html",
  "tree-sitter-jsdoc",
  "tree-sitter-json",
  "tree-sitter-lua",
