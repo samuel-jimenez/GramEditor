@@ -157,6 +157,7 @@ pub fn init(languages: Arc<LanguageRegistry>, fs: Arc<dyn Fs>, node: NodeRuntime
             name: "gleam",
             adapters: vec![gleam_lsp_adapter],
             context: Some(gleam_context_provider),
+            manifest_name: Some(SharedString::new_static("gleam.toml").into()),
             ..Default::default()
         },
         LanguageInfo {
@@ -261,6 +262,7 @@ pub fn init(languages: Arc<LanguageRegistry>, fs: Arc<dyn Fs>, node: NodeRuntime
             name: "zig",
             adapters: vec![zig_lsp_adapter],
             context: Some(zig_context_provider),
+            manifest_name: Some(SharedString::new_static("build.zig.zon").into()),
             ..Default::default()
         },
         LanguageInfo {
