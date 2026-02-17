@@ -165,6 +165,7 @@ There is no official discord or reddit community.
 - [Markdown](./languages/markdown.md)
 - [Nim](./languages/nim.md)
 - [OCaml](./languages/ocaml.md)
+- [Odin](./languages/odin.md)
 - [OpenTofu](./languages/opentofu.md)
 - [PHP](./languages/php.md)
 - [PowerShell](./languages/powershell.md)

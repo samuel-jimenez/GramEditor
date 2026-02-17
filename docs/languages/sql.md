@@ -1,12 +1,13 @@
 # SQL
 
-SQL files are handled by the [SQL Extension](https://github.com/zed-extensions/sql).
+Syntax highlighting and formatting support for SQL is built into the editor.
 
-- Tree-sitter: [nervenes/tree-sitter-sql](https://github.com/nervenes/tree-sitter-sql)
+- [Tree sitter grammar](https://github.com/DerekStride/tree-sitter-sql)
 
 ### Formatting
 
-Gram supports auto-formatting SQL using external tools like [`sql-formatter`](https://github.com/sql-formatter-org/sql-formatter).
+SQL auto-formatting can be added to the editor using external tools like
+[`sql-formatter`](https://github.com/sql-formatter-org/sql-formatter).
 
 1. Install `sql-formatter`:
 

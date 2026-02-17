@@ -1588,7 +1588,8 @@
     "HTML": {
       "prettier": {
         "allowed": true
-      }
+      },
+      "language_servers": ["superhtml", "!vscode-html-language-server", "..."]
     },
     "HTML+ERB": {
       "language_servers": ["herb", "!ruby-lsp", "..."]
@@ -1686,6 +1687,9 @@
         "allowed": true,
         "plugins": ["prettier-plugin-svelte"]
       }
+    },
+    "TOML": {
+      "language_servers": ["!taplo", "..."]
     },
     "TSX": {
       "language_servers": ["!typescript-language-server", "vtsls", "..."],

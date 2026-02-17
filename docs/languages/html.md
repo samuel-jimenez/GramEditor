@@ -1,9 +1,28 @@
 # HTML
 
-HTML support is available through the [HTML extension](https://github.com/zed-industries/zed/tree/main/extensions/html).
+HTML support is built into the editor, both syntax highlighting and language
+server support.
 
-- Tree-sitter: [tree-sitter/tree-sitter-html](https://github.com/tree-sitter/tree-sitter-html)
-- Language Server: [microsoft/vscode-html-languageservice](https://github.com/microsoft/vscode-html-languageservice)
+- [Tree sitter grammar](https://github.com/tree-sitter/tree-sitter-html)
+
+There is language server support available from two different servers:
+
+- [SuperHTML](https://github.com/kristoff-it/superhtml)
+- [microsoft/vscode-html-languageservice](https://github.com/microsoft/vscode-html-languageservice)
+
+By default, the Microsoft language server is disabled and SuperHTML enabled. To
+switch language server, add the following to your `settings.jsonc`:
+
+```jsonc
+{
+  "languages": {
+    "HTML": {
+      "language_servers": ["vscode-html-language-server", "!superhtml", "..."],
+    },
+  },
+}
+```
+
 
 ## Formatting
 
@@ -23,7 +42,7 @@ You can still trigger formatting manually with {#kb editor::Format} or by openin
 
 ### LSP Formatting
 
-To use the `vscode-html-language-server` language server auto-formatting instead of Prettier, add the following to your Gram settings:
+To use the language server auto-formatting instead of Prettier, add the following to your Gram settings:
 
 ```jsonc
   "languages": {

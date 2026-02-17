@@ -28,7 +28,7 @@ impl TomlLspAdapter {
 }
 
 impl TomlLspAdapter {
-    const SERVER_NAME: LanguageServerName = LanguageServerName::new_static("toml-taplo");
+    const SERVER_NAME: LanguageServerName = LanguageServerName::new_static("taplo");
 }
 
 impl LspInstaller for TomlLspAdapter {

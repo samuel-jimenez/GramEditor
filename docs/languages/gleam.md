@@ -1,9 +1,17 @@
 # Gleam
 
-Gleam support is available through the [Gleam extension](https://github.com/gleam-lang/zed-gleam). To learn about Gleam, see the [docs](https://gleam.run/documentation/) or check out the [`stdlib` reference](https://hexdocs.pm/gleam_stdlib/). The Gleam language server has a variety of features, including go-to definition, automatic imports, and [more](https://gleam.run/language-server/).
+Gleam support is built into the editor.
 
-- Tree-sitter: [gleam-lang/tree-sitter-gleam](https://github.com/gleam-lang/tree-sitter-gleam)
-- Language Server: [gleam lsp](https://github.com/gleam-lang/gleam/tree/main/compiler-core/src/language_server)
+Gleam is a friendly language for building type-safe systems that scale!
+
+To learn more:
+
+- [Website](https://gleam.run)
+- [Documentation](https://gleam.run/documentation/)
+- [`gleam_stdlib` reference](https://hexdocs.pm/gleam_stdlib/).
+- [gleam-lang/tree-sitter-gleam](https://github.com/gleam-lang/tree-sitter-gleam)
+
+The Gleam language server is built into the gleam compiler and has a lot of helpful features, including go-to definition, automatic imports, and [more](https://gleam.run/language-server/).
 
 See also:
 
