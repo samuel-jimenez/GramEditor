@@ -61,7 +61,7 @@ Some work out-of-the box and others rely on 3rd party extensions.
 - [Ruby](./languages/ruby.md)
 - [Rust](./languages/rust.md) \*
 - [Scala](./languages/scala.md)
-- [Scheme](./languages/scheme.md)
+- [Scheme](./languages/scheme.md) \*
 - [Shell Script](./languages/sh.md)
 - [SQL](./languages/sql.md) \*
 - [Svelte](./languages/svelte.md)

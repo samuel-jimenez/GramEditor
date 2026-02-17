@@ -1,5 +1,5 @@
 # Scheme
 
-Scheme support is available through the [Scheme extension](https://github.com/zed-extensions/scheme).
+Scheme is supported in the editor.
 
 - Tree-sitter: [6cdh/tree-sitter-scheme](https://github.com/6cdh/tree-sitter-scheme)
