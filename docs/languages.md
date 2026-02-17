@@ -24,28 +24,30 @@ Some work out-of-the box and others rely on 3rd party extensions.
 - [Elixir](./languages/elixir.md)
 - [Elm](./languages/elm.md)
 - [Emmet](./languages/emmet.md)
-- [Erlang](./languages/erlang.md)
+- [Erlang](./languages/erlang.md) \*
 - [Fish](./languages/fish.md)
 - [GDScript](./languages/gdscript.md)
-- [Gleam](./languages/gleam.md)
+- [Gleam](./languages/gleam.md) \*
 - [GLSL](./languages/glsl.md)
 - [Go](./languages/go.md) \*
 - [Groovy](./languages/groovy.md)
 - [Haskell](./languages/haskell.md)
 - [Helm](./languages/helm.md)
-- [HTML](./languages/html.md)
+- [HTML](./languages/html.md) \*
 - [Java](./languages/java.md)
 - [JavaScript](./languages/javascript.md) \*
 - [Julia](./languages/julia.md)
 - [JSON](./languages/json.md) \*
 - [Jsonnet](./languages/jsonnet.md)
 - [Kotlin](./languages/kotlin.md)
-- [Lua](./languages/lua.md)
+- [Lua](./languages/lua.md) \*
 - [Luau](./languages/luau.md)
 - [Makefile](./languages/makefile.md)
 - [Markdown](./languages/markdown.md) \*
 - [Nim](./languages/nim.md)
 - [OCaml](./languages/ocaml.md)
+- [Odin](./languages/odin.md) \*
+- [OpenTofu](./languages/opentofu.md)
 - [PHP](./languages/php.md)
 - [Prisma](./languages/prisma.md)
 - [Proto](./languages/proto.md)
@@ -57,15 +59,16 @@ Some work out-of-the box and others rely on 3rd party extensions.
 - [Racket](./languages/racket.md)
 - [Roc](./languages/roc.md)
 - [Ruby](./languages/ruby.md)
-- [Rust](./languages/rust.md) \* (Gram's written in Rust)
+- [Rust](./languages/rust.md) \*
 - [Scala](./languages/scala.md)
 - [Scheme](./languages/scheme.md)
 - [Shell Script](./languages/sh.md)
+- [SQL](./languages/sql.md) \*
 - [Svelte](./languages/svelte.md)
 - [Swift](./languages/swift.md)
 - [Tailwind CSS](./languages/tailwindcss.md) \*
 - [Terraform](./languages/terraform.md)
-- [TOML](./languages/toml.md)
+- [TOML](./languages/toml.md) \*
 - [TypeScript](./languages/typescript.md) \*
 - [Uiua](./languages/uiua.md)
 - [Vue](./languages/vue.md)
@@ -73,9 +76,9 @@ Some work out-of-the box and others rely on 3rd party extensions.
 - [YAML](./languages/yaml.md) \*
 - [Yara](./languages/yarn.md)
 - [Yarn](./languages/yarn.md)
-- [Zig](./languages/zig.md)
+- [Zig](./languages/zig.md) \*
 
-## Additional Community Language Extensions
+## Additional Language Extensions
 
 - [Ada](https://github.com/wisn/zed-ada-language)
 - [Aiken](https://github.com/aiken-lang/zed-aiken)
@@ -132,7 +135,6 @@ Some work out-of-the box and others rely on 3rd party extensions.
 - [Nix](https://github.com/zed-extensions/nix)
 - [Noir](https://github.com/shuklaayush/zed-noir)
 - [Nu](https://github.com/zed-extensions/nu)
-- [Odin](https://github.com/rxptr/zed-odin)
 - [Pact](https://github.com/kadena-community/pact-zed)
 - [Pest](https://github.com/pest-parser/zed-pest)
 - [PICA200 assembly](https://github.com/Squareheron942/zed-pica200)
@@ -150,7 +152,6 @@ Some work out-of-the box and others rely on 3rd party extensions.
 - [Slint](https://gitlab.com/flukejones/zed-slint)
 - [Smithy](https://github.com/joshrutkowski/zed-smithy)
 - [Solidity](https://github.com/zarifpour/zed-solidity)
-- [SQL](https://github.com/evrensen467/zed-sql)
 - [Strace](https://github.com/sigmaSd/zed-strace)
 - [Swift](https://github.com/zed-extensions/swift)
 - [Templ](https://github.com/makifdb/zed-templ)

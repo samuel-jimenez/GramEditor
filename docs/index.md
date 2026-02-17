@@ -3,21 +3,21 @@
 Gram is a **hard fork** of the Zed editor, with
 the following list (incomplete) of changes:
 
-- Integrated documentation viewer
-- No license agreement on installation
 - All AI integration has been removed
 - All Telemetry has been removed
+- All collaboration integration has been removed
 - No proprietary server component
 - No auto updates
-- All collaboration integration has been removed
+- No license agreement on installation
+- Only install language servers when explicitly allowed
+- Integrated documentation viewer
+- Support for more languages built in
+- More syntax highlighting themes built in
 - Extensions are installed from source only
 - Partial support for WASM extensions (due to AI removal)
 
-## Getting Started
-
-- [The Mission](./mission.md)
-- [Uninstall](./uninstall.md)
-- [Troubleshooting](./troubleshooting.md)
+For more details on the motivation behind this fork,
+read the [Mission Statement](./mission.md).
 
 ### Migrating
 
@@ -32,6 +32,7 @@ the following list (incomplete) of changes:
   SSH and edit as if working on a local project.
 - [Extensions](./extensions.md): Add support for additional languages, themes
   and icons using the extension system.
+- [Supported Languages](./languages.md)
 - [Language Servers](./language-servers.md): Gram relies on language servers for providing advanced semantic functionality for various programming languages.
 
 ## Development
@@ -80,6 +81,11 @@ the following list (incomplete) of changes:
 - [Windows](./windows.md)
 - [Linux](./linux.md)
 
+## Handling Problems
+
+- [Troubleshooting](./troubleshooting.md)
+- [Uninstall](./uninstall.md)
+
 ## Legal note on accepting contributions
 
 If you have previously installed Zed and agreed to their license agreement, you
@@ -123,77 +129,3 @@ There is no official discord or reddit community.
 - [Theme Extensions](./extensions/themes.md)
 - [Icon Theme Extensions](./extensions/icon-themes.md)
 
-## Language Support
-
-- [All Languages](./languages.md)
-- [Ansible](./languages/ansible.md)
-- [AsciiDoc](./languages/asciidoc.md)
-- [Astro](./languages/astro.md)
-- [Bash](./languages/bash.md)
-- [Biome](./languages/biome.md)
-- [C](./languages/c.md)
-- [C++](./languages/cpp.md)
-- [C#](./languages/csharp.md)
-- [Clojure](./languages/clojure.md)
-- [CSS](./languages/css.md)
-- [Dart](./languages/dart.md)
-- [Deno](./languages/deno.md)
-- [Diff](./languages/diff.md)
-- [Docker](./languages/docker.md)
-- [Elixir](./languages/elixir.md)
-- [Elm](./languages/elm.md)
-- [Emmet](./languages/emmet.md)
-- [Erlang](./languages/erlang.md)
-- [Fish](./languages/fish.md)
-- [GDScript](./languages/gdscript.md)
-- [Gleam](./languages/gleam.md)
-- [GLSL](./languages/glsl.md)
-- [Go](./languages/go.md)
-- [Groovy](./languages/groovy.md)
-- [Haskell](./languages/haskell.md)
-- [Helm](./languages/helm.md)
-- [HTML](./languages/html.md)
-- [Java](./languages/java.md)
-- [JavaScript](./languages/javascript.md)
-- [Julia](./languages/julia.md)
-- [JSON](./languages/json.md)
-- [Jsonnet](./languages/jsonnet.md)
-- [Kotlin](./languages/kotlin.md)
-- [Lua](./languages/lua.md)
-- [Luau](./languages/luau.md)
-- [Makefile](./languages/makefile.md)
-- [Markdown](./languages/markdown.md)
-- [Nim](./languages/nim.md)
-- [OCaml](./languages/ocaml.md)
-- [Odin](./languages/odin.md)
-- [OpenTofu](./languages/opentofu.md)
-- [PHP](./languages/php.md)
-- [PowerShell](./languages/powershell.md)
-- [Prisma](./languages/prisma.md)
-- [Proto](./languages/proto.md)
-- [PureScript](./languages/purescript.md)
-- [Python](./languages/python.md)
-- [R](./languages/r.md)
-- [Rego](./languages/rego.md)
-- [ReStructuredText](./languages/rst.md)
-- [Racket](./languages/racket.md)
-- [Roc](./languages/roc.md)
-- [Ruby](./languages/ruby.md)
-- [Rust](./languages/rust.md)
-- [Scala](./languages/scala.md)
-- [Scheme](./languages/scheme.md)
-- [Shell Script](./languages/sh.md)
-- [SQL](./languages/sql.md)
-- [Svelte](./languages/svelte.md)
-- [Swift](./languages/swift.md)
-- [Tailwind CSS](./languages/tailwindcss.md)
-- [Terraform](./languages/terraform.md)
-- [TOML](./languages/toml.md)
-- [TypeScript](./languages/typescript.md)
-- [Uiua](./languages/uiua.md)
-- [Vue](./languages/vue.md)
-- [XML](./languages/xml.md)
-- [YAML](./languages/yaml.md)
-- [Yara](./languages/yara.md)
-- [Yarn](./languages/yarn.md)
-- [Zig](./languages/zig.md)
