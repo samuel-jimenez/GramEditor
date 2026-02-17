@@ -1,3 +1,0 @@
-name = "YAML+ERB"
-grammar = "embedded_template"
-path_suffixes = ["yml.erb", "yaml.erb"]

@@ -1,6 +1,0 @@
-/*.wasm
-/target
-grammars/
-
-# Node.js stuff
-/node_modules/

@@ -1,3 +1,0 @@
-name = "ERB"
-grammar = "embedded_template"
-path_suffixes = ["erb"]
