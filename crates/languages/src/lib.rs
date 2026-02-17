@@ -91,6 +91,7 @@ pub fn init(languages: Arc<LanguageRegistry>, fs: Arc<dyn Fs>, node: NodeRuntime
         ("python", tree_sitter_python::LANGUAGE),
         ("regex", tree_sitter_regex::LANGUAGE),
         ("rust", tree_sitter_rust::LANGUAGE),
+        ("scheme", tree_sitter_scheme::LANGUAGE),
         ("sql", tree_sitter_sql::LANGUAGE),
         ("toml", tree_sitter_toml::LANGUAGE),
         ("tsx", tree_sitter_typescript::LANGUAGE_TSX),
@@ -239,6 +240,11 @@ pub fn init(languages: Arc<LanguageRegistry>, fs: Arc<dyn Fs>, node: NodeRuntime
             context: Some(python_context_provider),
             toolchain: Some(python_toolchain_provider),
             manifest_name: Some(SharedString::new_static("pyproject.toml").into()),
+        },
+        LanguageInfo {
+            name: "scheme",
+            adapters: vec![],
+            ..Default::default()
         },
         LanguageInfo {
             name: "rust",
