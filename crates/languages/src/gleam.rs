@@ -185,7 +185,7 @@ impl LspAdapter for GleamLspAdapter {
             _ => "",
         };
 
-        let code = format!("let a: {} = {}{}", ty, label, call_suffix);
+        let code = format!("{}{} {}", label, call_suffix, ty);
 
         let rope = Rope::from(code.as_str());
         let highlights = language.highlight_text(&rope, 0..code.len());
