@@ -62,7 +62,9 @@ impl LspInstaller for LuaLspAdapter {
         _: Option<Toolchain>,
         _: &AsyncApp,
     ) -> Option<LanguageServerBinary> {
-        let path = delegate.which("lua-language-server".as_ref()).await?;
+        let path = delegate
+            .which(with_exe("lua-language-server").as_ref())
+            .await?;
         Some(LanguageServerBinary {
             path,
             arguments: vec![],

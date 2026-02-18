@@ -49,7 +49,7 @@ impl LspInstaller for GleamLspAdapter {
         _: Option<Toolchain>,
         _: &AsyncApp,
     ) -> Option<LanguageServerBinary> {
-        let gleam_path = delegate.which("gleam".as_ref()).await?;
+        let gleam_path = delegate.which(with_exe("gleam").as_ref()).await?;
         Some(LanguageServerBinary {
             path: gleam_path,
             arguments: vec!["lsp".into()],

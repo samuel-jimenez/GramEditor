@@ -57,7 +57,7 @@ impl LspInstaller for ZigLspAdapter {
         _: Option<Toolchain>,
         _: &AsyncApp,
     ) -> Option<LanguageServerBinary> {
-        let path = delegate.which("zls".as_ref()).await?;
+        let path = delegate.which(with_exe("zls").as_ref()).await?;
 
         #[cfg(unix)]
         let env = Some(delegate.shell_env().await);

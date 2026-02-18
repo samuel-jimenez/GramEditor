@@ -48,7 +48,7 @@ impl LspInstaller for SuperhtmlLspAdapter {
         _: Option<Toolchain>,
         _: &AsyncApp,
     ) -> Option<LanguageServerBinary> {
-        let path = delegate.which("superhtml".as_ref()).await?;
+        let path = delegate.which(with_exe("superhtml").as_ref()).await?;
         Some(LanguageServerBinary {
             path,
             arguments: vec!["lsp".into()],
@@ -210,7 +210,7 @@ impl LspInstaller for HtmlLspAdapter {
         _: &AsyncApp,
     ) -> Option<LanguageServerBinary> {
         let path = delegate
-            .which("vscode-html-language-server".as_ref())
+            .which(with_exe("vscode-html-language-server").as_ref())
             .await?;
         let env = delegate.shell_env().await;
 

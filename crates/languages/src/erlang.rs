@@ -13,7 +13,7 @@ use lsp::LanguageServerBinary;
 use std::path::PathBuf;
 use util::fs::{make_file_executable, remove_matching};
 
-use crate::helpers::{find_cached_server_binary, verify_metadata, write_metadata};
+use crate::helpers::{find_cached_server_binary, verify_metadata, with_exe, write_metadata};
 
 pub struct ErlangLsAdapter;
 
@@ -109,7 +109,7 @@ impl LspInstaller for ElpAdapter {
         _: &AsyncApp,
     ) -> Option<LanguageServerBinary> {
         log::info!("checking pre-installed ELP...");
-        let path = delegate.which("elp".as_ref()).await?;
+        let path = delegate.which(with_exe("elp").as_ref()).await?;
         Some(LanguageServerBinary {
             path,
             arguments: vec!["server".into()],

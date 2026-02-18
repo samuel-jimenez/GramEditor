@@ -69,7 +69,7 @@ impl LspInstaller for OdinLspAdapter {
         _: Option<Toolchain>,
         _: &AsyncApp,
     ) -> Option<LanguageServerBinary> {
-        let path = delegate.which("ols".as_ref()).await?;
+        let path = delegate.which(with_exe("ols").as_ref()).await?;
 
         #[cfg(unix)]
         let env = Some(delegate.shell_env().await);
