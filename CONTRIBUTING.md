@@ -8,7 +8,7 @@ Unfortunately, this means that some genuinely useful functionality may be lost
 in the process. Thus, this is the plan for this project:
 
 - [x] Strip out the AI, the telemetry, the subscriptions, the auto installation.
-- [ ] Make the automatic installation of language servers optional and prompt
+- [x] Make the automatic installation of language servers optional and prompt
   the user before installing anything (letting them decline).
 - [ ] Make everything that broke in the process work again.
 - [ ] Replace anything that was lost with better, open and respectful
@@ -27,7 +27,10 @@ box.
 
 If this sounds interesting to you, feel free to help out.
 
-It should go without saying but AI is strictly banned from this project.
+It should go without saying but AI-generated pull requests are strictly banned
+from this project. This codebase is bloated and vibe-coded enough as it is, we
+need to fix and mend and patch and not start adding to the mess as much as
+possible.
 
 ## Bird's-eye view of the code base
 
