@@ -24,6 +24,13 @@ echo -n "" >"$OUTPUT_FILE"
     echo -e "\n# ###### ICON LICENSES ######\n"
     cat assets/icons/LICENSES
 
+    echo -e "\n# ###### LANGUAGE LICENSES ######\n"
+    for d in crates/languages/src/*; do
+      if [ -f crates/languages/src/$d/LICENSE ]; then
+        cat crates/languages/src/$d/LICENSE
+      fi
+    done
+
     echo -e "\n# ###### CODE LICENSES ######\n"
 } >>"$OUTPUT_FILE"
 
