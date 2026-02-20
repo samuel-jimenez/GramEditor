@@ -11,7 +11,7 @@ actions!(
     ]
 );
 
-const GRAM_REPO_URL: &str = "https://codeberg.org/krig/gram";
+const GRAM_REPO_URL: &str = "https://codeberg.org/GramEditor/gram";
 
 pub fn init(cx: &mut App) {
     cx.observe_new(|workspace: &mut Workspace, _, _| {

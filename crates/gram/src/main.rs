@@ -1169,7 +1169,7 @@ struct Args {
     /// Use `path:line:row` syntax to open a file at a specific location.
     /// Non-existing paths and directories will ignore `:line:row` suffix.
     ///
-    /// URLs can either be `file://` or `gram://` scheme, or relative to <https://liten.app>.
+    /// URLs can either be `file://` or `gram://` scheme, or relative to <https://codeberg.org>.
     paths_or_urls: Vec<String>,
 
     /// Pairs of file paths to diff. Can be specified multiple times.

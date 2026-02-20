@@ -272,7 +272,7 @@ mod tests {
 
     #[test]
     fn test_invalid_self_hosted_remote_url() {
-        let remote_url = "https://gitlab.com/krig/gram.git";
+        let remote_url = "https://gitlab.com/GramEditor/gram.git";
         let gitlab = Gitlab::from_remote_url(remote_url);
         assert!(gitlab.is_err());
     }
@@ -280,13 +280,13 @@ mod tests {
     #[test]
     fn test_parse_remote_url_given_ssh_url() {
         let parsed_remote = Gitlab::public_instance()
-            .parse_remote_url("git@gitlab.com:krig/gram.git")
+            .parse_remote_url("git@gitlab.com:GramEditor/gram.git")
             .unwrap();
 
         assert_eq!(
             parsed_remote,
             ParsedGitRemote {
-                owner: "krig".into(),
+                owner: "GramEditor".into(),
                 repo: "gram".into(),
             }
         );
@@ -295,13 +295,13 @@ mod tests {
     #[test]
     fn test_parse_remote_url_given_https_url() {
         let parsed_remote = Gitlab::public_instance()
-            .parse_remote_url("https://gitlab.com/krig/gram.git")
+            .parse_remote_url("https://gitlab.com/GramEditor/gram.git")
             .unwrap();
 
         assert_eq!(
             parsed_remote,
             ParsedGitRemote {
-                owner: "krig".into(),
+                owner: "GramEditor".into(),
                 repo: "gram".into(),
             }
         );
@@ -309,7 +309,7 @@ mod tests {
 
     #[test]
     fn test_parse_remote_url_given_self_hosted_ssh_url() {
-        let remote_url = "git@gitlab.my-enterprise.com:krig/gram.git";
+        let remote_url = "git@gitlab.my-enterprise.com:GramEditor/gram.git";
 
         let parsed_remote = Gitlab::from_remote_url(remote_url)
             .unwrap()
@@ -319,7 +319,7 @@ mod tests {
         assert_eq!(
             parsed_remote,
             ParsedGitRemote {
-                owner: "krig".into(),
+                owner: "GramEditor".into(),
                 repo: "gram".into(),
             }
         );
@@ -346,7 +346,7 @@ mod tests {
     fn test_build_gitlab_permalink() {
         let permalink = Gitlab::public_instance().build_permalink(
             ParsedGitRemote {
-                owner: "krig".into(),
+                owner: "GramEditor".into(),
                 repo: "gram".into(),
             },
             BuildPermalinkParams::new(
@@ -356,7 +356,7 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://gitlab.com/krig/gram/-/blob/e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7/crates/editor/src/git/permalink.rs";
+        let expected_url = "https://gitlab.com/GramEditor/gram/-/blob/e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7/crates/editor/src/git/permalink.rs";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
@@ -364,7 +364,7 @@ mod tests {
     fn test_build_gitlab_permalink_with_single_line_selection() {
         let permalink = Gitlab::public_instance().build_permalink(
             ParsedGitRemote {
-                owner: "krig".into(),
+                owner: "GramEditor".into(),
                 repo: "gram".into(),
             },
             BuildPermalinkParams::new(
@@ -374,7 +374,7 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://gitlab.com/krig/gram/-/blob/e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7/crates/editor/src/git/permalink.rs#L7";
+        let expected_url = "https://gitlab.com/GramEditor/gram/-/blob/e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7/crates/editor/src/git/permalink.rs#L7";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
@@ -382,7 +382,7 @@ mod tests {
     fn test_build_gitlab_permalink_with_multi_line_selection() {
         let permalink = Gitlab::public_instance().build_permalink(
             ParsedGitRemote {
-                owner: "krig".into(),
+                owner: "GramEditor".into(),
                 repo: "gram".into(),
             },
             BuildPermalinkParams::new(
@@ -392,14 +392,14 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://gitlab.com/krig/gram/-/blob/e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7/crates/editor/src/git/permalink.rs#L24-48";
+        let expected_url = "https://gitlab.com/GramEditor/gram/-/blob/e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7/crates/editor/src/git/permalink.rs#L24-48";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
     #[test]
     fn test_build_gitlab_create_pr_url() {
         let remote = ParsedGitRemote {
-            owner: "krig".into(),
+            owner: "GramEditor".into(),
             repo: "gram".into(),
         };
 
@@ -411,17 +411,17 @@ mod tests {
 
         assert_eq!(
             url.as_str(),
-            "https://gitlab.com/krig/gram/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2Fcool%20stuff"
+            "https://gitlab.com/GramEditor/gram/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2Fcool%20stuff"
         );
     }
 
     #[test]
     fn test_build_gitlab_self_hosted_permalink_from_ssh_url() {
         let gitlab =
-            Gitlab::from_remote_url("git@gitlab.some-enterprise.com:krig/gram.git").unwrap();
+            Gitlab::from_remote_url("git@gitlab.some-enterprise.com:GramEditor/gram.git").unwrap();
         let permalink = gitlab.build_permalink(
             ParsedGitRemote {
-                owner: "krig".into(),
+                owner: "GramEditor".into(),
                 repo: "gram".into(),
             },
             BuildPermalinkParams::new(
@@ -431,17 +431,17 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://gitlab.some-enterprise.com/krig/gram/-/blob/e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7/crates/editor/src/git/permalink.rs";
+        let expected_url = "https://gitlab.some-enterprise.com/GramEditor/gram/-/blob/e6ebe7974deb6bb6cc0e2595c8ec31f0c71084b7/crates/editor/src/git/permalink.rs";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
     #[test]
     fn test_build_gitlab_self_hosted_permalink_from_https_url() {
         let gitlab =
-            Gitlab::from_remote_url("https://gitlab-instance.big-co.com/krig/gram.git").unwrap();
+            Gitlab::from_remote_url("https://gitlab-instance.big-co.com/GramEditor/gram.git").unwrap();
         let permalink = gitlab.build_permalink(
             ParsedGitRemote {
-                owner: "krig".into(),
+                owner: "GramEditor".into(),
                 repo: "gram".into(),
             },
             BuildPermalinkParams::new(
@@ -451,14 +451,14 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://gitlab-instance.big-co.com/krig/gram/-/blob/b2efec9824c45fcc90c9a7eb107a50d1772a60aa/crates/gram/src/main.rs";
+        let expected_url = "https://gitlab-instance.big-co.com/GramEditor/gram/-/blob/b2efec9824c45fcc90c9a7eb107a50d1772a60aa/crates/gram/src/main.rs";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
     #[test]
     fn test_build_create_pull_request_url() {
         let remote = ParsedGitRemote {
-            owner: "krig".into(),
+            owner: "GramEditor".into(),
             repo: "gram".into(),
         };
 
@@ -469,7 +469,7 @@ mod tests {
 
         assert_eq!(
             url.as_str(),
-            "https://gitlab.com/krig/gram/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2Fnew-feature"
+            "https://gitlab.com/GramEditor/gram/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2Fnew-feature"
         );
 
         let base_url = Url::parse("https://gitlab.destroy-all-ai.com").unwrap();
@@ -480,7 +480,7 @@ mod tests {
 
         assert_eq!(
             url.as_str(),
-            "https://gitlab.destroy-all-ai.com/krig/gram/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2Fnew-feature"
+            "https://gitlab.destroy-all-ai.com/GramEditor/gram/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2Fnew-feature"
         );
     }
 }

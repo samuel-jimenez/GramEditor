@@ -27750,7 +27750,7 @@ async fn test_paste_url_from_other_app_creates_markdown_link_over_selected_text(
 ) {
     init_test(cx, |_| {});
 
-    let url = "https://liten.app";
+    let url = "https://codeberg.org";
 
     let markdown_language = Arc::new(Language::new(
         LanguageConfig {
@@ -27960,7 +27960,7 @@ async fn test_paste_url_from_gram_copy_creates_markdown_link_over_selected_text(
 ) {
     init_test(cx, |_| {});
 
-    let url = "https://liten.app";
+    let url = "https://codeberg.org";
 
     let markdown_language = Arc::new(Language::new(
         LanguageConfig {
@@ -27999,7 +27999,7 @@ async fn test_paste_url_from_other_app_replaces_existing_url_without_creating_ma
 ) {
     init_test(cx, |_| {});
 
-    let url = "https://liten.app";
+    let url = "https://codeberg.org";
 
     let markdown_language = Arc::new(Language::new(
         LanguageConfig {
@@ -28055,7 +28055,7 @@ async fn test_paste_url_from_other_app_without_creating_markdown_link_in_non_mar
 ) {
     init_test(cx, |_| {});
 
-    let url = "https://liten.app";
+    let url = "https://codeberg.org";
 
     let markdown_language = Arc::new(Language::new(
         LanguageConfig {
@@ -28085,7 +28085,7 @@ async fn test_paste_url_from_other_app_creates_markdown_link_selectively_in_mult
 ) {
     init_test(cx, |_| {});
 
-    let url = "https://liten.app";
+    let url = "https://codeberg.org";
 
     let markdown_language = Arc::new(Language::new(
         LanguageConfig {

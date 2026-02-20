@@ -1287,22 +1287,22 @@ mod tests {
         .await;
 
         cx.set_state(indoc! {"
-            Let's test a [complex](https://liten.app/channel/had-(oops)) caseˇ.
+            Let's test a [complex](https://codeberg.org/channel/had-(oops)) caseˇ.
         "});
 
         let screen_coord = cx.pixel_position(indoc! {"
-            Let's test a [complex](https://liten.app/channel/had-(ˇoops)) case.
+            Let's test a [complex](https://codeberg.org/channel/had-(ˇoops)) case.
             "});
 
         cx.simulate_mouse_move(screen_coord, None, Modifiers::secondary_key());
         cx.assert_editor_text_highlights::<HoveredLinkState>(indoc! {"
-            Let's test a [complex](«https://liten.app/channel/had-(oops)ˇ») case.
+            Let's test a [complex](«https://codeberg.org/channel/had-(oops)ˇ») case.
         "});
 
         cx.simulate_click(screen_coord, Modifiers::secondary_key());
         assert_eq!(
             cx.opened_url(),
-            Some("https://liten.app/channel/had-(oops)".into())
+            Some("https://codeberg.org/channel/had-(oops)".into())
         );
     }
 
@@ -1317,18 +1317,18 @@ mod tests {
         )
         .await;
 
-        cx.set_state(indoc! {"https://liten.app/releases is a cool ˇwebpage."});
+        cx.set_state(indoc! {"https://codeberg.org/releases is a cool ˇwebpage."});
 
         let screen_coord =
-            cx.pixel_position(indoc! {"https://liten.app/relˇeases is a cool webpage."});
+            cx.pixel_position(indoc! {"https://codeberg.org/relˇeases is a cool webpage."});
 
         cx.simulate_mouse_move(screen_coord, None, Modifiers::secondary_key());
         cx.assert_editor_text_highlights::<HoveredLinkState>(
-            indoc! {"«https://liten.app/releasesˇ» is a cool webpage."},
+            indoc! {"«https://codeberg.org/releasesˇ» is a cool webpage."},
         );
 
         cx.simulate_click(screen_coord, Modifiers::secondary_key());
-        assert_eq!(cx.opened_url(), Some("https://liten.app/releases".into()));
+        assert_eq!(cx.opened_url(), Some("https://codeberg.org/releases".into()));
     }
 
     #[gpui::test]
@@ -1342,18 +1342,18 @@ mod tests {
         )
         .await;
 
-        cx.set_state(indoc! {"A cool ˇwebpage is https://liten.app/releases"});
+        cx.set_state(indoc! {"A cool ˇwebpage is https://codeberg.org/releases"});
 
         let screen_coord =
-            cx.pixel_position(indoc! {"A cool webpage is https://liten.app/releˇases"});
+            cx.pixel_position(indoc! {"A cool webpage is https://codeberg.org/releˇases"});
 
         cx.simulate_mouse_move(screen_coord, None, Modifiers::secondary_key());
         cx.assert_editor_text_highlights::<HoveredLinkState>(
-            indoc! {"A cool webpage is «https://liten.app/releasesˇ»"},
+            indoc! {"A cool webpage is «https://codeberg.org/releasesˇ»"},
         );
 
         cx.simulate_click(screen_coord, Modifiers::secondary_key());
-        assert_eq!(cx.opened_url(), Some("https://liten.app/releases".into()));
+        assert_eq!(cx.opened_url(), Some("https://codeberg.org/releases".into()));
     }
 
     #[test]

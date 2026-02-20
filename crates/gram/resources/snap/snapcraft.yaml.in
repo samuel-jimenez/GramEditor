@@ -11,15 +11,15 @@ description: |
 grade: stable
 confinement: classic
 compression: lzo
-website: https://codeberg.org/krig/gram
-source-code: https://codeberg.org/krig/gram
-issues: https://codeberg.org/krig/gram/issues
-contact: https://codeberg.org/krig/gram
+website: https://codeberg.org/GramEditor/gram
+source-code: https://codeberg.org/GramEditor/gram
+issues: https://codeberg.org/GramEditor/gram/issues
+contact: https://codeberg.org/GramEditor/gram
 
 parts:
   gram:
     plugin: dump
-    source: "https://codeberg.org/krig/gram/releases/download/v$RELEASE_VERSION/gram-linux-x86_64.tar.gz"
+    source: "https://codeberg.org/GramEditor/gram/releases/download/v$RELEASE_VERSION/gram-linux-x86_64.tar.gz"
 
     organize:
       # These renames seem to not be necessary, but it's tidier.

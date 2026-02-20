@@ -32,8 +32,8 @@
         <content_attribute id="social-audio">intense</content_attribute>
     </content_rating>
 
-    <url type="homepage">https://codeberg.org/krig/gram</url>
-    <url type="vcs-browser">https://codeberg.org/krig/gram</url>
+    <url type="homepage">https://codeberg.org/GramEditor/gram</url>
+    <url type="vcs-browser">https://codeberg.org/GramEditor/gram</url>
 
     <supports>
         <internet>offline-only</internet>
@@ -43,29 +43,6 @@
         <control>keyboard</control>
         <display_length compare="ge">768</display_length>
     </recommends>
-
-    <screenshots>
-        <screenshot type="default">
-            <caption>Gram with a large project open, showing language server and gitblame support</caption>
-            <image>https://liten.app/img/flatpak/flatpak-1.png</image>
-        </screenshot>
-        <screenshot>
-            <caption>Gram with a file open and a channel message thread in the right sidebar</caption>
-            <image>https://liten.app/img/flatpak/flatpak-2.png</image>
-        </screenshot>
-        <screenshot>
-            <caption>Example of a channel's shared document</caption>
-            <image>https://liten.app/img/flatpak/flatpak-3.png</image>
-        </screenshot>
-        <screenshot>
-            <caption>Gram's extension list</caption>
-            <image>https://liten.app/img/flatpak/flatpak-4.png</image>
-        </screenshot>
-        <screenshot>
-            <caption>Theme switcher UI and example theme</caption>
-            <image>https://liten.app/img/flatpak/flatpak-5.png</image>
-        </screenshot>
-    </screenshots>
 
     <releases>
 		@release_info@

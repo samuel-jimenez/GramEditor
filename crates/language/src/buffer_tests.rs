@@ -2867,7 +2867,7 @@ fn test_syntax_layer_at_for_injected_languages(cx: &mut App) {
         let text = r#"
             ```html+erb
             <div>Hello</div>
-            <%= link_to "Some", "https://liten.app" %>
+            <%= link_to "Some", "https://codeberg.org" %>
             ```
         "#
         .unindent();

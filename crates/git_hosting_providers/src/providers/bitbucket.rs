@@ -188,13 +188,13 @@ mod tests {
     #[test]
     fn test_parse_remote_url_given_ssh_url() {
         let parsed_remote = Bitbucket::public_instance()
-            .parse_remote_url("git@bitbucket.org:krig/gram.git")
+            .parse_remote_url("git@bitbucket.org:GramEditor/gram.git")
             .unwrap();
 
         assert_eq!(
             parsed_remote,
             ParsedGitRemote {
-                owner: "krig".into(),
+                owner: "GramEditor".into(),
                 repo: "gram".into(),
             }
         );
@@ -203,13 +203,13 @@ mod tests {
     #[test]
     fn test_parse_remote_url_given_https_url() {
         let parsed_remote = Bitbucket::public_instance()
-            .parse_remote_url("https://bitbucket.org/krig/gram.git")
+            .parse_remote_url("https://bitbucket.org/GramEditor/gram.git")
             .unwrap();
 
         assert_eq!(
             parsed_remote,
             ParsedGitRemote {
-                owner: "krig".into(),
+                owner: "GramEditor".into(),
                 repo: "gram".into(),
             }
         );
@@ -218,13 +218,13 @@ mod tests {
     #[test]
     fn test_parse_remote_url_given_https_url_with_username() {
         let parsed_remote = Bitbucket::public_instance()
-            .parse_remote_url("https://krig@bitbucket.org/krig/gram.git")
+            .parse_remote_url("https://GramEditor@bitbucket.org/GramEditor/gram.git")
             .unwrap();
 
         assert_eq!(
             parsed_remote,
             ParsedGitRemote {
-                owner: "krig".into(),
+                owner: "GramEditor".into(),
                 repo: "gram".into(),
             }
         );
@@ -232,7 +232,7 @@ mod tests {
 
     #[test]
     fn test_parse_remote_url_given_self_hosted_ssh_url() {
-        let remote_url = "git@bitbucket.company.com:krig/gram.git";
+        let remote_url = "git@bitbucket.company.com:GramEditor/gram.git";
 
         let parsed_remote = Bitbucket::from_remote_url(remote_url)
             .unwrap()
@@ -242,7 +242,7 @@ mod tests {
         assert_eq!(
             parsed_remote,
             ParsedGitRemote {
-                owner: "krig".into(),
+                owner: "GramEditor".into(),
                 repo: "gram".into(),
             }
         );
@@ -250,7 +250,7 @@ mod tests {
 
     #[test]
     fn test_parse_remote_url_given_self_hosted_https_url() {
-        let remote_url = "https://bitbucket.company.com/krig/gram.git";
+        let remote_url = "https://bitbucket.company.com/GramEditor/gram.git";
 
         let parsed_remote = Bitbucket::from_remote_url(remote_url)
             .unwrap()
@@ -260,7 +260,7 @@ mod tests {
         assert_eq!(
             parsed_remote,
             ParsedGitRemote {
-                owner: "krig".into(),
+                owner: "GramEditor".into(),
                 repo: "gram".into(),
             }
         );
@@ -268,7 +268,7 @@ mod tests {
 
     #[test]
     fn test_parse_remote_url_given_self_hosted_https_url_with_username() {
-        let remote_url = "https://krig@bitbucket.company.com/krig/gram.git";
+        let remote_url = "https://GramEditor@bitbucket.company.com/GramEditor/gram.git";
 
         let parsed_remote = Bitbucket::from_remote_url(remote_url)
             .unwrap()
@@ -278,7 +278,7 @@ mod tests {
         assert_eq!(
             parsed_remote,
             ParsedGitRemote {
-                owner: "krig".into(),
+                owner: "GramEditor".into(),
                 repo: "gram".into(),
             }
         );
@@ -288,30 +288,30 @@ mod tests {
     fn test_build_bitbucket_permalink() {
         let permalink = Bitbucket::public_instance().build_permalink(
             ParsedGitRemote {
-                owner: "krig".into(),
+                owner: "GramEditor".into(),
                 repo: "gram".into(),
             },
             BuildPermalinkParams::new("f00b4r", &repo_path("main.rs"), None),
         );
 
-        let expected_url = "https://bitbucket.org/krig/gram/src/f00b4r/main.rs";
+        let expected_url = "https://bitbucket.org/GramEditor/gram/src/f00b4r/main.rs";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
     #[test]
     fn test_build_bitbucket_self_hosted_permalink() {
-        let permalink = Bitbucket::from_remote_url("git@bitbucket.company.com:krig/gram.git")
+        let permalink = Bitbucket::from_remote_url("git@bitbucket.company.com:GramEditor/gram.git")
             .unwrap()
             .build_permalink(
                 ParsedGitRemote {
-                    owner: "krig".into(),
+                    owner: "GramEditor".into(),
                     repo: "gram".into(),
                 },
                 BuildPermalinkParams::new("f00b4r", &repo_path("main.rs"), None),
             );
 
         let expected_url =
-            "https://bitbucket.company.com/projects/krig/repos/gram/browse/main.rs?at=f00b4r";
+            "https://bitbucket.company.com/projects/GramEditor/repos/gram/browse/main.rs?at=f00b4r";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
@@ -319,30 +319,30 @@ mod tests {
     fn test_build_bitbucket_permalink_with_single_line_selection() {
         let permalink = Bitbucket::public_instance().build_permalink(
             ParsedGitRemote {
-                owner: "krig".into(),
+                owner: "GramEditor".into(),
                 repo: "gram".into(),
             },
             BuildPermalinkParams::new("f00b4r", &repo_path("main.rs"), Some(6..6)),
         );
 
-        let expected_url = "https://bitbucket.org/krig/gram/src/f00b4r/main.rs#lines-7";
+        let expected_url = "https://bitbucket.org/GramEditor/gram/src/f00b4r/main.rs#lines-7";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
     #[test]
     fn test_build_bitbucket_self_hosted_permalink_with_single_line_selection() {
-        let permalink = Bitbucket::from_remote_url("https://bitbucket.company.com/krig/gram.git")
+        let permalink = Bitbucket::from_remote_url("https://bitbucket.company.com/GramEditor/gram.git")
             .unwrap()
             .build_permalink(
                 ParsedGitRemote {
-                    owner: "krig".into(),
+                    owner: "GramEditor".into(),
                     repo: "gram".into(),
                 },
                 BuildPermalinkParams::new("f00b4r", &repo_path("main.rs"), Some(6..6)),
             );
 
         let expected_url =
-            "https://bitbucket.company.com/projects/krig/repos/gram/browse/main.rs?at=f00b4r#7";
+            "https://bitbucket.company.com/projects/GramEditor/repos/gram/browse/main.rs?at=f00b4r#7";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
@@ -350,30 +350,30 @@ mod tests {
     fn test_build_bitbucket_permalink_with_multi_line_selection() {
         let permalink = Bitbucket::public_instance().build_permalink(
             ParsedGitRemote {
-                owner: "krig".into(),
+                owner: "GramEditor".into(),
                 repo: "gram".into(),
             },
             BuildPermalinkParams::new("f00b4r", &repo_path("main.rs"), Some(23..47)),
         );
 
-        let expected_url = "https://bitbucket.org/krig/gram/src/f00b4r/main.rs#lines-24:48";
+        let expected_url = "https://bitbucket.org/GramEditor/gram/src/f00b4r/main.rs#lines-24:48";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
     #[test]
     fn test_build_bitbucket_self_hosted_permalink_with_multi_line_selection() {
-        let permalink = Bitbucket::from_remote_url("git@bitbucket.company.com:krig/gram.git")
+        let permalink = Bitbucket::from_remote_url("git@bitbucket.company.com:GramEditor/gram.git")
             .unwrap()
             .build_permalink(
                 ParsedGitRemote {
-                    owner: "krig".into(),
+                    owner: "GramEditor".into(),
                     repo: "gram".into(),
                 },
                 BuildPermalinkParams::new("f00b4r", &repo_path("main.rs"), Some(23..47)),
             );
 
         let expected_url =
-            "https://bitbucket.company.com/projects/krig/repos/gram/browse/main.rs?at=f00b4r#24-48";
+            "https://bitbucket.company.com/projects/GramEditor/repos/gram/browse/main.rs?at=f00b4r#24-48";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
@@ -382,7 +382,7 @@ mod tests {
         use indoc::indoc;
 
         let remote = ParsedGitRemote {
-            owner: "krig".into(),
+            owner: "GramEditor".into(),
             repo: "gram".into(),
         };
 
@@ -403,7 +403,7 @@ mod tests {
         assert_eq!(pr.number, 123);
         assert_eq!(
             pr.url.as_str(),
-            "https://bitbucket.org/krig/gram/pull-requests/123"
+            "https://bitbucket.org/GramEditor/gram/pull-requests/123"
         );
     }
 
@@ -412,12 +412,12 @@ mod tests {
         use indoc::indoc;
 
         let remote = ParsedGitRemote {
-            owner: "krig".into(),
+            owner: "GramEditor".into(),
             repo: "gram".into(),
         };
 
         let bitbucket =
-            Bitbucket::from_remote_url("https://bitbucket.company.com/krig/gram.git").unwrap();
+            Bitbucket::from_remote_url("https://bitbucket.company.com/GramEditor/gram.git").unwrap();
 
         // Test message without PR reference
         let message = "This does not contain a pull request";
@@ -434,7 +434,7 @@ mod tests {
         assert_eq!(pr.number, 123);
         assert_eq!(
             pr.url.as_str(),
-            "https://bitbucket.company.com/projects/krig/repos/gram/pull-requests/123"
+            "https://bitbucket.company.com/projects/GramEditor/repos/gram/pull-requests/123"
         );
     }
 }

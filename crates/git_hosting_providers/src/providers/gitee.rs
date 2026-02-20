@@ -167,13 +167,13 @@ mod tests {
     #[test]
     fn test_parse_remote_url_given_ssh_url() {
         let parsed_remote = Gitee
-            .parse_remote_url("git@gitee.com:krig/gram.git")
+            .parse_remote_url("git@gitee.com:GramEditor/gram.git")
             .unwrap();
 
         assert_eq!(
             parsed_remote,
             ParsedGitRemote {
-                owner: "krig".into(),
+                owner: "GramEditor".into(),
                 repo: "gram".into(),
             }
         );
@@ -182,13 +182,13 @@ mod tests {
     #[test]
     fn test_parse_remote_url_given_https_url() {
         let parsed_remote = Gitee
-            .parse_remote_url("https://gitee.com/krig/gram.git")
+            .parse_remote_url("https://gitee.com/GramEditor/gram.git")
             .unwrap();
 
         assert_eq!(
             parsed_remote,
             ParsedGitRemote {
-                owner: "krig".into(),
+                owner: "GramEditor".into(),
                 repo: "gram".into(),
             }
         );
@@ -198,7 +198,7 @@ mod tests {
     fn test_build_gitee_permalink() {
         let permalink = Gitee.build_permalink(
             ParsedGitRemote {
-                owner: "krig".into(),
+                owner: "GramEditor".into(),
                 repo: "gram".into(),
             },
             BuildPermalinkParams::new(
@@ -208,7 +208,7 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://gitee.com/krig/gram/blob/e5fe811d7ad0fc26934edd76f891d20bdc3bb194/crates/editor/src/git/permalink.rs";
+        let expected_url = "https://gitee.com/GramEditor/gram/blob/e5fe811d7ad0fc26934edd76f891d20bdc3bb194/crates/editor/src/git/permalink.rs";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
@@ -216,7 +216,7 @@ mod tests {
     fn test_build_gitee_permalink_with_single_line_selection() {
         let permalink = Gitee.build_permalink(
             ParsedGitRemote {
-                owner: "krig".into(),
+                owner: "GramEditor".into(),
                 repo: "gram".into(),
             },
             BuildPermalinkParams::new(
@@ -226,7 +226,7 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://gitee.com/krig/gram/blob/e5fe811d7ad0fc26934edd76f891d20bdc3bb194/crates/editor/src/git/permalink.rs#L7";
+        let expected_url = "https://gitee.com/GramEditor/gram/blob/e5fe811d7ad0fc26934edd76f891d20bdc3bb194/crates/editor/src/git/permalink.rs#L7";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
@@ -234,7 +234,7 @@ mod tests {
     fn test_build_gitee_permalink_with_multi_line_selection() {
         let permalink = Gitee.build_permalink(
             ParsedGitRemote {
-                owner: "krig".into(),
+                owner: "GramEditor".into(),
                 repo: "gram".into(),
             },
             BuildPermalinkParams::new(
@@ -244,7 +244,7 @@ mod tests {
             ),
         );
 
-        let expected_url = "https://gitee.com/krig/gram/blob/e5fe811d7ad0fc26934edd76f891d20bdc3bb194/crates/editor/src/git/permalink.rs#L24-48";
+        let expected_url = "https://gitee.com/GramEditor/gram/blob/e5fe811d7ad0fc26934edd76f891d20bdc3bb194/crates/editor/src/git/permalink.rs#L24-48";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 }

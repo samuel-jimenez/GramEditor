@@ -2,7 +2,7 @@
 
 ## Repository
 
-Clone the [Gram repository](https://codeberg.org/krig/gram).
+Clone the [Gram repository](https://codeberg.org/GramEditor/gram).
 
 ## Dependencies
 
