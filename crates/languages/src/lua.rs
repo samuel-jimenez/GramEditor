@@ -221,7 +221,6 @@ impl LspAdapter for LuaLspAdapter {
         kind: SymbolKind,
         language: &Arc<Language>,
     ) -> Option<CodeLabel> {
-        let prefix = "let a = ";
         let suffix = match kind {
             SymbolKind::METHOD => "()",
             _ => "",
@@ -229,10 +228,7 @@ impl LspAdapter for LuaLspAdapter {
         return Some(CodeLabel::new(
             name.to_string(),
             0..name.len(),
-            language.highlight_text(
-                &Rope::from_iter([prefix, name, suffix]),
-                prefix.len()..prefix.len() + name.len(),
-            ),
+            language.highlight_text(&Rope::from_iter([name, suffix]), 0..name.len()),
         ));
     }
 }
