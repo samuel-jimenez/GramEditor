@@ -17,7 +17,7 @@ the internet without explicit permission to do so.
 Once Gram has failed to launch a language server, an error will be reported and
 the bot icon in the lower left of the editor window will have a red indicator.
 Click that icon and then choose `Configure Servers`. Alternatively use the
-Command Palette to run the `lsp::OpenLanguageServerConfig` command.
+Command Palette to run the {#action lsp::OpenLanguageServerConfig} command.
 
 In this view, you can see all the loaded language servers and choose whether to
 install any missing language servers yourself or let the editor try to install

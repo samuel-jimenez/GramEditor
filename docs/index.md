@@ -9,12 +9,13 @@ the following list (incomplete) of changes:
 - No proprietary server component
 - No auto updates
 - No license agreement on installation
-- Only install language servers when explicitly allowed
+- Only install language servers when [explicitly allowed](./language-servers.md)
 - Integrated documentation viewer
 - Support for more languages built in
 - More syntax highlighting themes built in
 - Extensions are installed from source only
 - Partial support for WASM extensions (due to AI removal)
+- Added [SuperTab](./supertab.md)
 
 For more details on the motivation behind this fork,
 read the [Mission Statement](./mission.md).
@@ -59,6 +60,7 @@ read the [Mission Statement](./mission.md).
 - [Visual Customization](./visual-customization.md)
 - [Vim Mode](./vim.md)
 - [Helix Mode](./helix.md)
+- [SuperTab](./supertab.md)
 
 ## Using Gram
 
