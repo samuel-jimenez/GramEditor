@@ -781,6 +781,8 @@ actions!(
         SortLinesCaseSensitive,
         /// Stops the language server for the current file.
         StopLanguageServer,
+        /// Shows completions, inserts a tab character or indents depending on context
+        SuperTab,
         /// Switches between source and header files.
         SwitchSourceHeader,
         /// Inserts a tab character or indents.

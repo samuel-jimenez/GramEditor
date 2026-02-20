@@ -8386,6 +8386,57 @@ impl Editor {
         });
     }
 
+    pub fn supertab(&mut self, _: &SuperTab, window: &mut Window, cx: &mut Context<Self>) {
+        if self.mode.is_single_line() {
+            self.show_completions(&ShowCompletions, window, cx);
+            return;
+        }
+
+        if self.move_to_next_snippet_tabstop(window, cx) {
+            self.hide_mouse_cursor(HideMouseCursorOrigin::TypingAction, cx);
+            return;
+        }
+        if self.read_only(cx) {
+            return;
+        }
+
+        if self.pending_rename.is_some() {
+            self.tab(&Tab, window, cx);
+            return;
+        }
+
+        // TODO: how to handle multicursor?
+        // TODO: if at a period, trigger ShowCompletions
+        // TODO: if at the end of a word or punctuation and followed by space or at the end of the line, trigger ShowCompletions
+        // TODO: else trigger tab
+
+        // just bail to tab if multicursored
+        if self.selections.count() > 1 {
+            self.tab(&Tab, window, cx);
+            return;
+        }
+
+        let selections = self.selections.all::<Point>(&self.display_snapshot(cx));
+        let snapshot = self.buffer.read(cx).snapshot(cx);
+        for selection in selections {
+            let Some(following) = snapshot.chars_at(selection.start).next() else {
+                continue;
+            };
+            let Some(preceding) = snapshot.reversed_chars_at(selection.start).next() else {
+                continue;
+            };
+
+            if (!preceding.is_whitespace() && following.is_whitespace())
+                || preceding.is_ascii_punctuation()
+            {
+                self.show_completions(&ShowCompletions, window, cx);
+                return;
+            }
+        }
+
+        self.tab(&Tab, window, cx);
+    }
+
     pub fn indent(&mut self, _: &Indent, window: &mut Window, cx: &mut Context<Self>) {
         if self.read_only(cx) {
             return;
