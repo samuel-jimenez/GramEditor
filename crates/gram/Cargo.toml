@@ -146,6 +146,7 @@ app_env_vars.workspace = true
 zlog.workspace = true
 zlog_settings.workspace = true
 chrono.workspace = true
+kdl = "6.5.0"
 
 [target.'cfg(target_os = "windows")'.dependencies]
 windows.workspace = true
