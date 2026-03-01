@@ -14,8 +14,6 @@ that aren't beholden to investors or share holders. There are aspects of the Zed
 code editor that I think are wrong in the moral and ethical sense, and there are
 aspects that I think are simply bad choices from a technical perspective.
 
-Let me begin by making a technical argument for this fork.
-
 At first, the promise of Zed seemed alluring. I moved from Emacs to Neovim
 because I started coding in Rust, and using the Rust LSP in Emacs was a very
 frustrating experience at the time. Whenever the LSP did any work the editor
@@ -26,17 +24,20 @@ project I would have the same kind of experience. Not good. At the same time,
 more and more languages assume that the editor can use a language server and
 don't even try to support editors without it.
 
-When Zed appeared promising an actually fast and smooth editing experience able
+When Zed appeared, promising an actually fast and smooth editing experience able
 to handle large Rust projects without getting bogged down, and also came with
 good support for Emacs- and Vim-style editing, it seemed like exactly the thing
 that I ought to try.
 
 However, I never even managed to get the editor installed. When I tried to
 download and install the binaries from the Zed website or Github page I would
-get presented with the Zed End User License. To install, I would have to accept
-the license.
+get presented with the Zed End User Terms. To install, I would have to accept
+them.
 
-I read the license.
+So, I read the terms!
+
+The quotes below are excerpts from the [Zed End User
+Terms](https://zed.dev/terms).
 
 > PLEASE READ THESE TERMS AND CONDITIONS CAREFULLY BEFORE USING THE SERVICE OR
 > SOFTWARE OFFERED BY ZED INDUSTRIES, INC. ("ZED", OR "WE"). BY ACCESSING OR
@@ -44,9 +45,13 @@ I read the license.
 > AGREE TO BE BOUND BY THESE TERMS (THE "AGREEMENT") TO THE EXCLUSION OF ALL
 > OTHER TERMS.
 
-OK, so if I agree to this license, I am waiving my right to use any software by
-Zed Industries under any other license. So does this mean that I could no longer
-use any of the code from Zed under an open source license?
+My (non-lawyer) interpretation of this section is that if I agree to these
+terms, I am waiving my right to use any software by Zed Industries under any
+other license. Does this mean that I could no longer use any of the code from
+Zed under an open source license, if the rights afforded by that license
+contradicts these terms? That is my interpretation.
+
+Let's read on, to section 2 "TERMS APPLICABLE TO THE EDITOR", paragraph 2.2, "License Limitations":
 
 > You agree that You shall not: (a) exceed the scope of the licenses granted in
 > Section 2.1; (b) make copies of the Editor; (c) distribute, sublicense,
@@ -59,10 +64,29 @@ use any of the code from Zed under an open source license?
 > patent or other proprietary notice that appears on the Editor or copies
 > thereof.
 
+...
+
+> You shall not [..] make copies of the Editor
+
+...
+
+> You shall not [..] reverse engineer, decompile, disassemble or otherwise
+> attempt to learn the source code, structure or algorithms underlying the
+> Editor
+
+...
+
+> You shall not [..] modify, translate or
+> create derivative works of the Editor
+
+...etc.
+
 I cannot try to learn the source code, structure or algorithms underlying the
-Editor?
+Editor? I cannot create derivative works?
 
 I couldn't accept it. I didn't want to agree to any of it. So I gave up.
+
+---
 
 Zed kept popping up. People I had respected left their jobs to go work for Zed,
 and not only that - to work on AI integration in Zed.
