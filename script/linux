@@ -96,6 +96,7 @@ if [[ -n $dnf ]] || [[ -n $yum ]]; then
       perl-IPC-Cmd
       perl-File-Compare
       perl-File-Copy
+      perl-Time-Piece
       mold
     )
   elif grep -qP '^ID="?(rhel|rocky|alma|centos|ol)' /etc/os-release; then
