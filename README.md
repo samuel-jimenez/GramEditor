@@ -52,7 +52,7 @@ We promise:
 - NO SUBSCRIPTIONS
 - NO AUTOMATIC INSTALLATION OR UPDATES
 
-For more thoughts on this topic, see [MISSION.md](./MISSION.md).
+For more thoughts on this topic, see the [mission statement](./docs/mission.md).
 
 ## Installation
 
