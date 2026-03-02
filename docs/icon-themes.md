@@ -2,6 +2,10 @@
 
 Gram comes with a built-in icon theme, with more icon themes available as extensions.
 
+## Enabling Icon Themes
+
+File and folder icons are disabled by default. You can enable them in `Settings > Panels > File Icons` and `Settings > Panels > File Icons`.
+
 ## Selecting an Icon Theme
 
 See what icon themes are installed and preview them via the Icon Theme Selector, which you can open from the command palette with `icon theme selector: toggle`.
