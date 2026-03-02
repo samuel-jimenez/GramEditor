@@ -546,7 +546,7 @@ impl LanguageRegistry {
         );
     }
 
-    /// Adds paths to WASM grammar files, which can be loaded if needed.
+    /// Adds paths to Wasm grammar files, which can be loaded if needed.
     pub fn register_wasm_grammars(
         &self,
         grammars: impl IntoIterator<Item = (impl Into<Arc<str>>, PathBuf)>,

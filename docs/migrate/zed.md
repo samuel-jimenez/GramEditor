@@ -29,14 +29,14 @@ work.
 Since Zed extensions in the Zed editor are installed as binary blobs from the
 proprietary servers owned by Zed Industries, this installation method has been
 removed from Gram. Instead, extensions can be installed using the extension
-repository URL directly. Language extensions that need to be compiled to WASM
+repository URL directly. Language extensions that need to be compiled to Wasm
 require a [rustup](https://rustup.rs) toolchain to do the compilation.
 
 If the extension doesn't work, check the Gram log file using
 `cmd-shift-p Open Log` (also available in the Command Palette).
 
 Currently, this functionality is very crude, and as Zed continues to develop it
-is likely that extensions that compile to WASM will stop being compatible with
+is likely that extensions that compile to Wasm will stop being compatible with
 Gram. Therefore, the plan is to eventually replace the extension system from
 Zed with something else, but also to integrate language support for the most
 popular languages directly into Gram so that language extensions aren't needed

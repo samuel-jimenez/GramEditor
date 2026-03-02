@@ -21,7 +21,7 @@ use wasmparser::Parser;
 /// Currently, we compile with Rust's `wasm32-wasip2` target, which works with WASI `preview2` and the component model.
 const RUST_TARGET: &str = "wasm32-wasip2";
 
-/// Compiling Tree-sitter parsers from C to WASM requires Clang 17, and a WASM build of libc
+/// Compiling Tree-sitter parsers from C to Wasm requires Clang 17, and a Wasm build of libc
 /// and clang's runtime library. The `wasi-sdk` provides these binaries.
 ///
 /// Once Clang 17 and its wasm target are available via system package managers, we won't need
@@ -255,7 +255,7 @@ impl ExtensionBuilder {
         let parser_path = src_path.join("parser.c");
         let scanner_path = src_path.join("scanner.c");
 
-        // Skip recompiling if the WASM object is already newer than the source files
+        // Skip recompiling if the Wasm object is already newer than the source files
         if file_newer_than_deps(&grammar_wasm_path, &[&parser_path, &scanner_path]).unwrap_or(false)
         {
             log::info!(

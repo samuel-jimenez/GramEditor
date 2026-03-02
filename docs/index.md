@@ -14,7 +14,7 @@ the following list (incomplete) of changes:
 - Support for more languages built in
 - More syntax highlighting themes built in
 - Extensions are installed from source only
-- Partial support for WASM extensions (due to AI removal)
+- Partial support for Wasm extensions (due to AI removal)
 - Added [SuperTab](./supertab.md)
 
 For more details on the motivation behind this fork,
@@ -119,7 +119,7 @@ There is no official discord or reddit community.
 > The Zed extension system relies on a closed-source server component, which is
 > stripped from Gram. Instead, all extensions have to be built from source.
 > Currently, there is no extension registry so the extensions have to be
-> installed either via the suggestion popups or an URL and WASM extensions need
+> installed either via the suggestion popups or an URL and Wasm extensions need
 > rustup installed in order to compile.
 
 - [Overview](./extensions.md)
