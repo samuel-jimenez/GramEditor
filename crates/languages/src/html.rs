@@ -21,7 +21,7 @@ pub struct SuperhtmlLspAdapter;
 
 #[cfg(target_os = "macos")]
 impl SuperhtmlLspAdapter {
-    const GITHUB_ASSET_KIND: AssetKind = AssetKind::TarGz;
+    const GITHUB_ASSET_KIND: AssetKind = AssetKind::Zip;
     const OS_NAME: &str = "macos";
 }
 
@@ -62,9 +62,13 @@ impl LspInstaller for SuperhtmlLspAdapter {
         _pre_release: bool,
         _cx: &mut AsyncApp,
     ) -> Result<GitHubLspBinaryVersion> {
-        let release =
-            latest_github_release("kristoff-it/superhtml", false, true, delegate.http_client())
-                .await?;
+        let release = latest_github_release(
+            "kristoff-it/superhtml",
+            false,
+            false,
+            delegate.http_client(),
+        )
+        .await?;
 
         let arch = match std::env::consts::ARCH {
             "aarch64" => "aarch64",
