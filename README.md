@@ -37,7 +37,7 @@ try to push anything malicious, distracting or confusing.
 This project is first and foremost a source code editor. It aims to be a fast,
 reliable and hackable tool for developers to use, reuse, share and modify. It
 will _never_ contain, support or condone any of the following "features" that
-_permeate_ the Gram code editor: AI, Telemetry, Proprietary server components,
+_permeate_ the Zed code editor: AI, Telemetry, Proprietary server components,
 third-party service integrations, Contributor Licenses, Terms of Service or
 subscription fees.
 

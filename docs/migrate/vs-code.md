@@ -4,7 +4,7 @@ This guide is for developers who spent serious time in VS Code and want to try G
 
 If you're here, you are probably a VS Code user frustrated by the slow,
 Electron-based implementation and the increasing reliance on flaky AI tooling
-that is creeping into editors like VS Code and Gram, created by US-based
+that is creeping into editors like VS Code and Zed, created by US-based
 corporations that want to trap you in a subscription-based model of code
 editing.
 
