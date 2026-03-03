@@ -36,6 +36,12 @@ them.
 
 So, I read the terms!
 
+> Editor's note, 2026-03-03
+>
+> Credit where credit is due: Within 24 hours of me publishing this fork, Zed
+> updated their Terms of Use and removed the section that seemed to conflict
+> with the terms of the open source licenses.
+
 The quotes below are excerpts from the [Zed End User
 Terms](https://zed.dev/terms).
 

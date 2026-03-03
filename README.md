@@ -9,6 +9,12 @@ for beginners, but I don't want anything to do with AI, I don't want my editor
 to phone home to a US corporation, and I definitely don't want to sign in,
 sign up or accept any terms of use to write code.
 
+> Editor's note, 2026-03-03
+>
+> Credit where credit is due: Within 24 hours of me publishing this fork, Zed
+> updated their Terms of Use and removed the section that seemed to conflict
+> with the terms of the open source licenses.
+
 I have gotten to this point in my life without making the tools of my trade into
 a subscription service from some of the worst companies ever to exist, and I
 don't intend to start now.
@@ -62,6 +68,9 @@ Make sure you have Rust installed (via rustup, preferrably).
 
 There are scripts to bundle for each platform, and the details as to what needs
 to be in place are different for all of the platforms.
+
+> **Note:** Rust is notoriously memory hungry, and Gram is a huge Rust project.
+> I have not tried to compile it with less than 16GB of RAM available.
 
 ### Linux
 
