@@ -69,6 +69,11 @@ pub struct ThemeSettingsContent {
     /// These values will override the ones on the specified theme
     #[serde(default)]
     pub theme_overrides: HashMap<String, ThemeStyleContent>,
+
+    /// Defines window border radius for platforms that use client side decorations.
+    pub client_side_decoration_rounding: Option<f32>,
+    /// Defines window shadow size for platforms that use client side decorations.
+    pub client_side_decoration_shadow: Option<f32>,
 }
 
 /// A font size value in pixels, wrapping around `f32` for custom settings UI rendering.

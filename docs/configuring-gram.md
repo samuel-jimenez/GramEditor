@@ -4650,6 +4650,18 @@ For example, to use `Nerd Font` as a fallback, add the following to your setting
 
 `integer` values between `100` and `900`
 
+## Client Side Decoration Rounding
+
+- Description: Defines window border radius for platforms that use client side decorations.
+- Setting: `client_side_decoration_rounding`
+- Default: `10.0`
+
+## Client Side Decoration Shadow
+
+- Description: Defines window shadow size for platforms that use client side decorations.
+- Setting: `client_side_decoration_shadow`
+- Default: `10.0`
+
 ## Settings Profiles
 
 - Description: Configure any number of settings profiles that are temporarily applied on top of your existing user settings when selected from `settings profile selector: toggle`.

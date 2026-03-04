@@ -66,6 +66,10 @@
   "ui_font_size": 15,
   // How much to fade out unused code.
   "unnecessary_code_fade": 0.3,
+  /// Defines window border radius for platforms that use client side decorations.
+  "client_side_decoration_rounding": 10.0,
+  /// Defines window shadow size for platforms that use client side decorations.
+  "client_side_decoration_shadow": 10.0,
   // Active pane styling settings.
   "active_pane_modifiers": {
     // Inset border size of the active pane, in pixels.

@@ -2,8 +2,10 @@ use gpui::{
     AnyElement, Context, Decorations, Entity, Hsla, InteractiveElement, IntoElement, MouseButton,
     ParentElement, Pixels, StatefulInteractiveElement, Styled, Window, WindowControlArea, div, px,
 };
+use settings::Settings;
 use smallvec::SmallVec;
 use std::mem;
+use theme::ThemeSettings;
 use ui::prelude::*;
 
 use crate::{
@@ -72,6 +74,7 @@ impl Render for PlatformTitleBar {
         let titlebar_color = self.title_bar_color(window, cx);
         let close_action = Box::new(workspace::CloseWindow);
         let children = mem::take(&mut self.children);
+        let theme = ThemeSettings::get_global(cx);
 
         let title_bar = h_flex()
             .window_control_area(WindowControlArea::Drag)
@@ -131,10 +134,10 @@ impl Render for PlatformTitleBar {
                 Decorations::Server => el,
                 Decorations::Client { tiling, .. } => el
                     .when(!(tiling.top || tiling.right), |el| {
-                        el.rounded_tr(theme::CLIENT_SIDE_DECORATION_ROUNDING)
+                        el.rounded_tr(theme.client_side_decoration_rounding)
                     })
                     .when(!(tiling.top || tiling.left), |el| {
-                        el.rounded_tl(theme::CLIENT_SIDE_DECORATION_ROUNDING)
+                        el.rounded_tl(theme.client_side_decoration_rounding)
                     })
                     // this border is to avoid a transparent gap in the rounded corners
                     .mt(px(-1.))

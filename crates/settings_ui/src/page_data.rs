@@ -957,6 +957,39 @@ pub(crate) fn settings_data(cx: &App) -> Vec<SettingsPage> {
                     metadata: None,
                     files: USER | PROJECT,
                 }),
+                SettingsPageItem::SectionHeader("Decorations"),
+                SettingsPageItem::SettingItem(SettingItem {
+                    title: "Client Side Decoration Rounding",
+                    description: "Defines window border radius for platforms that use client side decorations.",
+                    field: Box::new(SettingField {
+                        json_path: Some("client_side_decoration_rounding"),
+                        pick: |settings_content| {
+                            settings_content.theme.client_side_decoration_rounding.as_ref()
+                        },
+                        write: |settings_content, value| {
+                            settings_content.theme.client_side_decoration_rounding = value;
+
+                        },
+                    }),
+                    metadata: None,
+                    files: USER,
+                }),
+                SettingsPageItem::SettingItem(SettingItem {
+                    title: "Client Side Decoration Shadow",
+                    description: "Defines window shadow size for platforms that use client side decorations.",
+                    field: Box::new(SettingField {
+                        json_path: Some("client_side_decoration_shadow"),
+                        pick: |settings_content| {
+                            settings_content.theme.client_side_decoration_shadow.as_ref()
+                        },
+                        write: |settings_content, value| {
+                            settings_content.theme.client_side_decoration_shadow = value;
+
+                        },
+                    }),
+                    metadata: None,
+                    files: USER,
+                }),
             ],
         },
         SettingsPage {

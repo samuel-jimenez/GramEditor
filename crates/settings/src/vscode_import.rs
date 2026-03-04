@@ -718,6 +718,8 @@ impl VsCodeSettings {
             unnecessary_code_fade: None,
             experimental_theme_overrides: None,
             theme_overrides: Default::default(),
+            client_side_decoration_rounding: None,
+            client_side_decoration_shadow: None,
         }
     }
 

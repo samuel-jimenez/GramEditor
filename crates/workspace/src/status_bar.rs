@@ -3,8 +3,9 @@ use gpui::{
     AnyView, App, Context, Decorations, Entity, IntoElement, ParentElement, Render, Styled,
     Subscription, Window,
 };
+use settings::Settings;
 use std::any::TypeId;
-use theme::CLIENT_SIDE_DECORATION_ROUNDING;
+use theme::ThemeSettings;
 use ui::{h_flex, prelude::*};
 use util::ResultExt;
 
@@ -38,6 +39,7 @@ pub struct StatusBar {
 
 impl Render for StatusBar {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        let theme = ThemeSettings::get_global(cx);
         h_flex()
             .w_full()
             .justify_between()
@@ -49,10 +51,10 @@ impl Render for StatusBar {
                 Decorations::Server => el,
                 Decorations::Client { tiling, .. } => el
                     .when(!(tiling.bottom || tiling.right), |el| {
-                        el.rounded_br(CLIENT_SIDE_DECORATION_ROUNDING)
+                        el.rounded_br(theme.client_side_decoration_rounding)
                     })
                     .when(!(tiling.bottom || tiling.left), |el| {
-                        el.rounded_bl(CLIENT_SIDE_DECORATION_ROUNDING)
+                        el.rounded_bl(theme.client_side_decoration_rounding)
                     })
                     // This border is to avoid a transparent gap in the rounded corners
                     .mb(px(-1.))

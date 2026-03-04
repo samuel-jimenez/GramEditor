@@ -6702,9 +6702,11 @@ pub fn client_side_decorations(
 ) -> Stateful<Div> {
     const BORDER_SIZE: Pixels = px(1.0);
     let decorations = window.window_decorations();
+    let rounding = ThemeSettings::get_global(cx).client_side_decoration_rounding;
+    let shadow = ThemeSettings::get_global(cx).client_side_decoration_shadow;
 
     match decorations {
-        Decorations::Client { .. } => window.set_client_inset(theme::CLIENT_SIDE_DECORATION_SHADOW),
+        Decorations::Client { .. } => window.set_client_inset(shadow),
         Decorations::Server => window.set_client_inset(px(0.0)),
     }
 
@@ -6718,35 +6720,24 @@ pub fn client_side_decorations(
             Decorations::Server => div,
             Decorations::Client { tiling, .. } => div
                 .when(!(tiling.top || tiling.right), |div| {
-                    div.rounded_tr(theme::CLIENT_SIDE_DECORATION_ROUNDING)
+                    div.rounded_tr(rounding)
                 })
-                .when(!(tiling.top || tiling.left), |div| {
-                    div.rounded_tl(theme::CLIENT_SIDE_DECORATION_ROUNDING)
-                })
+                .when(!(tiling.top || tiling.left), |div| div.rounded_tl(rounding))
                 .when(!(tiling.bottom || tiling.right), |div| {
-                    div.rounded_br(theme::CLIENT_SIDE_DECORATION_ROUNDING)
+                    div.rounded_br(rounding)
                 })
                 .when(!(tiling.bottom || tiling.left), |div| {
-                    div.rounded_bl(theme::CLIENT_SIDE_DECORATION_ROUNDING)
+                    div.rounded_bl(rounding)
                 })
-                .when(!tiling.top, |div| {
-                    div.pt(theme::CLIENT_SIDE_DECORATION_SHADOW)
-                })
-                .when(!tiling.bottom, |div| {
-                    div.pb(theme::CLIENT_SIDE_DECORATION_SHADOW)
-                })
-                .when(!tiling.left, |div| {
-                    div.pl(theme::CLIENT_SIDE_DECORATION_SHADOW)
-                })
-                .when(!tiling.right, |div| {
-                    div.pr(theme::CLIENT_SIDE_DECORATION_SHADOW)
-                })
+                .when(!tiling.top, |div| div.pt(shadow))
+                .when(!tiling.bottom, |div| div.pb(shadow))
+                .when(!tiling.left, |div| div.pl(shadow))
+                .when(!tiling.right, |div| div.pr(shadow))
                 .on_mouse_move(move |e, window, cx| {
                     let size = window.window_bounds().get_bounds().size;
                     let pos = e.position;
 
-                    let new_edge =
-                        resize_edge(pos, theme::CLIENT_SIDE_DECORATION_SHADOW, size, tiling);
+                    let new_edge = resize_edge(pos, shadow, size, tiling);
 
                     let edge = cx.try_global::<GlobalResizeEdge>();
                     if new_edge != edge.map(|edge| edge.0) {
@@ -6762,12 +6753,7 @@ pub fn client_side_decorations(
                     let size = window.window_bounds().get_bounds().size;
                     let pos = e.position;
 
-                    let edge = match resize_edge(
-                        pos,
-                        theme::CLIENT_SIDE_DECORATION_SHADOW,
-                        size,
-                        tiling,
-                    ) {
+                    let edge = match resize_edge(pos, shadow, size, tiling) {
                         Some(value) => value,
                         None => return,
                     };
@@ -6784,16 +6770,14 @@ pub fn client_side_decorations(
                     Decorations::Client { tiling } => div
                         .border_color(cx.theme().colors().border)
                         .when(!(tiling.top || tiling.right), |div| {
-                            div.rounded_tr(theme::CLIENT_SIDE_DECORATION_ROUNDING)
+                            div.rounded_tr(rounding)
                         })
-                        .when(!(tiling.top || tiling.left), |div| {
-                            div.rounded_tl(theme::CLIENT_SIDE_DECORATION_ROUNDING)
-                        })
+                        .when(!(tiling.top || tiling.left), |div| div.rounded_tl(rounding))
                         .when(!(tiling.bottom || tiling.right), |div| {
-                            div.rounded_br(theme::CLIENT_SIDE_DECORATION_ROUNDING)
+                            div.rounded_br(rounding)
                         })
                         .when(!(tiling.bottom || tiling.left), |div| {
-                            div.rounded_bl(theme::CLIENT_SIDE_DECORATION_ROUNDING)
+                            div.rounded_bl(rounding)
                         })
                         .when(!tiling.top, |div| div.border_t(BORDER_SIZE))
                         .when(!tiling.bottom, |div| div.border_b(BORDER_SIZE))
@@ -6807,7 +6791,7 @@ pub fn client_side_decorations(
                                     l: 0.,
                                     a: 0.4,
                                 },
-                                blur_radius: theme::CLIENT_SIDE_DECORATION_SHADOW / 2.,
+                                blur_radius: shadow / 2.,
                                 spread_radius: px(0.),
                                 offset: point(px(0.0), px(0.0)),
                             }])
@@ -6835,9 +6819,7 @@ pub fn client_side_decorations(
                     move |_bounds, hitbox, window, cx| {
                         let mouse = window.mouse_position();
                         let size = window.window_bounds().get_bounds().size;
-                        let Some(edge) =
-                            resize_edge(mouse, theme::CLIENT_SIDE_DECORATION_SHADOW, size, tiling)
-                        else {
+                        let Some(edge) = resize_edge(mouse, shadow, size, tiling) else {
                             return;
                         };
                         cx.set_global(GlobalResizeEdge(edge));

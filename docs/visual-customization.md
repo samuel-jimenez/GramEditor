@@ -191,6 +191,11 @@ TBD: Centered layout related settings
 
   "unnecessary_code_fade": 0.3, // How much to fade out unused code.
 
+  // Defines window border radius for platforms that use client side decorations.
+  "client_side_decoration_rounding": 10.0,
+  // Defines window shadow size for platforms that use client side decorations.
+  "client_side_decoration_shadow": 10.0,
+
   // Hide the values of in variables from visual display in private files
   "redact_private_values": false,
 

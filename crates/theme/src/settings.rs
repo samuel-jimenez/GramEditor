@@ -132,6 +132,10 @@ pub struct ThemeSettings {
     pub ui_density: UiDensity,
     /// The amount of fading applied to unnecessary code.
     pub unnecessary_code_fade: f32,
+    /// Defines window border radius for platforms that use client side decorations.
+    pub client_side_decoration_rounding: Pixels,
+    /// Defines window shadow size for platforms that use client side decorations.
+    pub client_side_decoration_shadow: Pixels,
 }
 
 pub(crate) const DEFAULT_LIGHT_THEME: &'static str = "One Light";
@@ -662,6 +666,14 @@ impl settings::Settings for ThemeSettings {
             icon_theme: icon_theme_selection,
             ui_density: content.ui_density.unwrap_or_default().into(),
             unnecessary_code_fade: content.unnecessary_code_fade.unwrap().0.clamp(0.0, 0.9),
+            client_side_decoration_rounding: content
+                .client_side_decoration_rounding
+                .unwrap_or_default()
+                .into(),
+            client_side_decoration_shadow: content
+                .client_side_decoration_shadow
+                .unwrap_or_default()
+                .into(),
         }
     }
 }

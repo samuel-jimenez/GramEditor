@@ -30,8 +30,8 @@ use fs::Fs;
 use gpui::BorrowAppContext;
 use gpui::Global;
 use gpui::{
-    App, AssetSource, HighlightStyle, Hsla, Pixels, Refineable, SharedString, WindowAppearance,
-    WindowBackgroundAppearance, px,
+    App, AssetSource, HighlightStyle, Hsla, Refineable, SharedString, WindowAppearance,
+    WindowBackgroundAppearance,
 };
 use serde::Deserialize;
 use uuid::Uuid;
@@ -50,11 +50,6 @@ pub use ::settings::{
     FontStyleContent, HighlightStyleContent, StatusColorsContent, ThemeColorsContent,
     ThemeStyleContent,
 };
-
-/// Defines window border radius for platforms that use client side decorations.
-pub const CLIENT_SIDE_DECORATION_ROUNDING: Pixels = px(10.0);
-/// Defines window shadow size for platforms that use client side decorations.
-pub const CLIENT_SIDE_DECORATION_SHADOW: Pixels = px(10.0);
 
 /// The appearance of the theme.
 #[derive(Debug, PartialEq, Clone, Copy, Deserialize)]
