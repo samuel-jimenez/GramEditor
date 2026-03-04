@@ -8388,7 +8388,13 @@ impl Editor {
 
     pub fn supertab(&mut self, _: &SuperTab, window: &mut Window, cx: &mut Context<Self>) {
         if self.mode.is_single_line() {
-            self.show_completions(&ShowCompletions, window, cx);
+            self.open_or_update_completions_menu(
+                Some(CompletionsMenuSource::Normal),
+                None,
+                false,
+                window,
+                cx,
+            );
             return;
         }
 
@@ -8429,7 +8435,13 @@ impl Editor {
             if (!preceding.is_whitespace() && following.is_whitespace())
                 || preceding.is_ascii_punctuation()
             {
-                self.show_completions(&ShowCompletions, window, cx);
+                self.open_or_update_completions_menu(
+                    Some(CompletionsMenuSource::Normal),
+                    None,
+                    false,
+                    window,
+                    cx,
+                );
                 return;
             }
         }
