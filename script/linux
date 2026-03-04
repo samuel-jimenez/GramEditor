@@ -229,7 +229,7 @@ if [[ -n $emerge ]]; then
     app-misc/jq
     dev-libs/openssl
     dev-libs/wayland
-    dev-util/cmake
+    dev-build/cmake
     media-libs/alsa-lib
     media-libs/fontconfig
     media-libs/vulkan-loader
