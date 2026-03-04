@@ -171,6 +171,7 @@ To edit your settings:
 2. Run `gram: open settings` in the Command Palette.
 
 Here’s how common VS Code settings translate:
+
 | VS Code | Gram | Notes |
 | --- | --- | --- |
 | editor.fontFamily | buffer_font_family | Gram uses Fira Code by default |
