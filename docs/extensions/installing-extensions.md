@@ -1,5 +1,9 @@
 # Installing Extensions
 
+Some extensions require Rust to be installed on your local machine, be sure to [install Rust via rustup](https://www.rust-lang.org/tools/install).
+
+> Rust must be installed via rustup. If you have Rust installed via homebrew or otherwise, installing extensions will not work.
+
 You can search for extensions by launching the Gram Extension Gallery by pressing {#kb gram::Extensions} , opening the command palette and selecting {#action gram::Extensions} or by selecting "Gram > Extensions" from the menu bar.
 
 Here you can view the extensions that you currently have installed or search and install new ones.
