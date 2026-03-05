@@ -30,6 +30,7 @@ mod html;
 mod json;
 mod lua;
 mod odin;
+mod opentofu;
 mod package_json;
 mod python;
 mod rust;
@@ -121,6 +122,7 @@ pub fn init(languages: Arc<LanguageRegistry>, fs: Arc<dyn Fs>, node: NodeRuntime
     let lua_lsp_adapter = Arc::new(lua::LuaLspAdapter);
     let odin_lsp_adapter = Arc::new(odin::OdinLspAdapter);
     let odin_context_provider = Arc::new(odin::odin_task_context());
+    let opentofu_lsp_adapter = Arc::new(opentofu::OpenTofuLspAdapter);
     let py_lsp_adapter = Arc::new(python::PyLspAdapter::new());
     let ty_lsp_adapter = Arc::new(python::TyLspAdapter);
     let python_context_provider = Arc::new(python::PythonContextProvider);
@@ -244,12 +246,12 @@ pub fn init(languages: Arc<LanguageRegistry>, fs: Arc<dyn Fs>, node: NodeRuntime
         },
         LanguageInfo {
             name: "opentofu",
-            adapters: vec![],
+            adapters: vec![opentofu_lsp_adapter.clone()],
             ..Default::default()
         },
         LanguageInfo {
             name: "opentofu-vars",
-            adapters: vec![],
+            adapters: vec![opentofu_lsp_adapter],
             ..Default::default()
         },
         LanguageInfo {
