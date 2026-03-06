@@ -5,18 +5,22 @@
     <project_license>AGPL-3.0-or-later and Apache-2.0 and GPL-3.0-or-later</project_license>
 
     <name>$APP_NAME</name>
-    <summary>High-performance, multiplayer code editor</summary>
-    <developer id="se.ziran.>
+    <summary>A code editor for humanoid apes and grumpy toads</summary>
+    <developer id="se.ziran.Gram">
         <name translate="no">Gram Project, Inc.</name>
     </developer>
     <description>
-        <p>
-            Productive coding starts with a tool that stays out of your way. Gram blends the power of an IDE with the speed of a lightweight editor for productivity you can feel under your fingertips.
+        <p>Gram is a code editor. It features solid performance and is highly configurable,
+	yet comes with batteries included out of the box. Gram supports many popular
+	languages, and can use Zed extensions to support additional languages.
         </p>
         <p>Features:</p>
-        <ul>
-            <li>Performance: Efficiently uses every CPU core and your GPU for instant startup, quick file loading, and responsive keystrokes.</li>
-            <li>Language-aware: Maintains a syntax tree for precise highlighting, and auto-indent, with LSP support for autocompletion and refactoring.</li>
+	<ul>
+	<li>Native GPU-accelerated performance.</li>
+	<li>Tree-sitter based syntax highlighting, auto-indentation and LSP support.</li>
+	<li>Built-in documentation.</li>
+	<li>Debugger support via the DAP protocol.</li>
+	<li>Version control support using Git.</li>
         </ul>
     </description>
 
@@ -32,7 +36,7 @@
         <content_attribute id="social-audio">intense</content_attribute>
     </content_rating>
 
-    <url type="homepage">https://codeberg.org/GramEditor/gram</url>
+    <url type="homepage">https://gram.liten.app</url>
     <url type="vcs-browser">https://codeberg.org/GramEditor/gram</url>
 
     <supports>
