@@ -35,8 +35,7 @@ jobs:
         run: git config --global core.longpaths true
         
       - name: Build
-        run: script/bundle-windows.ps1 -Architecture x86_64
-        shell: pwsh   
+        run: cargo build --verbose --release --package gram --package cli --target ${{ matrix.target }}
         
       - name: Build archive
         shell: bash
