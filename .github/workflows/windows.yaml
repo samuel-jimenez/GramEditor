@@ -1,4 +1,4 @@
-name: Rust
+name: windows
 
 on:
   push:
@@ -22,12 +22,6 @@ jobs:
             - build: windows
               os: windows-latest
               target: x86_64-pc-windows-msvc
-            # - build: linux
-            #   os: ubuntu-latest
-            #   target: x86_64-unknown-linux-musl  
-            # - build: macos
-            #   os: macos-latest
-            #   target: x86_64-apple-darwin
   
     steps:
       - uses: actions/checkout@v4    
@@ -41,9 +35,8 @@ jobs:
         run: git config --global core.longpaths true
         
       - name: Build
-        run: cargo build --verbose --release --target ${{ matrix.target }}
-      - name: Run tests
-        run: cargo test --verbose    
+        run: script/bundle-windows.ps1 -Architecture x86_64
+        shell: pwsh   
         
       - name: Build archive
         shell: bash
