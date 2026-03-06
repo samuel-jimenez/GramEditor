@@ -1552,7 +1552,7 @@ impl Render for GitCloneModal {
                                     .rounded_b_sm()
                                     .child(
                                         Label::new(
-                                            "Clone a repository from Codeberg or other sources.",
+                                            "Clone a repository from a Git forge (like Codeberg, etc.).\nInstallation from source URL requires rustup to be installed.\nUse a public HTTP(S) URL. Git over SSH will not work.",
                                         )
                                         .color(Color::Muted)
                                         .size(LabelSize::Small),
@@ -1564,7 +1564,7 @@ impl Render for GitCloneModal {
                                             .icon_size(IconSize::XSmall)
                                             .on_click(|_, _, cx| {
                                                 cx.open_url(
-                                                    "https://docs.codeberg.org/git/clone-commit-via-web/",
+                                                    "https://gram.liten.app/docs/extensions/installing-extensions/",
                                                 );
                                             }),
                                     ),

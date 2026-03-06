@@ -274,10 +274,13 @@ pub(crate) fn suggest(buffer: Entity<Buffer>, window: &mut Window, cx: &mut Cont
             cx.new(move |cx| {
                 MessageNotification::new(
                     if extension_id == file_name_or_extension {
-                        format!("Install the '{}' extension?", extension_id,)
+                        format!(
+                            "Install an extension for '{}' files?\nInstallation from source URL requires rustup to be installed.",
+                            extension_id,
+                        )
                     } else {
                         format!(
-                            "Install the '{}' extension for '{}' files?",
+                            "Install an extension for '{}' ('{}') files?\nInstallation from source URL requires rustup to be installed.",
                             extension_id, file_name_or_extension,
                         )
                     },
