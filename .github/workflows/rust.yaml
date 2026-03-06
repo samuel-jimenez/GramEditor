@@ -1,0 +1,72 @@
+name: Rust
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+  
+    runs-on: ${{ matrix.os }}
+    strategy:
+        matrix:
+          include:
+            - build: windows
+              os: windows-latest
+              target: x86_64-pc-windows-msvc
+              
+            - build: linux
+              os: ubuntu-latest
+              target: x86_64-unknown-linux-musl
+  
+            - build: macos
+              os: macos-latest
+              target: x86_64-apple-darwin
+  
+    steps:
+      - uses: actions/checkout@v4    
+      - name: Get the release version from the tag
+        shell: bash
+        # run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV # TODO
+        run: echo "VERSION=1.0.0" >> $GITHUB_ENV
+        
+      - name: Build
+        run: cargo build --verbose --release --target ${{ matrix.target }}
+      - name: Run tests
+        run: cargo test --verbose    
+        
+      - name: Build archive
+        shell: bash
+        run: |
+            # Replace with the name of your binary
+            binary_name="<BINARY_NAME>"
+    
+            dirname="$binary_name-${{ env.VERSION }}-${{ matrix.target }}"
+            mkdir "$dirname"
+            if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            mv "target/${{ matrix.target }}/release/$binary_name.exe" "$dirname"
+            else
+            mv "target/${{ matrix.target }}/release/$binary_name" "$dirname"
+            fi
+    
+            if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            7z a "$dirname.zip" "$dirname"
+            echo "ASSET=$dirname.zip" >> $GITHUB_ENV
+            else
+            tar -czf "$dirname.tar.gz" "$dirname"
+            echo "ASSET=$dirname.tar.gz" >> $GITHUB_ENV
+            fi
+  
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ${{ env.ASSET }}
