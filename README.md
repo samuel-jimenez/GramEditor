@@ -66,6 +66,15 @@ to be in place are different for all of the platforms.
 ./script/bundle-linux
 ```
 
+On Arch Linux and Arch-based distributions, Gram is available in the
+[AUR](https://aur.archlinux.org/packages/gram).
+
+Install it using `paru` or another AUR helper of your choice:
+
+```sh
+paru -S gram
+```
+
 ### MacOS
 
 To build on MacOS requires a developer account. You will need to set up signing
