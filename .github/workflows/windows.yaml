@@ -45,9 +45,7 @@ jobs:
             dirname="$binary_name-${{ env.VERSION }}-${{ matrix.target }}"
             mkdir "$dirname"
             mv "target/${{ matrix.target }}/release/$binary_name.exe" "$dirname"
-            mv "target/${{ matrix.target }}/release/cli.exe" "$dirname"
-            mv "target/${{ matrix.target }}/release/explorer_command_injector.dll" "$dirname"
-          
+            mv "target/${{ matrix.target }}/release/cli.exe" "$dirname"        
 
             7z a "$dirname.zip" "$dirname"
             echo "ASSET=$dirname.zip" >> $GITHUB_ENV
