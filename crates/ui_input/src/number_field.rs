@@ -12,7 +12,8 @@ use gpui::{
 };
 
 use settings::{
-    CenteredPaddingSettings, CodeFade, DelayMs, FontSize, InactiveOpacity, MinimumContrast,
+    CenteredPaddingSettings, CodeFade, Decoration, DelayMs, FontSize, InactiveOpacity,
+    MinimumContrast,
 };
 use ui::prelude::*;
 
@@ -119,6 +120,7 @@ impl_newtype_numeric_stepper_float!(
     CenteredPaddingSettings::MIN_PADDING,
     CenteredPaddingSettings::MAX_PADDING
 );
+impl_newtype_numeric_stepper_float!(Decoration, 1., 5., 0.1, 0.0, 20.0);
 
 macro_rules! impl_numeric_stepper_int {
     ($type:ident) => {

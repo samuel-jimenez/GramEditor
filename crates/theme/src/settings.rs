@@ -668,11 +668,15 @@ impl settings::Settings for ThemeSettings {
             unnecessary_code_fade: content.unnecessary_code_fade.unwrap().0.clamp(0.0, 0.9),
             client_side_decoration_rounding: content
                 .client_side_decoration_rounding
-                .unwrap_or_default()
+                .unwrap()
+                .0
+                .clamp(0.0, 20.0)
                 .into(),
             client_side_decoration_shadow: content
                 .client_side_decoration_shadow
-                .unwrap_or_default()
+                .unwrap()
+                .0
+                .clamp(0.0, 20.0)
                 .into(),
         }
     }

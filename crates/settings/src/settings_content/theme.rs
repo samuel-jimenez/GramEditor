@@ -71,9 +71,11 @@ pub struct ThemeSettingsContent {
     pub theme_overrides: HashMap<String, ThemeStyleContent>,
 
     /// Defines window border radius for platforms that use client side decorations.
-    pub client_side_decoration_rounding: Option<f32>,
+    #[schemars(range(min = 0.0, max = 20.0))]
+    pub client_side_decoration_rounding: Option<Decoration>,
     /// Defines window shadow size for platforms that use client side decorations.
-    pub client_side_decoration_shadow: Option<f32>,
+    #[schemars(range(min = 0.0, max = 20.0))]
+    pub client_side_decoration_shadow: Option<Decoration>,
 }
 
 /// A font size value in pixels, wrapping around `f32` for custom settings UI rendering.
@@ -138,6 +140,33 @@ impl Display for CodeFade {
 }
 
 impl From<f32> for CodeFade {
+    fn from(x: f32) -> Self {
+        Self(x)
+    }
+}
+
+#[derive(
+    Clone,
+    Copy,
+    Debug,
+    Serialize,
+    Deserialize,
+    JsonSchema,
+    MergeFrom,
+    PartialEq,
+    PartialOrd,
+    derive_more::FromStr,
+)]
+#[serde(transparent)]
+pub struct Decoration(pub f32);
+
+impl Display for Decoration {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:.1}", self.0)
+    }
+}
+
+impl From<f32> for Decoration {
     fn from(x: f32) -> Self {
         Self(x)
     }
