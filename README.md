@@ -47,6 +47,10 @@ For more thoughts on this topic, see the [mission statement](./docs/mission.md).
 For binary releases, see the [Codeberg
 releases](https://codeberg.org/GramEditor/gram/releases) page.
 
+For Linux, you can install the binary tarball using the
+`script/install.sh` script from the repository. Follow
+the instructions in [docs/linux.md](docs/linux.md).
+
 ## Building from Source
 
 Make sure you have Rust installed (via rustup, preferably).
@@ -64,6 +68,8 @@ to be in place are different for all of the platforms.
 ./script/linux
 # Build an installable tarball
 ./script/bundle-linux
+# Install to $HOME/.local
+./script/install.sh target/release/gram-linux-*.tar.gz
 ```
 
 On Arch Linux and Arch-based distributions, Gram is available in the
