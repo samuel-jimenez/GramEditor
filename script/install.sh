@@ -73,7 +73,6 @@ target_triple=${host_line#*: }
 arch="$(echo $target_triple | awk -F - '{print $1}')"
 
 if [[ "$GRAM_BUILD_TARBALL" = "true" ]]; then
-  echo "dev" > ./crates/gram/RELEASE_CHANNEL
   ./script/bundle-linux
   GRAM_BUNDLE_FILE="target/release/gram-linux-$arch.tar.gz"
 elif [ "$GRAM_BUNDLE_FILE" = "" ]; then
