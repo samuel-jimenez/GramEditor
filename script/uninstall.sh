@@ -54,24 +54,6 @@ linux() {
         suffix="-$channel"
     fi
 
-    appid=""
-    db_suffix="stable"
-    case "$channel" in
-      stable)
-        appid="se.ziran.Gram"
-        db_suffix="stable"
-        ;;
-      dev)
-        appid="se.ziran.Gram-Dev"
-        db_suffix="dev"
-        ;;
-      *)
-        echo "Unknown release channel: ${channel}. Using stable app ID."
-        appid="se.ziran.Gram"
-        db_suffix="stable"
-        ;;
-    esac
-
     # Remove the app directory
     rm -rf "$HOME/.local/gram$suffix.app"
 
@@ -79,13 +61,13 @@ linux() {
     rm -f "$HOME/.local/bin/gram"
 
     # Remove the .desktop file
-    rm -f "$HOME/.local/share/applications/${appid}.desktop"
+    rm -f "$HOME/.local/share/applications/gram$suffix.desktop"
 
     # Remove the database directory for this channel
-    rm -rf "$HOME/.local/share/gram/db/0-$db_suffix"
+    rm -rf "$HOME/.local/share/gram/db/0-$suffix"
 
     # Remove socket file
-    rm -f "$HOME/.local/share/gram/gram-$db_suffix.sock"
+    rm -f "$HOME/.local/share/gram/gram-$suffix.sock"
 
     # Remove the entire Gram directory if no installations remain
     if check_remaining_installations; then
