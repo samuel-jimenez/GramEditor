@@ -47,9 +47,22 @@ For more thoughts on this topic, see the [mission statement](./docs/mission.md).
 For binary releases, see the [Codeberg
 releases](https://codeberg.org/GramEditor/gram/releases) page.
 
+### Linux (general)
+
 For Linux, you can install the binary tarball using the
 `script/install.sh` script from the repository. Follow
 the instructions in [docs/linux.md](docs/linux.md).
+
+### Arch Linux
+
+On Arch Linux and Arch-based distributions, Gram is available in the
+[AUR](https://aur.archlinux.org/packages/gram-bin) as a binary package.
+
+Install it using `paru` or another AUR helper of your choice:
+
+```sh
+paru -S gram-bin
+```
 
 ## Building from Source
 
