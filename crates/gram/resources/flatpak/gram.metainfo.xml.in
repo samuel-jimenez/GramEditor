@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2026 The Gram Project -->
 <component type="desktop-application">
     <id>$APP_ID</id>
     <metadata_license>MIT</metadata_license>
@@ -7,20 +8,20 @@
     <name>$APP_NAME</name>
     <summary>A code editor for humanoid apes and grumpy toads</summary>
     <developer id="se.ziran.Gram">
-        <name translate="no">Gram Project, Inc.</name>
+        <name translate="no">The Gram Project</name>
     </developer>
     <description>
         <p>Gram is a code editor. It features solid performance and is highly configurable,
 	yet comes with batteries included out of the box. Gram supports many popular
-	languages, and can use Zed extensions to support additional languages.
+	languages, and can use extensions to support additional languages.
         </p>
         <p>Features:</p>
-	<ul>
-	<li>Native GPU-accelerated performance.</li>
-	<li>Tree-sitter based syntax highlighting, auto-indentation and LSP support.</li>
-	<li>Built-in documentation.</li>
-	<li>Debugger support via the DAP protocol.</li>
-	<li>Version control support using Git.</li>
+        <ul>
+          <li>Native GPU-accelerated performance.</li>
+          <li>Tree-sitter based syntax highlighting, auto-indentation and LSP support.</li>
+          <li>Built-in documentation.</li>
+          <li>Debugger support via the DAP protocol.</li>
+          <li>Version control support using Git.</li>
         </ul>
     </description>
 
@@ -37,7 +38,19 @@
     </content_rating>
 
     <url type="homepage">https://gram.liten.app</url>
+    <url type="bugtracker">https://codeberg.org/GramEditor/gram/issues</url>
     <url type="vcs-browser">https://codeberg.org/GramEditor/gram</url>
+
+    <screenshots>
+      <screenshot type="default">
+        <image>https://codeberg.org/GramEditor/website/src/commit/b6f10648280de0b86fb1ab1f7849b39380f7db0d/static/screenshot-1.png</image>
+        <caption>Welcome Screen</caption>
+      </screenshot>
+      <screenshot>
+        <image>https://codeberg.org/GramEditor/website/src/commit/b6f10648280de0b86fb1ab1f7849b39380f7db0d/static/screenshot-3.png</image>
+        <caption>Editing Gleam code</caption>
+      </screenshot>
+    </screenshots>
 
     <supports>
         <internet>offline-only</internet>
