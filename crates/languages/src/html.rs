@@ -21,7 +21,7 @@ pub struct SuperhtmlLspAdapter;
 
 #[cfg(target_os = "macos")]
 impl SuperhtmlLspAdapter {
-    const GITHUB_ASSET_KIND: AssetKind = AssetKind::TarGz;
+    const GITHUB_ASSET_KIND: AssetKind = AssetKind::Zip;
     const OS_NAME: &str = "macos";
 }
 
@@ -62,9 +62,13 @@ impl LspInstaller for SuperhtmlLspAdapter {
         _pre_release: bool,
         _cx: &mut AsyncApp,
     ) -> Result<GitHubLspBinaryVersion> {
-        let release =
-            latest_github_release("kristoff-it/superhtml", false, true, delegate.http_client())
-                .await?;
+        let release = latest_github_release(
+            "kristoff-it/superhtml",
+            false,
+            false,
+            delegate.http_client(),
+        )
+        .await?;
 
         let arch = match std::env::consts::ARCH {
             "aarch64" => "aarch64",
@@ -110,11 +114,7 @@ impl LspInstaller for SuperhtmlLspAdapter {
 
         let destination_path = container_dir.join(format!("superhtml-{version_name}"));
 
-        let platform_subdir = format!("{}-{}", std::env::consts::ARCH, Self::OS_NAME);
-
-        let server_path = destination_path
-            .join(&platform_subdir)
-            .join(with_exe("superhtml"));
+        let server_path = destination_path.join(with_exe("superhtml"));
 
         let binary = LanguageServerBinary {
             path: server_path.clone(),
@@ -148,8 +148,7 @@ impl LspInstaller for SuperhtmlLspAdapter {
         _: &dyn LspAdapterDelegate,
     ) -> Option<LanguageServerBinary> {
         match find_cached_server_binary(&container_dir, Some("superhtml-"), async |path| {
-            let platform_subdir = format!("{}-{}", std::env::consts::ARCH, Self::OS_NAME);
-            Some(path.join(&platform_subdir).join(with_exe("superhtml")))
+            Some(path.join(with_exe("superhtml")))
         })
         .await
         {
