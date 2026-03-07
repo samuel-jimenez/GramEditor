@@ -11,12 +11,4 @@ if [[ $# -gt 0 ]]; then
   "
   exit 1
 fi
-export GRAM_CHANNEL=$(<crates/gram/RELEASE_CHANNEL)
-export GRAM_UPDATE_EXPLANATION="You need to fetch and rebuild gram in $(pwd)"
-script/bundle-linux
-
-arch="$(uname -m)"
-commit=$(git rev-parse HEAD | cut -c 1-7)
-archive="gram-linux-${arch}.tar.gz"
-export GRAM_BUNDLE_PATH="${CARGO_TARGET_DIR:-target}/release/${archive}"
-script/install.sh
+script/install.sh --build

@@ -70,7 +70,7 @@ cargo run -p cli
 You can install a local build on your machine with:
 
 ```sh
-./script/install-linux
+./script/install.sh --build
 ```
 
 This will build gram and the cli in release mode and make them available at `~/.local/bin/gram`, installing .desktop files to `~/.local/share`.
