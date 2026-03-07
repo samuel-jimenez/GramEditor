@@ -830,7 +830,9 @@ mod flatpak {
         if let Some(flatpak_dir) = get_flatpak_dir() {
             let mut args = vec!["/usr/bin/flatpak-spawn".into(), "--host".into()];
             args.append(&mut get_xdg_env_args());
-            args.push("--env=GRAM_UPDATE_EXPLANATION=Please use flatpak to update gram".into());
+            args.push(
+                "--env=GRAM_NO_BUNDLED_UNINSTALL=Please use flatpak to uninstall gram".into(),
+            );
             args.push(
                 format!(
                     "--env={EXTRA_LIB_ENV_NAME}={}",
@@ -863,12 +865,7 @@ mod flatpak {
             && args.gram.is_none()
         {
             args.gram = Some("/app/libexec/gram-editor".into());
-            unsafe {
-                env::set_var(
-                    "GRAM_UPDATE_EXPLANATION",
-                    "Please use flatpak to update gram",
-                )
-            };
+            unsafe { env::set_var("GRAM_NO_BUNDLED_UNINSTALL", "Use flatpak to uninstall gram") };
         }
         args
     }

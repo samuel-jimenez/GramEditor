@@ -2,7 +2,7 @@
 use std::process::Command;
 
 fn main() {
-    if std::env::var("GRAM_UPDATE_EXPLANATION").is_ok() {
+    if std::env::var("GRAM_NO_BUNDLED_UNINSTALL").is_ok() {
         println!(r#"cargo:rustc-cfg=feature="no-bundled-uninstall""#);
     }
 
