@@ -31,12 +31,21 @@ pub struct GithubReleaseAsset {
     pub digest: Option<String>,
 }
 
+enum AllowedReleaseStatus {
+    Stable,
+    StableAndPreRelease,
+}
+
 pub async fn latest_github_release(
     repo_name_with_owner: &str,
     require_assets: bool,
-    pre_release: bool,
+    allow_pre_release: bool,
     http: Arc<dyn HttpClient>,
 ) -> anyhow::Result<GithubRelease> {
+    let allowed_release_status = match allow_pre_release {
+        true => AllowedReleaseStatus::StableAndPreRelease,
+        false => AllowedReleaseStatus::Stable,
+    };
     let url = format!("{GITHUB_API_URL}/repos/{repo_name_with_owner}/releases");
 
     let request = Request::get(&url)
@@ -66,31 +75,39 @@ pub async fn latest_github_release(
         );
     }
 
-    let releases = match serde_json::from_slice::<Vec<GithubRelease>>(body.as_slice()) {
-        Ok(releases) => releases,
-
-        Err(err) => {
+    let releases =
+        serde_json::from_slice::<Vec<GithubRelease>>(body.as_slice()).map_err(|err| {
             log::error!("Error deserializing: {err:?}");
             log::error!(
                 "GitHub API response text: {:?}",
                 String::from_utf8_lossy(body.as_slice())
             );
-            anyhow::bail!("error deserializing latest release: {err:?}");
-        }
-    };
+            anyhow!("error deserializing latest release: {err:?}")
+        })?;
 
     let mut release = releases
         .into_iter()
         .filter(|release| !require_assets || !release.assets.is_empty())
-        .find(|release| release.pre_release == pre_release)
-        .context("finding a prerelease")?;
-    release.assets.iter_mut().for_each(|asset| {
+        // Get the first release, assuming the first in the list is the latest release
+        // NOTE: The most recent release might not be the latest/highest version.
+        //       For example if an LSP's latest version is 5.0.0 but an old version (3.16.4) gets
+        //       a patched vulnarability update today, that does't mean the most recent release (3.16.4)
+        //       is the latest release.
+        //       We can't use the `/releases/latest` endpoint, as it doesn't include pre-releases
+        .find(|release| match allowed_release_status {
+            AllowedReleaseStatus::Stable => !release.pre_release,
+            AllowedReleaseStatus::StableAndPreRelease => true,
+        })
+        .context("finding a release")?;
+
+    for asset in release.assets.iter_mut() {
         if let Some(digest) = &mut asset.digest
             && let Some(stripped) = digest.strip_prefix("sha256:")
         {
             *digest = stripped.to_owned();
         }
-    });
+    }
+
     Ok(release)
 }
 
@@ -111,7 +128,7 @@ pub async fn get_release_by_tag_name(
     let mut response = http
         .send(request)
         .await
-        .context("error fetching latest release")?;
+        .context("error fetching release by tag")?;
 
     let mut body = Vec::new();
     let status = response.status();
@@ -119,7 +136,7 @@ pub async fn get_release_by_tag_name(
         .body_mut()
         .read_to_end(&mut body)
         .await
-        .context("error reading latest release")?;
+        .context("error reading release by tag")?;
 
     if status.is_client_error() {
         let text = String::from_utf8_lossy(body.as_slice());
