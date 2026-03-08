@@ -423,6 +423,17 @@ impl ExtensionBuilder {
     }
 
     async fn install_wasi_sdk_if_needed(&self) -> Result<PathBuf> {
+        if let Ok(system_clang) = which::which(format!("clang{}", env::consts::EXE_SUFFIX)) {
+            if util::command::new_smol_command(&system_clang)
+                .args([&format!("--target={RUST_TARGET}"), "-print-supported-cpus"])
+                .output()
+                .await
+                .is_ok_and(|o| o.status.success())
+            {
+                return Ok(system_clang);
+            }
+        }
+
         let url = if let Some(asset_name) = WASI_SDK_ASSET_NAME {
             format!("{WASI_SDK_URL}{asset_name}")
         } else {
