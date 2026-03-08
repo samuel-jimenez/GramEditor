@@ -39,6 +39,7 @@ use release_channel::ReleaseChannel;
 use remote::RemoteClient;
 use semantic_version::SemanticVersion;
 use serde::{Deserialize, Serialize};
+use std::fs::{copy, create_dir_all, read_dir};
 use std::ops::RangeInclusive;
 use std::str::FromStr;
 use std::{
@@ -692,12 +693,11 @@ impl ExtensionStore {
             }
 
             log::info!(
-                "create_symlink {} -> {}",
-                output_path.display(),
-                extension_source_path.display()
+                "copy_dir from={}, to={}",
+                extension_source_path.display(),
+                output_path.display()
             );
-            fs.create_symlink(output_path, extension_source_path)
-                .await?;
+            copy_dir(extension_source_path.as_path(), output_path.as_path()).await?;
 
             this.update(cx, |this, cx| this.reload(None, cx))?.await;
             this.update(cx, |this, cx| {
@@ -1531,4 +1531,28 @@ fn load_plugin_queries(root_path: &Path) -> LanguageQueries {
         }
     }
     result
+}
+
+/// cp -r from to, but also skipping hidden files (like .git)
+async fn copy_dir(from: &Path, to: &Path) -> Result<()> {
+    create_dir_all(to)?;
+    for entry in read_dir(from)? {
+        let entry = entry?;
+        if let Some(name) = entry.file_name().to_str()
+            && name.starts_with(".")
+        {
+            continue;
+        }
+        let filetype = entry.file_type()?;
+        if filetype.is_dir() {
+            Box::pin(copy_dir(
+                entry.path().as_path(),
+                &to.join(entry.file_name()),
+            ))
+            .await?;
+        } else {
+            copy(entry.path(), to.join(entry.file_name()))?;
+        }
+    }
+    Ok(())
 }

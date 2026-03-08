@@ -378,9 +378,11 @@ impl ExtensionsPage {
         let extension_store = ExtensionStore::global(cx);
         let provides_filter = provides_filter.unwrap_or(BTreeSet::default());
 
-        let dev_extensions = extension_store
+        let extensions = extension_store
             .read(cx)
-            .dev_extensions()
+            .installed_extensions()
+            .values()
+            .map(|ext| &ext.manifest)
             .filter(|ext| {
                 provides_filter.is_empty()
                     || extension_provides(ext)
@@ -391,11 +393,11 @@ impl ExtensionsPage {
             .cloned()
             .collect::<Vec<Arc<ExtensionManifest>>>();
 
-        log::info!("dev_extensions: {:?}", dev_extensions);
+        log::info!("extensions: {:?}", extensions);
 
         cx.spawn(async move |this, cx| {
-            let dev_extensions = if let Some(search) = search {
-                let match_candidates = dev_extensions
+            let extensions = if let Some(search) = search {
+                let match_candidates = extensions
                     .iter()
                     .enumerate()
                     .map(|(ix, manifest)| StringMatchCandidate::new(ix, &manifest.name))
@@ -413,15 +415,15 @@ impl ExtensionsPage {
                 .await;
                 matches
                     .into_iter()
-                    .map(|mat| dev_extensions[mat.candidate_id].clone())
+                    .map(|mat| extensions[mat.candidate_id].clone())
                     .collect()
             } else {
-                dev_extensions
+                extensions
             };
 
             this.update(cx, |this, cx| {
                 cx.notify();
-                this.dev_extension_entries = dev_extensions;
+                this.dev_extension_entries = extensions;
                 this.is_fetching_extensions = false;
                 this.fetch_failed = false;
                 this.filter_extension_entries(cx);
@@ -512,15 +514,6 @@ impl ExtensionsPage {
                 })
                 .ok();
         }
-    }
-
-    /// Returns whether a dev extension currently exists for the extension with the given ID.
-    fn dev_extension_exists(extension_id: &str, cx: &mut Context<Self>) -> bool {
-        let extension_store = ExtensionStore::global(cx).read(cx);
-
-        extension_store
-            .dev_extensions()
-            .any(|dev_extension| dev_extension.id.as_ref() == extension_id)
     }
 
     fn extension_status(extension_id: &str, cx: &mut Context<Self>) -> ExtensionStatus {
@@ -688,10 +681,9 @@ impl ExtensionsPage {
     ) -> ExtensionCard {
         let this = cx.weak_entity();
         let status = Self::extension_status(&extension.id, cx);
-        let has_dev_extension = Self::dev_extension_exists(&extension.id, cx);
 
         let extension_id = extension.id.clone();
-        let buttons = self.buttons_for_entry(extension, &status, has_dev_extension, cx);
+        let buttons = self.buttons_for_entry(extension, &status, cx);
         let version = extension.manifest.version.clone();
         let repository_url = extension.manifest.repository.clone();
         let authors = extension.manifest.authors.clone();
@@ -702,7 +694,6 @@ impl ExtensionsPage {
         };
 
         ExtensionCard::new()
-            .overridden_by_dev_extension(has_dev_extension)
             .child(
                 h_flex()
                     .justify_between()
@@ -878,7 +869,6 @@ impl ExtensionsPage {
         &self,
         extension: &ExtensionMetadata,
         status: &ExtensionStatus,
-        _has_dev_extension: bool,
         _cx: &mut Context<Self>,
     ) -> ExtensionCardButtons {
         let is_configurable = false;

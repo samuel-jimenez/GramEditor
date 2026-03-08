@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed typos in README (#19) by @GulfSugar
 - extensions: Use system clang, if it supports the wasm target (#64) by @selfisekai
 - Enable the uninstall extension button (#32)
+- Fix extensions being installed to tmp dir (#26)
 
 ### Changed
 
