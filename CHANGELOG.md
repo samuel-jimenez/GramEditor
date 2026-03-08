@@ -20,7 +20,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated documentation
 - Wasm is not an acronym
-
 - Add zlib-ng-compat-static as dependency for Fedora build (#62) by @voidedgin
 - Documentation around installing extensions. (#23) by @edwardloveall
 - Extend icon theme docs with enable settings (#6) by @Petrosz007
