@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Modify single instance port numbers to not clash with Zed (#10)
 - Fixed typos in README (#19) by @GulfSugar
 - extensions: Use system clang, if it supports the wasm target (#64) by @selfisekai
+- Enable the uninstall extension button (#32)
 
 ### Changed
 

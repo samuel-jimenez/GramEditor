@@ -616,7 +616,20 @@ impl ExtensionsPage {
                             .child(
                                 Button::new(SharedString::from(extension.id.clone()), "Uninstall")
                                     .color(Color::Accent)
-                                    .disabled(true),
+                                    .disabled(!matches!(status, ExtensionStatus::Installed(..)))
+                                    .on_click({
+                                        let extension_id = extension.id.clone();
+                                        move |_, _, cx| {
+                                            ExtensionStore::global(cx)
+                                                .update(cx, |store, cx| {
+                                                    store.uninstall_extension(
+                                                        extension_id.clone(),
+                                                        cx,
+                                                    )
+                                                })
+                                                .detach_and_log_err(cx);
+                                        }
+                                    }),
                             ),
                     ),
             )
