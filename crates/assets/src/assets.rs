@@ -88,3 +88,13 @@ impl AssetSource for Docs {
             .collect())
     }
 }
+
+pub fn lookup_docs(path: &str) -> Option<rust_embed::EmbeddedFile> {
+    if let Some(docs) = Docs::get(&path) {
+        Some(docs)
+    } else if let Some(docs) = Docs::get(&format!("{path}.md")) {
+        Some(docs)
+    } else {
+        None
+    }
+}

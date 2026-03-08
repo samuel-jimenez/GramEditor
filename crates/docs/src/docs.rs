@@ -4,7 +4,7 @@ use std::{borrow::Cow, sync::Arc, time::Duration};
 
 use anyhow::Result;
 use app_actions::{ChangeKeybinding, OpenDocs, OpenDocsAt, OpenGramUrl, docs_search};
-use assets::Docs;
+use assets::lookup_docs;
 use editor::EditorEvent;
 use gpui::{
     Action, Entity, EventEmitter, FocusHandle, Focusable, IsZero as _, ListState,
@@ -496,7 +496,7 @@ fn preprocess_text(text: &str, actions: Vec<Box<dyn Action>>) -> String {
 }
 
 fn get_docs<'b>(path: &str) -> Option<Cow<'b, str>> {
-    if let Some(text) = Docs::get(&path) {
+    if let Some(text) = lookup_docs(&path) {
         Some(match text.data {
             Cow::Borrowed(bytes) => Cow::Borrowed(std::str::from_utf8(bytes).unwrap()),
             Cow::Owned(bytes) => Cow::Owned(String::from_utf8(bytes).unwrap()),
