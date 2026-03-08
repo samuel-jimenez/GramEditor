@@ -34,7 +34,7 @@ pub struct GithubReleaseAsset {
 pub async fn latest_github_release(
     repo_name_with_owner: &str,
     require_assets: bool,
-    pre_release: bool,
+    allow_pre_release: bool,
     http: Arc<dyn HttpClient>,
 ) -> anyhow::Result<GithubRelease> {
     let url = format!("{GITHUB_API_URL}/repos/{repo_name_with_owner}/releases");
@@ -82,8 +82,17 @@ pub async fn latest_github_release(
     let mut release = releases
         .into_iter()
         .filter(|release| !require_assets || !release.assets.is_empty())
-        .find(|release| release.pre_release == pre_release)
-        .context("finding a prerelease")?;
+        // Get the first release, assuming the first in the list is the latest release
+        // NOTE: The most recent release might not be the latest/highest version.
+        //       For example if an LSP's latest version is 5.0.0 but an old version (3.16.4) gets
+        //       a patched vulnarability update today, that does't mean the most recent release (3.16.4)
+        //       is the latest release.
+        //       We can't use the `/releases/latest` endpoint, as it doesn't include pre-releases
+        .find(|release| match allow_pre_release {
+            true => true,
+            false => !release.pre_release,
+        })
+        .context("finding a release")?;
     release.assets.iter_mut().for_each(|asset| {
         if let Some(digest) = &mut asset.digest
             && let Some(stripped) = digest.strip_prefix("sha256:")
