@@ -18,19 +18,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Updated documentation
+- Wasm is not an acronym
+
 - Add zlib-ng-compat-static as dependency for Fedora build (#62) by @voidedgin
 - Documentation around installing extensions. (#23) by @edwardloveall
 - Extend icon theme docs with enable settings (#6) by @Petrosz007
+- Fix LSP github download logic for pre-release (#67) by @Petrosz007
 - Fix Supertab not performing word completion
 - Fix `block_comment` and `documentation_comment` for Rust (#24) by @fzzr
 - Fix superhtml LSP (#56) by @Petrosz007
 - Fixed package name for cmake for Gentoo packages (#28) by @stepanov
 - Fixes compilation issue on aarch64-linux (#61) by @voidedgin
 - Highlight that Rust in required to install some extensions (#34) by @ash-sykes
+- Make UI and Buffer Font match. (#69) by @voidedgin
 - Modify single instance port numbers to not clash with Zed (#10)
-- Typos in readme by @GulfSugar
-- Updated documentation and README
-- Wasm is not an acronym
+- Fixed typos in README (#19) by @GulfSugar
 - extensions: Use system clang, if it supports the wasm target (#64) by @selfisekai
 
 ### Changed
