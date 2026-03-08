@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add AUR installation instructions to README (#38) by @nerdyslacker
 - Add binary aur install instructions to README (#53) by @bananas
 - Add perl-Time-Piece to linux script (#1) by @LHolten
 - Built in language support for OpenTofu (#33) by @theDoctor
@@ -17,21 +18,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Add zlib-ng-compat-static as dependency for Fedora build (#62) by @voidedgin
 - Documentation around installing extensions. (#23) by @edwardloveall
 - Extend icon theme docs with enable settings (#6) by @Petrosz007
 - Fix Supertab not performing word completion
 - Fix `block_comment` and `documentation_comment` for Rust (#24) by @fzzr
 - Fix superhtml LSP (#56) by @Petrosz007
 - Fixed package name for cmake for Gentoo packages (#28) by @stepanov
+- Fixes compilation issue on aarch64-linux (#61) by @voidedgin
 - Highlight that Rust in required to install some extensions (#34) by @ash-sykes
 - Modify single instance port numbers to not clash with Zed (#10)
 - Typos in readme by @GulfSugar
 - Updated documentation and README
 - Wasm is not an acronym
+- extensions: Use system clang, if it supports the wasm target (#64) by @selfisekai
 
 ### Changed
 
 - Bump crash-handler to 0.7 (#39) by @selfisekai
+- Update wild to 0.8.0 (#63) by @voidedgin
 
 ## [1.0.0] - 2026-03-01
 
