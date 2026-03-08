@@ -88,6 +88,7 @@ if [[ -n $dnf ]] || [[ -n $yum ]]; then
     jq
     git
     tar
+    zlib-ng-compat-static
   )
   # perl used for building openssl-sys crate. See: https://docs.rs/openssl/latest/openssl/
   if grep -qP '^ID="?(fedora)' /etc/os-release; then
