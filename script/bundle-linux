@@ -44,12 +44,16 @@ done
 
 export GRAM_BUNDLE=true
 
+arch=$(uname -m)
+
 # work around incompatibility with newer GCC:
 # https://github.com/zed-industries/zed/issues/24880
-if gcc --version | grep -q '14.'; then
+currentversion="$(gcc -dumpversion)"
+requiredversion="14"
+if [ "$(printf '%s\n'  "$requiredversion" "$currentversion" | sort -V | head -n1)" = "$requiredversion" ]; then
   echo "Handle GCC version 14+ when compiling remote server..."
   export AWS_LC_SYS_CC=clang
-  export REMOTE_SERVER_TARGET=x86_64-unknown-linux-gnu
+  export REMOTE_SERVER_TARGET=$arch-unknown-linux-gnu
 fi
 
 channel=$(<crates/gram/RELEASE_CHANNEL)
@@ -155,7 +159,6 @@ chmod +x "${gram_dir}/share/applications/gram$suffix.desktop"
 cp "assets/licenses.md" "${gram_dir}/licenses.md"
 
 # Create archive out of everything that's in the temp directory
-arch=$(uname -m)
 archive="gram-linux-${arch}.tar.gz"
 
 rm -rf "${archive}"
