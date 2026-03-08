@@ -565,8 +565,7 @@ impl WasmHost {
                 // note: Setting the thread local here will slowly "poison" all tokio threads
                 // causing us to not record their panics any longer.
                 //
-                // This is fine though, the main editor binary only uses tokio for livekit and wasm extensions.
-                // Livekit seldom (if ever) panics 🤞 so the likelihood of us missing a panic in sentry is very low.
+                // This is fine though, the main editor binary only uses tokio for wasm extensions.
                 IS_WASM_THREAD.with(|v| v.store(true, Ordering::Release));
                 while let Some(call) = rx.next().await {
                     (call)(&mut extension, &mut store).await;

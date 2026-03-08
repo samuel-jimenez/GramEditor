@@ -108,7 +108,7 @@ fi
 # find_libs() {
 #     ldd ${target_dir}/${target_triple}/release/gram |
 #         cut -d' ' -f3 |
-#         grep -v '\<\(libstdc++.so\|libc.so\|libgcc_s.so\|libm.so\|libpthread.so\|libdl.so\|libasound.so\)'
+#         grep -v '\<\(libstdc++.so\|libc.so\|libgcc_s.so\|libm.so\|libpthread.so\|libdl.so\)'
 # }
 
 # mkdir -p "${gram_dir}/lib"

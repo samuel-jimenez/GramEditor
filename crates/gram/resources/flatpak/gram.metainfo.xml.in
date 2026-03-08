@@ -32,11 +32,6 @@
         <color type="primary" scheme_preference="dark">$BRANDING_DARK</color>
     </branding>
 
-    <content_rating type="oars-1.1">
-        <content_attribute id="social-chat">intense</content_attribute>
-        <content_attribute id="social-audio">intense</content_attribute>
-    </content_rating>
-
     <url type="homepage">https://gram.liten.app</url>
     <url type="bugtracker">https://codeberg.org/GramEditor/gram/issues</url>
     <url type="vcs-browser">https://codeberg.org/GramEditor/gram</url>
