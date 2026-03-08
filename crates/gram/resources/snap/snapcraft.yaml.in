@@ -2,16 +2,16 @@ name: gram
 title: Gram
 base: core24
 version: "$RELEASE_VERSION"
-summary: What cannot be mended must be transcended.
+summary: A code editor for humanoid apes and grumpy toads
 description: |
-  Gram is a modern, fully open-source code editor which helps you
-  write code without subjecting you to telemetry, AI, proprietary
-  server components, license agreements or automatic installation
-  of binaries.
+  Gram is a code editor. It features solid performance and is
+  highly configurable, yet comes with batteries included out of
+  the box. Gram supports many popular languages, and can use
+  extensions to support additional languages.
 grade: stable
 confinement: classic
 compression: lzo
-website: https://codeberg.org/GramEditor/gram
+website: https://gram.liten.app
 source-code: https://codeberg.org/GramEditor/gram
 issues: https://codeberg.org/GramEditor/gram/issues
 contact: https://codeberg.org/GramEditor/gram
@@ -19,7 +19,7 @@ contact: https://codeberg.org/GramEditor/gram
 parts:
   gram:
     plugin: dump
-    source: "https://codeberg.org/GramEditor/gram/releases/download/v$RELEASE_VERSION/gram-linux-x86_64.tar.gz"
+    source: "https://codeberg.org/GramEditor/gram/releases/download/$RELEASE_VERSION/gram-linux-x86_64-$RELEASE_VERSION.tar.gz"
 
     organize:
       # These renames seem to not be necessary, but it's tidier.
@@ -27,7 +27,6 @@ parts:
       libexec: usr/libexec
 
     stage-packages:
-      - libasound2t64
       # snapcraft has a lint that this is unused, but without it Gram exits with
       # "Missing Vulkan entry points: LibraryLoadFailure" in blade_graphics.
       - libvulkan1

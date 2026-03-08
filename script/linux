@@ -25,7 +25,6 @@ if [[ -n $apt ]]; then
   deps=(
     gcc
     g++
-    libasound2-dev
     libfontconfig-dev
     libwayland-dev
     libx11-xcb-dev
@@ -76,7 +75,6 @@ if [[ -n $dnf ]] || [[ -n $yum ]]; then
     gcc
     clang
     cmake
-    alsa-lib-devel
     fontconfig-devel
     wayland-devel
     libxcb-devel
@@ -138,7 +136,6 @@ fi
 zyp=$(command -v zypper || true)
 if [[ -n $zyp ]]; then
   deps=(
-    alsa-devel
     clang
     cmake
     fontconfig-devel
@@ -175,7 +172,6 @@ if [[ -n $pacman ]]; then
     clang
     musl
     cmake
-    alsa-lib
     fontconfig
     wayland
     libgit2
@@ -205,7 +201,6 @@ if [[ -n $xbps ]]; then
     jq
     elfutils-devel
     gcc
-    alsa-lib-devel
     fontconfig-devel
     libxcb-devel
     libxkbcommon-devel
@@ -231,7 +226,6 @@ if [[ -n $emerge ]]; then
     dev-libs/openssl
     dev-libs/wayland
     dev-build/cmake
-    media-libs/alsa-lib
     media-libs/fontconfig
     media-libs/vulkan-loader
     x11-libs/libxcb

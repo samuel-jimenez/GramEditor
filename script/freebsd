@@ -27,7 +27,6 @@ if [[ -n $pkg ]]; then
         protobuf
         rustup-init
         libx11
-        alsa-lib
     )
     $maysudo "$pkg" install "${deps[@]}"
     finalize
