@@ -554,13 +554,13 @@ pub const FILE_ROW_COLUMN_DELIMITER: char = ':';
 
 const ROW_COL_CAPTURE_REGEX: &str = r"(?xs)
     ([^\(]+)\:(?:
-        \((\d+)[,:](\d+)\) # filename:(row,column), filename:(row:column)
+        \((\d+)[,:]\s?(\d+)\) # filename:(row,column), filename:(row:column)
         |
         \((\d+)\)()     # filename:(row)
     )
     |
     ([^\(]+)(?:
-        \((\d+)[,:](\d+)\) # filename(row,column), filename(row:column)
+        \((\d+)[,:]\s?(\d+)\) # filename(row,column), filename(row:column)
         |
         \((\d+)\)()     # filename(row)
     )
@@ -1916,6 +1916,14 @@ mod tests {
                 path: PathBuf::from("/testing/out/src/file_finder.odin"),
                 row: Some(7),
                 column: Some(15),
+            }
+        );
+        assert_eq!(
+            PathWithPosition::parse_str("/home/me/game/source/actors/boss.nim(58, 1)"),
+            PathWithPosition {
+                path: PathBuf::from("/home/me/game/source/actors/boss.nim"),
+                row: Some(58),
+                column: Some(1),
             }
         );
     }
