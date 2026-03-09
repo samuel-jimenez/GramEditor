@@ -230,6 +230,12 @@ impl ThemeRegistry {
 
     /// Loads the user theme from the specified path and adds it to the registry.
     pub async fn load_user_theme(&self, theme_path: &Path, fs: Arc<dyn Fs>) -> Result<()> {
+        if fs.is_dir(theme_path).await {
+            // Can happen when we get an FS event for the
+            // themes directory itself (created, deleted)
+            return Ok(());
+        }
+
         log::info!("Loading user theme from {:?}", theme_path);
         let theme = read_user_theme(theme_path, fs).await?;
 
