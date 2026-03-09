@@ -1,0 +1,55 @@
+name: Release
+on:
+  push:
+    tags:
+      - "*"
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  release-amd64:
+    runs-on: rust-amd64
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: install linux dependencies
+        run: ./script/linux
+      - name: download wasi-sdk
+        run: ./script/download-wasi-sdk
+      - name: bundle-linux
+        run: ./script/bundle-linux
+
+      - name: Set artifact name
+        id: set_artifact_name
+        shell: bash
+        run: |
+          version=
+          if [[ $FORGEJO_REF_TYPE == "tag" ]]; then
+            version=-$FORGEJO_REF_NAME
+          fi
+          echo "tarball_amd64=gram-linux-amd64${version}.tar.gz" >> $FORGEJO_OUTPUT
+          echo "remote_server_amd64=gram-remote-server-linux-amd64${version}.gz" >> $FORGEJO_OUTPUT
+
+      - name: sha256sum
+        shell: bash
+        run: |
+          sha256sum ${{steps.set_artifact_name.outputs.tarball_amd64}} > ${{steps.set_artifact_name.outputs.tarball_amd64}}.sha256sum
+          sha256sum ${{steps.set_artifact_name.outputs.remote_server_amd64}} > ${{steps.set_artifact_name.outputs.remote_server_amd64}}.sha256sum
+
+      - id: upload_tarball amd64
+        uses: forgejo/upload-artifact@v4
+        with:
+          name: ${{steps.set_artifact_name.outputs.tarball_amd64}}
+          path: |
+            ${{steps.set_artifact_name.outputs.tarball_amd64}}
+            ${{steps.set_artifact_name.outputs.tarball_amd64}}.sha256sum
+
+      - id: upload_remote_server amd64
+        uses: forgejo/upload-artifact@v4
+        with:
+          name: ${{steps.set_artifact_name.outputs.remote_server_amd64}}
+          path: |
+            ${{steps.set_artifact_name.outputs.remote_server_amd64}}
+            ${{steps.set_artifact_name.outputs.remote_server_amd64}}.sha256sum
