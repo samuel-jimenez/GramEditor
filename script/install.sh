@@ -84,9 +84,11 @@ channel=stable
 if tar ztf "$GRAM_BUNDLE_FILE" | head -1 | grep -q "dev"; then
   channel=dev
 fi
+appid="app.liten.Gram"
 suffix=""
 if [ "$channel" != "stable" ]; then
   suffix="-$channel"
+  appid="app.liten.Gram-Dev"
 fi
 mkdir -p "$GRAM_INSTALL_PREFIX/gram$suffix.app"
 mkdir -p "$GRAM_INSTALL_PREFIX/bin" "$GRAM_INSTALL_PREFIX/share/applications"
@@ -94,7 +96,7 @@ tar -xzf "$GRAM_BUNDLE_FILE" -C "$GRAM_INSTALL_PREFIX/"
 
 ln -sf "$GRAM_INSTALL_PREFIX/gram$suffix.app/bin/gram" "$HOME/.local/bin/gram"
 
-desktop_file_path="$GRAM_INSTALL_PREFIX/share/applications/gram${suffix}.desktop"
+desktop_file_path="$GRAM_INSTALL_PREFIX/share/applications/${appid}.desktop"
 src_dir="$GRAM_INSTALL_PREFIX/gram$suffix.app/share/applications"
 cp "$src_dir/gram${suffix}.desktop" "${desktop_file_path}"
 
