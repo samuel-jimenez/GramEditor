@@ -12,12 +12,12 @@ use settings::{RegisterSetting, Settings};
     Copy, Clone, Debug, Serialize, Deserialize, JsonSchema, PartialEq, Eq, Default, RegisterSetting,
 )]
 pub enum BaseKeymap {
-    #[default]
     VSCode,
     JetBrains,
     SublimeText,
     Atom,
     TextMate,
+    #[default]
     Emacs,
     None,
 }
@@ -66,7 +66,7 @@ impl Display for BaseKeymap {
 impl BaseKeymap {
     #[cfg(target_os = "macos")]
     pub const OPTIONS: [(&'static str, Self); 6] = [
-        ("VS Code (Default)", Self::VSCode),
+        ("VS Code", Self::VSCode),
         ("Atom", Self::Atom),
         ("JetBrains", Self::JetBrains),
         ("Sublime Text", Self::SublimeText),
@@ -76,7 +76,7 @@ impl BaseKeymap {
 
     #[cfg(not(target_os = "macos"))]
     pub const OPTIONS: [(&'static str, Self); 5] = [
-        ("VS Code (Default)", Self::VSCode),
+        ("VS Code", Self::VSCode),
         ("Atom", Self::Atom),
         ("JetBrains", Self::JetBrains),
         ("Sublime Text", Self::SublimeText),
@@ -86,24 +86,24 @@ impl BaseKeymap {
     pub fn asset_path(&self) -> Option<&'static str> {
         #[cfg(target_os = "macos")]
         match self {
-            BaseKeymap::JetBrains => Some("keymaps/macos/jetbrains.jsonc"),
-            BaseKeymap::SublimeText => Some("keymaps/macos/sublime_text.jsonc"),
             BaseKeymap::Atom => Some("keymaps/macos/atom.jsonc"),
-            BaseKeymap::TextMate => Some("keymaps/macos/textmate.jsonc"),
             BaseKeymap::Emacs => Some("keymaps/macos/emacs.jsonc"),
-            BaseKeymap::VSCode => None,
+            BaseKeymap::JetBrains => Some("keymaps/macos/jetbrains.jsonc"),
             BaseKeymap::None => None,
+            BaseKeymap::SublimeText => Some("keymaps/macos/sublime_text.jsonc"),
+            BaseKeymap::TextMate => Some("keymaps/macos/textmate.jsonc"),
+            BaseKeymap::VSCode => None,
         }
 
         #[cfg(not(target_os = "macos"))]
         match self {
-            BaseKeymap::JetBrains => Some("keymaps/linux/jetbrains.jsonc"),
-            BaseKeymap::SublimeText => Some("keymaps/linux/sublime_text.jsonc"),
             BaseKeymap::Atom => Some("keymaps/linux/atom.jsonc"),
             BaseKeymap::Emacs => Some("keymaps/linux/emacs.jsonc"),
+            BaseKeymap::JetBrains => Some("keymaps/linux/jetbrains.jsonc"),
+            BaseKeymap::None => None,
+            BaseKeymap::SublimeText => Some("keymaps/linux/sublime_text.jsonc"),
             BaseKeymap::TextMate => None,
             BaseKeymap::VSCode => None,
-            BaseKeymap::None => None,
         }
     }
 
