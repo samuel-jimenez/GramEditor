@@ -7,7 +7,7 @@
 
     <name>$APP_NAME</name>
     <summary>A code editor for humanoid apes and grumpy toads</summary>
-    <developer id="se.ziran.Gram">
+    <developer id="app.liten.Gram">
         <name translate="no">The Gram Project</name>
     </developer>
     <description>

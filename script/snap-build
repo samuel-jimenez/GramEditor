@@ -14,7 +14,7 @@ export APP_NAME="Gram"
 export APP_CLI="gram"
 export APP_ICON="\${SNAP}/meta/gui/gram.png"
 export APP_ARGS="%U"
-envsubst < "crates/gram/resources/gram.desktop.in" > "snap/gui/gram.desktop"
+envsubst < "crates/gram/resources/gram.desktop.in" > "snap/gui/app.liten.Gram.desktop"
 cp "crates/gram/resources/app-icon.png" "snap/gui/gram.png"
 
 RELEASE_VERSION="$1" envsubst < crates/gram/resources/snap/snapcraft.yaml.in > snap/snapcraft.yaml

@@ -167,8 +167,8 @@ impl ReleaseChannel {
     /// This also has to match the bundle identifier for Gram on macOS.
     pub fn app_id(&self) -> &'static str {
         match self {
-            ReleaseChannel::Dev => "se.ziran.Gram-Dev",
-            ReleaseChannel::Stable => "se.ziran.Gram",
+            ReleaseChannel::Dev => "app.liten.Gram-Dev",
+            ReleaseChannel::Stable => "app.liten.Gram",
         }
     }
 

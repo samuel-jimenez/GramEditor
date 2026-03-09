@@ -81,12 +81,12 @@ linux() {
 macos() {
     app="Gram.app"
     db_suffix="stable"
-    app_id="se.ziran.Gram"
+    app_id="app.liten.Gram"
     case "$channel" in
       dev)
         app="Gram Dev.app"
         db_suffix="dev"
-        app_id="se.ziran.Gram-Dev"
+        app_id="app.liten.Gram-Dev"
         ;;
     esac
 

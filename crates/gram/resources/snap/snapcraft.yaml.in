@@ -55,6 +55,6 @@ parts:
 apps:
   gram:
     command: usr/bin/gram
-    common-id: se.ziran.Gram
+    common-id: app.liten.Gram
     environment:
       GRAM_BUNDLE_TYPE: snap

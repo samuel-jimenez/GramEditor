@@ -22,9 +22,9 @@ To completely remove all Gram configuration files and data:
 2. Press `Cmd + Shift + G` to open "Go to Folder"
 3. Delete the following directories if they exist:
    - `~/Library/Application Support/Gram`
-   - `~/Library/Saved Application State/se.ziran.Gram.savedState`
+   - `~/Library/Saved Application State/app.liten.Gram.savedState`
    - `~/Library/Logs/Gram`
-   - `~/Library/Caches/se.ziran.Gram`
+   - `~/Library/Caches/app.liten.Gram`
 
 ## Linux
 

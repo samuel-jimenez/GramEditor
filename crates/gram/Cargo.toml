@@ -174,7 +174,7 @@ workspace = { workspace = true, features = ["test-support"] }
 
 [package.metadata.bundle-dev]
 icon = ["resources/app-icon-dev@2x.png", "resources/app-icon-dev.png"]
-identifier = "se.ziran.Gram-Dev"
+identifier = "app.liten.Gram-Dev"
 name = "Gram Dev"
 osx_minimum_system_version = "10.15.7"
 osx_info_plist_exts = ["resources/info/*"]
@@ -182,7 +182,7 @@ osx_url_schemes = ["gram"]
 
 [package.metadata.bundle-stable]
 icon = ["resources/app-icon@2x.png", "resources/app-icon.png"]
-identifier = "se.ziran.Gram"
+identifier = "app.liten.Gram"
 name = "Gram"
 osx_minimum_system_version = "10.15.7"
 osx_info_plist_exts = ["resources/info/*"]

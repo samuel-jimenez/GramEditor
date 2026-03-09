@@ -861,7 +861,7 @@ mod flatpak {
 
     pub fn set_bin_if_no_escape(mut args: super::Args) -> super::Args {
         if env::var(NO_ESCAPE_ENV_NAME).is_ok()
-            && env::var("FLATPAK_ID").is_ok_and(|id| id.starts_with("se.ziran.Gram"))
+            && env::var("FLATPAK_ID").is_ok_and(|id| id.starts_with("app.liten.Gram"))
             && args.gram.is_none()
         {
             args.gram = Some("/app/libexec/gram-editor".into());
@@ -876,7 +876,7 @@ mod flatpak {
         }
 
         if let Ok(flatpak_id) = env::var("FLATPAK_ID") {
-            if !flatpak_id.starts_with("se.ziran.Gram") {
+            if !flatpak_id.starts_with("app.liten.Gram") {
                 return None;
             }
 

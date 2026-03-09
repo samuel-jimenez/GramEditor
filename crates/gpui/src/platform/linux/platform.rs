@@ -63,7 +63,7 @@ impl<T> ResultExt for anyhow::Result<T> {
 
                 let proxy = block_on(NotificationProxy::new()).expect(msg);
 
-                let notification_id = "se.ziran.Oops";
+                let notification_id = "app.liten.Oops";
                 block_on(
                     proxy.add_notification(
                         notification_id,

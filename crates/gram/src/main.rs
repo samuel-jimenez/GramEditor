@@ -139,7 +139,7 @@ fn fail_to_open_window(e: anyhow::Error, _cx: &mut App) {
                 process::exit(1);
             };
 
-            let notification_id = "se.ziran.Oops";
+            let notification_id = "app.liten.Oops";
             proxy
                 .add_notification(
                     notification_id,
