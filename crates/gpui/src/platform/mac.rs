@@ -7,9 +7,6 @@ mod events;
 mod keyboard;
 mod pasteboard;
 
-#[cfg(feature = "screen-capture")]
-mod screen_capture;
-
 #[cfg(not(feature = "macos-blade"))]
 mod metal_atlas;
 #[cfg(not(feature = "macos-blade"))]
