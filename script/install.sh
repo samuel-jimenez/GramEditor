@@ -67,7 +67,8 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-version="$(script/get-crate-version gram)"
+version=$(curl -s -X GET -H 'accept: application/json' https://codeberg.org/api/v1/repos/GramEditor/gram/releases/latest | grep -oP '"tag_name":"\K[^"]+')
+
 host_line="$(rustc --version --verbose | grep "host")"
 target_triple=${host_line#*: }
 arch="$(echo $target_triple | awk -F - '{print $1}')"
@@ -77,6 +78,7 @@ if [[ "$GRAM_BUILD_TARBALL" = "true" ]]; then
   GRAM_BUNDLE_FILE="target/release/gram-linux-$arch.tar.gz"
 elif [ "$GRAM_BUNDLE_FILE" = "" ]; then
   GRAM_BUNDLE_FILE="gram-linux-$arch-$version.tar.gz"
+  curl --skip-existing -L -O https://codeberg.org/GramEditor/gram/releases/download/"$version"/"$GRAM_BUNDLE_FILE"
 fi
 [[ ! -f "$GRAM_BUNDLE_FILE" ]] && err "$GRAM_BUNDLE_FILE not found, exiting..."
 

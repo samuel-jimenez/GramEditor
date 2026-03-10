@@ -7,15 +7,16 @@ Gram is open source, and [you can install from source](./development/linux.md).
 If there is a tarball available for your architecture at the [Gram Codeberg](https://codeberg.org/GramEditor/gram/releases) repository,
 you can follow these instructions:
 
-1. Download the appropriate tarball.
-2. Download the [install.sh](https://codeberg.org/GramEditor/gram/raw/branch/main/script/install.sh) script.
-3. Run the script, passing the tarball as the argument:
+
+1. Download the [install.sh](https://codeberg.org/GramEditor/gram/raw/branch/main/script/install.sh) script.
+2. Run the script.
 
    ```sh
-   ./install.sh ./gram-linux-x86_64-1.0.0.tar.gz
+   ./install.sh
    ```
 
-   This will install Gram to `$HOME/.local`. To install system-wide, use the `--prefix PREFIX` argument:
+   This will download latest release of Gram and install Gram to `$HOME/.local`.
+   To install system-wide, use the `--prefix PREFIX` argument:
 
    ```sh
    ./install.sh --prefix /usr/local ./gram-linux-x86_64-1.0.0.tar.gz
