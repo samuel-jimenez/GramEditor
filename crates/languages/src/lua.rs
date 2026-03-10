@@ -99,7 +99,15 @@ impl LspInstaller for LuaLspAdapter {
             _ => unreachable!(),
         };
 
-        let asset_name = format!("{}.{}", binary_name, extension);
+        let os = Self::OS_NAME;
+        let arch = match std::env::consts::ARCH {
+            "aarch64" => "arm64",
+            "x86_64" => "x64",
+            _ => return Err(anyhow!("unsupported architecture")),
+        };
+        let version = release.tag_name.clone();
+
+        let asset_name = format!("lua-language-server-{version}-{os}-{arch}.{extension}");
         let asset = release
             .assets
             .iter()
@@ -107,7 +115,7 @@ impl LspInstaller for LuaLspAdapter {
             .ok_or_else(|| anyhow!("no matching asset found for {}", asset_name))?;
 
         Ok(GitHubLspBinaryVersion {
-            name: release.tag_name.clone(),
+            name: binary_name,
             url: asset.browser_download_url.clone(),
             digest: None,
         })
