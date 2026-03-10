@@ -117,15 +117,23 @@ impl LspInstaller for ElpAdapter {
         })
     }
 
+    #[cfg(target_os = "windows")]   
     async fn fetch_latest_server_version(
         &self,
         delegate: &dyn LspAdapterDelegate,
         pre_release: bool,
         _cx: &mut AsyncApp,
     ) -> Result<GitHubLspBinaryVersion> {
-        #[cfg(target_os = "windows")]
         return Err(anyhow!("ELP is not supported on Windows"));
-
+    }
+    
+    #[cfg(not(target_os = "windows"))]    
+    async fn fetch_latest_server_version(
+        &self,
+        delegate: &dyn LspAdapterDelegate,
+        pre_release: bool,
+        _cx: &mut AsyncApp,
+    ) -> Result<GitHubLspBinaryVersion> {
         log::info!("trying github download for ELP...");
         let release = latest_github_release(
             "WhatsApp/erlang-language-platform",
