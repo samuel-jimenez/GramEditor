@@ -51,9 +51,6 @@ pub(crate) use window::*;
 #[cfg(feature = "font-kit")]
 pub(crate) use text_system::*;
 
-/// A frame of video captured from a screen.
-pub(crate) type PlatformScreenCaptureFrame = CVImageBuffer;
-
 trait BoolExt {
     fn to_objc(self) -> BOOL;
 }

@@ -281,19 +281,6 @@ pub trait PlatformDisplay: Send + Sync + Debug {
     }
 }
 
-/// Metadata for a given [ScreenCaptureSource]
-#[derive(Clone)]
-pub struct SourceMetadata {
-    /// Opaque identifier of this screen.
-    pub id: u64,
-    /// Human-readable label for this source.
-    pub label: Option<SharedString>,
-    /// Whether this source is the main display.
-    pub is_main: Option<bool>,
-    /// Video resolution of this source.
-    pub resolution: Size<DevicePixels>,
-}
-
 /// An opaque identifier for a hardware display
 #[derive(PartialEq, Eq, Hash, Copy, Clone)]
 pub struct DisplayId(pub(crate) u32);
