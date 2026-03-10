@@ -23,18 +23,6 @@ mod test;
 #[cfg(target_os = "windows")]
 mod windows;
 
-#[cfg(all(
-    feature = "screen-capture",
-    any(
-        target_os = "windows",
-        all(
-            any(target_os = "linux", target_os = "freebsd"),
-            any(feature = "wayland", feature = "x11"),
-        )
-    )
-))]
-pub(crate) mod scap_screen_capture;
-
 use crate::{
     Action, AnyWindowHandle, App, AsyncWindowContext, BackgroundExecutor, Bounds,
     DEFAULT_WINDOW_SIZE, DevicePixels, DispatchEventResult, Font, FontId, FontMetrics, FontRun,
@@ -86,7 +74,7 @@ pub(crate) use windows::*;
 pub use linux::layer_shell;
 
 #[cfg(any(test, feature = "test-support"))]
-pub use test::{TestDispatcher, TestScreenCaptureSource, TestScreenCaptureStream};
+pub use test::TestDispatcher;
 
 /// Returns a background executor for the current platform.
 pub fn background_executor() -> BackgroundExecutor {
@@ -181,28 +169,6 @@ pub(crate) trait Platform: 'static {
     fn active_window(&self) -> Option<AnyWindowHandle>;
     fn window_stack(&self) -> Option<Vec<AnyWindowHandle>> {
         None
-    }
-
-    #[cfg(feature = "screen-capture")]
-    fn is_screen_capture_supported(&self) -> bool;
-    #[cfg(not(feature = "screen-capture"))]
-    fn is_screen_capture_supported(&self) -> bool {
-        false
-    }
-    #[cfg(feature = "screen-capture")]
-    fn screen_capture_sources(&self)
-    -> oneshot::Receiver<Result<Vec<Rc<dyn ScreenCaptureSource>>>>;
-    #[cfg(not(feature = "screen-capture"))]
-    fn screen_capture_sources(
-        &self,
-    ) -> oneshot::Receiver<anyhow::Result<Vec<Rc<dyn ScreenCaptureSource>>>> {
-        let (sources_tx, sources_rx) = oneshot::channel();
-        sources_tx
-            .send(Err(anyhow::anyhow!(
-                "gpui was compiled without the screen-capture feature"
-            )))
-            .ok();
-        sources_rx
     }
 
     fn open_window(
@@ -314,42 +280,6 @@ pub trait PlatformDisplay: Send + Sync + Debug {
         Bounds::new(origin, clipped_window_size)
     }
 }
-
-/// Metadata for a given [ScreenCaptureSource]
-#[derive(Clone)]
-pub struct SourceMetadata {
-    /// Opaque identifier of this screen.
-    pub id: u64,
-    /// Human-readable label for this source.
-    pub label: Option<SharedString>,
-    /// Whether this source is the main display.
-    pub is_main: Option<bool>,
-    /// Video resolution of this source.
-    pub resolution: Size<DevicePixels>,
-}
-
-/// A source of on-screen video content that can be captured.
-pub trait ScreenCaptureSource {
-    /// Returns metadata for this source.
-    fn metadata(&self) -> Result<SourceMetadata>;
-
-    /// Start capture video from this source, invoking the given callback
-    /// with each frame.
-    fn stream(
-        &self,
-        foreground_executor: &ForegroundExecutor,
-        frame_callback: Box<dyn Fn(ScreenCaptureFrame) + Send>,
-    ) -> oneshot::Receiver<Result<Box<dyn ScreenCaptureStream>>>;
-}
-
-/// A video stream captured from a screen.
-pub trait ScreenCaptureStream {
-    /// Returns metadata for this source.
-    fn metadata(&self) -> Result<SourceMetadata>;
-}
-
-/// A frame of video captured from a screen.
-pub struct ScreenCaptureFrame(pub PlatformScreenCaptureFrame);
 
 /// An opaque identifier for a hardware display
 #[derive(PartialEq, Eq, Hash, Copy, Clone)]

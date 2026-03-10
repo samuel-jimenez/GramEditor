@@ -501,8 +501,6 @@ rust-embed = { version = "8.4", features = ["include-exclude"] }
 rustc-hash = "2.1.0"
 rustls = { version = "0.23.26" }
 rustls-platform-verifier = "0.5.0"
-# WARNING: If you change this, you must also publish a new version of zed-scap to crates.io
-scap = { git = "https://github.com/zed-industries/scap", rev = "4afea48c3b002197176fb19cd0f9b180dd36eaac", default-features = false, package = "zed-scap", version = "0.0.8-zed" }
 schemars = { version = "1.0", features = ["indexmap2"] }
 semver = "1.0"
 serde = { version = "1.0.221", features = ["derive", "rc"] }
@@ -666,7 +664,6 @@ features = [
 async-task = { git = "https://github.com/smol-rs/async-task.git", rev = "b4486cd71e4e94fbda54ce6302444de14f4d190e" }
 notify = { git = "https://github.com/zed-industries/notify.git", rev = "6c550ac3c56cbd143c57ea6390e197af9d790908" }
 notify-types = { git = "https://github.com/zed-industries/notify.git", rev = "6c550ac3c56cbd143c57ea6390e197af9d790908" }
-windows-capture = { git = "https://github.com/zed-industries/windows-capture.git", rev = "f0d6c1b6691db75461b732f6d5ff56eed002eeb9" }
 calloop = { git = "https://github.com/zed-industries/calloop" }
 
 [profile.dev]
