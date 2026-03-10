@@ -24,12 +24,17 @@ fn main() {
         "cargo:rustc-env=TARGET={}",
         std::env::var("TARGET").unwrap()
     );
-    if let Ok(output) = Command::new("git").args(["rev-parse", "HEAD"]).output()
+
+    let commit_sha = if let Ok(commit_sha) = std::env::var("GRAM_COMMIT_SHA") {
+        Some(commit_sha)
+    } else if let Ok(output) = Command::new("git").args(["rev-parse", "HEAD"]).output()
         && output.status.success()
     {
-        let git_sha = String::from_utf8_lossy(&output.stdout);
-        let git_sha = git_sha.trim();
-
+        Some(String::from_utf8_lossy(&output.stdout).trim().into())
+    } else {
+        None
+    };
+    if let Some(git_sha) = commit_sha {
         println!("cargo:rustc-env=GRAM_COMMIT_SHA={git_sha}");
 
         if let Ok(build_profile) = std::env::var("PROFILE")
