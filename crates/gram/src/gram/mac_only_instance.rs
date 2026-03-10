@@ -29,7 +29,7 @@ fn address() -> SocketAddr {
     // respectively. User 502 will use ports 44339, 44439, and 44539 for the preview,
     // stable, and nightly channels, respectively.
     let port = match *release_channel::RELEASE_CHANNEL {
-        ReleaseChannel::Dev => 44737,
+        ReleaseChannel::Dev => 44736,
         ReleaseChannel::Stable => 44737 + (2 * USER_BLOCK),
     };
     let mut user_port = port;
