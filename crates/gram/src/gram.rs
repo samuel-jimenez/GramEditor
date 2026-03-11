@@ -1008,18 +1008,23 @@ fn about(_: &mut Workspace, window: &mut Window, cx: &mut Context<Workspace>) {
         ""
     };
     let message = format!("{release_channel} {version} {debug}");
-    let detail = AppCommitSha::try_global(cx).map(|sha| sha.full());
+    let detail = AppCommitSha::try_global(cx)
+        .map(|sha| sha.full())
+        .unwrap_or("<none>".into());
+    let detail = format!(
+        "Build SHA: {detail}\n\nWhat cannot be mended must be transcended.\ngram.liten.app"
+    );
 
     let prompt = window.prompt(
         PromptLevel::Info,
         &message,
-        detail.as_deref(),
+        Some(detail.as_str()),
         &["Copy", "OK"],
         cx,
     );
     cx.spawn(async move |_, cx| {
         if let Ok(0) = prompt.await {
-            let content = format!("{}\n{}", message, detail.as_deref().unwrap_or(""));
+            let content = format!("{}\n{}", message, detail);
             cx.update(|cx| {
                 cx.write_to_clipboard(gpui::ClipboardItem::new_string(content));
             })
