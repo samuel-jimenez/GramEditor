@@ -18324,6 +18324,28 @@ impl Editor {
         self.soft_wrap_mode_override = Some(language_settings::SoftWrap::EditorWidth)
     }
 
+    pub fn remove_trailing_whitespace(
+        &mut self,
+        _: &RemoveTrailingWhitespace,
+        _window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        let buffer =
+            self.buffer.read(cx).as_singleton().expect(
+                "you can only call RemoveTrailingWhitespace on editors for singleton buffers",
+            );
+        let diff = buffer.read(cx).remove_trailing_whitespace(cx);
+        cx.spawn(async move |_, cx| {
+            let diff = diff.await;
+            buffer
+                .update(cx, |buffer, cx| {
+                    buffer.apply_diff(diff, cx);
+                })
+                .ok();
+        })
+        .detach();
+    }
+
     pub fn toggle_soft_wrap(&mut self, _: &ToggleSoftWrap, _: &mut Window, cx: &mut Context<Self>) {
         if self.soft_wrap_mode_override.is_some() {
             self.soft_wrap_mode_override.take();
