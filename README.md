@@ -137,10 +137,10 @@ project.
 
 ## Licensing
 
-The Gram editor is licensed under the GPLv3 or the AGPLv3 licenses. The Zed
-editor codebase is triple-licensed and also allows use under the Apache 2
-license, but any modifications made in _this_ code base are _NOT_ licensed under
-Apache 2, only GPLv3 or AGPLv3.
+The Gram editor is licensed under the GPLv3 license. The Zed editor codebase is
+triple-licensed and also allows use under the Apache 2 license and the AGPLv3
+licenses, but any modifications made in _this_ code base are licensed under
+GPLv3.
 
 This project is subject to the licenses of its original sources and
 dependencies.
