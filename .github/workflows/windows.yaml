@@ -1,7 +1,7 @@
 name: Release
 
 on:
-  push:  
+  push:
     tags:
       - "[0-9]+.[0-9]+.[0-9]+"
 
@@ -13,43 +13,62 @@ permissions:
 
 jobs:
   build:
-  
     runs-on: ${{ matrix.os }}
     strategy:
-        matrix:
-          include:
-            - build: windows
-              os: windows-latest
-              target: x86_64-pc-windows-msvc
-  
+      matrix:
+        include:
+          - build: windows
+            os: windows-latest
+            target: x86_64-pc-windows-msvc
+
     steps:
-      - uses: actions/checkout@v4    
+      - uses: actions/checkout@v6
+
+      - uses: actions/cache@v5
+        id: cache_deps
+        with:
+          path: |
+            $HOME/.cargo/registry/index/
+            $HOME/.cargo/registry/cache/
+          key: ${{ runner.os }}-deps-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-deps
+
       - name: Get the release version from the tag
         shell: bash
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV 
-       
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
       - name: Fix microslop # https://github.com/microsoft/python-environment-tools/issues/171
         shell: bash
         run: git config --global core.longpaths true
-        
+
       - name: Build
         run: cargo build --verbose --release --package gram --package cli --target ${{ matrix.target }}
-        
+
       - name: Build archive
         shell: bash
         run: |
-        
-            binary_name="gram"
-            dirname="$binary_name-${{ env.VERSION }}-${{ matrix.target }}"
-            mkdir "$dirname"
-            mv "target/${{ matrix.target }}/release/$binary_name.exe" "$dirname"
-            mv "target/${{ matrix.target }}/release/cli.exe" "$dirname"        
 
-            7z a "$dirname.zip" "$dirname"
-            echo "ASSET=$dirname.zip" >> $GITHUB_ENV
-  
+          binary_name="gram"
+          dirname="$binary_name-${{ env.VERSION }}-${{ matrix.target }}"
+          mkdir "$dirname"
+          mv "target/${{ matrix.target }}/release/$binary_name.exe" "$dirname"
+          mv "target/${{ matrix.target }}/release/cli.exe" "$dirname"
+
+          7z a "$dirname.zip" "$dirname"
+          echo "ASSET=$dirname.zip" >> $GITHUB_ENV
+
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
             ${{ env.ASSET }}
+
+      - name: Save cache
+        if: always() && steps.cache_deps.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v5
+        with:
+          path: |
+            $HOME/.cargo/registry/index/
+            $HOME/.cargo/registry/cache/
+          key: ${{ steps.cache_deps.outputs.cache-primary-key }}
