@@ -33,8 +33,8 @@ jobs:
             ~/.cargo/bin/
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
-            ~/git/db/
-          key: ${{ runner.os }}-deps-${{ github.run_id }}
+            ~/.cargo/git/db/
+          key: ${{ runner.os }}-deps-${{ hashFiles('Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-deps
 
@@ -75,7 +75,7 @@ jobs:
             ${{ env.ASSET }}
 
       - name: Save cache
-        if: always() && steps.cache_deps.outputs.cache-hit != 'true'
+        if: always()
         uses: actions/cache/save@v5
         with:
           path: |
@@ -84,11 +84,11 @@ jobs:
             ~/.cargo/bin/
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
-            ~/git/db/
-          key: ${{ runner.os }}-deps-${{ github.run_id }}
+            ~/.cargo/git/db/
+          key: ${{ runner.os }}-deps-${{ hashFiles('Cargo.lock') }}
 
       - name: Save build cache
-        if: always() && steps.cache_build.outputs.cache-hit != 'true'
+        if: always()
         uses: actions/cache/save@v5
         with:
           path: target/${{ matrix.target }}/debug

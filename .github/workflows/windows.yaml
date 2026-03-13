@@ -33,8 +33,8 @@ jobs:
             ~/.cargo/bin/
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
-            ~/git/db/
-          key: ${{ runner.os }}-deps-${{ github.run_id }}
+            ~/.cargo/git/db/
+          key: ${{ runner.os }}-deps-${{ hashFiles('Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-deps
 
@@ -78,5 +78,5 @@ jobs:
             ~/.cargo/bin/
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
-            ~/git/db/
-          key: ${{ runner.os }}-deps-${{ github.run_id }}
+            ~/.cargo/git/db/
+          key: ${{ runner.os }}-deps-${{ hashFiles('Cargo.lock') }}
