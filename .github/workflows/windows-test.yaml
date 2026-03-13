@@ -28,9 +28,12 @@ jobs:
         id: cache_deps
         with:
           path: |
-            $HOME/.cargo/registry/index/
-            $HOME/.cargo/registry/cache/
-            $HOME/git/db/
+            ~/.cargo/.crates.toml
+            ~/.cargo/.crates2.json
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/git/db/
           key: ${{ runner.os }}-deps-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-deps
@@ -76,9 +79,12 @@ jobs:
         uses: actions/cache/save@v5
         with:
           path: |
-            $HOME/.cargo/registry/index/
-            $HOME/.cargo/registry/cache/
-            $HOME/git/db/
+            ~/.cargo/.crates.toml
+            ~/.cargo/.crates2.json
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/git/db/
           key: ${{ runner.os }}-deps-${{ github.run_id }}
 
       - name: Save build cache
