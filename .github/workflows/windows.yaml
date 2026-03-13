@@ -37,6 +37,7 @@ jobs:
           key: ${{ runner.os }}-deps-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-deps
+          save-always: true
 
       - name: Get the release version from the tag
         shell: bash
@@ -67,16 +68,3 @@ jobs:
         with:
           files: |
             ${{ env.ASSET }}
-
-      - name: Save cache
-        if: always() && steps.cache_deps.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v5
-        with:
-          path: |
-            ~/.cargo/.crates.toml
-            ~/.cargo/.crates2.json
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/git/db/
-          key: ${{ runner.os }}-deps-${{ github.run_id }}
