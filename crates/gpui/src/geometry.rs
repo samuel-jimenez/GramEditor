@@ -2605,10 +2605,9 @@ impl Mul for Pixels {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self {
-        Self(self.0 * rhs)
+        Self(self.0 * rhs.0)
     }
 }
-
 
 impl Mul<f32> for Pixels {
     type Output = Self;
@@ -2617,7 +2616,6 @@ impl Mul<f32> for Pixels {
         Self(self.0 * rhs)
     }
 }
-
 
 impl Mul<Pixels> for f32 {
     type Output = Pixels;
