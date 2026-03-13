@@ -65,7 +65,7 @@ use project::{
 };
 use settings::{
     GitGutterSetting, GitHunkStyleSetting, IndentGuideBackgroundColoring, IndentGuideColoring,
-    RelativeLineNumbers, Settings,
+    MinimapSize, RelativeLineNumbers, Settings,
 };
 use smallvec::{SmallVec, smallvec};
 use std::{
@@ -1903,43 +1903,99 @@ impl EditorElement {
             top_right_anchor,
             size(minimap_width, editor_bounds.size.height),
         );
-        let minimap_line_height = self.get_minimap_line_height(
-            minimap_editor
-                .read(cx)
-                .text_style_refinement
-                .as_ref()
-                .and_then(|refinement| refinement.font_size)
-                .unwrap_or(MINIMAP_FONT_SIZE),
-            window,
-            cx,
-        );
+
         let minimap_height = minimap_bounds.size.height;
 
-        let visible_editor_lines = (editor_bounds.size.height / line_height) as f64;
-        let total_editor_lines = (scroll_range.height / line_height) as f64;
-        let minimap_lines = (minimap_height / minimap_line_height) as f64;
+        // Scroll
+        //TODO create ths
+        // ,
 
-        let minimap_scroll_top = MinimapLayout::calculate_minimap_top_offset(
-            total_editor_lines,
-            visible_editor_lines,
-            minimap_lines,
-            scroll_position,
-        );
+        let (minimap_line_height, layout, minimap_scroll_top,max_scroll_top) = match minimap_settings.size {
+            MinimapSize::Fixed => {
+                let minimap_line_height =  line_height*minimap_height/ scroll_range.height;
 
-        let layout = ScrollbarLayout::for_minimap(
-            window.insert_hitbox(minimap_bounds, HitboxBehavior::Normal),
-            visible_editor_lines,
-            total_editor_lines,
-            minimap_line_height,
-            scroll_position,
-            minimap_scroll_top,
-            show_thumb,
-        )
-        .with_thumb_state(thumb_state);
 
-        minimap_editor.update(cx, |editor, cx| {
-            editor.set_scroll_position(point(0., minimap_scroll_top), window, cx)
-        });
+                let content_offset = 0f64;
+
+
+                let layout = ScrollbarLayout::new(
+                    window.insert_hitbox(minimap_bounds, HitboxBehavior::Normal),
+                    editor_bounds.size.height,
+                    scroll_range.height,
+                    glyph_grid_cell.height,
+                    // content_offset.along(axis),
+                    content_offset.into(), //TODO
+                    scroll_position,
+                    true,
+                    MINIMAP_AXIS,
+                )
+                .with_thumb_state(thumb_state);
+
+                (minimap_line_height, layout,0.,0.)
+            }
+            MinimapSize::Viz => {
+                let minimap_line_height = line_height*minimap_height/ editor_bounds.size.height;
+
+                let content_offset = 0f64;
+
+
+                let layout = ScrollbarLayout::new(
+                    window.insert_hitbox(minimap_bounds, HitboxBehavior::Normal),
+                    editor_bounds.size.height,
+                    scroll_range.height,
+                    glyph_grid_cell.height,
+                    // content_offset.along(axis),
+                    content_offset.into(), //TODO
+                    scroll_position,
+                    true,
+                    MINIMAP_AXIS,
+                )
+                .with_thumb_state(thumb_state);
+
+                (minimap_line_height, layout,0.,0.)
+            }
+            MinimapSize::Scroll => {
+                let minimap_line_height = self.get_minimap_line_height(
+                    minimap_editor
+                        .read(cx)
+                        .text_style_refinement
+                        .as_ref()
+                        .and_then(|refinement| refinement.font_size)
+                        .unwrap_or(MINIMAP_FONT_SIZE),
+                    window,
+                    cx,
+                );
+
+                let visible_editor_lines = (editor_bounds.size.height / line_height) as f64;
+                let total_editor_lines = (scroll_range.height / line_height) as f64;
+                let minimap_lines = (minimap_height / minimap_line_height) as f64;
+
+                let minimap_scroll_top = MinimapLayout::calculate_minimap_top_offset(
+                    total_editor_lines,
+                    visible_editor_lines,
+                    minimap_lines,
+                    scroll_position,
+                );
+
+                let layout = ScrollbarLayout::for_minimap(
+                    window.insert_hitbox(minimap_bounds, HitboxBehavior::Normal),
+                    visible_editor_lines,
+                    total_editor_lines,
+                    minimap_line_height,
+                    scroll_position,
+                    minimap_scroll_top,
+                    show_thumb,
+                )
+                .with_thumb_state(thumb_state);
+
+                minimap_editor.update(cx, |editor, cx| {
+                    editor.set_scroll_position(point(0., minimap_scroll_top), window, cx)
+                });
+                (minimap_line_height, layout,minimap_scroll_top,total_editor_lines)
+            }
+        };
+
+
 
         // Required for the drop shadow to be visible
         const PADDING_OFFSET: Pixels = px(4.);
@@ -1967,7 +2023,7 @@ impl EditorElement {
             thumb_border_style: minimap_settings.thumb_border,
             minimap_line_height,
             minimap_scroll_top,
-            max_scroll_top: total_editor_lines,
+            max_scroll_top,
         })
     }
 
