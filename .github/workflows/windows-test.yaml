@@ -30,6 +30,7 @@ jobs:
           path: |
             $HOME/.cargo/registry/index/
             $HOME/.cargo/registry/cache/
+            $HOME/git/db/
           key: ${{ runner.os }}-deps-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-deps
@@ -77,11 +78,12 @@ jobs:
           path: |
             $HOME/.cargo/registry/index/
             $HOME/.cargo/registry/cache/
-          key: ${{ steps.cache_deps.outputs.cache-primary-key }}
+            $HOME/git/db/
+          key: ${{ runner.os }}-deps-${{ github.run_id }}
 
       - name: Save build cache
         if: always() && steps.cache_build.outputs.cache-hit != 'true'
         uses: actions/cache/save@v5
         with:
           path: target/${{ matrix.target }}/debug
-          key: ${{ steps.cache_build.outputs.cache-primary-key }}
+          key: ${{ runner.os }}-debug

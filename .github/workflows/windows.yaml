@@ -30,6 +30,7 @@ jobs:
           path: |
             $HOME/.cargo/registry/index/
             $HOME/.cargo/registry/cache/
+            $HOME/git/db/
           key: ${{ runner.os }}-deps-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-deps
@@ -71,4 +72,5 @@ jobs:
           path: |
             $HOME/.cargo/registry/index/
             $HOME/.cargo/registry/cache/
-          key: ${{ steps.cache_deps.outputs.cache-primary-key }}
+            $HOME/git/db/
+          key: ${{ runner.os }}-deps-${{ github.run_id }}
