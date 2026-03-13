@@ -1912,7 +1912,7 @@ impl EditorElement {
 
         let (minimap_line_height, layout, minimap_scroll_top,max_scroll_top) = match minimap_settings.size {
             MinimapSize::Fixed => {
-                let minimap_line_height =  line_height*minimap_height/ scroll_range.height;
+                let minimap_line_height =  line_height*Into::<f32>::into(minimap_height)/ scroll_range.height;
 
 
                 let content_offset = 0f64;
@@ -1934,7 +1934,7 @@ impl EditorElement {
                 (minimap_line_height, layout,0.,0.)
             }
             MinimapSize::Viz => {
-                let minimap_line_height = line_height*minimap_height/ editor_bounds.size.height;
+                let minimap_line_height = line_height*Into::<f32>::into(minimap_height)/ editor_bounds.size.height;
 
                 let content_offset = 0f64;
 
