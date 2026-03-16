@@ -353,6 +353,11 @@ pub struct MinimapContent {
     ///
     /// Default: 80
     pub max_width_columns: Option<num::NonZeroU32>,
+
+    /// Defines the size for the minimap.
+    ///
+    /// Default: fixed
+    pub size: Option<MinimapSize>,
 }
 
 /// Forcefully enable or disable the scrollbar for each axis
@@ -496,6 +501,35 @@ pub enum DoubleClickInMultibuffer {
     /// Open the excerpt clicked as a new buffer in the new tab, if no `alt` modifier was pressed during double click.
     /// Otherwise, behave as a regular buffer and select the whole word.
     Open,
+}
+
+/// How large to display the minimap.
+///
+/// Default: fixed
+#[derive(
+    Copy,
+    Clone,
+    Debug,
+    Default,
+    Serialize,
+    Deserialize,
+    JsonSchema,
+    MergeFrom,
+    PartialEq,
+    Eq,
+    strum::VariantArray,
+    strum::VariantNames,
+)]
+#[serde(rename_all = "snake_case")]
+pub enum MinimapSize {
+    /// Show the minimap at the same scale as the scrollbar.
+    #[default]
+    Fixed,
+    /// Always show the minimap at the same scale; scroll to current position.
+    Scroll,
+
+    ///test
+    Viz,
 }
 
 /// When to show the minimap thumb.
