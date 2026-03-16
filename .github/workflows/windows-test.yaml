@@ -28,7 +28,7 @@ jobs:
         run: cargo -V
 
       - uses: actions/cache@v5
-        id: cache_deps split it up
+        name: cache_deps split it up
         with:
           path: |
             ~/.cargo/.crates.toml
@@ -38,7 +38,7 @@ jobs:
             ${{ runner.os }}-deps0
 
       - uses: actions/cache@v5
-        id: cache_deps because
+        name: cache_deps because
         with:
           path: |
             ~/.cargo/bin/
@@ -47,7 +47,7 @@ jobs:
             ${{ runner.os }}-deps1
 
       - uses: actions/cache@v5
-        id: cache_deps github sucks
+        name: cache_deps github sucks
         with:
           path: |
             ~/.cargo/registry/index/
@@ -57,7 +57,7 @@ jobs:
             ${{ runner.os }}-deps2
 
       - uses: actions/cache@v5
-        id: cache_deps .
+        name: cache_deps burma shave
         with:
           path: |
             ~/.cargo/git/db/
