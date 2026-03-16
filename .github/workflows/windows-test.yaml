@@ -74,23 +74,3 @@ jobs:
         with:
           files: |
             ${{ env.ASSET }}
-
-      - name: Save cache
-        if: always()
-        uses: actions/cache/save@v5
-        with:
-          path: |
-            ~/.cargo/.crates.toml
-            ~/.cargo/.crates2.json
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-          key: ${{ runner.os }}-deps-${{ hashFiles('Cargo.lock') }}
-
-      - name: Save build cache
-        if: always()
-        uses: actions/cache/save@v5
-        with:
-          path: target/${{ matrix.target }}/debug
-          key: ${{ runner.os }}-debug
