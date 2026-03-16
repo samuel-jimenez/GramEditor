@@ -232,7 +232,7 @@ impl Settings for EditorSettings {
                 thumb_border: minimap.thumb_border.unwrap(),
                 current_line_highlight: minimap.current_line_highlight,
                 max_width_columns: minimap.max_width_columns.unwrap(),
-                size: minimap.size.unwrap(),
+                size: minimap.size.unwrap_or_default(),
             },
             gutter: Gutter {
                 min_line_number_digits: gutter.min_line_number_digits.unwrap(),
