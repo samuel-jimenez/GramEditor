@@ -62,8 +62,7 @@ jobs:
           binary_name="gram"
           dirname="$binary_name-${{ env.VERSION }}-${{ matrix.target }}"
           mkdir "$dirname"
-          mv "target/${{ matrix.target }}/debug/$binary_name.exe" "$dirname"
-          mv "target/${{ matrix.target }}/debug/cli.exe" "$dirname"
+          mv "target/${{ matrix.target }}/debug/*" "$dirname"
 
           7z a "$dirname.zip" "$dirname"
           echo "ASSET=$dirname.zip" >> $GITHUB_ENV
