@@ -64,8 +64,8 @@ jobs:
           binary_name="gram"
           dirname="$binary_name-${{ env.VERSION }}-${{ matrix.target }}"
           mkdir "$dirname"
-          # mv "target/${{ matrix.target }}/release" "$dirname"
-          find "target/${{ matrix.target }}/release" -type f -maxdepth 1 -exec mv {} "$dirname/" \;
+          mv "target/${{ matrix.target }}/release/$binary_name.exe" "$dirname"
+          mv "target/${{ matrix.target }}/release/cli.exe" "$dirname"
 
           7z a "$dirname.zip" "$dirname"
           echo "ASSET=$dirname.zip" >> $GITHUB_ENV
@@ -75,23 +75,3 @@ jobs:
         with:
           files: |
             ${{ env.ASSET }}
-
-
-0s
-Run ls "target/x86_64-pc-windows-msvc/debug"
-OpenConsole.exe
-build
-cli.d
-cli.exe
-cli.pdb
-conpty.dll
-deps
-examples
-gram.d
-gram.exe
-gram.pdb
-incremental
-libcli.d
-libcli.rlib
-libgram.d
-libgram.rlib
