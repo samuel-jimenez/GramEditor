@@ -24,26 +24,6 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: actions/cache/restore@v5
-        id: cache_deps
-        with:
-          path: |
-            ~/.cargo/.crates.toml
-            ~/.cargo/.crates2.json
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-          key: ${{ runner.os }}-deps-${{ hashFiles('Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-deps
-
-      - uses: actions/cache/restore@v5
-        id: cache_build
-        with:
-          path: target/${{ matrix.target }}/debug
-          key: ${{ runner.os }}-debug
-
       - name: Get the release version from the tag
         shell: bash
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
@@ -53,7 +33,12 @@ jobs:
         run: git config --global core.longpaths true
 
       - name: Build
-        run: cargo build --verbose --package gram --package cli --target ${{ matrix.target }}
+        run: cargo build --verbose --release --package gram --package cli --target ${{ matrix.target }}
+
+      - name: Build archive
+        shell: bash
+        run: |
+          ls "target/${{ matrix.target }}/release"
 
       - name: Build archive
         shell: bash
@@ -62,8 +47,8 @@ jobs:
           binary_name="gram"
           dirname="$binary_name-${{ env.VERSION }}-${{ matrix.target }}"
           mkdir "$dirname"
-          mv "target/${{ matrix.target }}/debug/$binary_name.exe" "$dirname"
-          mv "target/${{ matrix.target }}/debug/cli.exe" "$dirname"
+          mv "target/${{ matrix.target }}/release/$binary_name.exe" "$dirname"
+          mv "target/${{ matrix.target }}/release/cli.exe" "$dirname"
 
           7z a "$dirname.zip" "$dirname"
           echo "ASSET=$dirname.zip" >> $GITHUB_ENV
@@ -73,23 +58,3 @@ jobs:
         with:
           files: |
             ${{ env.ASSET }}
-
-      - name: Save cache
-        if: always()
-        uses: actions/cache/save@v5
-        with:
-          path: |
-            ~/.cargo/.crates.toml
-            ~/.cargo/.crates2.json
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-          key: ${{ runner.os }}-deps-${{ hashFiles('Cargo.lock') }}
-
-      - name: Save build cache
-        if: always()
-        uses: actions/cache/save@v5
-        with:
-          path: target/${{ matrix.target }}/debug
-          key: ${{ runner.os }}-debug

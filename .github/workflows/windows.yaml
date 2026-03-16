@@ -24,20 +24,6 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: actions/cache/restore@v5
-        id: cache_deps
-        with:
-          path: |
-            ~/.cargo/.crates.toml
-            ~/.cargo/.crates2.json
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-          key: ${{ runner.os }}-deps-${{ hashFiles('Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-deps
-
       - name: Get the release version from the tag
         shell: bash
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
@@ -67,16 +53,3 @@ jobs:
         with:
           files: |
             ${{ env.ASSET }}
-
-      - name: Save cache
-        if: always() && steps.cache_deps.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v5
-        with:
-          path: |
-            ~/.cargo/.crates.toml
-            ~/.cargo/.crates2.json
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-          key: ${{ runner.os }}-deps-${{ hashFiles('Cargo.lock') }}
