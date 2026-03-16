@@ -63,11 +63,17 @@ jobs:
       - name: Build archive
         shell: bash
         run: |
+          ls "target/${{ matrix.target }}/debug
+
+      - name: Build archive
+        shell: bash
+        run: |
 
           binary_name="gram"
           dirname="$binary_name-${{ env.VERSION }}-${{ matrix.target }}"
           mkdir "$dirname"
-          mv "target/${{ matrix.target }}/debug" "$dirname"
+          # mv "target/${{ matrix.target }}/debug" "$dirname"
+          find "target/${{ matrix.target }}/debug" -type f -maxdepth 1 -exec mv {} "$dirname/" \;
 
           7z a "$dirname.zip" "$dirname"
           echo "ASSET=$dirname.zip" >> $GITHUB_ENV

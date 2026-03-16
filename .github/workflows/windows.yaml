@@ -24,6 +24,9 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: get cargo
+        run: cargo -V
+
       - uses: actions/cache/restore@v5
         id: cache_deps
         with:
