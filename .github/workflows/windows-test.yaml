@@ -28,18 +28,42 @@ jobs:
         run: cargo -V
 
       - uses: actions/cache@v5
-        id: cache_deps
+        id: cache_deps split it up
         with:
           path: |
             ~/.cargo/.crates.toml
             ~/.cargo/.crates2.json
+          key: ${{ runner.os }}-deps0-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-deps0
+
+      - uses: actions/cache@v5
+        id: cache_deps because
+        with:
+          path: |
             ~/.cargo/bin/
+          key: ${{ runner.os }}-deps1-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-deps1
+
+      - uses: actions/cache@v5
+        id: cache_deps github sucks
+        with:
+          path: |
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-          key: ${{ runner.os }}-deps-${{ hashFiles('Cargo.lock') }}
+          key: ${{ runner.os }}-deps2-${{ hashFiles('Cargo.lock') }}
           restore-keys: |
-            ${{ runner.os }}-deps
+            ${{ runner.os }}-deps2
+
+      - uses: actions/cache@v5
+        id: cache_deps .
+        with:
+          path: |
+            ~/.cargo/git/db/
+          key: ${{ runner.os }}-deps3-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-deps3
 
       - name: Get the release version from the tag
         shell: bash
