@@ -1988,6 +1988,25 @@ pub(crate) fn settings_data(cx: &App) -> Vec<SettingsPage> {
                         metadata: None,
                         files: USER,
                     }),
+                    SettingsPageItem::SettingItem(SettingItem {
+                        title: "Size",
+                        description: "How large to display the minimap.",
+                        field: Box::new(SettingField {
+                            json_path: Some("minimap.size"),
+                            pick: |settings_content| {
+                                settings_content.editor.minimap.as_ref()?.size.as_ref()
+                            },
+                            write: |settings_content, value| {
+                                settings_content
+                                    .editor
+                                    .minimap
+                                    .get_or_insert_default()
+                                    .size = value;
+                            },
+                        }),
+                        metadata: None,
+                        files: USER,
+                    }),
                     SettingsPageItem::SectionHeader("Toolbar"),
                     SettingsPageItem::SettingItem(SettingItem {
                         title: "Breadcrumbs",
