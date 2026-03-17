@@ -1,12 +1,17 @@
 [
   {
+    "label": "Debug Gram exe (CodeLLDB)",
+    "adapter": "CodeLLDB",
+    "launch": "C:/Users/QC Lab/Downloads/gram-1.0.1-debugtest_5-x86_64-pc-windows-msvc/gram.exe",
+  },
+  {
     "label": "Debug Gram (CodeLLDB)",
     "adapter": "CodeLLDB",
     "build": {
       "label": "Build Gram",
       "command": "cargo",
-      "args": ["build"]
-    }
+      "args": ["build"],
+    },
   },
   {
     "label": "Debug Gram (GDB)",
@@ -14,7 +19,7 @@
     "build": {
       "label": "Build Gram",
       "command": "cargo",
-      "args": ["build"]
-    }
-  }
+      "args": ["build"],
+    },
+  },
 ]

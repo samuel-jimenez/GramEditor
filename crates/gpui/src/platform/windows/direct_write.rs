@@ -80,6 +80,8 @@ impl DirectWriteComponent {
             let in_memory_loader = factory.CreateInMemoryFontFileLoader()?;
             factory.RegisterFontFileLoader(&in_memory_loader)?;
             let builder = factory.CreateFontSetBuilder()?;
+            println!("dirwrite CreateFontSetBuilder"); // TODO DEBUG
+
             let mut locale_vec = vec![0u16; LOCALE_NAME_MAX_LENGTH as usize];
             GetUserDefaultLocaleName(&mut locale_vec);
             let locale = String::from_utf16_lossy(&locale_vec);
@@ -184,7 +186,11 @@ impl GPUState {
 
 impl DirectWriteTextSystem {
     pub(crate) fn new(directx_devices: &DirectXDevices) -> Result<Self> {
+        println!("dirwrite"); // TODO DEBUG
         let components = DirectWriteComponent::new(directx_devices)?;
+        println!("dirwrite components"); // TODO DEBUG
+
+
         let system_font_collection = unsafe {
             let mut result = std::mem::zeroed();
             components
@@ -193,11 +199,15 @@ impl DirectWriteTextSystem {
             result.unwrap()
         };
         let custom_font_set = unsafe { components.builder.CreateFontSet()? };
+        println!("dirwrite custom_font_set"); // TODO DEBUG
+
         let custom_font_collection = unsafe {
             components
                 .factory
                 .CreateFontCollectionFromFontSet(&custom_font_set)?
         };
+        println!("dirwrite custom_font_collection"); // TODO DEBUG
+
         let system_ui_font_name = get_system_ui_font_name();
 
         Ok(Self(RwLock::new(DirectWriteState {
