@@ -1914,6 +1914,10 @@ impl EditorElement {
         let total_editor_lines = (scroll_range.height / line_height) as f64;
         let mut max_scroll_top = total_editor_lines;
 
+        println!(
+            "visible_editor_lines: {visible_editor_lines}, total_editor_lines: {total_editor_lines},max_scroll_top: {max_scroll_top}"
+        );
+
         const MINIMAP_FONT_WEIGHT: gpui::FontWeight = gpui::FontWeight::BLACK;
         const MINIMAP_FONT_FAMILY: SharedString = SharedString::new_static(".GramMono");
         // odo maybe change this
@@ -1970,7 +1974,7 @@ impl EditorElement {
         let (minimap_line_height, layout, minimap_scroll_top) = match minimap_settings.size {
             MinimapSize::Fixed => {
                 //TODO something like ObjectFit::ScaleDown,
-                let vertical_overscroll =
+                let _vertical_overscroll =
                     match EditorSettings::get_global(cx).scroll_beyond_last_line {
                         ScrollBeyondLastLine::OnePage => editor_bounds.size.height,
                         ScrollBeyondLastLine::Off => glyph_grid_cell.height,
@@ -1979,51 +1983,53 @@ impl EditorElement {
                                 * glyph_grid_cell.height
                         }
                     };
-                let scroll_height = scroll_range.height - vertical_overscroll;
+                let scroll_height = scroll_range.height;
 
                 let minimap_line_height: Pixels =
                     (line_height * minimap_height / scroll_height).into();
-                //    let mut style = minimap_editor.any_entity.text_style_refinement;
-                //         style.font_size = Some(AbsoluteLength::Pixels(px(minimap_line_height)));
-                minimap_editor.update(cx, |editor, cx| {
-                    editor.set_scroll_position(point(0., 0.), window, cx);
+                // ( minimap_height / total_editor_lines).max(1.).into(); //TODO something for subpixel rendering?
+                //  minimap_height / total_editor_lines; //TODO something for subpixel rendering?
+                // let total_editor_lines = (scroll_range.height / line_height) as f64;
 
-                    //  let mut style_opt = editor.text_style_refinement.as_mut() ;
-                    if let Some(style) = editor.text_style_refinement.as_mut() {
-                        // style.font_size = Some(AbsoluteLength::Pixels(px(minimap_line_height)));
-                        style.font_size = Some(AbsoluteLength::Pixels(minimap_line_height));
-                        // style.font_size = Some(AbsoluteLength::Pixels(px(5.)));
+                let visible_minimap_lines = (minimap_height / minimap_line_height) as f64;
 
-                        // editor.set_text_style_refinement(style);
-                    } else {
-                        editor.set_text_style_refinement(TextStyleRefinement {
-                            font_size: Some(AbsoluteLength::Pixels(minimap_line_height)),
-                            // font_size: Some(AbsoluteLength::Pixels(px(1.))),
-
-                            // font_weight: Some(MINIMAP_FONT_WEIGHT),
-                            // font_family: Some(MINIMAP_FONT_FAMILY),
-                            ..Default::default()
-                        });
-                    }
-                });
-
-                // AbsoluteLength::Pixels(px(minimap_line_height))
-                let content_offset = 0f64;
-
-                let layout = ScrollbarLayout::new(
-                    window.insert_hitbox(minimap_bounds, HitboxBehavior::Normal),
-                    editor_bounds.size.height,
-                    scroll_height,
-                    glyph_grid_cell.height,
-                    // content_offset.along(axis),
-                    content_offset.into(), //TODO
+                let minimap_scroll_top = MinimapLayout::calculate_minimap_top_offset(
+                    total_editor_lines,
+                    visible_editor_lines,
+                    visible_minimap_lines,
                     scroll_position,
-                    true,
-                    MINIMAP_AXIS,
+                );
+                // let minimap_scroll_top = 0.;
+                println!(
+                    "FixedB: editor_bounds: {}, scroll_height: {scroll_height}, minimap_height:{minimap_height}, 
+                        minimap_scroll_top:{minimap_scroll_top},visible_minimap_lines:{visible_minimap_lines}, 
+                        minimap_line_height:{minimap_line_height}",
+                    editor_bounds.size.height
+                );
+
+                let layout = ScrollbarLayout::for_minimap(
+                    window.insert_hitbox(minimap_bounds, HitboxBehavior::Normal),
+                    visible_editor_lines,
+                    total_editor_lines,
+                    minimap_line_height,
+                    scroll_position,
+                    minimap_scroll_top,
+                    show_thumb,
                 )
                 .with_thumb_state(thumb_state);
 
-                (minimap_line_height, layout, 0.)
+                minimap_editor.update(cx, |editor, cx| {
+                    editor.set_scroll_position(point(0., minimap_scroll_top), window, cx);
+                    editor.set_text_style_refinement(TextStyleRefinement {
+                        font_size: Some(AbsoluteLength::Pixels(minimap_line_height)),
+                        // font_size: Some(AbsoluteLength::Pixels(px(50.))),
+                        // font_weight: Some(MINIMAP_FONT_WEIGHT),
+                        // font_family: Some(MINIMAP_FONT_FAMILY),
+                        ..Default::default()
+                    });
+                });
+
+                (minimap_line_height, layout, minimap_scroll_top)
             }
             MinimapSize::FixedB => {
                 //TODO something like ObjectFit::ScaleDown,
@@ -2038,13 +2044,14 @@ impl EditorElement {
                                 * glyph_grid_cell.height
                         }
                     };
-                // let scroll_height = scroll_range.height;
-                let scroll_height = scroll_range.height - vertical_overscroll;
+                let scroll_height = scroll_range.height;
+                // let scroll_height = scroll_range.height - vertical_overscroll;
                 // let scroll_height = scroll_range.height + vertical_overscroll; // prob this one
 
                 let minimap_line_height: Pixels =
-                    // (line_height * minimap_height / scroll_height).into();
-                    ( minimap_height / scroll_height).max(1.).into();
+                    (line_height * minimap_height / scroll_height).into();
+                // ( minimap_height / scroll_height).max(1.).into();``//TODO something for subpixel rendering?
+                //  minimap_height / total_editor_lines; //TODO something for subpixel rendering?
 
                 // let viewport_size = visible_editor_lines * f64::from(minimap_line_height);
                 let viewport_size = (visible_editor_lines * f64::from(minimap_line_height)).into();
@@ -2059,7 +2066,9 @@ impl EditorElement {
                 // let scroll_range = minimap_height;
 
                 println!(
-                    "editor_bounds: {}, scroll_height: {scroll_height}, minimap_height:{minimap_height}, scroll_range: {scroll_range}, vertical_overscroll:{vertical_overscroll},viewport_size:{viewport_size}, minimap_line_height:{minimap_line_height}",
+                    "FixedB: editor_bounds: {}, scroll_height: {scroll_height}, minimap_height:{minimap_height}, 
+                    scroll_range: {scroll_range}, vertical_overscroll:{vertical_overscroll},viewport_size:{viewport_size}, 
+                    minimap_line_height:{minimap_line_height}",
                     editor_bounds.size.height
                 );
 
@@ -2116,54 +2125,78 @@ impl EditorElement {
                                 * glyph_grid_cell.height
                         }
                     };
+                //TODO something like ObjectFit::ScaleDown,
+
+                //todo RECALC FOR minimap
+                let vertical_overscroll =
+                    match EditorSettings::get_global(cx).scroll_beyond_last_line {
+                        ScrollBeyondLastLine::OnePage => editor_bounds.size.height,
+                        ScrollBeyondLastLine::Off => glyph_grid_cell.height,
+                        ScrollBeyondLastLine::VerticalScrollMargin => {
+                            (1.0 + EditorSettings::get_global(cx).vertical_scroll_margin) as f32
+                                * glyph_grid_cell.height
+                        }
+                    };
                 let scroll_height = scroll_range.height;
+                // let scroll_height = scroll_range.height - vertical_overscroll;
+                // let scroll_height = scroll_range.height + vertical_overscroll; // prob this one
 
                 let minimap_line_height: Pixels =
-                    (line_height * minimap_height / scroll_height).into();
+                    // (line_height * minimap_height / scroll_height).into();//  minimap_height / total_editor_lines
+                    ( minimap_height / scroll_height).max(1.).into(); //TODO something for subpixel rendering?
+                //  minimap_height / total_editor_lines; //TODO something for subpixel rendering?
 
+                // let viewport_size = visible_editor_lines * f64::from(minimap_line_height);
+                let viewport_size = (visible_editor_lines * f64::from(minimap_line_height)).into();
+                // let viewport_size = visible_editor_lines * minimap_line_height;
+                // let viewport_size: Pixels =
+                //     (editor_bounds.size.height * minimap_height / scroll_height).into();
+
+                // let scroll_range = total_editor_lines * minimap_line_height;
+                // let scroll_range = total_editor_lines * f64::from(minimap_line_height);
+                let scroll_range = (total_editor_lines * f64::from(minimap_line_height)).into();
+                // =minimap_height
+                // let scroll_range = minimap_height;
+
+                println!(
+                    "FixedNOover: editor_bounds: {}, scroll_height: {scroll_height}, minimap_height:{minimap_height}, 
+                    scroll_range: {scroll_range}, vertical_overscroll:{vertical_overscroll},viewport_size:{viewport_size}, 
+                    minimap_line_height:{minimap_line_height}",
+                    editor_bounds.size.height
+                );
+
+                //    let mut style = minimap_editor.any_entity.text_style_refinement;
+                //         style.font_size = Some(AbsoluteLength::Pixels(px(minimap_line_height)));
                 minimap_editor.update(cx, |editor, cx| {
                     editor.set_scroll_position(point(0., 0.), window, cx);
-                    // editor.text_style_refinement
-                    editor.set_text_style_refinement(TextStyleRefinement {
-                        font_size: Some(AbsoluteLength::Pixels(minimap_line_height)),
-                        // font_size: Some(AbsoluteLength::Pixels(px(50.))),
-                        font_weight: Some(MINIMAP_FONT_WEIGHT),
-                        font_family: Some(MINIMAP_FONT_FAMILY),
-                        ..Default::default()
-                    });
+
+                    //  let mut style_opt = editor.text_style_refinement.as_mut() ;
+                    if let Some(style) = editor.text_style_refinement.as_mut() {
+                        // style.font_size = Some(AbsoluteLength::Pixels(px(minimap_line_height)));
+                        style.font_size = Some(AbsoluteLength::Pixels(minimap_line_height));
+                        // style.font_size = Some(AbsoluteLength::Pixels(px(5.)));
+
+                        // editor.set_text_style_refinement(style);
+                    } else {
+                        editor.set_text_style_refinement(TextStyleRefinement {
+                            font_size: Some(AbsoluteLength::Pixels(minimap_line_height)),
+                            // font_size: Some(AbsoluteLength::Pixels(px(1.))),
+
+                            // font_weight: Some(MINIMAP_FONT_WEIGHT),
+                            // font_family: Some(MINIMAP_FONT_FAMILY),
+                            ..Default::default()
+                        });
+                    }
                 });
-                //
-                //  fn get_minimap_line_height(
-                //     &self,
-                //     font_size: AbsoluteLength,
-                //     window: &mut Window,
-                //     cx: &mut App,
-                // ) -> Pixels {
-                //         let rem_size = self.rem_size(cx).unwrap_or(window.rem_size());
-                //         // let mut text_style = self.style.text.clone();
-                //         let mut text_style = self.style.text;
-                //         //TODO
 
-                // // pub(crate) const MINIMAP_FONT_SIZE: AbsoluteLength = AbsoluteLength::Pixels(px(2.));
-                //         //       minimap.scroll_manager.clone_state(&self.scroll_manager);
-                //         // minimap.set_text_style_refinement(TextStyleRefinement {
-                //         //     font_size: Some(MINIMAP_FONT_SIZE),
-                //         //     font_weight: Some(MINIMAP_FONT_WEIGHT),
-                //         //     font_family: Some(MINIMAP_FONT_FAMILY),
-                //         //     ..Default::default()
-                //         // });
-                //         text_style.font_size = font_size;
-                //         text_style.line_height_in_pixels(rem_size)
-                // }
-                //
-
+                // AbsoluteLength::Pixels(px(minimap_line_height))
                 let content_offset = 0f64;
 
                 let layout = ScrollbarLayout::new(
                     window.insert_hitbox(minimap_bounds, HitboxBehavior::Normal),
-                    editor_bounds.size.height,
-                    scroll_height,
-                    glyph_grid_cell.height,
+                    viewport_size,
+                    scroll_range,
+                    minimap_line_height,
                     // content_offset.along(axis),
                     content_offset.into(), //TODO
                     scroll_position,
@@ -2172,7 +2205,7 @@ impl EditorElement {
                 )
                 .with_thumb_state(thumb_state);
 
-                (minimap_line_height, layout, 0.)
+                (minimap_line_height, layout, content_offset)
             }
 
             MinimapSize::FixedMut => {
@@ -2390,7 +2423,7 @@ impl EditorElement {
                 // let scroll_range = minimap_height;
 
                 println!(
-                    "editor_bounds: {}, scroll_height: {scroll_height}, minimap_height:{minimap_height}, scroll_range: {scroll_range}, vertical_overscroll:{vertical_overscroll},viewport_size:{viewport_size}, minimap_line_height:{minimap_line_height}",
+                    "VizPlus: editor_bounds: {}, scroll_height: {scroll_height}, minimap_height:{minimap_height}, scroll_range: {scroll_range}, vertical_overscroll:{vertical_overscroll},viewport_size:{viewport_size}, minimap_line_height:{minimap_line_height}",
                     editor_bounds.size.height
                 );
 
@@ -2554,6 +2587,8 @@ impl EditorElement {
         println!(
             "editor_bounds: {}, scroll_height: {}, 
                     minimap_height:{minimap_height}, minimap_line_height:{minimap_line_height},
+                visible_editor_lines: {visible_editor_lines}, total_editor_lines: {total_editor_lines},max_scroll_top: {max_scroll_top},
+                minimap_scroll_top: {minimap_scroll_top},
                     line_height: {line_height}",
             editor_bounds.size.height, scroll_range.height
         );
