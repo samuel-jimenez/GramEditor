@@ -525,11 +525,20 @@ pub enum MinimapSize {
     /// Show the minimap at the same scale as the scrollbar.
     #[default]
     Fixed,
+    FixedB,
     /// Always show the minimap at the same scale; scroll to current position.
     Scroll,
 
     ///test
     Viz,
+    VizPlus,
+    Vizminus,
+    FixedNOover,
+    FixedMut,
+    FixedBoth,
+
+
+
 }
 
 /// When to show the minimap thumb.
