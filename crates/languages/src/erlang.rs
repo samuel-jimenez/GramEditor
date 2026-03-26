@@ -90,6 +90,7 @@ impl ElpAdapter {
     const OS_TARGET: &str = "unknown-linux-gnu";
 }
 
+#[allow(dead_code)]
 impl ElpAdapter {
     const SERVER_NAME: LanguageServerName = LanguageServerName::new_static("elp");
     const OTP_VERSION: &str = "28";
@@ -117,17 +118,17 @@ impl LspInstaller for ElpAdapter {
         })
     }
 
-    #[cfg(target_os = "windows")]   
+    #[cfg(target_os = "windows")]
     async fn fetch_latest_server_version(
         &self,
-        delegate: &dyn LspAdapterDelegate,
-        pre_release: bool,
+        _delegate: &dyn LspAdapterDelegate,
+        _pre_release: bool,
         _cx: &mut AsyncApp,
     ) -> Result<GitHubLspBinaryVersion> {
         return Err(anyhow!("ELP is not supported on Windows"));
     }
-    
-    #[cfg(not(target_os = "windows"))]    
+
+    #[cfg(not(target_os = "windows"))]
     async fn fetch_latest_server_version(
         &self,
         delegate: &dyn LspAdapterDelegate,

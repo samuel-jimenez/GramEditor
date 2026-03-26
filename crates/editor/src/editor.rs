@@ -47,31 +47,24 @@ mod signature_help;
 #[cfg(any(test, feature = "test-support"))]
 pub mod test;
 
-pub(crate) use actions::*;
-pub use display_map::{ChunkRenderer, ChunkRendererContext, DisplayPoint, FoldPlaceholder};
-pub use editor_settings::{
-    CurrentLineHighlight, DocumentColorsRenderMode, EditorSettings, HideMouseMode,
-    ScrollBeyondLastLine, ScrollbarAxes, SearchSettings, ShowMinimap,
+use std::{
+    any::{Any, TypeId},
+    borrow::Cow,
+    cell::{OnceCell, RefCell},
+    cmp::{self, Ordering, Reverse},
+    collections::hash_map,
+    iter::{self, Peekable},
+    mem,
+    num::NonZeroU32,
+    ops::{Deref, DerefMut, Not, Range, RangeInclusive},
+    path::PathBuf,
+    rc::Rc,
+    sync::Arc,
+    time::{Duration, Instant},
 };
-pub use element::{
-    CursorLayout, EditorElement, HighlightedRange, HighlightedRangeLine, PointForPosition,
-};
-pub use git::blame::BlameRenderer;
-pub use hover_popover::hover_markdown_style;
-pub use inlays::Inlay;
-pub use items::MAX_TAB_TITLE_LEN;
-pub use lsp::CompletionContext;
-pub use lsp_ext::lsp_tasks;
-pub use multi_buffer::{
-    Anchor, AnchorRangeExt, BufferOffset, ExcerptId, ExcerptRange, MBTextSummary, MultiBuffer,
-    MultiBufferOffset, MultiBufferOffsetUtf16, MultiBufferSnapshot, PathKey, RowInfo, ToOffset,
-    ToPoint,
-};
-pub use split::SplittableEditor;
-pub use text::Bias;
-pub use workspace::searchable::Direction;
 
 use ::git::{Restore, blame::BlameEntry, commit::ParsedCommitMessage, status::FileStatus};
+pub(crate) use actions::*;
 use aho_corasick::{AhoCorasick, AhoCorasickBuilder, BuildError};
 use anyhow::{Context as _, Result, anyhow, bail};
 use blink_manager::BlinkManager;
@@ -84,7 +77,15 @@ use code_context_menus::{
 use collections::{BTreeMap, HashMap, HashSet, VecDeque};
 use convert_case::{Case, Casing};
 use display_map::*;
+pub use display_map::{ChunkRenderer, ChunkRendererContext, DisplayPoint, FoldPlaceholder};
+pub use editor_settings::{
+    CurrentLineHighlight, DocumentColorsRenderMode, EditorSettings, HideMouseMode,
+    ScrollBeyondLastLine, ScrollbarAxes, SearchSettings, ShowMinimap,
+};
 use editor_settings::{GoToDefinitionFallback, Minimap as MinimapSettings};
+pub use element::{
+    CursorLayout, EditorElement, HighlightedRange, HighlightedRangeLine, PointForPosition,
+};
 use element::{LineWithInvisibles, PositionMap};
 use futures::{
     FutureExt, StreamExt as _,
@@ -92,6 +93,7 @@ use futures::{
     stream::FuturesUnordered,
 };
 use fuzzy::{StringMatch, StringMatchCandidate};
+pub use git::blame::BlameRenderer;
 use git::blame::{GitBlame, GlobalBlameRenderer};
 use gpui::{
     Action, AnyElement, App, AppContext, AsyncWindowContext, Background, Bounds, ClickEvent,
@@ -104,9 +106,12 @@ use gpui::{
     prelude::*, px, relative, size,
 };
 use hover_links::{HoverLink, HoveredLinkState, find_file};
+pub use hover_popover::hover_markdown_style;
 use hover_popover::{HoverState, hide_hover};
 use indent_guides::ActiveIndentGuidesState;
+pub use inlays::Inlay;
 use inlays::{InlaySplice, inlay_hints::InlayHintRefreshReason};
+pub use items::MAX_TAB_TITLE_LEN;
 use itertools::{Either, Itertools};
 use language::{
     AutoindentMode, BlockCommentConfig, BracketMatch, BracketPair, Buffer, BufferRow, Capability,
@@ -121,14 +126,21 @@ use language::{
     point_from_lsp, point_to_lsp, text_diff_with_options,
 };
 use linked_editing_ranges::refresh_linked_ranges;
+pub use lsp::CompletionContext;
 use lsp::{
     CodeActionKind, CompletionItemKind, CompletionTriggerKind, InsertTextFormat, InsertTextMode,
     LanguageServerId,
 };
 use lsp_colors::LspColorData;
+pub use lsp_ext::lsp_tasks;
 use markdown::Markdown;
 use mouse_context_menu::MouseContextMenu;
 use movement::TextLayoutDetails;
+pub use multi_buffer::{
+    Anchor, AnchorRangeExt, BufferOffset, ExcerptId, ExcerptRange, MBTextSummary, MultiBuffer,
+    MultiBufferOffset, MultiBufferOffsetUtf16, MultiBufferSnapshot, PathKey, RowInfo, ToOffset,
+    ToPoint,
+};
 use multi_buffer::{
     ExcerptInfo, ExpandExcerptDirection, MultiBufferDiffHunk, MultiBufferPoint, MultiBufferRow,
 };
@@ -164,22 +176,9 @@ use settings::{
 };
 use smallvec::{SmallVec, smallvec};
 use snippet::Snippet;
-use std::{
-    any::{Any, TypeId},
-    borrow::Cow,
-    cell::{OnceCell, RefCell},
-    cmp::{self, Ordering, Reverse},
-    collections::hash_map,
-    iter::{self, Peekable},
-    mem,
-    num::NonZeroU32,
-    ops::{Deref, DerefMut, Not, Range, RangeInclusive},
-    path::PathBuf,
-    rc::Rc,
-    sync::Arc,
-    time::{Duration, Instant},
-};
+pub use split::SplittableEditor;
 use task::{ResolvedTask, RunnableTag, TaskTemplate, TaskVariables};
+pub use text::Bias;
 use text::{BufferId, FromAnchor, OffsetUtf16, Rope, ToOffset as _};
 use theme::{
     AccentColors, ActiveTheme, GlobalTheme, PlayerColor, StatusColors, SyntaxTheme, Theme,
@@ -190,6 +189,7 @@ use ui::{
     Indicator, Tooltip, h_flex, prelude::*, scrollbars::ScrollbarAutoHide,
 };
 use util::{RangeExt, ResultExt, TryFutureExt, maybe, post_inc};
+pub use workspace::searchable::Direction;
 use workspace::{
     Item as WorkspaceItem, ItemId, ItemNavHistory, OpenInTerminal, OpenTerminal,
     RestoreOnStartupBehavior, SERIALIZATION_THROTTLE_TIME, SplitDirection, TabBarSettings, Toast,
@@ -3126,8 +3126,7 @@ impl Editor {
     }
 
     fn folds_did_change(&mut self, cx: &mut Context<Self>) {
-        use text::ToOffset as _;
-        use text::ToPoint as _;
+        use text::{ToOffset as _, ToPoint as _};
 
         if self.mode.is_minimap()
             || WorkspaceSettings::get(None, cx).restore_on_startup
@@ -18196,6 +18195,25 @@ impl Editor {
             cx,
         );
         minimap.scroll_manager.clone_state(&self.scroll_manager);
+        //           let minimap_font_size =
+        //             match minimap_settings.size {
+        //                 MinimapSize::Fixed => {
+
+        //                                      let vertical_overscroll = match EditorSettings::get_global(cx).scroll_beyond_last_line {
+        //             ScrollBeyondLastLine::OnePage => editor_bounds.size.height,
+        //             ScrollBeyondLastLine::Off => glyph_grid_cell.height,
+        //             ScrollBeyondLastLine::VerticalScrollMargin => {
+        //                 (1.0 + EditorSettings::get_global(cx).vertical_scroll_margin) as f32 * glyph_grid_cell.height
+        //             }
+        //         };
+        // let scroll_height = scroll_range.height-vertical_overscroll;
+        // AbsoluteLength::Pixels(px((line_height * minimap_height / scroll_height).into();))
+        //     }
+
+        //                 MinimapSize::Scroll => MINIMAP_FONT_SIZE,
+        //                 _ => MINIMAP_FONT_SIZE,
+        //                 }
+
         minimap.set_text_style_refinement(TextStyleRefinement {
             font_size: Some(MINIMAP_FONT_SIZE),
             font_weight: Some(MINIMAP_FONT_WEIGHT),
@@ -21489,8 +21507,7 @@ impl<'a> WordBreakingTokenizer<'a> {
 }
 
 fn is_char_ideographic(ch: char) -> bool {
-    use unicode_script::Script::*;
-    use unicode_script::UnicodeScript;
+    use unicode_script::{Script::*, UnicodeScript};
     matches!(ch.script(), Han | Tangut | Yi)
 }
 

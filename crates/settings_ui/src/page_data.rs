@@ -1,6 +1,7 @@
+use std::sync::Arc;
+
 use gpui::{Action as _, App};
 use settings::{LanguageSettingsContent, SettingsContent};
-use std::sync::Arc;
 use strum::IntoDiscriminant as _;
 use ui::{IntoElement, SharedString};
 
@@ -1281,21 +1282,22 @@ pub(crate) fn settings_data(cx: &App) -> Vec<SettingsPage> {
                         files: USER,
                     }),
                     SettingsPageItem::SectionHeader("Scrolling"),
-                    SettingsPageItem::SettingItem(SettingItem {
-                        title: "Scroll Beyond Last Line",
-                        description: "Whether the editor will scroll beyond the last line.",
-                        field: Box::new(SettingField {
-                            json_path: Some("scroll_beyond_last_line"),
-                            pick: |settings_content| {
-                                settings_content.editor.scroll_beyond_last_line.as_ref()
-                            },
-                            write: |settings_content, value| {
-                                settings_content.editor.scroll_beyond_last_line = value;
-                            },
-                        }),
-                        metadata: None,
-                        files: USER,
-                    }),
+                    // TODO  TEST MINIMAP123
+                    // SettingsPageItem::SettingItem(SettingItem {
+                    //     title: "Scroll Beyond Last Line",
+                    //     description: "Whether the editor will scroll beyond the last line.",
+                    //     field: Box::new(SettingField {
+                    //         json_path: Some("scroll_beyond_last_line"),
+                    //         pick: |settings_content| {
+                    //             settings_content.editor.scroll_beyond_last_line.as_ref()
+                    //         },
+                    //         write: |settings_content, value| {
+                    //             settings_content.editor.scroll_beyond_last_line = value;
+                    //         },
+                    //     }),
+                    //     metadata: None,
+                    //     files: USER,
+                    // }),
                     SettingsPageItem::SettingItem(SettingItem {
                         title: "Vertical Scroll Margin",
                         description: "The number of lines to keep above/below the cursor when auto-scrolling.",
@@ -2004,6 +2006,146 @@ pub(crate) fn settings_data(cx: &App) -> Vec<SettingsPage> {
                         metadata: None,
                         files: USER,
                     }),
+
+                    // test MINIMAP123
+                    
+                    SettingsPageItem::SettingItem(SettingItem {
+                        title: "Scroll Beyond Last Line",
+                        description: "Whether the editor will scroll beyond the last line.",
+                        field: Box::new(SettingField {
+                            json_path: Some("scroll_beyond_last_line"),
+                            pick: |settings_content| {
+                                settings_content.editor.scroll_beyond_last_line.as_ref()
+                            },
+                            write: |settings_content, value| {
+                                settings_content.editor.scroll_beyond_last_line = value;
+                            },
+                        }),
+                        metadata: None,
+                        files: USER,
+                    }),
+                    // Settings
+                                   SettingsPageItem::SettingItem(SettingItem {
+                        title: "viewport_size",
+                        description: "viewport_size.",
+                        field: Box::new(SettingField {
+                            json_path: Some("minimap.viewport_size"),
+                            pick: |settings_content| {
+                                settings_content
+                                    .editor
+                                    .minimap
+                                    .as_ref()?
+                                    .viewport_size
+                                    .as_ref()
+                            },
+                            write: |settings_content, value| {
+                                settings_content
+                                    .editor
+                                    .minimap
+                                    .get_or_insert_default()
+                                    .viewport_size = value;
+                            },
+                        }),
+                        metadata: None,
+                        files: USER,
+                    }),
+
+                   SettingsPageItem::SettingItem(SettingItem {
+                        title: "scroll_range",
+                        description: "scroll_range.",
+                        field: Box::new(SettingField {
+                            json_path: Some("minimap.scroll_range"),
+                            pick: |settings_content| {
+                                settings_content
+                                    .editor
+                                    .minimap
+                                    .as_ref()?
+                                    .scroll_range
+                                    // .or(Some(settings::Foo(15.)))
+                                    .as_ref()
+                            },
+                            write: |settings_content, value| {
+                                settings_content
+                                    .editor
+                                    .minimap
+                                    .get_or_insert_default()
+                                    .scroll_range = value;
+                            },
+                        }),
+                        metadata: None,
+                        files: USER,
+                    }),
+
+                   SettingsPageItem::SettingItem(SettingItem {
+                        title: "minimap_line_height",
+                        description: "minimap_line_height.",
+                        field: Box::new(SettingField {
+                            json_path: Some("minimap.minimap_line_height"),
+                            pick: |settings_content| {
+                                settings_content
+                                    .editor
+                                    .minimap
+                                    .as_ref()?
+                                    .minimap_line_height
+                                    .as_ref()
+                            },
+                            write: |settings_content, value| {
+                                settings_content
+                                    .editor
+                                    .minimap
+                                    .get_or_insert_default()
+                                    .minimap_line_height = value;
+                            },
+                        }),
+                        metadata: None,
+                        files: USER,
+                    }),
+                                       SettingsPageItem::SettingItem(SettingItem {
+                        title: "minimap_scroll_top",
+                        description: "minimap_scroll_top.",
+                        field: Box::new(SettingField {
+                            json_path: Some("minimap.minimap_scroll_top"),
+                            pick: |settings_content| {
+                                settings_content
+                                    .editor
+                                    .minimap
+                                    .as_ref()?
+                                    .minimap_scroll_top
+                                    .as_ref()
+                            },
+                            write: |settings_content, value| {
+                                settings_content
+                                    .editor
+                                    .minimap
+                                    .get_or_insert_default()
+                                    .minimap_scroll_top = value;
+                            },
+                        }),
+                        metadata: None,
+                        files: USER,
+                    }),
+                  // EnD TEST  
+
+                    SettingsPageItem::SettingItem(SettingItem {
+                        title: "Size",
+                        description: "How large to display the minimap.",
+                        field: Box::new(SettingField {
+                            json_path: Some("minimap.size"),
+                            pick: |settings_content| {
+                                settings_content.editor.minimap.as_ref()?.size.as_ref()
+                            },
+                            write: |settings_content, value| {
+                                settings_content
+                                    .editor
+                                    .minimap
+                                    .get_or_insert_default()
+                                    .size = value;
+                            },
+                        }),
+                        metadata: None,
+                        files: USER,
+                    }),
+                    
                     SettingsPageItem::SectionHeader("Toolbar"),
                     SettingsPageItem::SettingItem(SettingItem {
                         title: "Breadcrumbs",

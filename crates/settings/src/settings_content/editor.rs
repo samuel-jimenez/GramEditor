@@ -1,13 +1,12 @@
-use std::fmt::Display;
-use std::num;
+use std::{fmt::Display, num};
 
 use collections::HashMap;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
-use settings_macros::{MergeFrom, with_fallible_options};
+use settings_macros::{with_fallible_options, MergeFrom};
 
 use crate::{
-    DelayMs, DiagnosticSeverityContent, ShowScrollbar, serialize_f32_with_two_decimal_places,
+    serialize_f32_with_two_decimal_places, DelayMs, DiagnosticSeverityContent, ShowScrollbar,
 };
 
 #[with_fallible_options]
@@ -320,6 +319,57 @@ pub struct StickyScrollContent {
     pub enabled: Option<bool>,
 }
 
+// test..////
+
+
+#[derive(Copy,Clone, Default, Debug, Serialize, Deserialize, JsonSchema, MergeFrom, PartialEq,PartialOrd)]
+pub struct Foo(pub f32);
+// ui_input::impl_numeric_stepper_float!(Foo);
+// impl_newtype_numeric_stepper_float!(Foo, 1.0, 4.0, 0.5, 6.0, 72.0);
+// NumberFieldType
+// impl NumberFieldType for Foo {
+
+// impl Default for Foo {
+//     fn default() -> Self {
+//         Self (1.0)}}
+//             value1: Default::default(),
+//             value2: Default::default(),
+//             // ...
+//             value19: Default::default(),
+//             day: chrono::NaiveDate::from_ymd(2021, 1, 1),
+//         }
+//     }
+// }
+// use ui_input::{NumberField, NumberFieldMode, NumberFieldType};
+// test..////
+impl std::str::FromStr for Foo {
+    type Err = std::num::ParseFloatError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+          s.parse::<f32>().map(|x| Foo(x))
+    }
+}
+
+impl std::fmt::Display for Foo {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {   write!(f, "{}", self.0) }
+}
+impl std::ops::Sub for Foo {
+    type Output = Foo;
+
+    fn sub(self, other: Self) -> Self {
+        Self 
+              (  self.0 - other.0)
+        
+    }
+}
+impl std::ops::Add for Foo {
+    type Output = Foo;
+
+    fn add(self, other: Foo) ->  Self { Self 
+              (  self.0 + other.0) }
+}
+
+
 /// Minimap related settings
 #[with_fallible_options]
 #[derive(Clone, Default, Debug, Serialize, Deserialize, JsonSchema, MergeFrom, PartialEq)]
@@ -353,6 +403,17 @@ pub struct MinimapContent {
     ///
     /// Default: 80
     pub max_width_columns: Option<num::NonZeroU32>,
+
+    /// Defines the size for the minimap.
+    ///
+    /// Default: fixed
+    pub size: Option<MinimapSize>,
+
+    // test..////
+    pub viewport_size: Option<Foo>,
+    pub scroll_range: Option<Foo>,
+    pub minimap_line_height: Option<Foo>,
+    pub minimap_scroll_top: Option<Foo>,
 }
 
 /// Forcefully enable or disable the scrollbar for each axis
@@ -496,6 +557,47 @@ pub enum DoubleClickInMultibuffer {
     /// Open the excerpt clicked as a new buffer in the new tab, if no `alt` modifier was pressed during double click.
     /// Otherwise, behave as a regular buffer and select the whole word.
     Open,
+}
+
+/// How large to display the minimap.
+///
+/// Default: fixed
+#[derive(
+    Copy,
+    Clone,
+    Debug,
+    Default,
+    Serialize,
+    Deserialize,
+    JsonSchema,
+    MergeFrom,
+    PartialEq,
+    Eq,
+    strum::VariantArray,
+    strum::VariantNames,
+)]
+#[serde(rename_all = "snake_case")]
+pub enum MinimapSize {
+    ///test
+    ManualScale,
+    ManualFixed,
+    ManualViz,
+
+    /// Show the minimap at the same scale as the scrollbar.
+    #[default]
+    Fixed,
+    FixedB,
+
+    ///test
+    FixedNOover,
+    FixedMut,
+    FixedBoth,
+    Viz,
+    VizPlus,
+    Vizminus,
+
+    /// Always show the minimap at the same scale; scroll to current position.
+    Scroll,
 }
 
 /// When to show the minimap thumb.

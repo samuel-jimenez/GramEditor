@@ -8,7 +8,7 @@ pub use settings::{
     GoToDefinitionFallback, HideMouseMode, MinimapThumb, MinimapThumbBorder, MultiCursorModifier,
     ScrollBeyondLastLine, ScrollbarDiagnostics, SeedQuerySetting, ShowMinimap, SnippetSortOrder,
 };
-use settings::{RegisterSetting, RelativeLineNumbers, Settings};
+use settings::{MinimapSize, RegisterSetting, RelativeLineNumbers, Settings};
 use ui::scrollbars::{ScrollbarVisibility, ShowScrollbar};
 
 /// Imports from the VSCode settings at
@@ -99,6 +99,13 @@ pub struct Minimap {
     pub thumb_border: MinimapThumbBorder,
     pub current_line_highlight: Option<CurrentLineHighlight>,
     pub max_width_columns: num::NonZeroU32,
+    pub size: MinimapSize,
+
+    // test..////
+    pub viewport_size: f32,
+    pub scroll_range: f32,
+    pub minimap_line_height: f32,
+    pub minimap_scroll_top: f32,
 }
 
 impl Minimap {
@@ -231,6 +238,12 @@ impl Settings for EditorSettings {
                 thumb_border: minimap.thumb_border.unwrap(),
                 current_line_highlight: minimap.current_line_highlight,
                 max_width_columns: minimap.max_width_columns.unwrap(),
+                size: minimap.size.unwrap_or_default(),
+                // test..////
+                viewport_size: minimap.viewport_size.map(|x|x.0).unwrap_or(500.),
+                scroll_range: minimap.scroll_range.map(|x|x.0).unwrap_or(1000.),
+                minimap_line_height: minimap.minimap_line_height.map(|x|x.0).unwrap_or(1.),
+                minimap_scroll_top: minimap.minimap_scroll_top.map(|x|x.0).unwrap_or(0.),
             },
             gutter: Gutter {
                 min_line_number_digits: gutter.min_line_number_digits.unwrap(),

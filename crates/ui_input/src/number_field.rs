@@ -24,6 +24,7 @@ pub enum NumberFieldMode {
     Edit,
 }
 
+
 pub trait NumberFieldType: Display + Copy + Clone + Sized + PartialOrd + FromStr + 'static {
     fn default_format(value: &Self) -> String {
         format!("{}", value)
@@ -36,6 +37,44 @@ pub trait NumberFieldType: Display + Copy + Clone + Sized + PartialOrd + FromStr
     fn saturating_add(self, rhs: Self) -> Self;
     fn saturating_sub(self, rhs: Self) -> Self;
 }
+
+
+// test..////
+    use settings::Foo;
+   impl NumberFieldType for settings::Foo {
+            fn default_format(value: &Self) -> String {
+                format!("{:.2}", value.0)
+            }
+
+            fn default_step() -> Self {
+                Foo(1.0)
+            }
+
+            fn large_step() -> Self {
+                Foo(10.0)
+            }
+
+            fn small_step() -> Self {
+                Foo(0.1)
+            }
+
+            fn min_value() -> Self {
+                Foo(f32::MIN)
+            }
+
+            fn max_value() -> Self {
+                Foo(f32::MAX)
+            }
+
+    
+                    fn saturating_add(self, rhs: Self) -> Self {
+                Foo((self.0 + rhs.0).min(Self::max_value().0))
+            }
+
+            fn saturating_sub(self, rhs: Self) -> Self {
+                Foo((self.0 - rhs.0).max(Self::min_value().0))
+            }
+    }
 
 macro_rules! impl_newtype_numeric_stepper_float {
     ($type:ident, $default:expr, $large:expr, $small:expr, $min:expr, $max:expr) => {

@@ -20,8 +20,7 @@
   // for possible values.
   "base_keymap": "Emacs",
   // Features that can be globally enabled or disabled
-  "features": {
-  },
+  "features": {},
   // The name of a font to use for rendering text in the editor
   "buffer_font_family": ".GramMono",
   // Set the buffer text's font fallbacks, this will be merged with
@@ -334,7 +333,14 @@
   // The default number of context lines shown in multibuffer excerpts.
   "excerpt_context_lines": 2,
   // Globs to match against file paths to determine if a file is private.
-  "private_files": ["**/.env*", "**/*.pem", "**/*.key", "**/*.cert", "**/*.crt", "**/secrets.yml"],
+  "private_files": [
+    "**/.env*",
+    "**/*.pem",
+    "**/*.key",
+    "**/*.cert",
+    "**/*.crt",
+    "**/secrets.yml"
+  ],
   // Whether to use additional LSP queries to format (and amend) the code after
   // every "trigger" symbol input, defined by LSP server capabilities.
   "use_on_type_format": true,
@@ -508,7 +514,14 @@
     // 3. "gutter" or "none" to not highlight the current line in the minimap.
     "current_line_highlight": null,
     // Maximum number of columns to display in the minimap.
-    "max_width_columns": 80
+    "max_width_columns": 80,
+    //test
+    "viewport_size": 500,
+    "scroll_range": 1000,
+    "minimap_line_height": 1,
+    "minimap_scroll_top": 0,
+    /// Defines the size for the minimap.
+    "size": "fixed"
   },
   // Enable middle-click paste on Linux.
   "middle_click_paste": true,
@@ -637,7 +650,9 @@
   },
   // Whether to resize all the panels in a dock when resizing the dock.
   // Can be a combination of "left", "right" and "bottom".
-  "resize_all_panels_in_dock": ["left"],
+  "resize_all_panels_in_dock": [
+    "left"
+  ],
   "project_panel": {
     // Whether to show the project panel button in the status bar
     "button": true,
@@ -843,8 +858,9 @@
   // The list of language servers to use (or disable) for all languages.
   //
   // This is typically customized on a per-language basis.
-  "language_servers": ["..."],
-
+  "language_servers": [
+    "..."
+  ],
   // When to automatically save edited buffers. This setting can
   // take four values.
   //
@@ -1100,10 +1116,14 @@
   // for files that are not tracked by git, but are still important to your project. Note that globs
   // that are overly broad can slow down Gram's file scanning. `file_scan_exclusions` takes
   // precedence over these inclusions.
-  "file_scan_inclusions": [".env*"],
+  "file_scan_inclusions": [
+    ".env*"
+  ],
   // Globs to match files that will be considered "hidden". These files can be hidden from the
   // project panel by toggling the "hide_hidden" setting.
-  "hidden_files": ["**/.*"],
+  "hidden_files": [
+    "**/.*"
+  ],
   // Git gutter behavior configuration.
   "git": {
     // Control whether the git gutter is shown. May take 2 values:
@@ -1302,7 +1322,12 @@
         // Default directories to search for virtual environments, relative
         // to the current working directory. We recommend overriding this
         // in your project's settings, rather than globally.
-        "directories": [".env", "env", ".venv", "venv"],
+        "directories": [
+          ".env",
+          "env",
+          ".venv",
+          "venv"
+        ],
         // Can also be `csh`, `fish`, `nushell` and `power_shell`
         "activate_script": "default",
         // Preferred Conda manager to use when activating Conda environments.
@@ -1447,8 +1472,12 @@
   // }
   //
   "file_types": {
-    "Markdown": [".rules"],
-    "Shell Script": [".env.*"]
+    "Markdown": [
+      ".rules"
+    ],
+    "Shell Script": [
+      ".env.*"
+    ]
   },
   // Settings for which version of Node.js and NPM to use when installing
   // language servers.
@@ -1470,9 +1499,24 @@
   //
   // This list can be customized to restrict what extensions are able to do.
   "granted_extension_capabilities": [
-    { "kind": "process:exec", "command": "*", "args": ["**"] },
-    { "kind": "download_file", "host": "*", "path": ["**"] },
-    { "kind": "npm:install", "package": "*" }
+    {
+      "kind": "process:exec",
+      "command": "*",
+      "args": [
+        "**"
+      ]
+    },
+    {
+      "kind": "download_file",
+      "host": "*",
+      "path": [
+        "**"
+      ]
+    },
+    {
+      "kind": "npm:install",
+      "package": "*"
+    }
   ],
   // Controls how completions are processed for this language.
   "completions": {
@@ -1528,10 +1572,15 @@
   // Different settings for specific languages.
   "languages": {
     "Astro": {
-      "language_servers": ["astro-language-server", "..."],
+      "language_servers": [
+        "astro-language-server",
+        "..."
+      ],
       "prettier": {
         "allowed": true,
-        "plugins": ["prettier-plugin-astro"]
+        "plugins": [
+          "prettier-plugin-astro"
+        ]
       }
     },
     "Blade": {
@@ -1566,13 +1615,23 @@
       "ensure_final_newline_on_save": false
     },
     "Elixir": {
-      "language_servers": ["elixir-ls", "!expert", "!next-ls", "!lexical", "..."]
+      "language_servers": [
+        "elixir-ls",
+        "!expert",
+        "!next-ls",
+        "!lexical",
+        "..."
+      ]
     },
     "Elm": {
       "tab_size": 4
     },
     "Erlang": {
-      "language_servers": ["erlang-ls", "!elp", "..."]
+      "language_servers": [
+        "erlang-ls",
+        "!elp",
+        "..."
+      ]
     },
     "Git Commit": {
       "allow_rewrap": "anywhere",
@@ -1580,7 +1639,10 @@
       "preferred_line_length": 72
     },
     "Gleam": {
-      "language_servers": ["gleam lsp", "..."],
+      "language_servers": [
+        "gleam lsp",
+        "..."
+      ],
       "tab_size": 2
     },
     "Go": {
@@ -1588,7 +1650,9 @@
       "code_actions_on_format": {
         "source.organizeImports": true
       },
-      "debuggers": ["Delve"]
+      "debuggers": [
+        "Delve"
+      ]
     },
     "GraphQL": {
       "prettier": {
@@ -1596,25 +1660,45 @@
       }
     },
     "HEEX": {
-      "language_servers": ["elixir-ls", "!expert", "!next-ls", "!lexical", "..."]
+      "language_servers": [
+        "elixir-ls",
+        "!expert",
+        "!next-ls",
+        "!lexical",
+        "..."
+      ]
     },
     "HTML": {
       "prettier": {
         "allowed": true
       },
-      "language_servers": ["superhtml", "!vscode-html-language-server", "..."]
+      "language_servers": [
+        "superhtml",
+        "!vscode-html-language-server",
+        "..."
+      ]
     },
     "HTML+ERB": {
-      "language_servers": ["herb", "!ruby-lsp", "..."]
+      "language_servers": [
+        "herb",
+        "!ruby-lsp",
+        "..."
+      ]
     },
     "Java": {
       "prettier": {
         "allowed": true,
-        "plugins": ["prettier-plugin-java"]
+        "plugins": [
+          "prettier-plugin-java"
+        ]
       }
     },
     "JavaScript": {
-      "language_servers": ["!typescript-language-server", "vtsls", "..."],
+      "language_servers": [
+        "!typescript-language-server",
+        "vtsls",
+        "..."
+      ],
       "prettier": {
         "allowed": true
       }
@@ -1630,17 +1714,29 @@
       }
     },
     "JS+ERB": {
-      "language_servers": ["!ruby-lsp", "..."]
+      "language_servers": [
+        "!ruby-lsp",
+        "..."
+      ]
     },
     "Kotlin": {
-      "language_servers": ["!kotlin-language-server", "kotlin-lsp", "..."]
+      "language_servers": [
+        "!kotlin-language-server",
+        "kotlin-lsp",
+        "..."
+      ]
     },
     "LaTeX": {
       "formatter": "language_server",
-      "language_servers": ["texlab", "..."],
+      "language_servers": [
+        "texlab",
+        "..."
+      ],
       "prettier": {
         "allowed": true,
-        "plugins": ["prettier-plugin-latex"]
+        "plugins": [
+          "prettier-plugin-latex"
+        ]
       }
     },
     "Markdown": {
@@ -1657,10 +1753,17 @@
       "language_servers": ["nil", "!nixd", "..."]
     },
     "PHP": {
-      "language_servers": ["phpactor", "!intelephense", "!phptools", "..."],
+      "language_servers": [
+        "phpactor",
+        "!intelephense",
+        "!phptools",
+        "..."
+      ],
       "prettier": {
         "allowed": true,
-        "plugins": ["@prettier/plugin-php"],
+        "plugins": [
+          "@prettier/plugin-php"
+        ],
         "parser": "php"
       }
     },
@@ -1669,7 +1772,12 @@
       "soft_wrap": "editor_width"
     },
     "Proto": {
-      "language_servers": ["buf", "!protols", "!protobuf-language-server", "..."],
+      "language_servers": [
+        "buf",
+        "!protols",
+        "!protobuf-language-server",
+        "..."
+      ],
     },
     "Python": {
       "code_actions_on_format": {
@@ -1680,14 +1788,33 @@
           "name": "ruff"
         }
       },
-      "debuggers": ["Debugpy"],
-      "language_servers": ["basedpyright", "ruff", "!ty", "!pyrefly", "!pyright", "!pylsp", "..."]
+      "debuggers": [
+        "Debugpy"
+      ],
+      "language_servers": [
+        "basedpyright",
+        "ruff",
+        "!ty",
+        "!pyrefly",
+        "!pyright",
+        "!pylsp",
+        "..."
+      ]
     },
     "Ruby": {
-      "language_servers": ["solargraph", "!ruby-lsp", "!rubocop", "!sorbet", "!steep", "..."]
+      "language_servers": [
+        "solargraph",
+        "!ruby-lsp",
+        "!rubocop",
+        "!sorbet",
+        "!steep",
+        "..."
+      ]
     },
     "Rust": {
-      "debuggers": ["CodeLLDB"]
+      "debuggers": [
+        "CodeLLDB"
+      ]
     },
     "SCSS": {
       "prettier": {
@@ -1695,20 +1822,36 @@
       }
     },
     "Starlark": {
-      "language_servers": ["starpls", "!buck2-lsp", "..."]
+      "language_servers": [
+        "starpls",
+        "!buck2-lsp",
+        "..."
+      ]
     },
     "Svelte": {
-      "language_servers": ["svelte-language-server", "..."],
+      "language_servers": [
+        "svelte-language-server",
+        "..."
+      ],
       "prettier": {
         "allowed": true,
-        "plugins": ["prettier-plugin-svelte"]
+        "plugins": [
+          "prettier-plugin-svelte"
+        ]
       }
     },
     "TOML": {
-      "language_servers": ["!taplo", "..."]
+      "language_servers": [
+        "!taplo",
+        "..."
+      ]
     },
     "TSX": {
-      "language_servers": ["!typescript-language-server", "vtsls", "..."],
+      "language_servers": [
+        "!typescript-language-server",
+        "vtsls",
+        "..."
+      ],
       "prettier": {
         "allowed": true
       }
@@ -1719,18 +1862,29 @@
       }
     },
     "TypeScript": {
-      "language_servers": ["!typescript-language-server", "vtsls", "..."],
+      "language_servers": [
+        "!typescript-language-server",
+        "vtsls",
+        "..."
+      ],
       "prettier": {
         "allowed": true
       }
     },
     "SystemVerilog": {
       "format_on_save": "off",
-      "language_servers": ["!slang", "..."],
+      "language_servers": [
+        "!slang",
+        "..."
+      ],
       "use_on_type_format": false
     },
     "Vue.js": {
-      "language_servers": ["vue-language-server", "vtsls", "..."],
+      "language_servers": [
+        "vue-language-server",
+        "vtsls",
+        "..."
+      ],
       "prettier": {
         "allowed": true
       }
@@ -1738,7 +1892,9 @@
     "XML": {
       "prettier": {
         "allowed": true,
-        "plugins": ["@prettier/plugin-xml"]
+        "plugins": [
+          "@prettier/plugin-xml"
+        ]
       }
     },
     "YAML": {
@@ -1747,10 +1903,16 @@
       }
     },
     "YAML+ERB": {
-      "language_servers": ["!ruby-lsp", "..."]
+      "language_servers": [
+        "!ruby-lsp",
+        "..."
+      ]
     },
     "Zig": {
-      "language_servers": ["zls", "..."]
+      "language_servers": [
+        "zls",
+        "..."
+      ]
     }
   },
   "session": {
@@ -1870,7 +2032,12 @@
   "windows": {
     "languages": {
       "PHP": {
-        "language_servers": ["intelephense", "!phpactor", "!phptools", "..."]
+        "language_servers": [
+          "intelephense",
+          "!phpactor",
+          "!phptools",
+          "..."
+        ]
       }
     }
   },
@@ -1948,7 +2115,6 @@
   //   }
   // }
   "profiles": {},
-
   // A map of log scopes to the desired log level.
   // Useful for filtering out noisy logs or enabling more verbose logging.
   //

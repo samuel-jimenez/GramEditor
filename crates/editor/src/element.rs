@@ -1,3 +1,66 @@
+use std::{
+    any::TypeId,
+    borrow::Cow,
+    cell::Cell,
+    cmp::{self, Ordering},
+    fmt::{self, Write},
+    iter, mem,
+    ops::Range,
+    path::{self, Path},
+    rc::Rc,
+    sync::Arc,
+    time::{Duration, Instant},
+};
+
+use buffer_diff::{DiffHunkStatus, DiffHunkStatusKind};
+use collections::{BTreeMap, HashMap};
+use file_icons::FileIcons;
+use git::{Oid, blame::BlameEntry, commit::ParsedCommitMessage, status::FileStatus};
+use gpui::{
+    Action, Along, AnyElement, App, AppContext, AvailableSpace, Axis as ScrollbarAxis, BorderStyle,
+    Bounds, ClickEvent, ClipboardItem, ContentMask, Context, Corner, Corners, CursorStyle,
+    DispatchPhase, Edges, Element, ElementInputHandler, Entity, Focusable as _, FontId,
+    GlobalElementId, Hitbox, HitboxBehavior, Hsla, InteractiveElement, IntoElement, IsZero, Length,
+    Modifiers, ModifiersChangedEvent, MouseButton, MouseClickEvent, MouseDownEvent, MouseMoveEvent,
+    MousePressureEvent, MouseUpEvent, PaintQuad, ParentElement, Pixels, PressureStage, ScrollDelta,
+    ScrollHandle, ScrollWheelEvent, ShapedLine, SharedString, Size, StatefulInteractiveElement,
+    Style, Styled, TextAlign, TextRun, TextStyleRefinement, WeakEntity, Window, anchored, deferred,
+    div, fill, linear_color_stop, linear_gradient, outline, point, px, quad, relative, size,
+    solid_background, transparent_black,
+};
+use itertools::Itertools;
+use language::{IndentGuideSettings, language_settings::ShowWhitespaceSetting};
+use markdown::Markdown;
+use multi_buffer::{
+    Anchor, ExcerptId, ExcerptInfo, ExpandExcerptDirection, ExpandInfo, MultiBufferPoint,
+    MultiBufferRow, RowInfo,
+};
+use project::{
+    Entry, ProjectPath,
+    debugger::breakpoint_store::{Breakpoint, BreakpointSessionState},
+    project_settings::ProjectSettings,
+};
+use settings::{
+    GitGutterSetting, GitHunkStyleSetting, IndentGuideBackgroundColoring, IndentGuideColoring,
+    MinimapSize, RelativeLineNumbers, Settings,
+};
+use smallvec::{SmallVec, smallvec};
+use sum_tree::Bias;
+use text::{BufferId, SelectionGoal};
+use theme::{ActiveTheme, Appearance, BufferLineHeight, PlayerColor};
+use ui::{
+    ButtonLike, ContextMenu, Indicator, KeyBinding, POPOVER_Y_PADDING, Tooltip, prelude::*,
+    right_click_menu, scrollbars::ShowScrollbar, text_for_keystroke,
+    utils::ensure_minimum_contrast,
+};
+use unicode_segmentation::UnicodeSegmentation;
+use util::{RangeExt, ResultExt, debug_panic, post_inc};
+use workspace::{
+    ItemSettings, OpenInTerminal, OpenTerminal, RevealInProjectPanel, Workspace,
+    item::{Item, ItemBufferKind},
+    notifications::NotifyTaskExt,
+};
+
 use crate::{
     ActiveDiagnostic, BlockId, ChunkRendererContext, ChunkReplacement, CodeActionSource,
     ColumnarMode, ConflictsOurs, ConflictsOursMarker, ConflictsOuter, ConflictsTheirs,
@@ -33,69 +96,6 @@ use crate::{
         ActiveScrollbarState, Autoscroll, ScrollOffset, ScrollPixelOffset, ScrollbarThumbState,
         scroll_amount::ScrollAmount,
     },
-};
-use buffer_diff::{DiffHunkStatus, DiffHunkStatusKind};
-use collections::{BTreeMap, HashMap};
-use file_icons::FileIcons;
-use git::{Oid, blame::BlameEntry, commit::ParsedCommitMessage, status::FileStatus};
-use gpui::{
-    Action, Along, AnyElement, App, AppContext, AvailableSpace, Axis as ScrollbarAxis, BorderStyle,
-    Bounds, ClickEvent, ClipboardItem, ContentMask, Context, Corner, Corners, CursorStyle,
-    DispatchPhase, Edges, Element, ElementInputHandler, Entity, Focusable as _, FontId,
-    GlobalElementId, Hitbox, HitboxBehavior, Hsla, InteractiveElement, IntoElement, IsZero, Length,
-    Modifiers, ModifiersChangedEvent, MouseButton, MouseClickEvent, MouseDownEvent, MouseMoveEvent,
-    MousePressureEvent, MouseUpEvent, PaintQuad, ParentElement, Pixels, PressureStage, ScrollDelta,
-    ScrollHandle, ScrollWheelEvent, ShapedLine, SharedString, Size, StatefulInteractiveElement,
-    Style, Styled, TextAlign, TextRun, TextStyleRefinement, WeakEntity, Window, anchored, deferred,
-    div, fill, linear_color_stop, linear_gradient, outline, point, px, quad, relative, size,
-    solid_background, transparent_black,
-};
-use itertools::Itertools;
-use language::{IndentGuideSettings, language_settings::ShowWhitespaceSetting};
-use markdown::Markdown;
-use multi_buffer::{
-    Anchor, ExcerptId, ExcerptInfo, ExpandExcerptDirection, ExpandInfo, MultiBufferPoint,
-    MultiBufferRow, RowInfo,
-};
-
-use project::{
-    Entry, ProjectPath,
-    debugger::breakpoint_store::{Breakpoint, BreakpointSessionState},
-    project_settings::ProjectSettings,
-};
-use settings::{
-    GitGutterSetting, GitHunkStyleSetting, IndentGuideBackgroundColoring, IndentGuideColoring,
-    RelativeLineNumbers, Settings,
-};
-use smallvec::{SmallVec, smallvec};
-use std::{
-    any::TypeId,
-    borrow::Cow,
-    cell::Cell,
-    cmp::{self, Ordering},
-    fmt::{self, Write},
-    iter, mem,
-    ops::Range,
-    path::{self, Path},
-    rc::Rc,
-    sync::Arc,
-    time::{Duration, Instant},
-};
-use sum_tree::Bias;
-use text::{BufferId, SelectionGoal};
-use theme::{ActiveTheme, Appearance, BufferLineHeight, PlayerColor};
-use ui::utils::ensure_minimum_contrast;
-use ui::{
-    ButtonLike, ContextMenu, Indicator, KeyBinding, POPOVER_Y_PADDING, Tooltip, prelude::*,
-    right_click_menu, scrollbars::ShowScrollbar, text_for_keystroke,
-};
-use unicode_segmentation::UnicodeSegmentation;
-use util::post_inc;
-use util::{RangeExt, ResultExt, debug_panic};
-use workspace::{
-    ItemSettings, OpenInTerminal, OpenTerminal, RevealInProjectPanel, Workspace,
-    item::{Item, ItemBufferKind},
-    notifications::NotifyTaskExt,
 };
 
 /// Determines what kinds of highlights should be applied to a lines background.
@@ -1837,7 +1837,7 @@ impl EditorElement {
     }
 
     fn layout_minimap(
-        &self,
+        &mut self,
         snapshot: &EditorSnapshot,
         minimap_width: Pixels,
         scroll_position: gpui::Point<f64>,
@@ -1903,43 +1903,1322 @@ impl EditorElement {
             top_right_anchor,
             size(minimap_width, editor_bounds.size.height),
         );
-        let minimap_line_height = self.get_minimap_line_height(
-            minimap_editor
-                .read(cx)
-                .text_style_refinement
-                .as_ref()
-                .and_then(|refinement| refinement.font_size)
-                .unwrap_or(MINIMAP_FONT_SIZE),
-            window,
-            cx,
-        );
+
         let minimap_height = minimap_bounds.size.height;
+
+        // let visible_editor_lines = (editor_bounds.size.height / line_height) as f64;
+        //         let total_editor_lines = (scroll_range.height / line_height) as f64;
+        //         let max_scroll_top = total_editor_lines;
 
         let visible_editor_lines = (editor_bounds.size.height / line_height) as f64;
         let total_editor_lines = (scroll_range.height / line_height) as f64;
-        let minimap_lines = (minimap_height / minimap_line_height) as f64;
+        let mut max_scroll_top = total_editor_lines; // how far down to scroll
+        let rem_size = self.rem_size(cx).unwrap_or(window.rem_size());
 
-        let minimap_scroll_top = MinimapLayout::calculate_minimap_top_offset(
-            total_editor_lines,
-            visible_editor_lines,
-            minimap_lines,
-            scroll_position,
+        println!(
+            "\nvisible_editor_lines: {visible_editor_lines}, total_editor_lines: {total_editor_lines},max_scroll_top: {max_scroll_top} rem_size:{rem_size}"
         );
 
-        let layout = ScrollbarLayout::for_minimap(
-            window.insert_hitbox(minimap_bounds, HitboxBehavior::Normal),
-            visible_editor_lines,
-            total_editor_lines,
-            minimap_line_height,
-            scroll_position,
-            minimap_scroll_top,
-            show_thumb,
-        )
-        .with_thumb_state(thumb_state);
+        const MINIMAP_FONT_WEIGHT: gpui::FontWeight = gpui::FontWeight::BLACK;
+        const MINIMAP_FONT_FAMILY: SharedString = SharedString::new_static(".GramMono");
+        // odo maybe change this
 
-        minimap_editor.update(cx, |editor, cx| {
-            editor.set_scroll_position(point(0., minimap_scroll_top), window, cx)
-        });
+        // Scroll
+        //TODO create ths
+        // ,
+
+        // println!("minimap_height: {minimap_height}");
+        // println!("line_height: {line_height}");
+
+        // println!("editor_bounds.size.height: {}",editor_bounds.size.height);
+        // println!("scroll_range.size.height: {}",scroll_range.height);
+        // println!("visible_editor_lines: {visible_editor_lines}, total_editor_lines: {total_editor_lines}");
+        // let minimap_line_height_Fixed: Pixels =
+        //     (line_height * minimap_height / scroll_range.height).into();
+        //                   let minimap_line_height_Viz: Pixels =
+        //     (line_height * minimap_height / editor_bounds.size.height).into();
+        // println!("minimap_line_height_Fixed: {minimap_line_height_Fixed}, minimap_line_height_Viz: {minimap_line_height_Viz}");
+
+        // let minimap_line_height_Scroll = self.get_minimap_line_height(
+        //     minimap_editor
+        //         .read(cx)
+        //         .text_style_refinement
+        //         .as_ref()
+        //         .and_then(|refinement| refinement.font_size)
+        //         .unwrap_or(MINIMAP_FONT_SIZE),
+        //     window,
+        //     cx,
+        // );
+
+        // let minimap_lines = (minimap_height / minimap_line_height_Scroll) as f64;
+        // println!("minimap_line_height_Scroll: {minimap_line_height_Scroll},  minimap_lines: {minimap_lines}");
+
+        /////// TODO
+        //             let vertical_overscroll = match EditorSettings::get_global(cx).scroll_beyond_last_line {
+        //     ScrollBeyondLastLine::OnePage => editor_bounds.size.height,
+        //     ScrollBeyondLastLine::Off => glyph_grid_cell.height,
+        //     ScrollBeyondLastLine::VerticalScrollMargin => {
+        //         (1.0 + EditorSettings::get_global(cx).vertical_scroll_margin) as f32 * glyph_grid_cell.height
+        //     }
+        // };
+
+        // let overscroll = size(longest_line_blame_width, vertical_overscroll);
+
+        // ScrollbarLayoutInformation {
+        //     editor_bounds,
+        //     scroll_range: document_size + overscroll,
+        //     glyph_grid_cell,
+        // }
+        //
+        ///////
+
+        // viewport_size,
+        // scroll_range,
+        // minimap_line_height,
+        // minimap_scroll_top,
+
+        let (minimap_line_height, layout, minimap_scroll_top) = match minimap_settings.size {
+            MinimapSize::ManualScale => {
+                // //TODO something like ObjectFit::ScaleDown,
+                // let _vertical_overscroll =
+                //     (match EditorSettings::get_global(cx).scroll_beyond_last_line {
+                //         ScrollBeyondLastLine::OnePage => editor_bounds.size.height,
+                //         ScrollBeyondLastLine::Off => glyph_grid_cell.height,
+                //         ScrollBeyondLastLine::VerticalScrollMargin => {
+                //             (1.0 + EditorSettings::get_global(cx).vertical_scroll_margin) as f32
+                //                 * glyph_grid_cell.height
+                //         }
+                //     } / line_height)
+                //         .into();
+                let scroll_height = scroll_range.height;
+
+                let minimap_line_height: Pixels =
+                    ((minimap_settings.minimap_line_height * line_height * minimap_height
+                        / scroll_height)
+                        + minimap_settings.minimap_scroll_top)
+                        .into();
+                // ( minimap_height / total_editor_lines).max(1.).into(); //TODO something for subpixel rendering?
+                //  minimap_height / total_editor_lines; //TODO something for subpixel rendering?
+                // let total_editor_lines = (scroll_range.height / line_height) as f64;
+
+                let visible_minimap_lines = f64::from(minimap_height / minimap_line_height);
+
+                let minimap_scroll_top = MinimapLayout::calculate_minimap_top_offset(
+                    total_editor_lines,
+                    visible_editor_lines,
+                    visible_minimap_lines,
+                    scroll_position,
+                );
+                // let minimap_scroll_top = 0.;
+                println!(
+                    "ManualScale: editor_bounds: {}, scroll_height: {scroll_height}, minimap_height:{minimap_height}, 
+                        minimap_scroll_top:{minimap_scroll_top},visible_minimap_lines:{visible_minimap_lines}, 
+                        minimap_line_height:{minimap_line_height}
+                         minimap_settings.minimap_line_height:{}
+                    minimap_settings.minimap_scroll_top:{},",
+                    editor_bounds.size.height,
+                    minimap_settings.minimap_line_height,
+                    minimap_settings.minimap_scroll_top,
+                );
+
+                let layout = ScrollbarLayout::for_minimap(
+                    window.insert_hitbox(minimap_bounds, HitboxBehavior::Normal),
+                    visible_editor_lines,
+                    total_editor_lines,
+                    minimap_line_height,
+                    scroll_position,
+                    minimap_scroll_top,
+                    show_thumb,
+                )
+                .with_thumb_state(thumb_state);
+
+                minimap_editor.update(cx, |editor, cx| {
+                    editor.set_scroll_position(point(0., minimap_scroll_top), window, cx);
+                    editor.set_text_style_refinement(TextStyleRefinement {
+                        font_size: Some(AbsoluteLength::Pixels(minimap_line_height)),
+                        // font_size: Some(AbsoluteLength::Pixels(px(50.))),
+                        // font_weight: Some(MINIMAP_FONT_WEIGHT),
+                        // font_family: Some(MINIMAP_FONT_FAMILY),
+                        ..Default::default()
+                    });
+                });
+
+                (minimap_line_height, layout, minimap_scroll_top)
+            }
+            MinimapSize::ManualFixed => {
+                //TODO something like ObjectFit::ScaleDown,
+
+                //todo RECALC FOR minimap?
+                let vertical_overscroll =
+                    match EditorSettings::get_global(cx).scroll_beyond_last_line {
+                        ScrollBeyondLastLine::OnePage => editor_bounds.size.height,
+                        ScrollBeyondLastLine::Off => glyph_grid_cell.height,
+                        ScrollBeyondLastLine::VerticalScrollMargin => {
+                            (1.0 + EditorSettings::get_global(cx).vertical_scroll_margin) as f32
+                                * glyph_grid_cell.height
+                        }
+                    };
+                max_scroll_top = minimap_settings.minimap_scroll_top as f64;
+
+                // let scroll_height = scroll_range.height;
+                let scroll_height = scroll_range.height - vertical_overscroll;
+                // let scroll_height = scroll_range.height + vertical_overscroll; // prob this one
+                let vertical_overscroll_lines: f64 = (vertical_overscroll / line_height).into();
+                // let vertical_overscroll_lines: Pixels = (vertical_overscroll / line_height).into();
+
+                let minimap_line_height: Pixels = minimap_settings.minimap_line_height.into();
+
+                // let minimap_line_height: Pixels =
+                //     (line_height * minimap_height / scroll_height).into();
+                // ( minimap_height / scroll_height).max(1.).into();``//TODO something for subpixel rendering?
+                //  minimap_height / total_editor_lines; //TODO something for subpixel rendering?
+
+                // let viewport_size = visible_editor_lines * f64::from(minimap_line_height);
+                // let viewport_size = (visible_editor_lines * f64::from(minimap_line_height)).into(); //thumb size
+                // let viewport_size = visible_editor_lines * minimap_line_height;
+                // let viewport_size: Pixels =
+                //     (editor_bounds.size.height * minimap_height / scroll_height).into();
+                let viewport_size = minimap_settings.viewport_size.into(); //thumb size
+
+                //                         minimap_settings.minimap_line_height:9
+                //                         minimap_settings.viewport_size:555
+                //                         minimap_settings.scroll_range:900
+
+                //                 460 /1000
+                //                     minimap_settings.viewport_size,
+                //                     minimap_settings.scroll_range, this need to be biggers if viewport is too far down as we croll
+
+                // visible_editor_lines: 62.43333435058594, total_editor_lines: 161.43333435058594,max_scroll_top: 161.43333435058594
+                // ManualFixed: editor_bounds: 1498.4px, scroll_height: 2376px, minimap_height:1498.4px,
+                //                     scroll_range: 900px, vertical_overscroll:1498.4px,
+                //                     vertical_overscroll_lines:62.43333435058594,
+                //                     viewport_size:555px,
+                //                     minimap_line_height:9px
+                //                         minimap_settings.minimap_line_height:9
+                //                         minimap_settings.viewport_size:555
+                //                         minimap_settings.scroll_range:900
+                //                     minimap_settings.minimap_scroll_top:-50,
+                // editor_bounds: 1498.4px, scroll_height: 3874.4px,
+                //                     minimap_height:1498.4px, minimap_line_height:9px,
+                //                 visible_editor_lines: 62.43333435058594, total_editor_lines: 161.43333435058594,max_scroll_top: 161.43333435058594,
+                //                 minimap_scroll_top: 0,
+                //                     line_height: 24px
+
+                // visible_editor_lines: 62.43333435058594, total_editor_lines: 261.4333190917969,max_scroll_top: 261.4333190917969
+                // ManualFixed: editor_bounds: 1498.4px, scroll_height: 4776px, minimap_height:1498.4px,
+                //                     scroll_range: 964px, vertical_overscroll:1498.4px,
+                //                     vertical_overscroll_lines:62.43333435058594,
+                //                     viewport_size:282px,
+                //                     minimap_line_height:4.5px
+                //                         minimap_settings.minimap_line_height:4.5
+                //                         minimap_settings.viewport_size:282
+                //                         minimap_settings.scroll_range:964
+                //                     minimap_settings.minimap_scroll_top:-50,
+                // editor_bounds: 1498.4px, scroll_height: 6274.4px,
+                //                     minimap_height:1498.4px, minimap_line_height:4.5px,
+                //                 visible_editor_lines: 62.43333435058594, total_editor_lines: 261.4333190917969,max_scroll_top: 261.4333190917969,
+                //                 minimap_scroll_top: 0,
+                //                     line_height: 24px
+
+                // scroll_height+vertical_overscroll)()/minimap_height
+
+                // minimap_height /total_editor_lines
+                // first: estimate minimap_line_height
+                // =
+                // minimap_height /total_editor_lines
+                // = 9.3
+                // then: set scroll_range so op of scorll ar fit un overflow
+                // 928
+
+                // minimap_line_height *(total_editor_lines-vertical_overscroll_lines)
+                // finally:
+                // viewport_size so top of scroll is correct
+                // 578
+                // minimap_line_height *visible_editor_lines
+                // 62/161
+                {
+                    let vertical_overscroll =
+                        match EditorSettings::get_global(cx).scroll_beyond_last_line {
+                            ScrollBeyondLastLine::OnePage => {
+                                editor_bounds.size.height - glyph_grid_cell.height
+                            }
+                            // ScrollBeyondLastLine::Off => Pixels(0.0),
+                            ScrollBeyondLastLine::Off => px(0.0),
+                            // .into(); //thumb size
+                            ScrollBeyondLastLine::VerticalScrollMargin => {
+                                (EditorSettings::get_global(cx).vertical_scroll_margin) as f32
+                                    * glyph_grid_cell.height
+                            }
+                        };
+                    let scroll_height = scroll_range.height;
+                    //    let scroll_height = scroll_range.height - vertical_overscroll;
+                    // let scroll_height = scroll_range.height + vertical_overscroll; // prob this one
+                    let vertical_overscroll_lines: f64 = (vertical_overscroll / line_height).into();
+                    let actual_editor_lines = total_editor_lines - vertical_overscroll_lines;
+
+                    let scroll_height_actual = scroll_height - vertical_overscroll;
+                    let minimap_line_height_raw = (f64::from(minimap_height / scroll_height)
+                        * f64::from(line_height))
+                    .max(1.); //TODO something for subpixel rendering?
+                    let minimap_line_height_raw_actual =
+                        (f64::from(minimap_height / scroll_height_actual) * f64::from(line_height))
+                            .max(1.); //TODO something for subpixel rendering?
+
+                    let minimap_line_height: Pixels =
+                    // (line_height * minimap_height / scroll_height).into();
+                // ( minimap_height / scroll_height).max(1.).into();``//TODO something for subpixel rendering?
+                 ( f64::from(minimap_height) / total_editor_lines).max(1.).into(); //TODO something for subpixel rendering?
+                    //  (5./8. *( minimap_height / scroll_height) as f64 * f64::from(line_height) ).max(1.).into();//TODO something for subpixel rendering?
+
+                    // let viewport_size = visible_editor_lines * f64::from(minimap_line_height);
+                    // let viewport_size = visible_editor_lines * minimap_line_height;
+                    // let viewport_size: Pixels =
+                    //     (editor_bounds.size.height * minimap_height / scroll_height).into();
+                    //    let viewport_size = (visible_editor_lines * f64::from(minimap_line_height)).into(); //thumb size
+                    let viewport_size = (visible_editor_lines * f64::from(minimap_line_height)); //thumb size
+
+                    // let scroll_range = total_editor_lines * minimap_line_height;
+                    // let scroll_range = total_editor_lines * f64::from(minimap_line_height);
+                    let scroll_range = ((total_editor_lines - vertical_overscroll_lines)
+                        * f64::from(minimap_line_height));
+
+                    let scroll_range_0 = (total_editor_lines * f64::from(minimap_line_height));
+                    // =minimap_height
+                    // let scroll_range = minimap_height;
+
+                    println!(
+                        "ManualFixed: 
+                    minimap_height:{minimap_height}, 
+                    vertical_overscroll:{vertical_overscroll},
+
+                    total_editor_lines:{total_editor_lines},
+                    actual_editor_lines:{actual_editor_lines},
+                    vertical_overscroll_lines:{vertical_overscroll_lines},
+
+                    editor_bounds: {}, scroll_height: {scroll_height}, 
+                    scroll_height_actual: {scroll_height_actual}
+
+                    minimap_line_height:{minimap_line_height}
+                    minimap_line_height_raw: {minimap_line_height_raw}
+                    minimap_line_height_raw_actual: {minimap_line_height_raw_actual}
+
+                    scroll_range_0;{scroll_range_0}
+                    scroll_range: {scroll_range}, 
+                    viewport_size:{viewport_size}, 
+                    ",
+                        editor_bounds.size.height
+                    );
+                }
+
+                // let scroll_range = total_editor_lines * minimap_line_height;
+                // let scroll_range = total_editor_lines * f64::from(minimap_line_height);
+                // let scroll_range = (total_editor_lines
+                //     + vertical_overscroll_lines * f64::from(minimap_line_height))
+                // .into();
+                // // =minimap_height
+                // // let scroll_range = minimap_height;
+                // let minimap_scroll_top = minimap_settings.minimap_scroll_top;
+
+                let scroll_range = minimap_settings.scroll_range.into();
+
+                println!(
+                    "ManualFixed: editor_bounds: {}, scroll_height: {scroll_height}, minimap_height:{minimap_height}, 
+                    scroll_range: {scroll_range}, vertical_overscroll:{vertical_overscroll},
+                    vertical_overscroll_lines:{vertical_overscroll_lines},
+                    viewport_size:{viewport_size}, 
+                    minimap_line_height:{minimap_line_height}
+                        minimap_settings.minimap_line_height:{}
+                        minimap_settings.viewport_size:{}
+                        minimap_settings.scroll_range:{}
+                    minimap_settings.minimap_scroll_top:{},",
+                    editor_bounds.size.height,
+                    minimap_settings.minimap_line_height,
+                    minimap_settings.viewport_size,
+                    minimap_settings.scroll_range,
+                    minimap_settings.minimap_scroll_top,
+                );
+
+                //    let mut style = minimap_editor.any_entity.text_style_refinement;
+                //         style.font_size = Some(AbsoluteLength::Pixels(px(minimap_line_height)));
+                minimap_editor.update(cx, |editor, cx| {
+                    editor.set_scroll_position(point(0., 0.), window, cx);
+
+                    //  let mut style_opt = editor.text_style_refinement.as_mut() ;
+                    if let Some(style) = editor.text_style_refinement.as_mut() {
+                        // style.font_size = Some(AbsoluteLength::Pixels(px(minimap_line_height)));
+                        style.font_size = Some(AbsoluteLength::Pixels(minimap_line_height));
+                        // style.line_height = Some(DefiniteLength::Fraction(1.0));
+                        style.line_height = Some(DefiniteLength::Fraction(
+                            minimap_settings.minimap_scroll_top,
+                        ));
+
+                        // style.line_height = Some(DefiniteLength::Fraction(0.5));
+                        // style.font_size = Some(AbsoluteLength::Pixels(px(5.)));
+
+                        // editor.set_text_style_refinement(style);
+                    } else {
+                        editor.set_text_style_refinement(TextStyleRefinement {
+                            font_size: Some(AbsoluteLength::Pixels(minimap_line_height)),
+                            // font_size: Some(AbsoluteLength::Pixels(px(1.))),
+
+                            // font_weight: Some(MINIMAP_FONT_WEIGHT),
+                            // font_family: Some(MINIMAP_FONT_FAMILY),
+                            ..Default::default()
+                        });
+                    }
+                });
+
+                // AbsoluteLength::Pixels(px(minimap_line_height))
+                let content_offset = 0f64;
+
+                let layout = ScrollbarLayout::new(
+                    window.insert_hitbox(minimap_bounds, HitboxBehavior::Normal),
+                    viewport_size,
+                    scroll_range,
+                    minimap_line_height,
+                    // content_offset.along(axis),
+                    content_offset.into(), //TODO
+                    scroll_position,
+                    true,
+                    MINIMAP_AXIS,
+                )
+                .with_thumb_state(thumb_state);
+
+                (minimap_line_height, layout, content_offset)
+            }
+
+            MinimapSize::ManualViz => {
+                // //TODO something like ObjectFit::ScaleDown,
+                // let _vertical_overscroll =
+                //     (match EditorSettings::get_global(cx).scroll_beyond_last_line {
+                //         ScrollBeyondLastLine::OnePage => editor_bounds.size.height,
+                //         ScrollBeyondLastLine::Off => glyph_grid_cell.height,
+                //         ScrollBeyondLastLine::VerticalScrollMargin => {
+                //             (1.0 + EditorSettings::get_global(cx).vertical_scroll_margin) as f32
+                //                 * glyph_grid_cell.height
+                //         }
+                //     } / line_height)
+                //         .into();
+                let scroll_height = scroll_range.height;
+
+                let minimap_line_height: Pixels = minimap_settings.minimap_line_height.into();
+
+                // ( minimap_height / total_editor_lines).max(1.).into(); //TODO something for subpixel rendering?
+                //  minimap_height / total_editor_lines; //TODO something for subpixel rendering?
+                // let total_editor_lines = (scroll_range.height / line_height) as f64;
+
+                let visible_minimap_lines = (minimap_height / minimap_line_height) as f64;
+
+                let minimap_scroll_top = MinimapLayout::calculate_minimap_top_offset(
+                    total_editor_lines,
+                    visible_editor_lines,
+                    visible_minimap_lines,
+                    scroll_position,
+                );
+                // let minimap_scroll_top = 0.;
+                // let minimap_scroll_top = minimap_settings.minimap_scroll_top.into();
+
+                max_scroll_top = minimap_settings.minimap_scroll_top as f64;
+
+                println!(
+                    "ManualViz: editor_bounds: {}, scroll_height: {scroll_height}, minimap_height:{minimap_height}, 
+                        minimap_scroll_top:{minimap_scroll_top},visible_minimap_lines:{visible_minimap_lines}, 
+                           minimap_line_height:{minimap_line_height}
+                        minimap_settings.minimap_line_height:{}
+                        minimap_settings.viewport_size:{}
+                    minimap_settings.minimap_scroll_top:{},",
+                    editor_bounds.size.height,
+                    minimap_settings.minimap_line_height,
+                    minimap_settings.viewport_size,
+                    minimap_settings.minimap_scroll_top,
+                );
+
+                let layout = ScrollbarLayout::for_minimap(
+                    window.insert_hitbox(minimap_bounds, HitboxBehavior::Normal),
+                    visible_editor_lines,
+                    total_editor_lines,
+                    minimap_line_height,
+                    scroll_position,
+                    minimap_scroll_top,
+                    show_thumb,
+                )
+                .with_thumb_state(thumb_state);
+
+                minimap_editor.update(cx, |editor, cx| {
+                    editor.set_scroll_position(point(0., minimap_scroll_top), window, cx);
+                    editor.set_text_style_refinement(TextStyleRefinement {
+                        font_size: Some(AbsoluteLength::Pixels(minimap_line_height)),
+                        // font_size: Some(AbsoluteLength::Pixels(px(50.))),
+                        // font_weight: Some(MINIMAP_FONT_WEIGHT),
+                        // font_family: Some(MINIMAP_FONT_FAMILY),
+                        ..Default::default()
+                    });
+                });
+
+                (minimap_line_height, layout, minimap_scroll_top)
+            }
+
+            MinimapSize::Fixed => {
+                // //TODO something like ObjectFit::ScaleDown,
+                // let _vertical_overscroll =
+                //     (match EditorSettings::get_global(cx).scroll_beyond_last_line {
+                //         ScrollBeyondLastLine::OnePage => editor_bounds.size.height,
+                //         ScrollBeyondLastLine::Off => glyph_grid_cell.height,
+                //         ScrollBeyondLastLine::VerticalScrollMargin => {
+                //             (1.0 + EditorSettings::get_global(cx).vertical_scroll_margin) as f32
+                //                 * glyph_grid_cell.height
+                //         }
+                //     } / line_height)
+                //         .into();
+                let scroll_height = scroll_range.height;
+
+                let minimap_line_height: Pixels =
+                    (line_height * minimap_height / scroll_height).into();
+                // ( minimap_height / total_editor_lines).max(1.).into(); //TODO something for subpixel rendering?
+                //  minimap_height / total_editor_lines; //TODO something for subpixel rendering?
+                // let total_editor_lines = (scroll_range.height / line_height) as f64;
+
+                let visible_minimap_lines = (minimap_height / minimap_line_height) as f64;
+
+                // how far u to sccroll minmap editor
+                let minimap_scroll_top = MinimapLayout::calculate_minimap_top_offset(
+                    total_editor_lines,
+                    visible_editor_lines,
+                    visible_minimap_lines,
+                    scroll_position,
+                );
+                // let minimap_scroll_top = 0.;
+                println!(
+                    "Fixed: editor_bounds: {}, scroll_height: {scroll_height}, minimap_height:{minimap_height}, 
+                        minimap_scroll_top:{minimap_scroll_top},visible_minimap_lines:{visible_minimap_lines}, 
+                        minimap_line_height:{minimap_line_height}",
+                    editor_bounds.size.height
+                );
+
+                let layout = ScrollbarLayout::for_minimap(
+                    window.insert_hitbox(minimap_bounds, HitboxBehavior::Normal),
+                    visible_editor_lines,
+                    total_editor_lines,
+                    minimap_line_height,
+                    scroll_position,
+                    minimap_scroll_top,
+                    show_thumb,
+                )
+                .with_thumb_state(thumb_state);
+
+                minimap_editor.update(cx, |editor, cx| {
+                    editor.set_scroll_position(point(0., minimap_scroll_top), window, cx);
+                    editor.set_text_style_refinement(TextStyleRefinement {
+                        font_size: Some(AbsoluteLength::Pixels(minimap_line_height)),
+                        // font_size: Some(AbsoluteLength::Pixels(px(50.))),
+                        // font_weight: Some(MINIMAP_FONT_WEIGHT),
+                        // font_family: Some(MINIMAP_FONT_FAMILY),
+                        ..Default::default()
+                    });
+                });
+
+                (minimap_line_height, layout, minimap_scroll_top)
+            }
+            MinimapSize::FixedB => {
+                //TODO something like ObjectFit::ScaleDown,
+
+                //todo RECALC FOR minimap?
+                let vertical_overscroll_lines: f64 =
+                    match EditorSettings::get_global(cx).scroll_beyond_last_line {
+                        ScrollBeyondLastLine::OnePage => {
+                            println!(
+                                "\n\nFixedB: vertical_overscroll_lines:{},
+                    ",
+                                (f64::from(editor_bounds.size.height) / f64::from(line_height) - 1.)
+                                    as f64
+                            );
+                            (editor_bounds.size.height / line_height - 1.) as f64
+                        }
+                        // ScrollBeyondLastLine::Off => Pixels(0.0),
+                        ScrollBeyondLastLine::Off => 0.0,
+                        // .into(); //thumb size
+                        ScrollBeyondLastLine::VerticalScrollMargin => {
+                            (EditorSettings::get_global(cx).vertical_scroll_margin) as f64
+                        }
+                    };
+                let actual_lines: f64 = total_editor_lines - vertical_overscroll_lines;
+
+                println!(
+                    "\n\nFixedB: vertical_overscroll_lines:{vertical_overscroll_lines},
+                    actual_lines:{actual_lines}
+                    ",
+                );
+
+                let vertical_overscroll = match EditorSettings::get_global(cx)
+                    .scroll_beyond_last_line
+                {
+                    ScrollBeyondLastLine::OnePage => editor_bounds.size.height - line_height,
+                    // ScrollBeyondLastLine::Off => Pixels(0.0),
+                    ScrollBeyondLastLine::Off => px(0.0),
+                    // .into(); //thumb size
+                    ScrollBeyondLastLine::VerticalScrollMargin => {
+                        (EditorSettings::get_global(cx).vertical_scroll_margin) as f32 * line_height
+                    }
+                };
+
+                // let scroll_height = scroll_range.height;
+                let scroll_height = scroll_range.height - vertical_overscroll;
+
+                let actual_lines: f64 = (scroll_height / line_height).into();
+
+                println!(
+                    "\n\n
+                    FixedB:
+                    actual_lines:{actual_lines}
+                    ",
+                );
+
+                // let scroll_height = scroll_range.height + vertical_overscroll; // prob this one
+                let vertical_overscroll_lines: f64 = (vertical_overscroll / line_height).into();
+                // let vertical_overscroll_lines: Pixels = (vertical_overscroll / line_height).into();
+
+                //  max_scroll_top = total_editor_lines;
+                //  max_scroll_top =  match EditorSettings::get_global(cx).scroll_beyond_last_line {
+                //                         ScrollBeyondLastLine::OnePage => editor_bounds.size.height-glyph_grid_cell.height,
+                //                         // ScrollBeyondLastLine::Off => Pixels(0.0),
+                //                         ScrollBeyondLastLine::Off => px(0.0),
+                //                         // .into(); //thumb size
+                //                         ScrollBeyondLastLine::VerticalScrollMargin => {
+                //                             (EditorSettings::get_global(cx).vertical_scroll_margin) as f32
+                //                                 * glyph_grid_cell.height
+                //                         }
+                //                     };
+
+                // let line_height_factor: f64 = match self.style.text.line_height {
+                //     DefiniteLength::Absolute(size) => todo!(),
+                //     DefiniteLength::Fraction(fraction) => 1. / fraction as f64,
+                // };
+
+                // let minimap_line_height: Pixels =
+                //     // (line_height * minimap_height / scroll_height).into();
+                // // ( minimap_height / scroll_height).max(1.).into();``//TODO something for subpixel rendering?
+                // //  ( f64::from(minimap_height) / total_editor_lines).max(1.).into();//TODO something for subpixel rendering?
+                //  (line_height_factor *( minimap_height / scroll_height) as f64 * f64::from(line_height) ).max(1.).into(); //TODO something for subpixel rendering?
+
+                let minimap_line_height: Pixels = (line_height * minimap_height / scroll_height)
+                    .max(1.)
+                    .into(); //TODO something for subpixel rendering?
+                println!(":minimap_line_height:{minimap_line_height}, ");
+
+                let rem_size = self.rem_size(cx).unwrap_or(window.rem_size());
+
+                // let minimap_editor_rem_size = minimap_editor.read(cx).rem_size(cx).unwrap_or(window.rem_size());
+
+                // println!(":rem_size:{rem_size}, minimap_editor_rem_size:{minimap_editor_rem_size}");
+                println!(":rem_size:{rem_size}, ");
+
+                println!(
+                    ":get_minimap_line_height:{}, ",
+                    self.get_minimap_line_height(
+                        AbsoluteLength::Pixels(minimap_line_height),
+                        window,
+                        cx,
+                    )
+                );
+
+                //               let minimap_line_height = self.get_minimap_line_height(
+                //                  AbsoluteLength::Pixels(minimap_line_height))
+                //     minimap_editor
+                //         .read(cx)
+                //         .text_style_refinement
+                //         .as_ref()
+                //         .and_then(|refinement| refinement.font_size)
+                //         .unwrap_or(MINIMAP_FONT_SIZE),
+                //     window,
+                //     cx,
+                // );
+
+                //TODO font size is quantitized
+                let minimap_line_height: Pixels = (line_height * minimap_height / scroll_height)
+                    .max(1.)
+                    .floor()
+                    .into(); //TODO something for subpixel rendering?
+                println!(":minimap_line_height:{minimap_line_height}, ");
+                // println!(":minimap_line_height:{minimap_line_height}, ");
+
+                // let viewport_size = visible_editor_lines * f64::from(minimap_line_height);
+                let viewport_size = (visible_editor_lines * f64::from(minimap_line_height)).into(); //thumb size
+                // let viewport_size = visible_editor_lines * minimap_line_height;
+                // let viewport_size: Pixels =
+                //     (editor_bounds.size.height * minimap_height / scroll_height).into();
+
+                // let scroll_range = total_editor_lines * minimap_line_height;
+                // let scroll_range = total_editor_lines * f64::from(minimap_line_height);
+                let scroll_range: Pixels = ((total_editor_lines - vertical_overscroll_lines)
+                    * f64::from(minimap_line_height))
+                // /...???
+                .into();
+                println!(":scroll_range_OLS:{scroll_range}, ");
+
+                let scroll_range = (actual_lines * f64::from(minimap_line_height)).into();
+                // =minimap_height
+                // let scroll_range = minimap_height;
+
+                println!(
+                    "FixedB: editor_bounds: {}, scroll_height: {scroll_height}, minimap_height:{minimap_height}, 
+                    scroll_range: {scroll_range}, vertical_overscroll:{vertical_overscroll},
+                    vertical_overscroll_lines:{vertical_overscroll_lines},
+                    viewport_size:{viewport_size}, 
+                    minimap_line_height:{minimap_line_height}
+                    minimap_line_height_actual:{}",
+                    editor_bounds.size.height,(line_height * minimap_height / scroll_height)
+                );
+
+                //    let mut style = minimap_editor.any_entity.text_style_refinement;
+                //         style.font_size = Some(AbsoluteLength::Pixels(px(minimap_line_height)));
+                minimap_editor.update(cx, |editor, cx| {
+                    editor.set_scroll_position(point(0., 0.), window, cx);
+
+                    //  let mut style_opt = editor.text_style_refinement.as_mut() ;
+                    if let Some(style) = editor.text_style_refinement.as_mut() {
+                        // style.font_size = Some(AbsoluteLength::Pixels(px(minimap_line_height)));
+                        style.font_size = Some(AbsoluteLength::Pixels(minimap_line_height));
+                        style.line_height = Some(DefiniteLength::Absolute(AbsoluteLength::Pixels(
+                            minimap_line_height,
+                        )));
+                        // style.font_size = Some(AbsoluteLength::Pixels(px(5.)));
+
+                        // editor.set_text_style_refinement(style);
+                    } else {
+                        editor.set_text_style_refinement(TextStyleRefinement {
+                            font_size: Some(AbsoluteLength::Pixels(minimap_line_height)),
+                            line_height: Some(DefiniteLength::Absolute(AbsoluteLength::Pixels(
+                                minimap_line_height,
+                            ))),
+
+                            // font_size: Some(AbsoluteLength::Pixels(px(1.))),
+
+                            // font_weight: Some(MINIMAP_FONT_WEIGHT),
+                            // font_family: Some(MINIMAP_FONT_FAMILY),
+                            ..Default::default()
+                        });
+                    }
+                });
+
+                // AbsoluteLength::Pixels(px(minimap_line_height))
+                let content_offset = 0f64;
+
+                let layout = ScrollbarLayout::new(
+                    window.insert_hitbox(minimap_bounds, HitboxBehavior::Normal),
+                    viewport_size,
+                    scroll_range,
+                    minimap_line_height,
+                    // content_offset.along(axis),
+                    content_offset.into(), //TODO
+                    scroll_position,
+                    true,
+                    MINIMAP_AXIS,
+                )
+                .with_thumb_state(thumb_state);
+
+                (minimap_line_height, layout, content_offset)
+            }
+
+            MinimapSize::FixedNOover => {
+                //TODO something like ObjectFit::ScaleDown,
+
+                //todo RECALC FOR minimap?
+                // let vertical_overscroll =
+                //     match EditorSettings::get_global(cx).scroll_beyond_last_line {
+                //         ScrollBeyondLastLine::OnePage => editor_bounds.size.height,
+                //         ScrollBeyondLastLine::Off => glyph_grid_cell.height,
+                //         ScrollBeyondLastLine::VerticalScrollMargin => {
+                //             (1.0 + EditorSettings::get_global(cx).vertical_scroll_margin) as f32
+                //                 * glyph_grid_cell.height
+                //         }
+                //     };
+                let vertical_overscroll = match EditorSettings::get_global(cx)
+                    .scroll_beyond_last_line
+                {
+                    ScrollBeyondLastLine::OnePage => editor_bounds.size.height - line_height,
+                    // ScrollBeyondLastLine::Off => Pixels(0.0),
+                    ScrollBeyondLastLine::Off => px(0.0),
+                    // .into(); //thumb size
+                    ScrollBeyondLastLine::VerticalScrollMargin => {
+                        (EditorSettings::get_global(cx).vertical_scroll_margin) as f32 * line_height
+                    }
+                };
+                // let scroll_height = scroll_range.height;
+                let scroll_height = scroll_range.height - vertical_overscroll;
+                // let scroll_height = scroll_range.height + vertical_overscroll; // prob this one
+                let vertical_overscroll_lines = vertical_overscroll / line_height;
+                // let vertical_overscroll_lines: Pixels = (vertical_overscroll / line_height).into();
+
+                let minimap_line_height: Pixels = (line_height * minimap_height / scroll_height)
+                    .max(1.)
+                    .into();
+                // ( minimap_height / scroll_height).max(1.).into();``//TODO something for subpixel rendering?
+                //  minimap_height / total_editor_lines; //TODO something for subpixel rendering?
+                //  ( f64::from(minimap_height) / total_editor_lines).max(1.).into();//TODO something for subpixel rendering?
+                //  (line_height_factor *( minimap_height / scroll_height) as f64 * f64::from(line_height) ).max(1.).into(); //TODO something for subpixel rendering?
+
+                // let viewport_size = visible_editor_lines * f64::from(minimap_line_height);
+                let viewport_size = (visible_editor_lines * f64::from(minimap_line_height)).into();
+                // let viewport_size = visible_editor_lines * minimap_line_height;
+                // let viewport_size: Pixels =
+                //     (editor_bounds.size.height * minimap_height / scroll_height).into();
+
+                // let scroll_range = total_editor_lines * minimap_line_height;
+
+                let scroll_range = (total_editor_lines * f64::from(minimap_line_height)).into();
+                // let scroll_range = (total_editor_lines
+                //     + vertical_overscroll_lines as f64 * f64::from(minimap_line_height))
+                // .into();
+
+                // =minimap_height
+                // let scroll_range = minimap_height;
+
+                println!(
+                    "FixedNOover: editor_bounds: {}, scroll_height: {scroll_height}, minimap_height:{minimap_height}, 
+                    scroll_range: {scroll_range}, vertical_overscroll:{vertical_overscroll},
+                    vertical_overscroll_lines:{vertical_overscroll_lines},
+                    viewport_size:{viewport_size}, 
+                    minimap_line_height:{minimap_line_height}",
+                    editor_bounds.size.height
+                );
+
+                //    let mut style = minimap_editor.any_entity.text_style_refinement;
+                //         style.font_size = Some(AbsoluteLength::Pixels(px(minimap_line_height)));
+                minimap_editor.update(cx, |editor, cx| {
+                    editor.set_scroll_position(point(0., 0.), window, cx);
+
+                    //  let mut style_opt = editor.text_style_refinement.as_mut() ;
+                    if let Some(style) = editor.text_style_refinement.as_mut() {
+                        // style.font_size = Some(AbsoluteLength::Pixels(px(minimap_line_height)));
+                        style.font_size = Some(AbsoluteLength::Pixels(minimap_line_height));
+                        style.line_height = Some(DefiniteLength::Absolute(AbsoluteLength::Pixels(
+                            minimap_line_height,
+                        )));
+                        // style.font_size = Some(AbsoluteLength::Pixels(px(5.)));
+
+                        // editor.set_text_style_refinement(style);
+                    } else {
+                        editor.set_text_style_refinement(TextStyleRefinement {
+                            font_size: Some(AbsoluteLength::Pixels(minimap_line_height)),
+                            line_height: Some(DefiniteLength::Absolute(AbsoluteLength::Pixels(
+                                minimap_line_height,
+                            ))),
+                            // font_size: Some(AbsoluteLength::Pixels(px(1.))),
+
+                            // font_weight: Some(MINIMAP_FONT_WEIGHT),
+                            // font_family: Some(MINIMAP_FONT_FAMILY),
+                            ..Default::default()
+                        });
+                    }
+                });
+
+                // AbsoluteLength::Pixels(px(minimap_line_height))
+                let content_offset = 0f64;
+
+                let layout = ScrollbarLayout::new(
+                    window.insert_hitbox(minimap_bounds, HitboxBehavior::Normal),
+                    viewport_size,
+                    scroll_range,
+                    minimap_line_height,
+                    // content_offset.along(axis),
+                    content_offset.into(), //TODO
+                    scroll_position,
+                    true,
+                    MINIMAP_AXIS,
+                )
+                .with_thumb_state(thumb_state);
+
+                (minimap_line_height, layout, content_offset)
+            }
+
+            MinimapSize::FixedMut => {
+                let vertical_overscroll = match EditorSettings::get_global(cx)
+                    .scroll_beyond_last_line
+                {
+                    ScrollBeyondLastLine::OnePage => editor_bounds.size.height - line_height,
+                    // ScrollBeyondLastLine::Off => Pixels(0.0),
+                    ScrollBeyondLastLine::Off => px(0.0),
+                    // .into(); //thumb size
+                    ScrollBeyondLastLine::VerticalScrollMargin => {
+                        (EditorSettings::get_global(cx).vertical_scroll_margin) as f32 * line_height
+                    }
+                };
+                // let scroll_height = scroll_range.height;
+                let scroll_height = scroll_range.height - vertical_overscroll;
+
+                // max_scroll_top += f64::from(vertical_overscroll);
+                let vertical_overscroll_lines = vertical_overscroll / line_height;
+
+                let minimap_line_height = line_height * minimap_height / scroll_height;
+                println!(
+                    "\nFixedMut: 
+                    minimap_line_height_raw:{minimap_line_height}",
+                );
+
+                // let minimap_line_height: Pixels =
+                //     (line_height * minimap_height / scroll_height).into();
+
+                let minimap_font_size: Pixels = minimap_line_height.max(1.).into();
+                let minimap_line_height: Pixels = minimap_line_height.into();
+
+                let viewport_size = (visible_editor_lines * f64::from(minimap_line_height)).into();
+                let scroll_range = (total_editor_lines * f64::from(minimap_line_height)).into();
+
+                let content_offset = 0f64;
+
+                // let minimap_editor = self.editor.read(cx).minimap().cloned()?;
+
+                //          minimap_editor.update(cx, |editor, cx| {
+                //     editor.set_scroll_position(point(0., 0.), window, cx);
+                //     // editor.text_style_refinement
+                //     editor.set_text_style_refinement(TextStyleRefinement {
+                //             font_size: Some(AbsoluteLength::Pixels(minimap_line_height)),
+                //         // font_size: Some(AbsoluteLength::Pixels(px(50.))),
+                //         font_weight: Some(MINIMAP_FONT_WEIGHT),
+                //         font_family: Some(MINIMAP_FONT_FAMILY),
+                //         ..Default::default()
+                //     });
+                // });
+
+                println!(
+                    "FixedMut: 
+                         vertical_overscroll:{vertical_overscroll},
+                    scroll_height: {scroll_height}, 
+                    vertical_overscroll_lines:{vertical_overscroll_lines},
+
+                    editor_bounds: {}, 
+                    scroll_range: {scroll_range}, 
+               
+                    minimap_height:{minimap_height}, 
+                    viewport_size:{viewport_size}, 
+                    minimap_font_size:{minimap_font_size}
+                    minimap_line_height:{minimap_line_height}",
+                    editor_bounds.size.height
+                );
+
+                // NO
+                minimap_editor.update(cx, |editor, cx| {
+                    editor.set_scroll_position(point(0., 0.), window, cx);
+
+                    //  let mut style_opt = editor.text_style_refinement.as_mut() ;
+                    if let Some(style) = editor.text_style_refinement.as_mut() {
+                        // style.font_size = Some(AbsoluteLength::Pixels(px(minimap_line_height)));
+                        style.font_size = Some(AbsoluteLength::Pixels(minimap_font_size));
+                        // style.font_size = Some(AbsoluteLength::Pixels(px(10.)));
+                        // style.line_height = Some(DefiniteLength::Fraction( minimap_line_height)); //requires test
+                        style.line_height = Some(DefiniteLength::Absolute(AbsoluteLength::Pixels(
+                            minimap_line_height,
+                        )));
+                        // style.font_size = Some(AbsoluteLength::Pixels(minimap_line_height));
+
+                        // editor.set_text_style_refinement(style);
+                    } else {
+                        editor.set_text_style_refinement(TextStyleRefinement {
+                            font_size: Some(AbsoluteLength::Pixels(minimap_line_height)),
+                            // font_size: Some(AbsoluteLength::Pixels(px(2.))),
+
+                            // font_weight: Some(MINIMAP_FONT_WEIGHT),
+                            // font_family: Some(MINIMAP_FONT_FAMILY),
+                            ..Default::default()
+                        });
+                    }
+                });
+
+                let layout = ScrollbarLayout::new(
+                    window.insert_hitbox(minimap_bounds, HitboxBehavior::Normal),
+                    viewport_size,
+                    scroll_range,
+                    minimap_line_height,
+                    // content_offset.along(axis),
+                    content_offset.into(), //TODO
+                    scroll_position,
+                    true,
+                    MINIMAP_AXIS,
+                )
+                .with_thumb_state(thumb_state);
+
+                (minimap_line_height, layout, 0.)
+            }
+
+            MinimapSize::FixedBoth => {
+                let vertical_overscroll = match EditorSettings::get_global(cx)
+                    .scroll_beyond_last_line
+                {
+                    ScrollBeyondLastLine::OnePage => editor_bounds.size.height - line_height,
+                    // ScrollBeyondLastLine::Off => Pixels(0.0),
+                    ScrollBeyondLastLine::Off => px(0.0),
+                    // .into(); //thumb size
+                    ScrollBeyondLastLine::VerticalScrollMargin => {
+                        (EditorSettings::get_global(cx).vertical_scroll_margin) as f32 * line_height
+                    }
+                };
+
+                let scroll_height = scroll_range.height - vertical_overscroll;
+
+                //    max_scroll_top+=(vertical_overscroll / 1.0) as f64;
+                max_scroll_top += f64::from(vertical_overscroll);
+
+                // let minimap_line_height: Pixels =
+                //     (line_height * minimap_height / scroll_height).into();
+                // editor_bounds.size.height
+
+                // let minimap_line_height: Pixels = (line_height * minimap_height / scroll_height)
+                //     .max(1.)
+                //     .into();
+
+                let minimap_line_height_factor = line_height * minimap_height / scroll_height;
+                println!(
+                    "\nFixedBoth: 
+                    minimap_line_height_factor:{minimap_line_height_factor}",
+                );
+
+                // let minimap_line_height: Pixels =
+                //     (line_height * minimap_height / scroll_height).into();
+
+                let minimap_font_size: Pixels = minimap_line_height_factor.max(1.).into();
+                let minimap_line_height: Pixels = minimap_line_height_factor.into();
+                let viewport_size = (visible_editor_lines * f64::from(minimap_line_height)).into();
+                let scroll_range = (total_editor_lines * f64::from(minimap_line_height)).into();
+
+                let content_offset = 0f64;
+                // works
+                // minimap_editor.update(cx, |editor, cx| {
+                //     editor.set_scroll_position(point(0., 0.), window, cx);
+                //     // editor.text_style_refinement
+                //     editor.set_text_style_refinement(TextStyleRefinement {
+                //         font_size: Some(AbsoluteLength::Pixels(minimap_line_height)),
+                //         // font_size: Some(AbsoluteLength::Pixels(px(50.))),
+                //         font_weight: Some(MINIMAP_FONT_WEIGHT),
+                //         font_family: Some(MINIMAP_FONT_FAMILY),
+                //         ..Default::default()
+                //     });
+                // });
+
+                println!(
+                    "nFixedBoth: 
+                         vertical_overscroll:{vertical_overscroll},
+                    scroll_height: {scroll_height}, 
+
+                    editor_bounds: {}, 
+                    scroll_range: {scroll_range}, 
+               
+                    minimap_height:{minimap_height}, 
+                    viewport_size:{viewport_size}, 
+                    minimap_font_size:{minimap_font_size}
+                    minimap_line_height:{minimap_line_height}",
+                    editor_bounds.size.height
+                );
+                // vertical_overscroll_lines:{vertical_overscroll_lines},
+
+                minimap_editor.update(cx, |editor, cx| {
+                    editor.set_scroll_position(point(0., 0.), window, cx);
+                    // editor.text_style_refinement
+                    editor.set_text_style_refinement(TextStyleRefinement {
+                        line_height: Some(DefiniteLength::Fraction(
+                            minimap_line_height_factor.min(1.),
+                        )), //TODO
+                        font_size: Some(AbsoluteLength::Pixels(minimap_font_size)),
+                        // font_size: Some(AbsoluteLength::Pixels(px(0.1))),
+                        font_weight: Some(MINIMAP_FONT_WEIGHT),
+                        font_family: Some(MINIMAP_FONT_FAMILY),
+                        ..Default::default()
+                    });
+                });
+
+                let layout = ScrollbarLayout::new(
+                    window.insert_hitbox(minimap_bounds, HitboxBehavior::Normal),
+                    viewport_size,
+                    scroll_range,
+                    line_height,
+                    // content_offset.along(axis),
+                    content_offset.into(), //TODO
+                    scroll_position,
+                    true,
+                    MINIMAP_AXIS,
+                )
+                .with_thumb_state(thumb_state);
+
+                (minimap_line_height, layout, 0.)
+            }
+
+            MinimapSize::Viz => {
+                let _vertical_overscroll =
+                    match EditorSettings::get_global(cx).scroll_beyond_last_line {
+                        ScrollBeyondLastLine::OnePage => editor_bounds.size.height,
+                        ScrollBeyondLastLine::Off => glyph_grid_cell.height,
+                        ScrollBeyondLastLine::VerticalScrollMargin => {
+                            (1.0 + EditorSettings::get_global(cx).vertical_scroll_margin) as f32
+                                * glyph_grid_cell.height
+                        }
+                    };
+                let scroll_height = scroll_range.height;
+
+                let minimap_line_height: Pixels =
+                    (line_height * minimap_height / scroll_height).into();
+
+                let visible_minimap_lines = (minimap_height / minimap_line_height) as f64;
+
+                // let minimap_scroll_top = MinimapLayout::calculate_minimap_top_offset(
+                //     total_editor_lines,
+                //     visible_editor_lines,
+                //     minimap_lines,
+                //     scroll_position,
+                // );
+                // let minimap_scroll_top = 0.;
+
+                // how far up to sccroll minmap editor
+                let minimap_scroll_top = MinimapLayout::calculate_minimap_top_offset(
+                    total_editor_lines,
+                    visible_editor_lines,
+                    visible_minimap_lines,
+                    scroll_position,
+                );
+
+                let layout = ScrollbarLayout::for_minimap(
+                    window.insert_hitbox(minimap_bounds, HitboxBehavior::Normal),
+                    visible_editor_lines,
+                    total_editor_lines,
+                    minimap_line_height,
+                    scroll_position,
+                    minimap_scroll_top,
+                    show_thumb,
+                )
+                .with_thumb_state(thumb_state);
+
+                minimap_editor.update(cx, |editor, cx| {
+                    editor.set_scroll_position(point(0., minimap_scroll_top), window, cx);
+                    editor.set_text_style_refinement(TextStyleRefinement {
+                        font_size: Some(AbsoluteLength::Pixels(minimap_line_height)),
+                        // font_size: Some(AbsoluteLength::Pixels(px(50.))),
+                        // font_weight: Some(MINIMAP_FONT_WEIGHT),
+                        // font_family: Some(MINIMAP_FONT_FAMILY),
+                        ..Default::default()
+                    });
+                });
+
+                (minimap_line_height, layout, minimap_scroll_top)
+            }
+            MinimapSize::VizPlus => {
+                //TODO something like ObjectFit::ScaleDown,
+
+                //todo RECALC FOR minimap
+                let vertical_overscroll =
+                    match EditorSettings::get_global(cx).scroll_beyond_last_line {
+                        ScrollBeyondLastLine::OnePage => editor_bounds.size.height,
+                        ScrollBeyondLastLine::Off => glyph_grid_cell.height,
+                        ScrollBeyondLastLine::VerticalScrollMargin => {
+                            (1.0 + EditorSettings::get_global(cx).vertical_scroll_margin) as f32
+                                * glyph_grid_cell.height
+                        }
+                    };
+                // let scroll_height = scroll_range.height;
+                // let scroll_height = scroll_range.height - vertical_overscroll;
+                let scroll_height = scroll_range.height + vertical_overscroll; // prob this one
+
+                let minimap_line_height: Pixels =
+                    // (line_height * minimap_height / scroll_height).into();
+                    ( minimap_height / scroll_height).max(1.).into();
+
+                // let viewport_size = visible_editor_lines * f64::from(minimap_line_height);
+                let viewport_size = (visible_editor_lines * f64::from(minimap_line_height)).into();
+                // let viewport_size = visible_editor_lines * minimap_line_height;
+                // let viewport_size: Pixels =
+                //     (editor_bounds.size.height * minimap_height / scroll_height).into();
+
+                // let scroll_range = total_editor_lines * minimap_line_height;
+                // let scroll_range = total_editor_lines * f64::from(minimap_line_height);
+                let scroll_range = (total_editor_lines * f64::from(minimap_line_height)).into();
+                // =minimap_height
+                // let scroll_range = minimap_height;
+
+                println!(
+                    "VizPlus: editor_bounds: {}, scroll_height: {scroll_height}, minimap_height:{minimap_height}, scroll_range: {scroll_range}, vertical_overscroll:{vertical_overscroll},viewport_size:{viewport_size}, minimap_line_height:{minimap_line_height}",
+                    editor_bounds.size.height
+                );
+
+                //    let mut style = minimap_editor.any_entity.text_style_refinement;
+                //         style.font_size = Some(AbsoluteLength::Pixels(px(minimap_line_height)));
+                minimap_editor.update(cx, |editor, cx| {
+                    editor.set_scroll_position(point(0., 0.), window, cx);
+
+                    //  let mut style_opt = editor.text_style_refinement.as_mut() ;
+                    if let Some(style) = editor.text_style_refinement.as_mut() {
+                        // style.font_size = Some(AbsoluteLength::Pixels(px(minimap_line_height)));
+                        style.font_size = Some(AbsoluteLength::Pixels(minimap_line_height));
+                        // style.font_size = Some(AbsoluteLength::Pixels(px(5.)));
+
+                        // editor.set_text_style_refinement(style);
+                    } else {
+                        editor.set_text_style_refinement(TextStyleRefinement {
+                            font_size: Some(AbsoluteLength::Pixels(minimap_line_height)),
+                            // font_size: Some(AbsoluteLength::Pixels(px(1.))),
+
+                            // font_weight: Some(MINIMAP_FONT_WEIGHT),
+                            // font_family: Some(MINIMAP_FONT_FAMILY),
+                            ..Default::default()
+                        });
+                    }
+                });
+
+                // AbsoluteLength::Pixels(px(minimap_line_height))
+                let content_offset = 0f64;
+
+                let layout = ScrollbarLayout::new(
+                    window.insert_hitbox(minimap_bounds, HitboxBehavior::Normal),
+                    viewport_size,
+                    scroll_range,
+                    minimap_line_height,
+                    // content_offset.along(axis),
+                    content_offset.into(), //TODO
+                    scroll_position,
+                    true,
+                    MINIMAP_AXIS,
+                )
+                .with_thumb_state(thumb_state);
+
+                (minimap_line_height, layout, 0.)
+            }
+            MinimapSize::Vizminus => {
+                let vertical_overscroll =
+                    match EditorSettings::get_global(cx).scroll_beyond_last_line {
+                        ScrollBeyondLastLine::OnePage => editor_bounds.size.height,
+                        ScrollBeyondLastLine::Off => glyph_grid_cell.height,
+                        ScrollBeyondLastLine::VerticalScrollMargin => {
+                            (1.0 + EditorSettings::get_global(cx).vertical_scroll_margin) as f32
+                                * glyph_grid_cell.height
+                        }
+                    };
+                let scroll_height = scroll_range.height - vertical_overscroll;
+
+                let minimap_line_height: Pixels =
+                    (line_height * minimap_height / scroll_height).into();
+
+                let minimap_lines = (minimap_height / minimap_line_height) as f64;
+
+                // let minimap_scroll_top = MinimapLayout::calculate_minimap_top_offset(
+                //     total_editor_lines,
+                //     visible_editor_lines,
+                //     minimap_lines,
+                //     scroll_position,
+                // );
+                let minimap_scroll_top = 0.;
+
+                let layout = ScrollbarLayout::for_minimap(
+                    window.insert_hitbox(minimap_bounds, HitboxBehavior::Normal),
+                    visible_editor_lines,
+                    total_editor_lines,
+                    minimap_line_height,
+                    scroll_position,
+                    minimap_scroll_top,
+                    show_thumb,
+                )
+                .with_thumb_state(thumb_state);
+
+                // //works
+                // minimap_editor.update(cx, |editor, cx| {
+                //     editor.set_scroll_position(point(0., minimap_scroll_top), window, cx);
+                //     if let Some(style) = editor.text_style_refinement.as_mut() {
+                //         // style.font_size = Some(AbsoluteLength::Pixels(px(minimap_line_height)));
+                //         style.font_size = Some(AbsoluteLength::Pixels(minimap_line_height));
+                //         // style.font_size= Some(AbsoluteLength::Pixels(px(10.)));
+
+                //         // editor.set_text_style_refinement(style);
+                //     } else {
+                //         editor.set_text_style_refinement(TextStyleRefinement {
+                //             font_size: Some(AbsoluteLength::Pixels(minimap_line_height)),
+                //             // font_size: Some(AbsoluteLength::Pixels(px(2.))),
+                //             font_weight: Some(MINIMAP_FONT_WEIGHT),
+                //             font_family: Some(MINIMAP_FONT_FAMILY),
+                //             ..Default::default()
+                //         });
+                //     }
+                // });
+
+                minimap_editor.update(cx, |editor, cx| {
+                    editor.set_scroll_position(point(0., minimap_scroll_top), window, cx);
+                    if let Some(style) = editor.text_style_refinement.as_mut() {
+                        // style.font_size = Some(AbsoluteLength::Pixels(px(minimap_line_height)));
+                        // style.font_size = Some(AbsoluteLength::Pixels(minimap_line_height));
+                        style.font_size = Some(AbsoluteLength::Pixels(px(0.1)));
+
+                        // editor.set_text_style_refinement(style);
+                    } else {
+                        editor.set_text_style_refinement(TextStyleRefinement {
+                            font_size: Some(AbsoluteLength::Pixels(minimap_line_height)),
+                            // font_size: Some(AbsoluteLength::Pixels(px(2.))),
+                            font_weight: Some(MINIMAP_FONT_WEIGHT),
+                            font_family: Some(MINIMAP_FONT_FAMILY),
+                            ..Default::default()
+                        });
+                    }
+                });
+                (minimap_line_height, layout, minimap_scroll_top)
+            }
+            MinimapSize::Scroll => {
+                let minimap_line_height = self.get_minimap_line_height(
+                    minimap_editor
+                        .read(cx)
+                        .text_style_refinement
+                        .as_ref()
+                        .and_then(|refinement| refinement.font_size)
+                        .unwrap_or(MINIMAP_FONT_SIZE),
+                    window,
+                    cx,
+                );
+
+                let visible_minimap_lines = (minimap_height / minimap_line_height) as f64;
+
+                let minimap_scroll_top = MinimapLayout::calculate_minimap_top_offset(
+                    total_editor_lines,
+                    visible_editor_lines,
+                    visible_minimap_lines,
+                    scroll_position,
+                );
+                println!(
+                    "Scroll: minimap_height:{minimap_height}, 
+                        minimap_scroll_top:{minimap_scroll_top},visible_minimap_lines:{visible_minimap_lines}, 
+                        minimap_line_height:{minimap_line_height}"
+                );
+
+                let layout = ScrollbarLayout::for_minimap(
+                    window.insert_hitbox(minimap_bounds, HitboxBehavior::Normal),
+                    visible_editor_lines,
+                    total_editor_lines,
+                    minimap_line_height,
+                    scroll_position,
+                    minimap_scroll_top,
+                    show_thumb,
+                )
+                .with_thumb_state(thumb_state);
+
+                minimap_editor.update(cx, |editor, cx| {
+                    editor.set_scroll_position(point(0., minimap_scroll_top), window, cx)
+                });
+                (minimap_line_height, layout, minimap_scroll_top)
+            }
+        };
+
+        println!(
+            "editor_bounds: {}, scroll_height: {}, 
+                    minimap_height:{minimap_height}, minimap_line_height:{minimap_line_height},
+                visible_editor_lines: {visible_editor_lines}, total_editor_lines: {total_editor_lines},max_scroll_top: {max_scroll_top},
+                minimap_scroll_top: {minimap_scroll_top},
+                    line_height: {line_height}",
+            editor_bounds.size.height, scroll_range.height
+        );
+
+        //TODO try this
+        //   let tab_invisible = window.text_system().shape_line(
+        //             tab_char,
+        //             invisible_symbol_font_size,
+        //             &[TextRun {
+        //                 len: tab_len,
+        //                 font: self.style.text.font(),
+        //                 color: cx.theme().colors().editor_invisible,
+        //                 ..Default::default()
+        //             }],
+        //             Some(2),
+        //         );
 
         // Required for the drop shadow to be visible
         const PADDING_OFFSET: Pixels = px(4.);
@@ -1967,7 +3246,7 @@ impl EditorElement {
             thumb_border_style: minimap_settings.thumb_border,
             minimap_line_height,
             minimap_scroll_top,
-            max_scroll_top: total_editor_lines,
+            max_scroll_top,
         })
     }
 
@@ -1979,7 +3258,25 @@ impl EditorElement {
     ) -> Pixels {
         let rem_size = self.rem_size(cx).unwrap_or(window.rem_size());
         let mut text_style = self.style.text.clone();
+        // let mut text_style = self.style.text;
+        //TODO
+
+        // pub(crate) const MINIMAP_FONT_SIZE: AbsoluteLength = AbsoluteLength::Pixels(px(2.));
+        //       minimap.scroll_manager.clone_state(&self.scroll_manager);
+        // minimap.set_text_style_refinement(TextStyleRefinement {
+        //     font_size: Some(MINIMAP_FONT_SIZE),
+        //     font_weight: Some(MINIMAP_FONT_WEIGHT),
+        //     font_family: Some(MINIMAP_FONT_FAMILY),
+        //     ..Default::default()
+        // });
         text_style.font_size = font_size;
+        println!(
+            "get_minimap_line_height:
+            rem_size:{rem_size}
+            line_height_in_pixels:{}, ine_height:{}",
+            text_style.line_height_in_pixels(rem_size),
+            text_style.line_height
+        );
         text_style.line_height_in_pixels(rem_size)
     }
 
@@ -1997,16 +3294,17 @@ impl EditorElement {
             return None;
         }
 
-        let minimap_font_size = self.editor.read_with(cx, |editor, cx| {
-            editor.minimap().map(|minimap_editor| {
-                minimap_editor
-                    .read(cx)
-                    .text_style_refinement
-                    .as_ref()
-                    .and_then(|refinement| refinement.font_size)
-                    .unwrap_or(MINIMAP_FONT_SIZE)
-            })
-        })?;
+        // let minimap_font_size = self.editor.read_with(cx, |editor, cx| {
+        //     editor.minimap().map(|minimap_editor| {
+        //         minimap_editor
+        //             .read(cx)
+        //             .text_style_refinement
+        //             .as_ref()
+        //             .and_then(|refinement| refinement.font_size)
+        //             .unwrap_or(MINIMAP_FONT_SIZE)
+        //     })
+        // })?;
+        let minimap_font_size = MINIMAP_FONT_SIZE;
 
         let minimap_em_width = em_width * (minimap_font_size.to_pixels(rem_size) / font_size);
 
@@ -7289,7 +8587,7 @@ impl EditorElement {
                 ScrollPixelOffset::from(minimap_hitbox.size.height) / layout.max_scroll_top,
             )
             .min(layout.minimap_line_height);
-
+            // TODO
             let mut mouse_position = window.mouse_position();
 
             window.on_mouse_event({
@@ -8698,7 +9996,14 @@ impl EditorElement {
                             // We then determine the delta between a single rem and the default font
                             // size scale.
                             let default_font_size_delta = 1. - default_font_size_scale;
-
+                            //  TODO
+                            //                println!(
+                            //                     "EditorElement.rem_size
+                            // default_font_size_scale:{}, default_font_size_delta:{}, rem_size_scale:{}",
+                            //                     default_font_size_scale,
+                            //                     default_font_size_delta,
+                            //                     1. + default_font_size_delta
+                            //                 );
                             // Finally, we add this delta to 1rem to get the scale factor that
                             // should be used to scale up the UI.
                             1. + default_font_size_delta
@@ -11394,17 +12699,19 @@ fn compute_auto_height_layout(
 
 #[cfg(test)]
 mod tests {
+    use std::num::NonZeroU32;
+
+    use gpui::{TestAppContext, VisualTestContext};
+    use language::{Buffer, language_settings, tree_sitter_python};
+    use log::info;
+    use util::test::sample_text;
+
     use super::*;
     use crate::{
         Editor, MultiBuffer, SelectionEffects,
         display_map::{BlockPlacement, BlockProperties},
         editor_tests::{init_test, update_test_language_settings},
     };
-    use gpui::{TestAppContext, VisualTestContext};
-    use language::{Buffer, language_settings, tree_sitter_python};
-    use log::info;
-    use std::num::NonZeroU32;
-    use util::test::sample_text;
 
     #[gpui::test]
     async fn test_soft_wrap_editor_width_auto_height_editor(cx: &mut TestAppContext) {

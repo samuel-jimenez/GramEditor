@@ -1,6 +1,17 @@
 mod components;
 mod page_data;
 
+use std::{
+    any::{Any, TypeId, type_name},
+    cell::RefCell,
+    collections::{HashMap, HashSet},
+    num::{NonZero, NonZeroU32},
+    ops::Range,
+    rc::Rc,
+    sync::{Arc, LazyLock, RwLock},
+    time::Duration,
+};
+
 use anyhow::Result;
 use app_actions::{OpenProjectSettings, OpenSettings, OpenSettingsAt};
 use editor::{Editor, EditorEvent};
@@ -17,16 +28,6 @@ use release_channel::ReleaseChannel;
 use schemars::JsonSchema;
 use serde::Deserialize;
 use settings::{Settings, SettingsContent, SettingsStore, initial_project_settings_content};
-use std::{
-    any::{Any, TypeId, type_name},
-    cell::RefCell,
-    collections::{HashMap, HashSet},
-    num::{NonZero, NonZeroU32},
-    ops::Range,
-    rc::Rc,
-    sync::{Arc, LazyLock, RwLock},
-    time::Duration,
-};
 use theme::ThemeSettings;
 use title_bar::platform_title_bar::PlatformTitleBar;
 use ui::{
@@ -498,6 +499,8 @@ fn init_renderers(cx: &mut App) {
         .add_basic_renderer::<settings::DisplayIn>(render_dropdown)
         .add_basic_renderer::<settings::MinimapThumb>(render_dropdown)
         .add_basic_renderer::<settings::MinimapThumbBorder>(render_dropdown)
+        .add_basic_renderer::<settings::MinimapSize>(render_dropdown)
+        .add_basic_renderer::<settings::Foo>(render_editable_number_field)     // TEST   
         .add_basic_renderer::<settings::SteppingGranularity>(render_dropdown)
         .add_basic_renderer::<settings::ImageFileSizeUnit>(render_dropdown)
         .add_basic_renderer::<settings::StatusStyle>(render_dropdown)
@@ -524,6 +527,8 @@ fn init_renderers(cx: &mut App) {
         // please semicolon stay on next line
         ;
 }
+
+
 
 pub fn open_settings_editor(
     _workspace: &mut Workspace,
