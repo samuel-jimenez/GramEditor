@@ -25,7 +25,8 @@ use git::{
     status::GitSummary,
 };
 use gpui::{
-    App, AppContext as _, AsyncApp, BackgroundExecutor, Context, Entity, EventEmitter, Task,
+    App, AppContext as _, AsyncApp, BackgroundExecutor, Context, Entity, EventEmitter, Priority,
+    Task,
 };
 use ignore::IgnoreStack;
 use language::DiskState;
@@ -251,7 +252,6 @@ pub struct LocalSnapshot {
     /// The file handle of the worktree root
     /// (so we can find it after it's been moved)
     root_file_handle: Option<Arc<dyn fs::FileHandle>>,
-    executor: BackgroundExecutor,
 }
 
 struct BackgroundScannerState {
@@ -393,7 +393,7 @@ impl Worktree {
             None
         };
 
-        cx.new(move |cx: &mut Context<Worktree>| {
+        Ok(cx.new(move |cx: &mut Context<Worktree>| {
             let mut snapshot = LocalSnapshot {
                 ignores_by_parent_abs_path: Default::default(),
                 global_gitignore: Default::default(),
@@ -411,7 +411,6 @@ impl Worktree {
                     PathStyle::local(),
                 ),
                 root_file_handle,
-                executor: cx.background_executor().clone(),
             };
 
             let worktree_id = snapshot.id();
@@ -450,7 +449,8 @@ impl Worktree {
                         entry.is_hidden = settings.is_path_hidden(path);
                     }
                 }
-                snapshot.insert_entry(entry, fs.as_ref());
+                cx.foreground_executor()
+                    .block_on(snapshot.insert_entry(entry, fs.as_ref()));
             }
 
             let (scan_requests_tx, scan_requests_rx) = channel::unbounded();
@@ -472,7 +472,7 @@ impl Worktree {
             };
             worktree.start_background_scanner(scan_requests_rx, path_prefixes_to_scan_rx, cx);
             Worktree::Local(worktree)
-        })
+        }))
     }
 
     pub fn remote(
@@ -925,7 +925,7 @@ impl Worktree {
                     cx,
                 ),
             ))
-        })??;
+        })?;
         Ok(proto::ProjectEntryResponse {
             entry: match &entry.await? {
                 CreatedEntry::Included(entry) => Some(entry.into()),
@@ -949,8 +949,9 @@ impl Worktree {
                     cx,
                 ),
             )
-        })?;
-        task.context("invalid entry")?.await?;
+        });
+        task.ok_or_else(|| anyhow::anyhow!("invalid entry"))?
+            .await?;
         Ok(proto::ProjectEntryResponse {
             entry: None,
             worktree_scan_id: scan_id as u64,
@@ -964,9 +965,10 @@ impl Worktree {
     ) -> Result<proto::ExpandProjectEntryResponse> {
         let task = this.update(&mut cx, |this, cx| {
             this.expand_entry(ProjectEntryId::from_proto(request.entry_id), cx)
-        })?;
-        task.context("no such entry")?.await?;
-        let scan_id = this.read_with(&cx, |this, _| this.scan_id())?;
+        });
+        task.ok_or_else(|| anyhow::anyhow!("no such entry"))?
+            .await?;
+        let scan_id = this.read_with(&cx, |this, _| this.scan_id());
         Ok(proto::ExpandProjectEntryResponse {
             worktree_scan_id: scan_id as u64,
         })
@@ -979,9 +981,10 @@ impl Worktree {
     ) -> Result<proto::ExpandAllForProjectEntryResponse> {
         let task = this.update(&mut cx, |this, cx| {
             this.expand_all_for_entry(ProjectEntryId::from_proto(request.entry_id), cx)
-        })?;
-        task.context("no such entry")?.await?;
-        let scan_id = this.read_with(&cx, |this, _| this.scan_id())?;
+        });
+        task.ok_or_else(|| anyhow::anyhow!("no such entry"))?
+            .await?;
+        let scan_id = this.read_with(&cx, |this, _| this.scan_id());
         Ok(proto::ExpandAllForProjectEntryResponse {
             worktree_scan_id: scan_id as u64,
         })
@@ -1128,8 +1131,7 @@ impl LocalWorktree {
                             this.update_abs_path_and_refresh(new_path, cx);
                         }
                     }
-                })
-                .ok();
+                });
             }
         });
         self._background_scanner_tasks = vec![background_scanner, scan_state_updater];
@@ -1696,7 +1698,7 @@ impl LocalWorktree {
                             .refresh_entries_for_paths(paths_to_refresh.clone()),
                     )
                 },
-            )??;
+            )?;
 
             cx.background_spawn(async move {
                 refresh.next().await;
@@ -1706,12 +1708,12 @@ impl LocalWorktree {
             .log_err();
 
             let this = this.upgrade().with_context(|| "Dropped worktree")?;
-            cx.read_entity(&this, |this, _| {
+            Ok(cx.read_entity(&this, |this, _| {
                 paths_to_refresh
                     .iter()
                     .filter_map(|path| Some(this.entry_for_path(path)?.id))
                     .collect()
-            })
+            }))
         })
     }
 
@@ -2555,11 +2557,11 @@ impl LocalSnapshot {
         }
     }
 
-    fn insert_entry(&mut self, mut entry: Entry, fs: &dyn Fs) -> Entry {
+    async fn insert_entry(&mut self, mut entry: Entry, fs: &dyn Fs) -> Entry {
         log::trace!("insert entry {:?}", entry.path);
         if entry.is_file() && entry.path.file_name() == Some(&GITIGNORE) {
             let abs_path = self.absolutize(&entry.path);
-            match self.executor.block(build_gitignore(&abs_path, fs)) {
+            match build_gitignore(&abs_path, fs).await {
                 Ok(ignore) => {
                     self.ignores_by_parent_abs_path
                         .insert(abs_path.parent().unwrap().into(), (Arc::new(ignore), true));
@@ -2853,7 +2855,7 @@ impl BackgroundScannerState {
     }
 
     async fn insert_entry(&mut self, entry: Entry, fs: &dyn Fs, watcher: &dyn Watcher) -> Entry {
-        let entry = self.snapshot.insert_entry(entry, fs);
+        let entry = self.snapshot.insert_entry(entry, fs).await;
         if entry.path.file_name() == Some(&DOT_GIT) {
             self.insert_git_repository(entry.path.clone(), fs, watcher)
                 .await;
@@ -4278,7 +4280,7 @@ impl BackgroundScanner {
 
         let progress_update_count = AtomicUsize::new(0);
         self.executor
-            .scoped(|scope| {
+            .scoped_priority(Priority::Low, |scope| {
                 for _ in 0..self.executor.num_cpus() {
                     scope.spawn(async {
                         let mut last_progress_update_count = 0;
@@ -4806,39 +4808,40 @@ impl BackgroundScanner {
 
     async fn ignores_needing_update(&self) -> Vec<Arc<Path>> {
         let mut ignores_to_update = Vec::new();
+        let mut excludes_to_load: Vec<(Arc<Path>, PathBuf)> = Vec::new();
 
+        // First pass: collect updates and drop stale entries without awaiting.
         {
             let snapshot = &mut self.state.lock().await.snapshot;
             let abs_path = snapshot.abs_path.clone();
+            let mut repo_exclude_keys_to_remove: Vec<Arc<Path>> = Vec::new();
 
-            snapshot.repo_exclude_by_work_dir_abs_path.retain(
-                |work_dir_abs_path, (exclude, needs_update)| {
-                    if *needs_update {
-                        *needs_update = false;
-                        ignores_to_update.push(work_dir_abs_path.clone());
+            for (work_dir_abs_path, (_, needs_update)) in
+                snapshot.repo_exclude_by_work_dir_abs_path.iter_mut()
+            {
+                let repository = snapshot
+                    .git_repositories
+                    .iter()
+                    .find(|(_, repo)| &repo.work_directory_abs_path == work_dir_abs_path);
 
-                        if let Some((_, repository)) = snapshot
-                            .git_repositories
-                            .iter()
-                            .find(|(_, repo)| &repo.work_directory_abs_path == work_dir_abs_path)
-                        {
-                            let exclude_abs_path =
-                                repository.common_dir_abs_path.join(REPO_EXCLUDE);
-                            if let Ok(current_exclude) = self
-                                .executor
-                                .block(build_gitignore(&exclude_abs_path, self.fs.as_ref()))
-                            {
-                                *exclude = Arc::new(current_exclude);
-                            }
-                        }
+                if *needs_update {
+                    *needs_update = false;
+                    ignores_to_update.push(work_dir_abs_path.clone());
+
+                    if let Some((_, repository)) = repository {
+                        let exclude_abs_path = repository.common_dir_abs_path.join(REPO_EXCLUDE);
+                        excludes_to_load.push((work_dir_abs_path.clone(), exclude_abs_path));
                     }
+                }
 
-                    snapshot
-                        .git_repositories
-                        .iter()
-                        .any(|(_, repo)| &repo.work_directory_abs_path == work_dir_abs_path)
-                },
-            );
+                if repository.is_none() {
+                    repo_exclude_keys_to_remove.push(work_dir_abs_path.clone());
+                }
+            }
+
+            for key in repo_exclude_keys_to_remove {
+                snapshot.repo_exclude_by_work_dir_abs_path.remove(&key);
+            }
 
             snapshot
                 .ignores_by_parent_abs_path
@@ -4861,6 +4864,29 @@ impl BackgroundScanner {
                     }
                     true
                 });
+        }
+
+        // Load gitignores asynchronously (outside the lock)
+        let mut loaded_excludes: Vec<(Arc<Path>, Arc<Gitignore>)> = Vec::new();
+        for (work_dir_abs_path, exclude_abs_path) in excludes_to_load {
+            if let Ok(current_exclude) = build_gitignore(&exclude_abs_path, self.fs.as_ref()).await
+            {
+                loaded_excludes.push((work_dir_abs_path, Arc::new(current_exclude)));
+            }
+        }
+
+        // Second pass: apply updates.
+        if !loaded_excludes.is_empty() {
+            let snapshot = &mut self.state.lock().await.snapshot;
+
+            for (work_dir_abs_path, exclude) in loaded_excludes {
+                if let Some((existing_exclude, _)) = snapshot
+                    .repo_exclude_by_work_dir_abs_path
+                    .get_mut(&work_dir_abs_path)
+                {
+                    *existing_exclude = exclude;
+                }
+            }
         }
 
         ignores_to_update
@@ -5090,7 +5116,7 @@ impl BackgroundScanner {
             return self.executor.simulate_random_delay().await;
         }
 
-        smol::Timer::after(FS_WATCH_LATENCY).await;
+        self.executor.timer(FS_WATCH_LATENCY).await
     }
 
     fn is_path_private(&self, path: &RelPath) -> bool {
@@ -5350,29 +5376,47 @@ impl WorktreeModelHandle for Entity<Worktree> {
         });
 
         async move {
+            // Subscribe to events BEFORE creating the file to avoid race condition
+            // where events fire before subscription is set up
+            let mut events = cx.events(&tree);
+
             fs.create_file(&root_path.join(file_name), Default::default())
                 .await
                 .unwrap();
 
-            let mut events = cx.events(&tree);
-            while events.next().await.is_some() {
-                if tree.read_with(cx, |tree, _| {
+            // Check if condition is already met before waiting for events
+            let file_exists = || {
+                tree.read_with(cx, |tree, _| {
                     tree.entry_for_path(RelPath::unix(file_name).unwrap())
                         .is_some()
-                }) {
-                    break;
+                })
+            };
+
+            // Use select to avoid blocking indefinitely if events are delayed
+            while !file_exists() {
+                futures::select_biased! {
+                    _ = events.next() => {}
+                    _ = futures::FutureExt::fuse(cx.background_executor.timer(std::time::Duration::from_millis(10))) => {}
                 }
             }
 
             fs.remove_file(&root_path.join(file_name), Default::default())
                 .await
                 .unwrap();
-            while events.next().await.is_some() {
-                if tree.read_with(cx, |tree, _| {
+
+            // Check if condition is already met before waiting for events
+            let file_gone = || {
+                tree.read_with(cx, |tree, _| {
                     tree.entry_for_path(RelPath::unix(file_name).unwrap())
                         .is_none()
-                }) {
-                    break;
+                })
+            };
+
+            // Use select to avoid blocking indefinitely if events are delayed
+            while !file_gone() {
+                futures::select_biased! {
+                    _ = events.next() => {}
+                    _ = futures::FutureExt::fuse(cx.background_executor.timer(std::time::Duration::from_millis(10))) => {}
                 }
             }
 
@@ -5428,14 +5472,19 @@ impl WorktreeModelHandle for Entity<Worktree> {
         };
 
         async move {
+            // Subscribe to events BEFORE creating the file to avoid race condition
+            // where events fire before subscription is set up
+            let mut events = cx.events(&tree);
+
             fs.create_file(&root_path.join(file_name), Default::default())
                 .await
                 .unwrap();
 
-            let mut events = cx.events(&tree);
-            while events.next().await.is_some() {
-                if tree.update(cx, |tree, _| scan_id_increased(tree, &mut git_dir_scan_id)) {
-                    break;
+            // Use select to avoid blocking indefinitely if events are delayed
+            while !tree.update(cx, |tree, _| scan_id_increased(tree, &mut git_dir_scan_id)) {
+                futures::select_biased! {
+                    _ = events.next() => {}
+                    _ = futures::FutureExt::fuse(cx.background_executor.timer(std::time::Duration::from_millis(10))) => {}
                 }
             }
 
@@ -5443,9 +5492,11 @@ impl WorktreeModelHandle for Entity<Worktree> {
                 .await
                 .unwrap();
 
-            while events.next().await.is_some() {
-                if tree.update(cx, |tree, _| scan_id_increased(tree, &mut git_dir_scan_id)) {
-                    break;
+            // Use select to avoid blocking indefinitely if events are delayed
+            while !tree.update(cx, |tree, _| scan_id_increased(tree, &mut git_dir_scan_id)) {
+                futures::select_biased! {
+                    _ = events.next() => {}
+                    _ = futures::FutureExt::fuse(cx.background_executor.timer(std::time::Duration::from_millis(10))) => {}
                 }
             }
 

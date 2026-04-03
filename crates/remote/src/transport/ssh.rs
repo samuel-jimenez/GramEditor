@@ -30,7 +30,8 @@ use tempfile::TempDir;
 use util::{
     paths::{PathStyle, RemotePathBuf},
     rel_path::RelPath,
-    shell::ShellKind,
+    shell::{Shell, ShellKind},
+    shell_builder::ShellBuilder,
 };
 
 pub(crate) struct SshRemoteConnection {
@@ -470,7 +471,8 @@ impl SshRemoteConnection {
         });
 
         let mut askpass =
-            askpass::AskPassSession::new(cx.background_executor(), askpass_delegate).await?;
+            askpass::AskPassSession::new(cx.background_executor().clone(), askpass_delegate)
+                .await?;
 
         delegate.set_status(Some("Connecting"), cx);
 
@@ -572,7 +574,7 @@ impl SshRemoteConnection {
         };
 
         let (release_channel, version) =
-            cx.update(|cx| (ReleaseChannel::global(cx), AppVersion::global(cx)))?;
+            cx.update(|cx| (ReleaseChannel::global(cx), AppVersion::global(cx)));
         this.remote_binary_path = Some(
             this.ensure_server_binary(&delegate, release_channel, version, cx)
                 .await?,
@@ -1285,6 +1287,8 @@ fn build_command(
     } else {
         write!(exec, "{ssh_shell} -l")?;
     };
+    let (command, command_args) = ShellBuilder::new(&Shell::Program(ssh_shell.to_owned()), false)
+        .build(Some(exec.clone()), &[]);
 
     let mut args = Vec::new();
     args.extend(ssh_args);
@@ -1298,7 +1302,9 @@ fn build_command(
     // the connection terminates with -t (pseudo-terminal allocation)
     args.push("-q".into());
     args.push("-t".into());
-    args.push(exec);
+    args.push(command);
+    args.extend(command_args);
+
     Ok(CommandTemplate {
         program: "ssh".into(),
         args,
@@ -1338,6 +1344,9 @@ mod tests {
                 "2222",
                 "-q",
                 "-t",
+                "/bin/fish",
+                "-i",
+                "-c",
                 "cd \"$HOME/work\" && exec env INPUT_VA=val remote_program arg1 arg2"
             ]
         );
@@ -1371,6 +1380,9 @@ mod tests {
                 "1:foo:2",
                 "-q",
                 "-t",
+                "/bin/fish",
+                "-i",
+                "-c",
                 "cd && exec env INPUT_VA=val /bin/fish -l"
             ]
         );

@@ -512,7 +512,7 @@ pub fn connect(
 
     cx.spawn(async move |cx| {
         let connection = remote::connect(connection_options, delegate.clone(), cx).await?;
-        cx.update(|cx| remote::RemoteClient::new(unique_identifier, connection, rx, delegate, cx))?
+        cx.update(|cx| remote::RemoteClient::new(unique_identifier, connection, rx, delegate, cx))
             .await
     })
 }
@@ -532,12 +532,12 @@ pub async fn open_remote_project(
             .update(|cx| {
                 // todo: These paths are wrong they may have column and line information
                 workspace::remote_workspace_position_from_db(connection_options.clone(), &paths, cx)
-            })?
+            })
             .await
             .context("fetching ssh workspace position from db")?;
 
         let mut options =
-            cx.update(|cx| (app_state.build_window_options)(workspace_position.display, cx))?;
+            cx.update(|cx| (app_state.build_window_options)(workspace_position.display, cx));
         options.window_bounds = workspace_position.window_bounds;
 
         cx.open_window(options, |window, cx| {
@@ -652,7 +652,7 @@ pub async fn open_remote_project(
                     paths.clone(),
                     cx,
                 )
-            })?
+            })
             .await;
 
         window

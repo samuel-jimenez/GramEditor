@@ -21,7 +21,6 @@ default = ["font-kit", "wayland", "x11", "windows-manifest"]
 test-support = [
     "leak-detection",
     "collections/test-support",
-    "rand",
     "util/test-support",
     "http_client/test-support",
     "wayland",
@@ -89,10 +88,12 @@ num_cpus = "1.13"
 parking = "2.0.0"
 parking_lot.workspace = true
 postage.workspace = true
+chrono.workspace = true
 profiling.workspace = true
-rand = { optional = true, workspace = true }
+rand.workspace = true
 raw-window-handle = "0.6"
 refineable.workspace = true
+scheduler.workspace = true
 resvg = { version = "0.45.0", default-features = false, features = [
     "text",
     "system-fonts",
@@ -139,6 +140,7 @@ media.workspace = true
 objc.workspace = true
 objc2 = { version = "0.6", optional = true }
 objc2-metal = { version = "0.3", optional = true }
+mach2.workspace = true
 #TODO: replace with "objc2"
 metal.workspace = true
 
@@ -147,7 +149,6 @@ pathfinder_geometry = "0.5"
 
 [target.'cfg(any(target_os = "linux", target_os = "freebsd"))'.dependencies]
 # Always used
-flume = "0.11"
 oo7 = { version = "0.5.0", default-features = false, features = [
     "async-std",
     "native_crypto",
@@ -206,7 +207,6 @@ xim = { git = "https://github.com/zed-industries/xim-rs.git", rev = "16f35a2c881
 x11-clipboard = { version = "0.9.3", optional = true }
 
 [target.'cfg(target_os = "windows")'.dependencies]
-flume = "0.11"
 rand.workspace = true
 windows.workspace = true
 windows-core.workspace = true
@@ -222,6 +222,7 @@ lyon = { version = "1.0", features = ["extra"] }
 pretty_assertions.workspace = true
 rand.workspace = true
 reqwest_client = { workspace = true, features = ["test-support"] }
+scheduler = { workspace = true, features = ["test-support"] }
 unicode-segmentation.workspace = true
 util = { workspace = true, features = ["test-support"] }
 

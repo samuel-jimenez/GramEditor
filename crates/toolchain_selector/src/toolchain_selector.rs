@@ -199,7 +199,7 @@ impl AddToolchainState {
                 let toolchain = project
                     .update(cx, |this, cx| {
                         this.resolve_toolchain(path.clone(), language_name, cx)
-                    })?
+                    })
                     .await;
                 let Ok(toolchain) = toolchain else {
                     // Go back to the path input state
@@ -232,7 +232,7 @@ impl AddToolchainState {
                 };
                 let resolved_toolchain_path = project.read_with(cx, |this, cx| {
                     this.find_project_path(&toolchain.path.as_ref(), cx)
-                })?;
+                });
 
                 // Suggest a default scope based on the applicability.
                 let scope = if let Some(project_path) = resolved_toolchain_path {
@@ -594,7 +594,7 @@ impl ToolchainSelector {
                         language_name.clone(),
                         cx,
                     )
-                })?
+                })
                 .await;
             workspace
                 .update_in(cx, |this, window, cx| {
@@ -769,7 +769,6 @@ impl ToolchainSelectorDelegate {
                     .read_with(cx, |this, _| {
                         Project::toolchain_metadata(this.languages().clone(), language_name.clone())
                     })
-                    .ok()?
                     .await?;
                 let relative_path = this
                     .update(cx, |this, cx| {
@@ -798,7 +797,6 @@ impl ToolchainSelectorDelegate {
                             cx,
                         )
                     })
-                    .ok()?
                     .await?;
                 let pretty_path = {
                     if relative_path.is_empty() {

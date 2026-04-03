@@ -244,7 +244,7 @@ impl LspAdapter for TyLspAdapter {
             .update(|cx| {
                 language_server_settings(delegate.as_ref(), &self.name(), cx)
                     .and_then(|s| s.settings.clone())
-            })?
+            })
             .unwrap_or_else(|| json!({}));
         if let Some(toolchain) = toolchain.and_then(|toolchain| {
             serde_json::from_value::<PythonToolchainData>(toolchain.as_json).ok()
@@ -536,7 +536,7 @@ impl LspAdapter for PyrightLspAdapter {
         _: Option<Uri>,
         cx: &mut AsyncApp,
     ) -> Result<Value> {
-        cx.update(move |cx| {
+        Ok(cx.update(move |cx| {
             let mut user_settings =
                 language_server_settings(adapter.as_ref(), &Self::SERVER_NAME, cx)
                     .and_then(|s| s.settings.clone())
@@ -598,7 +598,7 @@ impl LspAdapter for PyrightLspAdapter {
             }
 
             user_settings
-        })
+        }))
     }
 }
 
@@ -1357,7 +1357,7 @@ impl ToolchainLister for PythonToolchainProvider {
                     ShellKind::Fish => Some(format!("\"{pyenv}\" shell - fish {version}")),
                     ShellKind::Posix => Some(format!("\"{pyenv}\" shell - sh {version}")),
                     ShellKind::Nushell => Some(format!("^\"{pyenv}\" shell - nu {version}")),
-                    ShellKind::PowerShell => None,
+                    ShellKind::PowerShell | ShellKind::Pwsh => None,
                     ShellKind::Csh => None,
                     ShellKind::Tcsh => None,
                     ShellKind::Cmd => None,
@@ -1675,7 +1675,7 @@ impl LspAdapter for PyLspAdapter {
         _: Option<Uri>,
         cx: &mut AsyncApp,
     ) -> Result<Value> {
-        cx.update(move |cx| {
+        Ok(cx.update(move |cx| {
             let mut user_settings =
                 language_server_settings(adapter.as_ref(), &Self::SERVER_NAME, cx)
                     .and_then(|s| s.settings.clone())
@@ -1733,7 +1733,7 @@ impl LspAdapter for PyLspAdapter {
             )]));
 
             user_settings
-        })
+        }))
     }
 }
 
@@ -1967,7 +1967,7 @@ impl LspAdapter for BasedPyrightLspAdapter {
         _: Option<Uri>,
         cx: &mut AsyncApp,
     ) -> Result<Value> {
-        cx.update(move |cx| {
+        Ok(cx.update(move |cx| {
             let mut user_settings =
                 language_server_settings(adapter.as_ref(), &Self::SERVER_NAME, cx)
                     .and_then(|s| s.settings.clone())
@@ -2042,7 +2042,7 @@ impl LspAdapter for BasedPyrightLspAdapter {
             }
 
             user_settings
-        })
+        }))
     }
 }
 

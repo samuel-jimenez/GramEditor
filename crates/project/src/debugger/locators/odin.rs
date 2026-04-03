@@ -3,6 +3,7 @@ use async_trait::async_trait;
 use base64::{Engine as _, engine::general_purpose};
 use dap::{DapLocator, DebugRequest, adapters::DebugAdapterName};
 use gpui::SharedString;
+use gpui::BackgroundExecutor;
 use serde_json;
 use task::{
     BuildTaskDefinition, DebugScenario, LaunchRequest, ShellBuilder, SpawnInTerminal, TaskTemplate,
@@ -97,7 +98,11 @@ impl DapLocator for OdinLocator {
         })
     }
 
-    async fn run(&self, build_config: SpawnInTerminal) -> Result<DebugRequest> {
+    async fn run(
+        &self,
+        build_config: SpawnInTerminal,
+        _executor: BackgroundExecutor,
+    ) -> Result<DebugRequest> {
         let cwd = build_config
             .cwd
             .clone()

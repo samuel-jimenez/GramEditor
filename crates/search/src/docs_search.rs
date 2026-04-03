@@ -808,9 +808,9 @@ impl DocsSearchDelegate {
         buffer: &Entity<Buffer>,
         ranges: &[Range<Anchor>],
         cx: &AsyncApp,
-    ) -> anyhow::Result<Vec<SearchMatch>> {
+    ) -> Vec<SearchMatch> {
         if ranges.is_empty() {
-            return Ok(Vec::new());
+            return Vec::new();
         }
 
         let buffer_data = buffer.read_with(cx, |buf, cx| {
@@ -1097,19 +1097,11 @@ impl PickerDelegate for DocsSearchDelegate {
                                 content,
                             );
                             Buffer::build(text_buffer, Some(doc_file), Capability::ReadOnly)
-                        })
-                        .ok();
+                        });
 
-                    let Some(buffer) = buffer else {
-                        continue;
-                    };
 
                     let snapshot = cx
-                        .read_entity(&buffer, |buffer, _cx| buffer.snapshot())
-                        .ok();
-                    let Some(snapshot) = snapshot else {
-                        continue;
-                    };
+                        .read_entity(&buffer, |buffer, _cx| buffer.snapshot());
 
                     let ranges = search_query.search(&snapshot, None).await;
 
@@ -1171,11 +1163,7 @@ impl PickerDelegate for DocsSearchDelegate {
                 for result in results {
                     match result {
                         SearchResult::Buffer { buffer, ranges } => {
-                            if let Ok(matches) =
-                                DocsSearchDelegate::process_search_result(&buffer, &ranges, cx)
-                            {
-                                batch_matches.extend(matches);
-                            }
+                            batch_matches.extend(DocsSearchDelegate::process_search_result(&buffer, &ranges, cx));
                         }
                         SearchResult::LimitReached => {
                             limit_reached = true;

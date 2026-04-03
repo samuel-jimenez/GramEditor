@@ -225,14 +225,14 @@ fn start_server(
                     };
                     anyhow::Ok((stdin_stream, stdout_stream, stderr_stream))
                 }
-                _ = futures::FutureExt::fuse(smol::Timer::after(IDLE_TIMEOUT)) => {
+                _ = futures::FutureExt::fuse(cx.background_executor().timer(IDLE_TIMEOUT)) => {
                     log::warn!("timed out waiting for new connections after {:?}. exiting.", IDLE_TIMEOUT);
                     cx.update(|cx| {
                         // TODO: This is a hack, because in a headless project, shutdown isn't executed
                         // when calling quit, but it should be.
                         cx.shutdown();
                         cx.quit();
-                    })?;
+                    });
                     break;
                 }
                 _ = app_quit_rx.next().fuse() => {
@@ -910,8 +910,8 @@ pub fn handle_settings_file_changes(
     settings_changed: impl Fn(Option<anyhow::Error>, &mut App) + 'static,
 ) {
     let server_settings_content = cx
-        .background_executor()
-        .block(server_settings_file.next())
+        .foreground_executor()
+        .block_on(server_settings_file.next())
         .unwrap();
     SettingsStore::update_global(cx, |store, cx| {
         store
@@ -920,7 +920,7 @@ pub fn handle_settings_file_changes(
     });
     cx.spawn(async move |cx| {
         while let Some(server_settings_content) = server_settings_file.next().await {
-            let result = cx.update_global(|store: &mut SettingsStore, cx| {
+            cx.update_global(|store: &mut SettingsStore, cx| {
                 let result = store.set_server_settings(&server_settings_content, cx);
                 if let Err(err) = &result {
                     log::error!("Failed to load server settings: {err}");
@@ -928,9 +928,6 @@ pub fn handle_settings_file_changes(
                 settings_changed(result.err(), cx);
                 cx.refresh_windows();
             });
-            if result.is_err() {
-                break; // App dropped
-            }
         }
     })
     .detach();

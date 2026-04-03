@@ -173,7 +173,7 @@ async fn capture_windows(
                 binary_path.display()
             ),
         ]),
-        ShellKind::PowerShell => cmd.args([
+        ShellKind::PowerShell | ShellKind::Pwsh => cmd.args([
             "-NonInteractive",
             "-NoProfile",
             "-Command",

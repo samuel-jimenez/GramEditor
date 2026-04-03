@@ -6,7 +6,9 @@ use anyhow::{Result, anyhow};
 use async_trait::async_trait;
 use gpui::AsyncApp;
 use http_client::github::AssetKind;
-use http_client::github::{GitHubLspBinaryVersion, latest_github_release};
+use http_client::github::GitHubLspBinaryVersion;
+#[cfg(any(target_os = "linux", target_os = "macos"))]
+use http_client::github::latest_github_release;
 use http_client::github_download::download_server_binary;
 pub use language::*;
 use lsp::LanguageServerBinary;
@@ -92,6 +94,7 @@ impl ElpAdapter {
 
 impl ElpAdapter {
     const SERVER_NAME: LanguageServerName = LanguageServerName::new_static("elp");
+    #[cfg(any(target_os = "linux", target_os = "macos"))]
     const OTP_VERSION: &str = "28";
 
     fn server_path(container: &PathBuf) -> Option<PathBuf> {
@@ -117,17 +120,17 @@ impl LspInstaller for ElpAdapter {
         })
     }
 
-    #[cfg(target_os = "windows")]   
+    #[cfg(target_os = "windows")]
     async fn fetch_latest_server_version(
         &self,
-        delegate: &dyn LspAdapterDelegate,
-        pre_release: bool,
+        _delegate: &dyn LspAdapterDelegate,
+        _pre_release: bool,
         _cx: &mut AsyncApp,
     ) -> Result<GitHubLspBinaryVersion> {
         return Err(anyhow!("ELP is not supported on Windows"));
     }
-    
-    #[cfg(not(target_os = "windows"))]    
+
+    #[cfg(any(target_os = "linux", target_os = "macos"))]
     async fn fetch_latest_server_version(
         &self,
         delegate: &dyn LspAdapterDelegate,

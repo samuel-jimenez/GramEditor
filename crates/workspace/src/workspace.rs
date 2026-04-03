@@ -536,8 +536,7 @@ fn prompt_and_open_paths(app_state: Arc<AppState>, options: PathPromptOptions, c
             Ok(Some(paths)) => {
                 cx.update(|cx| {
                     open_paths(&paths, app_state, OpenOptions::default(), cx).detach_and_log_err(cx)
-                })
-                .ok();
+                });
             }
             Ok(None) => {}
             Err(err) => {
@@ -553,8 +552,7 @@ fn prompt_and_open_paths(app_state: Arc<AppState>, options: PathPromptOptions, c
                             })
                             .ok();
                     }
-                })
-                .ok();
+                });
             }
         },
     )
@@ -655,7 +653,7 @@ impl ProjectItemRegistry {
                         Ok(project_item) => {
                             let project_item = project_item;
                             let project_entry_id: Option<ProjectEntryId> =
-                                project_item.read_with(cx, project::ProjectItem::entry_id)?;
+                                project_item.read_with(cx, project::ProjectItem::entry_id);
                             let build_workspace_item = Box::new(
                                 |pane: &mut Pane, window: &mut Window, cx: &mut Context<Pane>| {
                                     Box::new(cx.new(|cx| {
@@ -1429,11 +1427,9 @@ impl Workspace {
             if let Some(paths) = serialized_workspace.as_ref().map(|ws| &ws.paths) {
                 paths_to_open = paths.ordered_paths().cloned().collect();
                 if !paths.is_lexicographically_ordered() {
-                    project_handle
-                        .update(cx, |project, cx| {
-                            project.set_worktrees_reordered(true, cx);
-                        })
-                        .log_err();
+                    project_handle.update(cx, |project, cx| {
+                        project.set_worktrees_reordered(true, cx);
+                    });
                 }
             }
 
@@ -1445,7 +1441,7 @@ impl Workspace {
                 if let Some((_, project_entry)) = cx
                     .update(|cx| {
                         Workspace::project_path_for_path(project_handle.clone(), &path, true, cx)
-                    })?
+                    })
                     .await
                     .log_err()
                 {
@@ -1472,7 +1468,7 @@ impl Workspace {
                 project_handle
                     .update(cx, |this, cx| {
                         this.activate_toolchain(ProjectPath { worktree_id, path }, toolchain, cx)
-                    })?
+                    })
                     .await;
             }
             if let Some(workspace) = serialized_workspace.as_ref() {
@@ -1482,7 +1478,7 @@ impl Workspace {
                             this.add_toolchain(toolchain.clone(), scope.clone(), cx);
                         }
                     }
-                })?;
+                });
             }
 
             let window = if let Some(window) = requesting_window {
@@ -1532,7 +1528,7 @@ impl Workspace {
                 };
 
                 // Use the serialized workspace to construct the new window
-                let mut options = cx.update(|cx| (app_state.build_window_options)(display, cx))?;
+                let mut options = cx.update(|cx| (app_state.build_window_options)(display, cx));
                 options.window_bounds = window_bounds;
                 let centered_layout = serialized_workspace
                     .as_ref()
@@ -2510,7 +2506,7 @@ impl Workspace {
                     },
                     cx,
                 )
-            })?
+            })
             .await?;
             Ok(())
         })
@@ -2526,6 +2522,8 @@ impl Workspace {
         cx: &mut Context<Self>,
     ) -> Task<Vec<Option<anyhow::Result<Box<dyn ItemHandle>>>>> {
         let fs = self.app_state.fs.clone();
+
+        let caller_ordered_abs_paths = abs_paths.clone();
 
         // Sort the paths to ensure we add worktrees for parents before their children.
         abs_paths.sort_unstable();
@@ -2570,32 +2568,10 @@ impl Workspace {
                 let fs = fs.clone();
                 let pane = pane.clone();
                 let task = cx.spawn(async move |cx| {
-                    let (worktree, project_path) = project_path?;
+                    let (_worktree, project_path) = project_path?;
                     if fs.is_dir(&abs_path).await {
-                        this.update(cx, |workspace, cx| {
-                            let worktree = worktree.read(cx);
-                            let worktree_abs_path = worktree.abs_path();
-                            let entry_id = if abs_path.as_ref() == worktree_abs_path.as_ref() {
-                                worktree.root_entry()
-                            } else {
-                                abs_path
-                                    .strip_prefix(worktree_abs_path.as_ref())
-                                    .ok()
-                                    .and_then(|relative_path| {
-                                        let relative_path =
-                                            RelPath::new(relative_path, PathStyle::local())
-                                                .log_err()?;
-                                        worktree.entry_for_path(&relative_path)
-                                    })
-                            }
-                            .map(|entry| entry.id);
-                            if let Some(entry_id) = entry_id {
-                                workspace.project.update(cx, |_, cx| {
-                                    cx.emit(project::Event::ActiveEntryChanged(Some(entry_id)));
-                                })
-                            }
-                        })
-                        .ok()?;
+                        // Opening a directory should not race to update the active entry.
+                        // We'll select/reveal a deterministic final entry after all paths finish opening.
                         None
                     } else {
                         Some(
@@ -2616,7 +2592,90 @@ impl Workspace {
                 tasks.push(task);
             }
 
-            futures::future::join_all(tasks).await
+            let results = futures::future::join_all(tasks).await;
+
+            // Determine the winner using the fake/abstract FS metadata, not `Path::is_dir`.
+            let mut winner: Option<(PathBuf, bool)> = None;
+            for abs_path in caller_ordered_abs_paths.into_iter().rev() {
+                if let Some(Some(metadata)) = fs.metadata(&abs_path).await.log_err() {
+                    if !metadata.is_dir {
+                        winner = Some((abs_path, false));
+                        break;
+                    }
+                    if winner.is_none() {
+                        winner = Some((abs_path, true));
+                    }
+                } else if winner.is_none() {
+                    winner = Some((abs_path, false));
+                }
+            }
+
+            // Compute the winner entry id on the foreground thread and emit once, after all
+            // paths finish opening. This avoids races between concurrently-opening paths
+            // (directories in particular) and makes the resulting project panel selection
+            // deterministic.
+            if let Some((winner_abs_path, winner_is_dir)) = winner {
+                'emit_winner: {
+                    let winner_abs_path: Arc<Path> =
+                        SanitizedPath::new(&winner_abs_path).as_path().into();
+
+                    let visible = match options.visible.as_ref().unwrap_or(&OpenVisible::None) {
+                        OpenVisible::All => true,
+                        OpenVisible::None => false,
+                        OpenVisible::OnlyFiles => !winner_is_dir,
+                        OpenVisible::OnlyDirectories => winner_is_dir,
+                    };
+
+                    let Some(worktree_task) = this
+                        .update(cx, |workspace, cx| {
+                            workspace.project.update(cx, |project, cx| {
+                                project.find_or_create_worktree(
+                                    winner_abs_path.as_ref(),
+                                    visible,
+                                    cx,
+                                )
+                            })
+                        })
+                        .ok()
+                    else {
+                        break 'emit_winner;
+                    };
+
+                    let Ok((worktree, _)) = worktree_task.await else {
+                        break 'emit_winner;
+                    };
+
+                    let Ok(Some(entry_id)) = this.update(cx, |_, cx| {
+                        let worktree = worktree.read(cx);
+                        let worktree_abs_path = worktree.abs_path();
+                        let entry = if winner_abs_path.as_ref() == worktree_abs_path.as_ref() {
+                            worktree.root_entry()
+                        } else {
+                            winner_abs_path
+                                .strip_prefix(worktree_abs_path.as_ref())
+                                .ok()
+                                .and_then(|relative_path| {
+                                    let relative_path =
+                                        RelPath::new(relative_path, PathStyle::local())
+                                            .log_err()?;
+                                    worktree.entry_for_path(&relative_path)
+                                })
+                        }?;
+                        Some(entry.id)
+                    }) else {
+                        break 'emit_winner;
+                    };
+
+                    this.update(cx, |workspace, cx| {
+                        workspace.project.update(cx, |_, cx| {
+                            cx.emit(project::Event::ActiveEntryChanged(Some(entry_id)));
+                        });
+                    })
+                    .ok();
+                }
+            }
+
+            results
         })
     }
 
@@ -2715,7 +2774,7 @@ impl Workspace {
         });
         cx.spawn(async move |cx| {
             let (worktree, path) = entry.await?;
-            let worktree_id = worktree.read_with(cx, |t, _| t.id())?;
+            let worktree_id = worktree.read_with(cx, |t, _| t.id());
             Ok((
                 worktree,
                 ProjectPath {
@@ -4821,7 +4880,7 @@ impl Workspace {
                             breakpoint_store
                                 .with_serialized_breakpoints(serialized_workspace.breakpoints, cx)
                         })
-                })?
+                })
                 .await;
 
             // Clean up all the items that have _not_ been loaded. Our ItemIds aren't stable. That means
@@ -6121,7 +6180,7 @@ impl WorkspaceStore {
         this.update(&mut cx, |_, _| {
             let response = proto::FollowResponse::default();
             Ok(response)
-        })?
+        })
     }
 
     pub fn workspaces(&self) -> &HashSet<WindowHandle<Workspace>> {
@@ -6177,7 +6236,7 @@ pub async fn get_any_active_workspace(
     // find an existing workspace to focus and show call controls
     let active_window = activate_any_workspace_window(&mut cx);
     if active_window.is_none() {
-        cx.update(|cx| Workspace::new_local(vec![], app_state.clone(), None, None, None, cx))?
+        cx.update(|cx| Workspace::new_local(vec![], app_state.clone(), None, None, None, cx))
             .await?;
     }
     activate_any_workspace_window(&mut cx).context("could not open gram")
@@ -6202,8 +6261,6 @@ fn activate_any_workspace_window(cx: &mut AsyncApp) -> Option<WindowHandle<Works
         }
         None
     })
-    .ok()
-    .flatten()
 }
 
 pub fn local_workspace_windows(cx: &App) -> Vec<WindowHandle<Workspace>> {
@@ -6277,7 +6334,7 @@ pub fn open_paths(
                         }
                     }
                 }
-            })?;
+            });
 
             if open_options.open_new_workspace.is_none()
                 && (existing.is_none() || open_options.prefer_focused_window)
@@ -6307,7 +6364,7 @@ pub fn open_paths(
                             break;
                         }
                     }
-                })?;
+                });
             }
         }
 
@@ -6347,7 +6404,7 @@ pub fn open_paths(
                     None,
                     cx,
                 )
-            })?
+            })
             .await
         };
 
@@ -6464,7 +6521,7 @@ pub fn open_remote_project_with_new_connection(
                     delegate,
                     cx,
                 )
-            })?
+            })
             .await?
         {
             Some(result) => result,
@@ -6481,7 +6538,7 @@ pub fn open_remote_project_with_new_connection(
                 app_state.fs.clone(),
                 cx,
             )
-        })?;
+        });
 
         open_remote_project_inner(
             project,
@@ -6535,7 +6592,7 @@ async fn open_remote_project_inner(
         project
             .update(cx, |this, cx| {
                 this.activate_toolchain(ProjectPath { worktree_id, path }, toolchain, cx)
-            })?
+            })
             .await;
     }
     let mut project_paths_to_open = vec![];
@@ -6543,7 +6600,7 @@ async fn open_remote_project_inner(
 
     for path in paths {
         let result = cx
-            .update(|cx| Workspace::project_path_for_path(project.clone(), &path, true, cx))?
+            .update(|cx| Workspace::project_path_for_path(project.clone(), &path, true, cx))
             .await;
         match result {
             Ok((_, project_path)) => {
@@ -6662,7 +6719,7 @@ pub fn reload(cx: &mut App) {
         if let Some(prompt) = prompt {
             let answer = prompt.await?;
             if answer != 0 {
-                return Ok(());
+                return anyhow::Ok(());
             }
         }
 
@@ -6672,10 +6729,11 @@ pub fn reload(cx: &mut App) {
                 workspace.prepare_to_close(CloseIntent::Quit, window, cx)
             }) && !should_close.await?
             {
-                return Ok(());
+                return anyhow::Ok(());
             }
         }
-        cx.update(|cx| cx.restart())
+        cx.update(|cx| cx.restart());
+        anyhow::Ok(())
     })
     .detach_and_log_err(cx);
 }
@@ -9811,6 +9869,9 @@ mod tests {
                 window,
                 cx,
             );
+        });
+        cx.run_until_parked();
+        workspace.update_in(cx, |workspace, window, cx| {
             workspace.move_item_to_pane_at_index(
                 &MoveItemToPane {
                     destination: 3,
@@ -9864,7 +9925,7 @@ mod tests {
                 cx: &mut App,
             ) -> Option<Task<anyhow::Result<Entity<Self>>>> {
                 if path.path.extension().unwrap() == "png" {
-                    Some(cx.spawn(async move |cx| cx.new(|_| TestPngItem {})))
+                    Some(cx.spawn(async move |cx| Ok(cx.new(|_| TestPngItem {}))))
                 } else {
                     None
                 }
@@ -9939,7 +10000,7 @@ mod tests {
                 cx: &mut App,
             ) -> Option<Task<anyhow::Result<Entity<Self>>>> {
                 if path.path.extension().unwrap() == "ipynb" {
-                    Some(cx.spawn(async move |cx| cx.new(|_| TestIpynbItem {})))
+                    Some(cx.spawn(async move |cx| Ok(cx.new(|_| TestIpynbItem {}))))
                 } else {
                     None
                 }

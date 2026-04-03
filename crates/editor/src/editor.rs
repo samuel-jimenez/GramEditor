@@ -978,6 +978,7 @@ pub struct Editor {
     code_actions_task: Option<Task<Result<()>>>,
     quick_selection_highlight_task: Option<(Range<Anchor>, Task<()>)>,
     debounced_selection_highlight_task: Option<(Range<Anchor>, Task<()>)>,
+    debounced_selection_highlight_complete: bool,
     document_highlights_task: Option<Task<()>>,
     linked_editing_range_task: Option<Task<Option<()>>>,
     linked_edit_ranges: linked_editing_ranges::LinkedEditingRanges,
@@ -2127,6 +2128,7 @@ impl Editor {
             code_actions_task: None,
             quick_selection_highlight_task: None,
             debounced_selection_highlight_task: None,
+            debounced_selection_highlight_complete: false,
             document_highlights_task: None,
             linked_editing_range_task: None,
             pending_rename: None,
@@ -5227,12 +5229,10 @@ impl Editor {
         Some(cx.spawn_in(window, async move |editor, cx| {
             if let Some(transaction) = on_type_formatting.await? {
                 if push_to_client_history {
-                    buffer
-                        .update(cx, |buffer, _| {
-                            buffer.push_transaction(transaction, Instant::now());
-                            buffer.finalize_last_transaction();
-                        })
-                        .ok();
+                    buffer.update(cx, |buffer, _| {
+                        buffer.push_transaction(transaction, Instant::now());
+                        buffer.finalize_last_transaction();
+                    });
                 }
                 editor.update(cx, |editor, cx| {
                     editor.refresh_document_highlights(cx);
@@ -6003,7 +6003,7 @@ impl Editor {
                 let project_transaction = lsp_store
                     .update(cx, |lsp_store, cx| {
                         lsp_store.apply_code_action(buffer_handle, command, false, cx)
-                    })?
+                    })
                     .await
                     .context("applying post-completion command")?;
                 if let Some(workspace) = editor.read_with(cx, |editor, _| editor.workspace())? {
@@ -6408,7 +6408,7 @@ impl Editor {
                         .all(|range| {
                             excerpt_range.start <= range.start && excerpt_range.end >= range.end
                         })
-                })?;
+                });
 
                 if all_edits_within_excerpt {
                     return Ok(());
@@ -6436,7 +6436,7 @@ impl Editor {
             }
             multibuffer.push_transaction(entries.iter().map(|(b, t)| (b, t)), cx);
             multibuffer
-        })?;
+        });
 
         workspace.update_in(cx, |workspace, window, cx| {
             let project = workspace.project().clone();
@@ -6796,13 +6796,9 @@ impl Editor {
                 .timer(Duration::from_millis(debounce))
                 .await;
 
-            let highlights = if let Some(highlights) = cx
-                .update(|cx| {
-                    provider.document_highlights(&cursor_buffer, cursor_buffer_position, cx)
-                })
-                .ok()
-                .flatten()
-            {
+            let highlights = if let Some(highlights) = cx.update(|cx| {
+                provider.document_highlights(&cursor_buffer, cursor_buffer_position, cx)
+            }) {
                 highlights.await.log_err()
             } else {
                 None
@@ -6961,7 +6957,12 @@ impl Editor {
             let match_ranges = match_task.await;
             editor
                 .update_in(cx, |editor, _, cx| {
-                    editor.clear_background_highlights::<SelectedTextHighlight>(cx);
+                    if use_debounce {
+                        editor.clear_background_highlights::<SelectedTextHighlight>(cx);
+                        editor.debounced_selection_highlight_complete = true;
+                    } else if editor.debounced_selection_highlight_complete {
+                        return;
+                    }
                     if !match_ranges.is_empty() {
                         editor.highlight_background::<SelectedTextHighlight>(
                             &match_ranges,
@@ -7057,15 +7058,18 @@ impl Editor {
             self.clear_background_highlights::<SelectedTextHighlight>(cx);
             self.quick_selection_highlight_task.take();
             self.debounced_selection_highlight_task.take();
+            self.debounced_selection_highlight_complete = false;
             return;
         };
         let multi_buffer_snapshot = self.buffer().read(cx).snapshot(cx);
-        if on_buffer_edit
-            || self
-                .quick_selection_highlight_task
-                .as_ref()
-                .is_none_or(|(prev_anchor_range, _)| prev_anchor_range != &query_range)
-        {
+        let query_changed = self
+            .quick_selection_highlight_task
+            .as_ref()
+            .is_none_or(|(prev_anchor_range, _)| prev_anchor_range != &query_range);
+        if query_changed {
+            self.debounced_selection_highlight_complete = false;
+        }
+        if on_buffer_edit || query_changed {
             let multi_buffer_visible_start = self
                 .scroll_manager
                 .anchor()
@@ -14160,9 +14164,7 @@ impl Editor {
                 return;
             };
 
-            let hide_runnables = project
-                .update(cx, |project, _| project.is_via_collab())
-                .unwrap_or(true);
+            let hide_runnables = project.update(cx, |project, _| project.is_via_collab());
             if hide_runnables {
                 return;
             }
@@ -14345,11 +14347,9 @@ impl Editor {
             let mut templates_with_tags = Vec::new();
             if let Some(inventory) = inventory {
                 for RunnableTag(tag) in tags {
-                    let Ok(new_tasks) = inventory.update(cx, |inventory, cx| {
+                    let new_tasks = inventory.update(cx, |inventory, cx| {
                         inventory.list_tasks(file.clone(), Some(language.clone()), worktree_id, cx)
-                    }) else {
-                        return templates_with_tags;
-                    };
+                    });
                     templates_with_tags.extend(new_tasks.await.into_iter().filter(
                         move |(_, template)| {
                             template.tags.iter().any(|source_tag| source_tag == &tag)
@@ -15425,7 +15425,7 @@ impl Editor {
                         .clip_point_utf16(point_from_lsp(lsp_location.range.end), Bias::Left);
                     target_buffer.anchor_after(target_start)
                         ..target_buffer.anchor_before(target_end)
-                })?;
+                });
                 Location {
                     buffer: target_buffer_handle,
                     range,
@@ -15524,7 +15524,7 @@ impl Editor {
                     });
 
                     (locations, current_location_index)
-                })?;
+                });
 
             let Some(current_location_index) = current_location_index else {
                 // This indicates something has gone wrong, because we already
@@ -16260,27 +16260,27 @@ impl Editor {
                 }
             };
 
-            buffer
-                .update(cx, |buffer, cx| {
-                    if let Some(transaction) = transaction
-                        && !buffer.is_singleton()
-                    {
-                        buffer.push_transaction(&transaction.0, cx);
-                    }
-                    cx.notify();
-                })
-                .ok();
+            buffer.update(cx, |buffer, cx| {
+                if let Some(transaction) = transaction
+                    && !buffer.is_singleton()
+                {
+                    buffer.push_transaction(&transaction.0, cx);
+                }
+                cx.notify();
+            });
 
             if let Some(transaction_id_now) =
-                buffer.read_with(cx, |b, cx| b.last_transaction_id(cx))?
+                buffer.read_with(cx, |b, cx| b.last_transaction_id(cx))
             {
                 let has_new_transaction = transaction_id_prev != Some(transaction_id_now);
                 if has_new_transaction {
-                    _ = editor.update(cx, |editor, _| {
-                        editor
-                            .selection_history
-                            .insert_transaction(transaction_id_now, selections_prev);
-                    });
+                    editor
+                        .update(cx, |editor, _| {
+                            editor
+                                .selection_history
+                                .insert_transaction(transaction_id_now, selections_prev);
+                        })
+                        .ok();
                 }
             }
 
@@ -16328,17 +16328,15 @@ impl Editor {
                 }
                 transaction = apply_action.log_err().fuse() => transaction,
             };
-            buffer
-                .update(cx, |buffer, cx| {
-                    // check if we need this
-                    if let Some(transaction) = transaction
-                        && !buffer.is_singleton()
-                    {
-                        buffer.push_transaction(&transaction.0, cx);
-                    }
-                    cx.notify();
-                })
-                .ok();
+            buffer.update(cx, |buffer, cx| {
+                // check if we need this
+                if let Some(transaction) = transaction
+                    && !buffer.is_singleton()
+                {
+                    buffer.push_transaction(&transaction.0, cx);
+                }
+                cx.notify();
+            });
             Ok(())
         })
     }
@@ -16632,10 +16630,8 @@ impl Editor {
             if let Some(debounce) = debounce {
                 cx.background_executor().timer(debounce).await;
             }
-            let Some(snapshot) = editor.upgrade().and_then(|editor| {
-                editor
-                    .update(cx, |editor, cx| editor.buffer().read(cx).snapshot(cx))
-                    .ok()
+            let Some(snapshot) = editor.upgrade().map(|editor| {
+                editor.update(cx, |editor, cx| editor.buffer().read(cx).snapshot(cx))
             }) else {
                 return;
             };
@@ -18340,8 +18336,7 @@ impl Editor {
             buffer
                 .update(cx, |buffer, cx| {
                     buffer.apply_diff(diff, cx);
-                })
-                .ok();
+                });
         })
         .detach();
     }
@@ -19046,19 +19041,14 @@ impl Editor {
                 anyhow::Result::<()>::Err(err).log_err();
 
                 if let Some(workspace) = workspace {
-                    workspace
-                        .update(cx, |workspace, cx| {
-                            struct OpenPermalinkToLine;
+                    workspace.update(cx, |workspace, cx| {
+                        struct OpenPermalinkToLine;
 
-                            workspace.show_toast(
-                                Toast::new(
-                                    NotificationId::unique::<OpenPermalinkToLine>(),
-                                    message,
-                                ),
-                                cx,
-                            )
-                        })
-                        .ok();
+                        workspace.show_toast(
+                            Toast::new(NotificationId::unique::<OpenPermalinkToLine>(), message),
+                            cx,
+                        )
+                    });
                 }
             }
         })
@@ -19928,6 +19918,7 @@ impl Editor {
                 self.update_lsp_data(Some(buffer_id), window, cx);
                 self.refresh_inlay_hints(InlayHintRefreshReason::NewLinesShown, cx);
                 self.colorize_brackets(false, cx);
+                self.refresh_selected_text_highlights(true, window, cx);
                 cx.emit(EditorEvent::ExcerptsAdded {
                     buffer: buffer.clone(),
                     predecessor: *predecessor,
@@ -21427,20 +21418,15 @@ fn update_uncommitted_diff_for_buffer(
     });
     cx.spawn(async move |cx| {
         let diffs = future::join_all(tasks).await;
-        if editor
-            .read_with(cx, |editor, _cx| editor.temporary_diff_override)
-            .unwrap_or(false)
-        {
+        if editor.read_with(cx, |editor, _cx| editor.temporary_diff_override) {
             return;
         }
 
-        buffer
-            .update(cx, |buffer, cx| {
-                for diff in diffs.into_iter().flatten() {
-                    buffer.add_diff(diff, cx);
-                }
-            })
-            .ok();
+        buffer.update(cx, |buffer, cx| {
+            for diff in diffs.into_iter().flatten() {
+                buffer.add_diff(diff, cx);
+            }
+        });
     })
 }
 
@@ -22461,7 +22447,7 @@ impl SemanticsProvider for Entity<Project> {
                                 snapshot.anchor_before(range.start)
                                     ..snapshot.anchor_after(range.end),
                             )
-                        })?
+                        })
                     }
                 })
             })

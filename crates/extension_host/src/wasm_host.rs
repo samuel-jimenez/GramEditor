@@ -19,7 +19,7 @@ use futures::{
     },
     future::BoxFuture,
 };
-use gpui::{App, AsyncApp, BackgroundExecutor, Task, Timer};
+use gpui::{App, AsyncApp, BackgroundExecutor, Task};
 use http_client::HttpClient;
 use language::LanguageName;
 use lsp::LanguageServerName;
@@ -442,14 +442,15 @@ fn wasm_engine(executor: &BackgroundExecutor) -> wasmtime::Engine {
             // not have a dedicated thread just for this. If it becomes an issue, we can consider
             // creating a separate thread for epoch interruption.
             let engine_ref = engine.weak();
+            let executor2 = executor.clone();
             executor
                 .spawn(async move {
                     // Somewhat arbitrary interval, as it isn't a guaranteed interval.
                     // But this is a rough upper bound for how long the extension execution can block on
                     // `Future::poll`.
                     const EPOCH_INTERVAL: Duration = Duration::from_millis(100);
-                    let mut timer = Timer::interval(EPOCH_INTERVAL);
-                    while (timer.next().await).is_some() {
+                    loop {
+                        executor2.timer(EPOCH_INTERVAL).await;
                         // Exit the loop and thread once the engine is dropped.
                         let Some(engine) = engine_ref.upgrade() else {
                             break;
@@ -587,12 +588,12 @@ impl WasmHost {
             // Run wasi-dependent operations on tokio.
             // wasmtime_wasi internally uses tokio for I/O operations.
             let (extension_task, manifest, work_dir, tx, gram_api_version) =
-                gpui_tokio::Tokio::spawn(cx, load_extension(gram_api_version, component))?
+                gpui_tokio::Tokio::spawn(cx, load_extension(gram_api_version, component))
                     .await??;
 
             // Run the extension message loop on tokio since extension
             // calls may invoke wasi functions that require a tokio runtime.
-            let task = Arc::new(gpui_tokio::Tokio::spawn(cx, extension_task)?);
+            let task = Arc::new(gpui_tokio::Tokio::spawn(cx, extension_task));
 
             Ok(WasmExtension {
                 manifest,

@@ -1383,7 +1383,7 @@ impl SerializableItem for TerminalView {
                 .flatten();
 
             let terminal = project
-                .update(cx, |project, cx| project.create_terminal_shell(cwd, cx))?
+                .update(cx, |project, cx| project.create_terminal_shell(cwd, cx))
                 .await?;
             cx.update(|window, cx| {
                 cx.new(|cx| {

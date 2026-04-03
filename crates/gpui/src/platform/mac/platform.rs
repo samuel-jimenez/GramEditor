@@ -166,15 +166,9 @@ pub(crate) struct MacPlatformState {
     keyboard_mapper: Rc<MacKeyboardMapper>,
 }
 
-impl Default for MacPlatform {
-    fn default() -> Self {
-        Self::new(false)
-    }
-}
-
 impl MacPlatform {
     pub(crate) fn new(headless: bool) -> Self {
-        let dispatcher = Arc::new(MacDispatcher);
+        let dispatcher = Arc::new(MacDispatcher::new());
 
         #[cfg(feature = "font-kit")]
         let text_system = Arc::new(crate::MacTextSystem::new());
@@ -596,6 +590,7 @@ impl Platform for MacPlatform {
             handle,
             options,
             self.foreground_executor(),
+            self.background_executor(),
             renderer_context,
         )))
     }
@@ -667,7 +662,7 @@ impl Platform for MacPlatform {
         }
 
         self.background_executor()
-            .spawn(async { crate::Flatten::flatten(done_rx.await.map_err(|e| anyhow!(e))) })
+            .spawn(async { done_rx.await.map_err(|e| anyhow!(e))? })
     }
 
     fn on_open_urls(&self, callback: Box<dyn FnMut(Vec<String>)>) {
