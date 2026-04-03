@@ -17,7 +17,7 @@ use text::BufferId;
 use theme::ActiveTheme;
 use ui::scrollbars::ShowScrollbar;
 use ui::{
-    Button, ButtonLike, ButtonStyle, ContextMenu, Icon, IconName, Indicator, KeyBinding, Label,
+    Button, ButtonLike, ButtonStyle, ContextMenu, Icon, Indicator, KeyBinding, Label,
     Tooltip, h_flex, prelude::*, right_click_menu, text_for_keystroke, v_flex,
 };
 use workspace::{ItemSettings, OpenInTerminal, OpenTerminal, RevealInProjectPanel};
@@ -833,9 +833,6 @@ impl SplitBufferHeadersElement {
                                                 }
                                             })),
                                     )
-                                    .when(!for_excerpt.buffer.capability.editable(), |el| {
-                                        el.child(Icon::new(IconName::FileLock).color(Color::Muted))
-                                    })
                                     .when_some(parent_path, |then, path| {
                                         then.child(Label::new(path).truncate().color(
                                             if file_status.is_some_and(FileStatus::is_deleted) {
