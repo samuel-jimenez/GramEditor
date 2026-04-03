@@ -3,9 +3,9 @@ use std::{
     time::{Duration, Instant},
 };
 
+use app_actions::toast;
 use gpui::{AnyView, DismissEvent, Entity, EntityId, FocusHandle, ManagedView, Subscription, Task};
 use ui::{animation::DefaultAnimations, prelude::*};
-use app_actions::toast;
 
 use crate::Workspace;
 

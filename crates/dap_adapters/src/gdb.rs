@@ -29,7 +29,10 @@ impl DebugAdapter for GdbDebugAdapter {
         DebugAdapterName(Self::ADAPTER_NAME.into())
     }
 
-    async fn config_from_gram_format(&self, gram_scenario: GramDebugConfig) -> Result<DebugScenario> {
+    async fn config_from_gram_format(
+        &self,
+        gram_scenario: GramDebugConfig,
+    ) -> Result<DebugScenario> {
         let mut obj = serde_json::Map::default();
 
         match &gram_scenario.request {

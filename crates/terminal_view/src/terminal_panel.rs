@@ -1865,37 +1865,36 @@ mod tests {
     }
 
     #[gpui::test]
-          async fn test_local_terminal_in_local_project(cx: &mut TestAppContext) {
-              cx.executor().allow_parking();
-              init_test(cx);
+    async fn test_local_terminal_in_local_project(cx: &mut TestAppContext) {
+        cx.executor().allow_parking();
+        init_test(cx);
 
-              let fs = FakeFs::new(cx.executor());
-              let project = Project::test(fs, [], cx).await;
-              let workspace = cx.add_window(|window, cx| Workspace::test_new(project, window, cx));
+        let fs = FakeFs::new(cx.executor());
+        let project = Project::test(fs, [], cx).await;
+        let workspace = cx.add_window(|window, cx| Workspace::test_new(project, window, cx));
 
-              let (window_handle, terminal_panel) = workspace
-                  .update(cx, |workspace, window, cx| {
-                      let window_handle = window.window_handle();
-                      let terminal_panel = cx.new(|cx| TerminalPanel::new(workspace, window, cx));
-                      (window_handle, terminal_panel)
-                  })
-                  .unwrap();
+        let (window_handle, terminal_panel) = workspace
+            .update(cx, |workspace, window, cx| {
+                let window_handle = window.window_handle();
+                let terminal_panel = cx.new(|cx| TerminalPanel::new(workspace, window, cx));
+                (window_handle, terminal_panel)
+            })
+            .unwrap();
 
-              let result = window_handle
-                  .update(cx, |_, window, cx| {
-                      terminal_panel.update(cx, |terminal_panel, cx| {
-                          terminal_panel.add_local_terminal_shell(RevealStrategy::Always, window, cx)
-                      })
-                  })
-                  .unwrap()
-                  .await;
+        let result = window_handle
+            .update(cx, |_, window, cx| {
+                terminal_panel.update(cx, |terminal_panel, cx| {
+                    terminal_panel.add_local_terminal_shell(RevealStrategy::Always, window, cx)
+                })
+            })
+            .unwrap()
+            .await;
 
-              assert!(
-                  result.is_ok(),
-                  "local terminal should successfully create in local project"
-              );
-          }
-
+        assert!(
+            result.is_ok(),
+            "local terminal should successfully create in local project"
+        );
+    }
 
     fn set_max_tabs(cx: &mut TestAppContext, value: Option<usize>) {
         cx.update_global(|store: &mut SettingsStore, cx| {

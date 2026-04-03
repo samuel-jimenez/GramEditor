@@ -9,9 +9,9 @@ use extension_host::{ExtensionManifest, ExtensionOperation, ExtensionStore};
 use fuzzy::{StringMatchCandidate, match_strings};
 use git2::Repository;
 use gpui::{
-    Action, App, ClipboardItem, Context, Corner, DismissEvent, Entity, EventEmitter,
-    FocusHandle, Focusable, InteractiveElement, KeyContext, ParentElement, Point, Render, Styled,
-    Task, TextStyle, UniformListScrollHandle, WeakEntity, Window, actions, point, uniform_list,
+    Action, App, ClipboardItem, Context, Corner, DismissEvent, Entity, EventEmitter, FocusHandle,
+    Focusable, InteractiveElement, KeyContext, ParentElement, Point, Render, Styled, Task,
+    TextStyle, UniformListScrollHandle, WeakEntity, Window, actions, point, uniform_list,
 };
 use menu;
 use num_format::{Locale, ToFormattedString};
@@ -144,18 +144,17 @@ pub fn init(cx: &mut App) {
                     window
                         .spawn(cx, async move |cx| {
                             let path = match prompt.await.map_err(anyhow::Error::from) {
-                                                    Ok(Some(mut paths)) => paths.pop()?,
-                                                    Ok(None) => return None,
-                                                    Err(err) => {
-                                                        workspace_handle
-                                                            .update(cx, |workspace, cx| {
-                                                                workspace.show_portal_error(err.to_string(), cx);
-                                                            })
-                                                            .ok();
-                                                        return None;
-                                                    }
-                                                };
-
+                                Ok(Some(mut paths)) => paths.pop()?,
+                                Ok(None) => return None,
+                                Err(err) => {
+                                    workspace_handle
+                                        .update(cx, |workspace, cx| {
+                                            workspace.show_portal_error(err.to_string(), cx);
+                                        })
+                                        .ok();
+                                    return None;
+                                }
+                            };
 
                             let Some(path) = path.into_os_string().into_string().ok() else {
                                 return None;
@@ -253,10 +252,9 @@ pub fn init(cx: &mut App) {
                     let workspace_handle = cx.entity().downgrade();
                     window
                         .spawn(cx, async move |cx| {
-                            let install_task = store
-                                .update(cx, |store, cx| {
-                                    store.install_dev_extension(extension_path, cx)
-                        });
+                            let install_task = store.update(cx, |store, cx| {
+                                store.install_dev_extension(extension_path, cx)
+                            });
 
                             match install_task.await {
                                 Ok(_) => {}

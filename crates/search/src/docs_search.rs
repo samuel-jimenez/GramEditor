@@ -1089,19 +1089,16 @@ impl PickerDelegate for DocsSearchDelegate {
 
                     let doc_file = DocFile::new(doc_path.to_string());
 
-                    let buffer = cx
-                        .new(|cx| {
-                            let text_buffer = text::Buffer::new(
-                                ReplicaId::LOCAL,
-                                BufferId::new(cx.entity_id().as_non_zero_u64().get()).unwrap(),
-                                content,
-                            );
-                            Buffer::build(text_buffer, Some(doc_file), Capability::ReadOnly)
-                        });
+                    let buffer = cx.new(|cx| {
+                        let text_buffer = text::Buffer::new(
+                            ReplicaId::LOCAL,
+                            BufferId::new(cx.entity_id().as_non_zero_u64().get()).unwrap(),
+                            content,
+                        );
+                        Buffer::build(text_buffer, Some(doc_file), Capability::ReadOnly)
+                    });
 
-
-                    let snapshot = cx
-                        .read_entity(&buffer, |buffer, _cx| buffer.snapshot());
+                    let snapshot = cx.read_entity(&buffer, |buffer, _cx| buffer.snapshot());
 
                     let ranges = search_query.search(&snapshot, None).await;
 
@@ -1163,7 +1160,9 @@ impl PickerDelegate for DocsSearchDelegate {
                 for result in results {
                     match result {
                         SearchResult::Buffer { buffer, ranges } => {
-                            batch_matches.extend(DocsSearchDelegate::process_search_result(&buffer, &ranges, cx));
+                            batch_matches.extend(DocsSearchDelegate::process_search_result(
+                                &buffer, &ranges, cx,
+                            ));
                         }
                         SearchResult::LimitReached => {
                             limit_reached = true;

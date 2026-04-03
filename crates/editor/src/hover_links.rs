@@ -1325,7 +1325,10 @@ mod tests {
         );
 
         cx.simulate_click(screen_coord, Modifiers::secondary_key());
-        assert_eq!(cx.opened_url(), Some("https://codeberg.org/releases".into()));
+        assert_eq!(
+            cx.opened_url(),
+            Some("https://codeberg.org/releases".into())
+        );
     }
 
     #[gpui::test]
@@ -1350,7 +1353,10 @@ mod tests {
         );
 
         cx.simulate_click(screen_coord, Modifiers::secondary_key());
-        assert_eq!(cx.opened_url(), Some("https://codeberg.org/releases".into()));
+        assert_eq!(
+            cx.opened_url(),
+            Some("https://codeberg.org/releases".into())
+        );
     }
 
     #[test]

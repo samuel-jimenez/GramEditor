@@ -361,7 +361,10 @@ impl DebugAdapter for GoDebugAdapter {
         })
     }
 
-    async fn config_from_gram_format(&self, gram_scenario: GramDebugConfig) -> Result<DebugScenario> {
+    async fn config_from_gram_format(
+        &self,
+        gram_scenario: GramDebugConfig,
+    ) -> Result<DebugScenario> {
         let mut args = match &gram_scenario.request {
             dap::DebugRequest::Attach(attach_config) => {
                 json!({

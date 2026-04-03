@@ -222,9 +222,7 @@ impl Render for ReplSessionsPage {
                             .layer(ElevationIndex::ModalSurface)
                             .child(Label::new("Install Kernels"))
                             .on_click(move |_, _, cx| {
-                                cx.open_url(
-                                    "gram://docs/repl#language-specific-instructions",
-                                )
+                                cx.open_url("gram://docs/repl#language-specific-instructions")
                             }),
                     ),
                 );

@@ -11,6 +11,7 @@ pub use smol;
 pub use sqlez;
 pub use sqlez_macros;
 
+use app_env_vars::GRAM_STATELESS;
 pub use release_channel::RELEASE_CHANNEL;
 use sqlez::domain::Migrator;
 use sqlez::thread_safe_connection::ThreadSafeConnection;
@@ -20,7 +21,6 @@ use std::path::Path;
 use std::sync::atomic::AtomicBool;
 use std::sync::{LazyLock, atomic::Ordering};
 use util::{ResultExt, maybe};
-use app_env_vars::GRAM_STATELESS;
 
 const CONNECTION_INITIALIZE_QUERY: &str = sql!(
     PRAGMA foreign_keys=TRUE;

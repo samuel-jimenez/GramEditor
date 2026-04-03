@@ -15,7 +15,7 @@ use fs::normalize_path;
 use gpui::{App, Task};
 use language::LanguageName;
 use semantic_version::SemanticVersion;
-use task::{SpawnInTerminal, GramDebugConfig};
+use task::{GramDebugConfig, SpawnInTerminal};
 use util::rel_path::RelPath;
 
 pub use crate::capabilities::*;

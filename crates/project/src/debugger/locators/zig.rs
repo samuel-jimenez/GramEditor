@@ -5,8 +5,8 @@
 use anyhow::Result;
 use async_trait::async_trait;
 use dap::{DapLocator, DebugRequest, adapters::DebugAdapterName};
-use gpui::SharedString;
 use gpui::BackgroundExecutor;
+use gpui::SharedString;
 use serde_json::{Value, json};
 use std::path::Path;
 use task::{BuildTaskDefinition, DebugScenario, LaunchRequest, SpawnInTerminal, TaskTemplate};

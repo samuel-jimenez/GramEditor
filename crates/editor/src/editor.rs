@@ -18333,10 +18333,9 @@ impl Editor {
         let diff = buffer.read(cx).remove_trailing_whitespace(cx);
         cx.spawn(async move |_, cx| {
             let diff = diff.await;
-            buffer
-                .update(cx, |buffer, cx| {
-                    buffer.apply_diff(diff, cx);
-                });
+            buffer.update(cx, |buffer, cx| {
+                buffer.apply_diff(diff, cx);
+            });
         })
         .detach();
     }

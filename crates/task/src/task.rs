@@ -17,9 +17,10 @@ use std::path::PathBuf;
 use std::str::FromStr;
 
 pub use adapter_schema::{AdapterSchema, AdapterSchemas};
+pub use app_actions::RevealTarget;
 pub use debug_format::{
-    AttachRequest, BuildTaskDefinition, DebugRequest, DebugScenario, DebugTaskFile, LaunchRequest,
-    Request, TcpArgumentsTemplate, GramDebugConfig,
+    AttachRequest, BuildTaskDefinition, DebugRequest, DebugScenario, DebugTaskFile,
+    GramDebugConfig, LaunchRequest, Request, TcpArgumentsTemplate,
 };
 pub use task_template::{
     DebugArgsRequest, HideStrategy, RevealStrategy, TaskTemplate, TaskTemplates,
@@ -29,7 +30,6 @@ pub use util::shell::{Shell, ShellKind};
 pub use util::shell_builder::ShellBuilder;
 pub use vscode_debug_format::VsCodeDebugTaskFile;
 pub use vscode_format::VsCodeTaskFile;
-pub use app_actions::RevealTarget;
 
 /// Task identifier, unique within the application.
 /// Based on it, task reruns and terminal tabs are managed.

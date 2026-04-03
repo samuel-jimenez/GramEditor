@@ -21,7 +21,7 @@ use cocoa::{
         NSArray, NSAutoreleasePool, NSBundle, NSInteger, NSProcessInfo, NSString, NSUInteger, NSURL,
     },
 };
-use core_foundation::{ base::CFRelease, runloop::CFRunLoopRun, string::CFStringRef};
+use core_foundation::{base::CFRelease, runloop::CFRunLoopRun, string::CFStringRef};
 use ctor::ctor;
 use futures::channel::oneshot;
 use itertools::Itertools;

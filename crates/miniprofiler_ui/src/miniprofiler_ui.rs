@@ -5,6 +5,7 @@ use std::{
     time::{Duration, Instant},
 };
 
+use app_actions::OpenPerformanceProfiler;
 use gpui::{
     App, AppContext, ClipboardItem, Context, Div, Entity, Hsla, InteractiveElement,
     ParentElement as _, Render, SerializedTaskTiming, SharedString, StatefulInteractiveElement,
@@ -19,7 +20,6 @@ use workspace::{
         ScrollableHandle as _, ToggleState, Tooltip, WithScrollbar, h_flex, v_flex,
     },
 };
-use app_actions::OpenPerformanceProfiler;
 
 pub fn init(startup_time: Instant, cx: &mut App) {
     cx.observe_new(move |workspace: &mut workspace::Workspace, _, _| {

@@ -196,7 +196,9 @@ impl GramSyntaxToken {
             GramSyntaxToken::Boolean => vec!["constant.language"],
             GramSyntaxToken::Comment => vec!["comment"],
             GramSyntaxToken::CommentDoc => vec!["comment.block.documentation"],
-            GramSyntaxToken::Constant => vec!["constant", "constant.language", "constant.character"],
+            GramSyntaxToken::Constant => {
+                vec!["constant", "constant.language", "constant.character"]
+            }
             GramSyntaxToken::Constructor => {
                 vec![
                     "entity.name.tag",

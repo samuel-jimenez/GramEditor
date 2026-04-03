@@ -42,8 +42,8 @@ use workspace::{
     register_serializable_item,
 };
 
-pub use ui_components::*;
 use app_actions::{ChangeKeybinding, OpenKeymap};
+pub use ui_components::*;
 
 use crate::{
     action_completion_provider::ActionCompletionProvider,

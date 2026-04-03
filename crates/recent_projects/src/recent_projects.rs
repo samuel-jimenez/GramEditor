@@ -9,6 +9,7 @@ mod wsl_picker;
 use remote::RemoteConnectionOptions;
 pub use remote_connections::{RemoteConnectionModal, connect, open_remote_project};
 
+use app_actions::{OpenRecent, OpenRemote};
 use disconnected_overlay::DisconnectedOverlay;
 use fuzzy::{StringMatch, StringMatchCandidate};
 use gpui::{
@@ -31,7 +32,6 @@ use workspace::{
     WORKSPACE_DB, Workspace, WorkspaceId, notifications::DetachAndPromptErr,
     with_active_or_new_workspace,
 };
-use app_actions::{OpenRecent, OpenRemote};
 
 pub fn init(cx: &mut App) {
     #[cfg(target_os = "windows")]

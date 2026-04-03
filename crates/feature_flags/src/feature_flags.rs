@@ -28,7 +28,8 @@ impl FeatureFlags {
             return true;
         }
 
-        if (cfg!(debug_assertions) || self.staff) && !*GRAM_DISABLE_STAFF && T::enabled_for_staff() {
+        if (cfg!(debug_assertions) || self.staff) && !*GRAM_DISABLE_STAFF && T::enabled_for_staff()
+        {
             return true;
         }
 

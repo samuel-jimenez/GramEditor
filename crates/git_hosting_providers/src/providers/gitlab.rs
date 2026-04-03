@@ -438,7 +438,8 @@ mod tests {
     #[test]
     fn test_build_gitlab_self_hosted_permalink_from_https_url() {
         let gitlab =
-            Gitlab::from_remote_url("https://gitlab-instance.big-co.com/GramEditor/gram.git").unwrap();
+            Gitlab::from_remote_url("https://gitlab-instance.big-co.com/GramEditor/gram.git")
+                .unwrap();
         let permalink = gitlab.build_permalink(
             ParsedGitRemote {
                 owner: "GramEditor".into(),

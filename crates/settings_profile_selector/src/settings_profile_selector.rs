@@ -280,6 +280,7 @@ fn display_name(profile_name: &Option<String>) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use app_actions::settings_profile_selector;
     use editor;
     use gpui::{TestAppContext, UpdateGlobal, VisualTestContext};
     use menu::{Cancel, Confirm, SelectNext, SelectPrevious};
@@ -288,7 +289,6 @@ mod tests {
     use settings::Settings;
     use theme::{self, ThemeSettings};
     use workspace::{self, AppState};
-    use app_actions::settings_profile_selector;
 
     async fn init_test(
         profiles_json: serde_json::Value,

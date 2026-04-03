@@ -392,7 +392,8 @@ mod tests {
     #[test]
     fn test_build_forgejo_self_hosted_permalink_from_ssh_url() {
         let forgejo =
-            Forgejo::from_remote_url("git@forgejo.some-enterprise.com:GramEditor/gram.git").unwrap();
+            Forgejo::from_remote_url("git@forgejo.some-enterprise.com:GramEditor/gram.git")
+                .unwrap();
         let permalink = forgejo.build_permalink(
             ParsedGitRemote {
                 owner: "GramEditor".into(),
@@ -412,7 +413,8 @@ mod tests {
     #[test]
     fn test_build_forgejo_self_hosted_permalink_from_https_url() {
         let forgejo =
-            Forgejo::from_remote_url("https://forgejo-instance.big-co.com/GramEditor/gram.git").unwrap();
+            Forgejo::from_remote_url("https://forgejo-instance.big-co.com/GramEditor/gram.git")
+                .unwrap();
         let permalink = forgejo.build_permalink(
             ParsedGitRemote {
                 owner: "GramEditor".into(),

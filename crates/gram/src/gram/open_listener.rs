@@ -1042,7 +1042,9 @@ mod tests {
         let request = cx.update(|cx| {
             OpenRequest::parse(
                 RawOpenRequest {
-                    urls: vec!["gram://git/clone/?repo=https://github.com/GramEditor/gram.git".into()],
+                    urls: vec![
+                        "gram://git/clone/?repo=https://github.com/GramEditor/gram.git".into(),
+                    ],
                     ..Default::default()
                 },
                 cx,
@@ -1065,7 +1067,9 @@ mod tests {
         let request = cx.update(|cx| {
             OpenRequest::parse(
                 RawOpenRequest {
-                    urls: vec!["gram://git/clone?repo=https://github.com/GramEditor/gram.git".into()],
+                    urls: vec![
+                        "gram://git/clone?repo=https://github.com/GramEditor/gram.git".into(),
+                    ],
                     ..Default::default()
                 },
                 cx,
@@ -1089,7 +1093,8 @@ mod tests {
             OpenRequest::parse(
                 RawOpenRequest {
                     urls: vec![
-                        "gram://git/clone/?repo=https%3A%2F%2Fgithub.com%2FGramEditor%2Fgram.git".into(),
+                        "gram://git/clone/?repo=https%3A%2F%2Fgithub.com%2FGramEditor%2Fgram.git"
+                            .into(),
                     ],
                     ..Default::default()
                 },

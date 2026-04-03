@@ -339,7 +339,8 @@ mod tests {
 
     #[test]
     fn test_build_gitea_self_hosted_permalink_from_ssh_url() {
-        let gitea = Gitea::from_remote_url("git@gitea.some-enterprise.com:GramEditor/gram.git").unwrap();
+        let gitea =
+            Gitea::from_remote_url("git@gitea.some-enterprise.com:GramEditor/gram.git").unwrap();
         let permalink = gitea.build_permalink(
             ParsedGitRemote {
                 owner: "GramEditor".into(),
@@ -358,8 +359,8 @@ mod tests {
 
     #[test]
     fn test_build_gitea_self_hosted_permalink_from_https_url() {
-        let gitea =
-            Gitea::from_remote_url("https://gitea-instance.big-co.com/GramEditor/gram.git").unwrap();
+        let gitea = Gitea::from_remote_url("https://gitea-instance.big-co.com/GramEditor/gram.git")
+            .unwrap();
         let permalink = gitea.build_permalink(
             ParsedGitRemote {
                 owner: "GramEditor".into(),

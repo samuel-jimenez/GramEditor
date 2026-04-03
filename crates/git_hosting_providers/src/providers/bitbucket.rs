@@ -331,18 +331,18 @@ mod tests {
 
     #[test]
     fn test_build_bitbucket_self_hosted_permalink_with_single_line_selection() {
-        let permalink = Bitbucket::from_remote_url("https://bitbucket.company.com/GramEditor/gram.git")
-            .unwrap()
-            .build_permalink(
-                ParsedGitRemote {
-                    owner: "GramEditor".into(),
-                    repo: "gram".into(),
-                },
-                BuildPermalinkParams::new("f00b4r", &repo_path("main.rs"), Some(6..6)),
-            );
+        let permalink =
+            Bitbucket::from_remote_url("https://bitbucket.company.com/GramEditor/gram.git")
+                .unwrap()
+                .build_permalink(
+                    ParsedGitRemote {
+                        owner: "GramEditor".into(),
+                        repo: "gram".into(),
+                    },
+                    BuildPermalinkParams::new("f00b4r", &repo_path("main.rs"), Some(6..6)),
+                );
 
-        let expected_url =
-            "https://bitbucket.company.com/projects/GramEditor/repos/gram/browse/main.rs?at=f00b4r#7";
+        let expected_url = "https://bitbucket.company.com/projects/GramEditor/repos/gram/browse/main.rs?at=f00b4r#7";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
@@ -372,8 +372,7 @@ mod tests {
                 BuildPermalinkParams::new("f00b4r", &repo_path("main.rs"), Some(23..47)),
             );
 
-        let expected_url =
-            "https://bitbucket.company.com/projects/GramEditor/repos/gram/browse/main.rs?at=f00b4r#24-48";
+        let expected_url = "https://bitbucket.company.com/projects/GramEditor/repos/gram/browse/main.rs?at=f00b4r#24-48";
         assert_eq!(permalink.to_string(), expected_url.to_string())
     }
 
@@ -417,7 +416,8 @@ mod tests {
         };
 
         let bitbucket =
-            Bitbucket::from_remote_url("https://bitbucket.company.com/GramEditor/gram.git").unwrap();
+            Bitbucket::from_remote_url("https://bitbucket.company.com/GramEditor/gram.git")
+                .unwrap();
 
         // Test message without PR reference
         let message = "This does not contain a pull request";

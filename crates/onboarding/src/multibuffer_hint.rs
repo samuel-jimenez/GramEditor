@@ -162,9 +162,7 @@ impl Render for MultibufferHint {
                             .icon_size(IconSize::Small)
                             .icon_color(Color::Muted)
                             .icon_position(IconPosition::End)
-                            .on_click(move |_event, _, cx| {
-                                cx.open_url("gram://docs/multibuffers")
-                            }),
+                            .on_click(move |_event, _, cx| cx.open_url("gram://docs/multibuffers")),
                     ),
             )
             .child(

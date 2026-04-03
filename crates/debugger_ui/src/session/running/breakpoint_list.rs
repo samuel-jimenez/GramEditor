@@ -5,6 +5,7 @@ use std::{
     time::Duration,
 };
 
+use app_actions::{ToggleEnableBreakpoint, UnsetBreakpoint};
 use dap::{Capabilities, ExceptionBreakpointsFilter, adapters::DebugAdapterName};
 use db::kvp::KEY_VALUE_STORE;
 use editor::Editor;
@@ -29,7 +30,6 @@ use ui::{
 };
 use util::rel_path::RelPath;
 use workspace::Workspace;
-use app_actions::{ToggleEnableBreakpoint, UnsetBreakpoint};
 
 actions!(
     debugger,

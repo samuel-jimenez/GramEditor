@@ -1604,7 +1604,9 @@ impl PickerDelegate for QuickSearchDelegate {
                 for result in results {
                     match result {
                         SearchResult::Buffer { buffer, ranges } => {
-                            batch_matches.extend(QuickSearchDelegate::process_search_result(&buffer, &ranges, cx));
+                            batch_matches.extend(QuickSearchDelegate::process_search_result(
+                                &buffer, &ranges, cx,
+                            ));
                         }
                         SearchResult::LimitReached => {
                             limit_reached = true;

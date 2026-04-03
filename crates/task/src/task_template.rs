@@ -9,8 +9,8 @@ use util::serde::default_true;
 use util::{ResultExt, truncate_and_remove_front};
 
 use crate::{
-    AttachRequest, ResolvedTask, RevealTarget, Shell, SpawnInTerminal, TaskContext, TaskId,
-    VariableName, GRAM_VARIABLE_NAME_PREFIX, serde_helpers::non_empty_string_vec,
+    AttachRequest, GRAM_VARIABLE_NAME_PREFIX, ResolvedTask, RevealTarget, Shell, SpawnInTerminal,
+    TaskContext, TaskId, VariableName, serde_helpers::non_empty_string_vec,
 };
 
 /// A template definition of a Gram task to run.
